@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Certificate - {{ $certificate_id }}</title>
+    <style>
+        @page {
+            size: landscape;
+            margin: 0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "DejaVu Sans", sans-serif;
+            width: 297mm;
+            height: 210mm;
+            color: #1a1a2e;
+        }
+
+        .certificate {
+            width: 297mm;
+            height: 210mm;
+            position: relative;
+            overflow: hidden;
+            background: #fffdf7;
+        }
+
+        /* ─── Elegant Background ─── */
+        .bg-gradient {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, #fffdf7 0%, #fef9ef 40%, #fdf6e8 100%);
+            z-index: 0;
+        }
+
+        /* Soft warm glow top-right */
+        .orb-1 {
+            position: absolute;
+            top: -120px;
+            right: -120px;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        /* Soft warm glow bottom-left */
+        .orb-2 {
+            position: absolute;
+            bottom: -120px;
+            left: -120px;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.06) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        /* ─── Decorative Border Frame ─── */
+        .frame-outer {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            right: 15px;
+            bottom: 15px;
+            border: 3px solid #d4af37;
+            z-index: 2;
+        }
+
+        .frame-inner {
+            position: absolute;
+            top: 22px;
+            left: 22px;
+            right: 22px;
+            bottom: 22px;
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            z-index: 2;
+        }
+
+        /* Gold corner accents */
+        .corner {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            z-index: 3;
+        }
+
+        .corner-tl {
+            top: 12px;
+            left: 12px;
+            border-top: 5px solid #d4af37;
+            border-left: 5px solid #d4af37;
+        }
+
+        .corner-tr {
+            top: 12px;
+            right: 12px;
+            border-top: 5px solid #d4af37;
+            border-right: 5px solid #d4af37;
+        }
+
+        .corner-bl {
+            bottom: 12px;
+            left: 12px;
+            border-bottom: 5px solid #d4af37;
+            border-left: 5px solid #d4af37;
+        }
+
+        .corner-br {
+            bottom: 12px;
+            right: 12px;
+            border-bottom: 5px solid #d4af37;
+            border-right: 5px solid #d4af37;
+        }
+
+        /* ─── Content Container ─── */
+        .content {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            padding: 55px 80px 40px 80px;
+        }
+
+        /* ─── Header ─── */
+        .logo-section {
+            margin-bottom: 12px;
+        }
+
+        .logo-img {
+            height: 50px;
+            margin-bottom: 5px;
+        }
+
+        .logo-text {
+            font-size: 14px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 6px;
+            color: #d4af37;
+        }
+
+        /* ─── Decorative Divider ─── */
+        .divider {
+            width: 120px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #d4af37, transparent);
+            margin: 15px auto;
+        }
+
+        /* ─── Title ─── */
+        .cert-title {
+            font-size: 52px;
+            font-weight: bold;
+            letter-spacing: 6px;
+            color: #1a1a2e;
+            margin-bottom: 0;
+            text-transform: uppercase;
+        }
+
+        .cert-subtitle {
+            font-size: 18px;
+            text-transform: uppercase;
+            letter-spacing: 8px;
+            color: #d4af37;
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+
+        /* ─── Recipient ─── */
+        .presented-to {
+            font-size: 13px;
+            color: #7a7a8a;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+        }
+
+        .student-name {
+            font-size: 44px;
+            font-weight: bold;
+            color: #1a1a2e;
+            margin-bottom: 5px;
+            border-bottom: 3px solid #d4af37;
+            display: inline-block;
+            padding-bottom: 8px;
+            min-width: 380px;
+        }
+
+        /* ─── Course Info ─── */
+        .course-info {
+            margin-top: 18px;
+            color: #4a4a5a;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .course-title {
+            color: #1a1a2e;
+            font-weight: bold;
+            font-size: 20px;
+            display: block;
+            margin-top: 4px;
+        }
+
+        .score-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #d4af37, #c49b2a);
+            color: #ffffff;
+            font-weight: bold;
+            font-size: 16px;
+            padding: 6px 20px;
+            border-radius: 20px;
+            margin-top: 12px;
+            letter-spacing: 1px;
+        }
+
+        /* ─── Footer ─── */
+        .footer {
+            position: absolute;
+            bottom: 50px;
+            left: 80px;
+            right: 80px;
+            width: calc(100% - 160px);
+        }
+
+        .footer-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .footer-td {
+            vertical-align: bottom;
+            width: 33.33%;
+        }
+
+        .footer-left {
+            text-align: left;
+        }
+
+        .footer-center {
+            text-align: center;
+        }
+
+        .footer-right {
+            text-align: right;
+        }
+
+        /* Date / Signature */
+        .sign-line {
+            width: 180px;
+            border-top: 2px solid #d4af37;
+            margin-bottom: 8px;
+            display: inline-block;
+        }
+
+        .sign-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #999;
+            margin-bottom: 8px;
+        }
+
+        .sign-name {
+            font-weight: bold;
+            font-size: 15px;
+            color: #1a1a2e;
+        }
+
+        .sign-title {
+            font-size: 11px;
+            color: #7a7a8a;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* QR Code */
+        .qr-container {
+            width: 70px;
+            height: 70px;
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 10px;
+            display: inline-block;
+            padding: 5px;
+            background: #fff;
+        }
+
+        .qr-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        /* Certificate ID */
+        .cert-id {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 9px;
+            color: #bbb;
+            letter-spacing: 2px;
+            font-family: monospace;
+        }
+
+        /* Seal / Stamp */
+        .seal {
+            position: absolute;
+            bottom: 85px;
+            right: 100px;
+            width: 100px;
+            height: 100px;
+            border: 3px solid rgba(212, 175, 55, 0.3);
+            border-radius: 50%;
+            z-index: 5;
+        }
+
+        .seal-inner {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            right: 8px;
+            bottom: 8px;
+            border: 2px solid rgba(212, 175, 55, 0.2);
+            border-radius: 50%;
+            text-align: center;
+            padding-top: 22px;
+        }
+
+        .seal-text {
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #d4af37;
+            font-weight: bold;
+        }
+
+        .seal-icon {
+            font-size: 24px;
+            display: block;
+            margin-top: 2px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="certificate">
+        <div class="bg-gradient"></div>
+        <div class="orb-1"></div>
+        <div class="orb-2"></div>
+
+        <!-- Double border frame -->
+        <div class="frame-outer"></div>
+        <div class="frame-inner"></div>
+
+        <!-- Gold corner accents -->
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-tr"></div>
+        <div class="corner corner-bl"></div>
+        <div class="corner corner-br"></div>
+
+        <div class="content">
+            <!-- Logo -->
+            <div class="logo-section">
+                @if(!empty($certificate_logo))
+                <img src="{{ $certificate_logo }}" class="logo-img" alt="Logo"><br>
+                @endif
+                <div class="logo-text">{{ config('app.name', 'English Platform') }}</div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="cert-title">Certificate</div>
+            <div class="cert-subtitle">of Achievement</div>
+
+            <div class="presented-to">This is proudly presented to</div>
+
+            <div class="student-name">{{ $user_name }}</div>
+
+            <div class="course-info">
+                For the successful completion of
+                <span class="course-title">{{ $course_title }}</span>
+            </div>
+
+            <div style="margin-top: 12px;">
+                <span class="score-badge">★ Score: {{ $final_score }}%</span>
+            </div>
+
+            <!-- Footer -->
+            <div class="footer">
+                <table class="footer-table">
+                    <tr>
+                        <td class="footer-td footer-left">
+                            <div class="sign-label">Date of Issue</div>
+                            <div class="sign-line"></div>
+                            <div class="sign-name">{{ $issue_date }}</div>
+                        </td>
+
+                        <td class="footer-td footer-center">
+                            @if(!empty($qr_code_path))
+                            <div class="qr-container">
+                                <img src="{{ $qr_code_path }}" class="qr-img" alt="QR">
+                            </div>
+                            @endif
+                        </td>
+
+                        <td class="footer-td footer-right">
+                            <div class="sign-label">Authorized Signature</div>
+                            <div class="sign-line"></div>
+                            <div class="sign-name">{{ $signatory_name }}</div>
+                            <div class="sign-title">{{ $signatory_title }}</div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- Seal -->
+            <div class="seal">
+                <div class="seal-inner">
+                    <span class="seal-text">Verified</span>
+                    <span class="seal-icon">✦</span>
+                </div>
+            </div>
+
+            <div class="cert-id">ID: {{ $certificate_id }} &bull; Verify at {{ route('certificates.verify',
+                $certificate_id) }}</div>
+        </div>
+    </div>
+</body>
+
+</html>

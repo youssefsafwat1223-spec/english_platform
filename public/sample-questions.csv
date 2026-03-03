@@ -1,0 +1,6 @@
+course_id,lesson_id,question_text,question_type,difficulty,option_a,option_b,option_c,option_d,correct_answer,explanation
+1,1,"What is the capital of France?",multiple_choice,easy,London,Paris,Berlin,Madrid,B,"Paris has been the capital of France since 508 A.D."
+1,2,"Water boils at 100 degrees Celsius.",true_false,easy,True,False,,,A,"Under standard atmospheric pressure, water boils at 100°C."
+2,5,"The quick brown ___ jumps over the lazy dog.",fill_in_the_blank,medium,fox,,,,A,"'Fox' completes the well-known pangram."
+,,"Which planet is known as the Red Planet?",multiple_choice,easy,Venus,Jupiter,Mars,Saturn,C,"Mars appears reddish due to iron oxide on its surface."
+,,"E=mc^2 was formulated by Isaac Newton.",true_false,medium,True,False,,,B,"It was formulated by Albert Einstein."
