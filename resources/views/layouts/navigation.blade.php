@@ -14,7 +14,7 @@
             <div class="flex items-center gap-2 sm:gap-4 lg:gap-8 shrink-0">
                 <a href="{{ route('home') }}" class="flex items-center gap-2 sm:gap-3 group shrink-0">
                     <img src="{{ asset('images/logo.png') }}" alt="Simple English Logo" class="h-8 sm:h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-110">
-                    <span class="font-sans text-sm sm:text-lg lg:text-xl font-bold tracking-tight text-slate-900 dark:text-white whitespace-nowrap group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+                    <span class="font-sans text-lg sm:text-xl lg:text-2xl font-bold tracking-tight text-slate-900 dark:text-white whitespace-nowrap group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
                         Simple English
                     </span>
                 </a>

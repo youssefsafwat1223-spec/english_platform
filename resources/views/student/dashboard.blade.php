@@ -72,7 +72,7 @@
         </div>
 
         {{-- ─── STATS GRID ─── --}}
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
             @php
                 $statCards = [
                     ['label' => __('Total XP'), 'value' => $stats['total_points'] ?? 0, 'icon' => '⚡', 'color' => 'amber', 'desc' => __('Lifetime Pts'), 'bg' => 'from-amber-500/10 to-transparent'],
