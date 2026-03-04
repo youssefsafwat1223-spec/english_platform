@@ -30,6 +30,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'telegram_username',
         'telegram_chat_id',
         'telegram_linked_at',
+        'telegram_reminders',
         'role',
         'avatar',
         'is_active',
@@ -73,6 +74,7 @@ class User extends Authenticatable implements MustVerifyEmail
             'password' => 'hashed',
             'is_active' => 'boolean',
             'referral_discount_used' => 'boolean',
+            'telegram_reminders' => 'boolean',
         ];
     }
 

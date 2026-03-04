@@ -137,9 +137,34 @@ class TelegramController extends Controller
                 $message = "<b>Available Commands:</b>\n\n";
                 $message .= "/status - View your progress\n";
                 $message .= "/today - Get today's question\n";
+                $message .= "/courses - View your enrolled courses\n";
+                $message .= "/leaderboard - Top 10 students\n";
+                $message .= "/streak - Your current streak\n";
+                $message .= "/certificate - Your certificates\n";
+                $message .= "/unlink - Unlink your account\n";
+                $message .= "/remind - Toggle daily reminder\n";
                 $message .= "/help - Show this message\n\n";
                 $message .= "To answer daily questions, reply with A, B, C, or D.";
                 break;
+
+            case '/courses':
+                return $this->handleCoursesCommand($chatId);
+
+            case '/leaderboard':
+                return $this->handleLeaderboardCommand($chatId);
+
+            case '/streak':
+                return $this->handleStreakCommand($chatId);
+
+            case '/certificate':
+            case '/certificates':
+                return $this->handleCertificateCommand($chatId);
+
+            case '/unlink':
+                return $this->handleUnlinkCommand($chatId);
+
+            case '/remind':
+                return $this->handleRemindCommand($chatId);
 
             default:
                 $message = "Unknown command. Use /help to see available commands.";
@@ -225,6 +250,178 @@ class TelegramController extends Controller
             $this->telegramService->sendMessage($chatId, "No daily quiz available right now. Check back later.");
         }
 
+        return response()->json(['ok' => true]);
+    }
+
+    private function handleCoursesCommand($chatId)
+    {
+        $user = \App\Models\User::where('telegram_chat_id', $chatId)->first();
+
+        if (!$user) {
+            $this->telegramService->sendMessage($chatId, "Please link your account first by sending your phone number.");
+            return response()->json(['ok' => true]);
+        }
+
+        $enrollments = $user->enrollments()->with('course')->get();
+
+        if ($enrollments->isEmpty()) {
+            $message = "📚 You haven't enrolled in any courses yet.\n\n";
+            $message .= "Visit the website to browse available courses!\n";
+            $message .= "<a href='" . config('app.url') . "/student/courses'>Browse Courses</a>";
+        } else {
+            $message = "<b>📚 Your Courses:</b>\n\n";
+            foreach ($enrollments as $enrollment) {
+                $progress = round($enrollment->progress_percentage);
+                $emoji = $progress >= 100 ? '✅' : ($progress > 50 ? '📖' : '📕');
+                $message .= "{$emoji} <b>{$enrollment->course->title}</b>\n";
+                $message .= "   Progress: {$progress}% ({$enrollment->completed_lessons}/{$enrollment->total_lessons} lessons)\n\n";
+            }
+            $message .= "<a href='" . config('app.url') . "/student/courses/my-courses'>View on Website</a>";
+        }
+
+        $this->telegramService->sendMessage($chatId, $message);
+        return response()->json(['ok' => true]);
+    }
+
+    private function handleLeaderboardCommand($chatId)
+    {
+        $topStudents = \App\Models\User::where('role', 'student')
+            ->where('is_active', true)
+            ->orderByDesc('total_points')
+            ->limit(10)
+            ->get(['name', 'total_points']);
+
+        $message = "<b>🏆 Leaderboard — Top 10</b>\n\n";
+
+        $medals = ['🥇', '🥈', '🥉'];
+
+        foreach ($topStudents as $index => $student) {
+            $rank = $index + 1;
+            $medal = $medals[$index] ?? "#{$rank}";
+            $message .= "{$medal} <b>{$student->name}</b> — {$student->total_points} XP\n";
+        }
+
+        // Show current user's rank if linked
+        $user = \App\Models\User::where('telegram_chat_id', $chatId)->first();
+        if ($user) {
+            $userRank = $user->getRank();
+            $message .= "\n—————————————\n";
+            $message .= "📍 Your Rank: #{$userRank} ({$user->total_points} XP)";
+        }
+
+        $this->telegramService->sendMessage($chatId, $message);
+        return response()->json(['ok' => true]);
+    }
+
+    private function handleStreakCommand($chatId)
+    {
+        $user = \App\Models\User::where('telegram_chat_id', $chatId)->first();
+
+        if (!$user) {
+            $this->telegramService->sendMessage($chatId, "Please link your account first by sending your phone number.");
+            return response()->json(['ok' => true]);
+        }
+
+        $current = $user->current_streak ?? 0;
+        $longest = $user->longest_streak ?? 0;
+
+        $fire = str_repeat('🔥', min($current, 10));
+
+        $message = "<b>🔥 Your Streak</b>\n\n";
+        $message .= "Current Streak: <b>{$current} days</b> {$fire}\n";
+        $message .= "Longest Streak: <b>{$longest} days</b>\n\n";
+
+        if ($current === 0) {
+            $message .= "Start studying today to begin your streak! 💪";
+        } elseif ($current >= 7) {
+            $message .= "Amazing! You're on fire! Keep it up! 🚀";
+        } elseif ($current >= 3) {
+            $message .= "Great progress! Don't break the chain! 💪";
+        } else {
+            $message .= "Good start! Keep going every day! ⭐";
+        }
+
+        $this->telegramService->sendMessage($chatId, $message);
+        return response()->json(['ok' => true]);
+    }
+
+    private function handleCertificateCommand($chatId)
+    {
+        $user = \App\Models\User::where('telegram_chat_id', $chatId)->first();
+
+        if (!$user) {
+            $this->telegramService->sendMessage($chatId, "Please link your account first by sending your phone number.");
+            return response()->json(['ok' => true]);
+        }
+
+        $certificates = $user->certificates()->with('course')->get();
+
+        if ($certificates->isEmpty()) {
+            $message = "🏅 You haven't earned any certificates yet.\n\n";
+            $message .= "Complete a course to earn your first certificate!";
+        } else {
+            $message = "<b>🏅 Your Certificates:</b>\n\n";
+            foreach ($certificates as $cert) {
+                $courseName = $cert->course->title ?? 'Unknown Course';
+                $message .= "📜 <b>{$courseName}</b>\n";
+                $message .= "   Grade: {$cert->grade} — Score: {$cert->final_score}%\n";
+                $message .= "   ID: <code>{$cert->certificate_id}</code>\n";
+                if ($cert->verification_url) {
+                    $message .= "   <a href='{$cert->verification_url}'>Download</a>\n";
+                }
+                $message .= "\n";
+            }
+        }
+
+        $this->telegramService->sendMessage($chatId, $message);
+        return response()->json(['ok' => true]);
+    }
+
+    private function handleUnlinkCommand($chatId)
+    {
+        $user = \App\Models\User::where('telegram_chat_id', $chatId)->first();
+
+        if (!$user) {
+            $this->telegramService->sendMessage($chatId, "Your account is not linked. Send your phone number to link it.");
+            return response()->json(['ok' => true]);
+        }
+
+        $user->update([
+            'telegram_chat_id' => null,
+            'telegram_linked_at' => null,
+        ]);
+
+        $message = "✅ Your account has been unlinked from Telegram.\n\n";
+        $message .= "You can link it again anytime by sending /start and your phone number.";
+
+        $this->telegramService->sendMessage($chatId, $message);
+        return response()->json(['ok' => true]);
+    }
+
+    private function handleRemindCommand($chatId)
+    {
+        $user = \App\Models\User::where('telegram_chat_id', $chatId)->first();
+
+        if (!$user) {
+            $this->telegramService->sendMessage($chatId, "Please link your account first by sending your phone number.");
+            return response()->json(['ok' => true]);
+        }
+
+        // Toggle the reminder setting
+        $currentSetting = $user->telegram_reminders ?? true;
+        $newSetting = !$currentSetting;
+
+        $user->update(['telegram_reminders' => $newSetting]);
+
+        if ($newSetting) {
+            $message = "🔔 Daily study reminders are now <b>ON</b>.\n\n";
+            $message .= "I'll remind you if you haven't studied for a while!";
+        } else {
+            $message = "🔕 Daily study reminders are now <b>OFF</b>.\n\n";
+            $message .= "You can turn them back on anytime with /remind.";
+        }
+
+        $this->telegramService->sendMessage($chatId, $message);
         return response()->json(['ok' => true]);
     }
 }
