@@ -18,6 +18,9 @@ Schedule::call(function () {
     $inactiveUsers = \App\Models\User::students()
         ->active()
         ->telegramLinked()
+        ->where(function ($q) {
+            $q->whereNull('telegram_reminders')->orWhere('telegram_reminders', true);
+        })
         ->where('last_activity_at', '<=', now()->subDays(3))
         ->get();
     
