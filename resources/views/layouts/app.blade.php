@@ -7,6 +7,8 @@
 
         <title>@yield('title', config('app.name', 'English Platform'))</title>
         <meta name="description" content="@yield('meta_description', 'Premium AI-Powered English Learning Platform')">
+        <link rel="icon" type="image/jpeg" href="{{ asset('favicon.jpg') }}">
+        <link rel="apple-touch-icon" href="{{ asset('logo.jpg') }}">
 
         <!-- Prevent dark mode flash -->
         <script>
