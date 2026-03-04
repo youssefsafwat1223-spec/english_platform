@@ -412,7 +412,32 @@ Start learning now!
      */
     public function linkUserAccount($chatId, $phone)
     {
-        $user = User::where('phone', $phone)->first();
+        // Normalize: remove spaces, dashes, parentheses
+        $cleaned = preg_replace('/[^0-9+]/', '', $phone);
+
+        // Build possible formats to search
+        $possibleNumbers = [$cleaned, $phone];
+
+        // If starts with +20, also try without country code (e.g. 01203628493)
+        if (str_starts_with($cleaned, '+20')) {
+            $possibleNumbers[] = '0' . substr($cleaned, 3);
+            $possibleNumbers[] = substr($cleaned, 3); // without leading 0
+        }
+        // If starts with 20 (without +), also try with 0
+        elseif (str_starts_with($cleaned, '20') && strlen($cleaned) >= 12) {
+            $possibleNumbers[] = '0' . substr($cleaned, 2);
+            $possibleNumbers[] = '+' . $cleaned;
+        }
+        // If starts with 0 (local format), also try with +20
+        elseif (str_starts_with($cleaned, '0')) {
+            $possibleNumbers[] = '+2' . $cleaned;
+            $possibleNumbers[] = '2' . $cleaned;
+            $possibleNumbers[] = substr($cleaned, 1); // without leading 0
+        }
+
+        $possibleNumbers = array_unique($possibleNumbers);
+
+        $user = User::whereIn('phone', $possibleNumbers)->first();
 
         if (!$user) {
             return [
