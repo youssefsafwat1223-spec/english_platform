@@ -3,11 +3,11 @@
 @section('title', __('Dashboard') . ' — ' . config('app.name'))
 
 @section('content')
-<div class="py-12 relative min-h-screen z-10">
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-8">
+<div class="py-6 sm:py-12 relative min-h-screen z-10 px-3 sm:px-0">
+    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-4 sm:space-y-8">
 
         {{-- ─── HERO SECTION ─── --}}
-        <div class="relative glass-card overflow-hidden rounded-[2rem] p-5 sm:p-8 md:p-12" data-aos="fade-down">
+        <div class="relative glass-card overflow-hidden rounded-2xl sm:rounded-[2rem] p-4 sm:p-8 md:p-12" data-aos="fade-down">
             {{-- Aesthetic Background Elements --}}
             <div class="absolute top-0 right-0 p-12 opacity-10 pointer-events-none transform translate-x-1/4 -translate-y-1/4">
                 <svg width="400" height="400" viewBox="0 0 24 24" fill="none" class="text-white">
@@ -18,37 +18,37 @@
             </div>
             <div class="absolute inset-0 bg-gradient-to-br from-primary-500/10 via-transparent to-accent-500/10 opacity-50"></div>
             
-            <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+            <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-4 sm:gap-8">
                 {{-- Left: Welcome Text --}}
                 <div class="w-full md:w-3/5">
-                    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/30 text-amber-500 text-sm font-bold mb-6 hover:scale-105 transition-transform backdrop-blur-md shadow-lg shadow-amber-500/10">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 sm:py-1.5 rounded-full bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/30 text-amber-500 text-xs sm:text-sm font-bold mb-3 sm:mb-6 hover:scale-105 transition-transform backdrop-blur-md shadow-lg shadow-amber-500/10">
                         <span class="animate-pulse">🔥</span> {{ $stats['current_streak'] ?? 0 }} {{ __('Day Streak') }}
                     </div>
                     
-                    <h1 class="text-2xl sm:text-4xl md:text-6xl font-extrabold mb-4 leading-tight tracking-tight text-slate-900 dark:text-white drop-shadow-sm">
+                    <h1 class="text-xl sm:text-3xl md:text-5xl font-extrabold mb-2 sm:mb-4 leading-tight tracking-tight text-slate-900 dark:text-white drop-shadow-sm">
                         {{ __('Welcome back,') }}<br>
                         <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-500 to-accent-500 filter drop-shadow-md">
                             {{ explode(' ', $user->name)[0] }}!
                         </span>
                     </h1>
                     
-                    <p class="text-sm sm:text-lg text-slate-600 dark:text-slate-300 mb-8 max-w-xl leading-relaxed font-medium">
+                    <p class="text-xs sm:text-base md:text-lg text-slate-600 dark:text-slate-300 mb-4 sm:mb-8 max-w-xl leading-relaxed font-medium">
                         {{ __('Ready to crush your goals today? Pick up where you left off or challenge others in the arena.') }}
                     </p> 
                     
-                    <div class="flex flex-wrap gap-4">
-                        <a href="{{ route('student.courses.index') }}" class="btn-primary ripple-btn px-4 sm:px-8 py-3 sm:py-3.5 rounded-xl shadow-xl shadow-primary-500/30 text-sm sm:text-base flex-1 md:flex-none text-center justify-center font-bold">
+                    <div class="flex flex-row gap-2 sm:gap-4">
+                        <a href="{{ route('student.courses.index') }}" class="btn-primary ripple-btn px-3 sm:px-6 md:px-8 py-2.5 sm:py-3.5 rounded-xl shadow-xl shadow-primary-500/30 text-xs sm:text-sm md:text-base flex-1 md:flex-none text-center justify-center font-bold whitespace-nowrap">
                             {{ __('Resume Learning') }}
-                            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                            <svg class="w-4 h-4 sm:w-5 sm:h-5 ml-1 sm:ml-2 hidden sm:inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
                         </a>
-                        <a href="{{ route('student.battle.index') }}" class="btn-secondary px-4 sm:px-8 py-3 sm:py-3.5 rounded-xl border-2 border-accent-500/30 text-accent-600 dark:text-accent-400 hover:bg-accent-500/10 hover:border-accent-500 font-bold flex-1 md:flex-none text-center justify-center transition-all bg-white/5 backdrop-blur-md text-sm sm:text-base">
+                        <a href="{{ route('student.battle.index') }}" class="btn-secondary px-3 sm:px-6 md:px-8 py-2.5 sm:py-3.5 rounded-xl border-2 border-accent-500/30 text-accent-600 dark:text-accent-400 hover:bg-accent-500/10 hover:border-accent-500 font-bold flex-1 md:flex-none text-center justify-center transition-all bg-white/5 backdrop-blur-md text-xs sm:text-sm md:text-base whitespace-nowrap">
                             ⚔️ {{ __('Enter Battle') }}
                         </a>
                     </div>
                 </div>
                 
                 {{-- Right: Rank Badge (3D Effect) --}}
-                <div class="w-full md:w-2/5 flex justify-center md:justify-end perspective-1000">
+                <div class="w-full md:w-2/5 hidden sm:flex justify-center md:justify-end perspective-1000">
                     <div class="relative w-40 h-40 sm:w-64 sm:h-64 group transform-gpu transition-transform duration-700 hover:rotate-y-12 hover:-rotate-x-12 cursor-pointer">
                         {{-- Glow --}}
                         <div class="absolute inset-0 bg-gradient-to-tr from-primary-500 to-accent-500 rounded-full blur-3xl opacity-30 group-hover:opacity-50 animate-pulse transition-opacity"></div>
@@ -72,7 +72,7 @@
         </div>
 
         {{-- ─── STATS GRID ─── --}}
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
             @php
                 $statCards = [
                     ['label' => __('Total XP'), 'value' => $stats['total_points'] ?? 0, 'icon' => '⚡', 'color' => 'amber', 'desc' => __('Lifetime Pts'), 'bg' => 'from-amber-500/10 to-transparent'],
@@ -85,23 +85,23 @@
             @foreach($statCards as $card)
                 <div class="glass-card relative overflow-hidden group hover:-translate-y-1 hover:shadow-xl transition-all duration-300 border-t-2 border-t-{{ $card['color'] }}-500/50" data-aos="fade-up" data-aos-delay="{{ $loop->index * 100 }}">
                     <div class="absolute inset-0 bg-gradient-to-br {{ $card['bg'] }} opacity-50"></div>
-                    <div class="relative p-6">
+                    <div class="relative p-3 sm:p-6">
                         <div class="flex justify-between items-start mb-4">
-                            <div class="w-12 h-12 rounded-xl bg-{{ $card['color'] }}-500/20 flex items-center justify-center text-2xl shadow-inner border border-{{ $card['color'] }}-500/30 group-hover:scale-110 transition-transform duration-300">
+                            <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-xl bg-{{ $card['color'] }}-500/20 flex items-center justify-center text-lg sm:text-2xl shadow-inner border border-{{ $card['color'] }}-500/30 group-hover:scale-110 transition-transform duration-300">
                                 {{ $card['icon'] }}
                             </div>
-                            <span class="text-xs font-bold px-2 py-1 rounded bg-slate-900/5 dark:bg-white/5 text-slate-500 dark:text-slate-400 group-hover:bg-{{ $card['color'] }}-500/20 group-hover:text-{{ $card['color'] }}-600 dark:group-hover:text-{{ $card['color'] }}-400 transition-colors uppercase tracking-wider">
+                            <span class="text-[10px] sm:text-xs font-bold px-1.5 sm:px-2 py-0.5 sm:py-1 rounded bg-slate-900/5 dark:bg-white/5 text-slate-500 dark:text-slate-400 group-hover:bg-{{ $card['color'] }}-500/20 group-hover:text-{{ $card['color'] }}-600 dark:group-hover:text-{{ $card['color'] }}-400 transition-colors uppercase tracking-wider">
                                 {{ $card['desc'] }}
                             </span>
                         </div>
-                        <div class="mt-2">
+                        <div class="mt-1 sm:mt-2">
                             <div class="flex items-baseline gap-1">
-                                <h3 class="text-4xl font-black text-slate-900 dark:text-white leading-none counter tracking-tight" data-target="{{ $card['value'] }}">0</h3>
+                                <h3 class="text-2xl sm:text-4xl font-black text-slate-900 dark:text-white leading-none counter tracking-tight" data-target="{{ $card['value'] }}">0</h3>
                                 @if(isset($card['suffix']))
                                     <span class="text-xl font-bold text-slate-400 dark:text-slate-500">{{ $card['suffix'] }}</span>
                                 @endif
                             </div>
-                            <p class="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">{{ $card['label'] }}</p>
+                            <p class="text-xs sm:text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">{{ $card['label'] }}</p>
                         </div>
                     </div>
                 </div>
