@@ -3,7 +3,7 @@
 @section('title', __('Dashboard') . ' — ' . config('app.name'))
 
 @section('content')
-<div class="py-6 sm:py-12 relative min-h-screen z-10 px-3 sm:px-0">
+<div class="pt-8 pb-12 sm:py-12 relative min-h-screen z-10 px-3 sm:px-0">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-4 sm:space-y-8">
 
         {{-- ─── HERO SECTION ─── --}}
