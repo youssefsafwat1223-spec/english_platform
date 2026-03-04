@@ -168,6 +168,66 @@
                             </p>
                         </div>
 
+                        {{-- /courses --}}
+                        <div class="p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 hover:border-primary-500/30 transition-colors">
+                            <div class="flex items-center gap-2 mb-2">
+                                <code class="px-2 py-1 rounded bg-primary-100 dark:bg-primary-500/20 text-primary-700 dark:text-primary-300 font-bold text-sm">/courses</code>
+                            </div>
+                            <p class="text-sm" style="color: var(--color-text-muted);">
+                                {{ __('View your enrolled courses with progress percentage and direct links.') }}
+                            </p>
+                        </div>
+
+                        {{-- /leaderboard --}}
+                        <div class="p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 hover:border-primary-500/30 transition-colors">
+                            <div class="flex items-center gap-2 mb-2">
+                                <code class="px-2 py-1 rounded bg-primary-100 dark:bg-primary-500/20 text-primary-700 dark:text-primary-300 font-bold text-sm">/leaderboard</code>
+                            </div>
+                            <p class="text-sm" style="color: var(--color-text-muted);">
+                                {{ __('See the top 10 students ranked by XP points and your current position.') }}
+                            </p>
+                        </div>
+
+                        {{-- /streak --}}
+                        <div class="p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 hover:border-primary-500/30 transition-colors">
+                            <div class="flex items-center gap-2 mb-2">
+                                <code class="px-2 py-1 rounded bg-primary-100 dark:bg-primary-500/20 text-primary-700 dark:text-primary-300 font-bold text-sm">/streak</code>
+                            </div>
+                            <p class="text-sm" style="color: var(--color-text-muted);">
+                                {{ __('Check your current study streak and your longest streak record.') }}
+                            </p>
+                        </div>
+
+                        {{-- /certificate --}}
+                        <div class="p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 hover:border-primary-500/30 transition-colors">
+                            <div class="flex items-center gap-2 mb-2">
+                                <code class="px-2 py-1 rounded bg-primary-100 dark:bg-primary-500/20 text-primary-700 dark:text-primary-300 font-bold text-sm">/certificate</code>
+                            </div>
+                            <p class="text-sm" style="color: var(--color-text-muted);">
+                                {{ __('View all certificates you have earned with download links.') }}
+                            </p>
+                        </div>
+
+                        {{-- /unlink --}}
+                        <div class="p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 hover:border-red-500/30 transition-colors">
+                            <div class="flex items-center gap-2 mb-2">
+                                <code class="px-2 py-1 rounded bg-red-100 dark:bg-red-500/20 text-red-700 dark:text-red-300 font-bold text-sm">/unlink</code>
+                            </div>
+                            <p class="text-sm" style="color: var(--color-text-muted);">
+                                {{ __('Disconnect your Telegram account. You can re-link anytime with /start.') }}
+                            </p>
+                        </div>
+
+                        {{-- /remind --}}
+                        <div class="p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 hover:border-amber-500/30 transition-colors">
+                            <div class="flex items-center gap-2 mb-2">
+                                <code class="px-2 py-1 rounded bg-amber-100 dark:bg-amber-500/20 text-amber-700 dark:text-amber-300 font-bold text-sm">/remind</code>
+                            </div>
+                            <p class="text-sm" style="color: var(--color-text-muted);">
+                                {{ __('Toggle daily study reminders on or off.') }}
+                            </p>
+                        </div>
+
                         {{-- A, B, C, D --}}
                         <div class="p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 hover:border-primary-500/30 transition-colors">
                             <div class="flex flex-wrap items-center gap-2 mb-2">
