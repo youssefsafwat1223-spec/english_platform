@@ -7,7 +7,7 @@
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-8">
 
         {{-- ─── HERO SECTION ─── --}}
-        <div class="relative glass-card overflow-hidden rounded-[2rem] p-8 md:p-12" data-aos="fade-down">
+        <div class="relative glass-card overflow-hidden rounded-[2rem] p-5 sm:p-8 md:p-12" data-aos="fade-down">
             {{-- Aesthetic Background Elements --}}
             <div class="absolute top-0 right-0 p-12 opacity-10 pointer-events-none transform translate-x-1/4 -translate-y-1/4">
                 <svg width="400" height="400" viewBox="0 0 24 24" fill="none" class="text-white">
@@ -25,23 +25,23 @@
                         <span class="animate-pulse">🔥</span> {{ $stats['current_streak'] ?? 0 }} {{ __('Day Streak') }}
                     </div>
                     
-                    <h1 class="text-4xl md:text-6xl font-extrabold mb-4 leading-tight tracking-tight text-slate-900 dark:text-white drop-shadow-sm">
+                    <h1 class="text-2xl sm:text-4xl md:text-6xl font-extrabold mb-4 leading-tight tracking-tight text-slate-900 dark:text-white drop-shadow-sm">
                         {{ __('Welcome back,') }}<br>
                         <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-500 to-accent-500 filter drop-shadow-md">
                             {{ explode(' ', $user->name)[0] }}!
                         </span>
                     </h1>
                     
-                    <p class="text-lg text-slate-600 dark:text-slate-300 mb-8 max-w-xl leading-relaxed font-medium">
+                    <p class="text-sm sm:text-lg text-slate-600 dark:text-slate-300 mb-8 max-w-xl leading-relaxed font-medium">
                         {{ __('Ready to crush your goals today? Pick up where you left off or challenge others in the arena.') }}
                     </p> 
                     
                     <div class="flex flex-wrap gap-4">
-                        <a href="{{ route('student.courses.index') }}" class="btn-primary ripple-btn px-8 py-3.5 rounded-xl shadow-xl shadow-primary-500/30 text-base flex-1 md:flex-none text-center justify-center font-bold">
+                        <a href="{{ route('student.courses.index') }}" class="btn-primary ripple-btn px-4 sm:px-8 py-3 sm:py-3.5 rounded-xl shadow-xl shadow-primary-500/30 text-sm sm:text-base flex-1 md:flex-none text-center justify-center font-bold">
                             {{ __('Resume Learning') }}
                             <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
                         </a>
-                        <a href="{{ route('student.battle.index') }}" class="btn-secondary px-8 py-3.5 rounded-xl border-2 border-accent-500/30 text-accent-600 dark:text-accent-400 hover:bg-accent-500/10 hover:border-accent-500 font-bold flex-1 md:flex-none text-center justify-center transition-all bg-white/5 backdrop-blur-md">
+                        <a href="{{ route('student.battle.index') }}" class="btn-secondary px-4 sm:px-8 py-3 sm:py-3.5 rounded-xl border-2 border-accent-500/30 text-accent-600 dark:text-accent-400 hover:bg-accent-500/10 hover:border-accent-500 font-bold flex-1 md:flex-none text-center justify-center transition-all bg-white/5 backdrop-blur-md text-sm sm:text-base">
                             ⚔️ {{ __('Enter Battle') }}
                         </a>
                     </div>
@@ -49,7 +49,7 @@
                 
                 {{-- Right: Rank Badge (3D Effect) --}}
                 <div class="w-full md:w-2/5 flex justify-center md:justify-end perspective-1000">
-                    <div class="relative w-64 h-64 group transform-gpu transition-transform duration-700 hover:rotate-y-12 hover:-rotate-x-12 cursor-pointer">
+                    <div class="relative w-40 h-40 sm:w-64 sm:h-64 group transform-gpu transition-transform duration-700 hover:rotate-y-12 hover:-rotate-x-12 cursor-pointer">
                         {{-- Glow --}}
                         <div class="absolute inset-0 bg-gradient-to-tr from-primary-500 to-accent-500 rounded-full blur-3xl opacity-30 group-hover:opacity-50 animate-pulse transition-opacity"></div>
                         
@@ -57,8 +57,8 @@
                         <div class="absolute inset-2 rounded-full border border-white/20 dark:border-white/10 shadow-2xl overflow-hidden glass-card bg-gradient-to-br from-white/40 to-white/5 dark:from-white/10 dark:to-white/0 flex flex-col items-center justify-center p-8 text-center backdrop-blur-xl">
                             <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-shimmer pointer-events-none"></div>
                             
-                            <div class="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-[0.2em] mb-2">{{ __('Current Level') }}</div>
-                            <div class="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-primary-600 to-accent-500 drop-shadow-lg mb-2">
+                            <div class="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-[0.2em] mb-1 sm:mb-2">{{ __('Current Level') }}</div>
+                            <div class="text-3xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-primary-600 to-accent-500 drop-shadow-lg mb-1 sm:mb-2">
                                 {{ $stats['rank'] <= 3 ? 'PRO' : 'ROOKIE' }}
                             </div>
                             <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-900/10 dark:bg-black/30 text-sm font-mono text-primary-600 dark:text-primary-400 font-bold border border-primary-500/20">
@@ -136,22 +136,22 @@
         @endif
 
         {{-- ─── QUICK ACTIONS ROW ─── --}}
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4" data-aos="fade-up" data-aos-delay="200">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4" data-aos="fade-up" data-aos-delay="200">
             <a href="{{ route('student.forum.index') }}" class="glass-card p-4 flex items-center justify-center gap-3 hover:bg-primary-500 hover:text-white group transition-colors shadow-sm">
-                <span class="text-2xl group-hover:scale-110 transition-transform">💬</span>
-                <span class="font-bold text-slate-700 dark:text-slate-200 group-hover:text-white">{{ __('Community Forum') }}</span>
+                <span class="text-xl sm:text-2xl group-hover:scale-110 transition-transform">💬</span>
+                <span class="font-bold text-xs sm:text-sm text-slate-700 dark:text-slate-200 group-hover:text-white">{{ __('Community Forum') }}</span>
             </a>
             <a href="{{ route('student.games.index') }}" class="glass-card p-4 flex items-center justify-center gap-3 hover:bg-accent-500 hover:text-white group transition-colors shadow-sm">
-                <span class="text-2xl group-hover:scale-110 transition-transform">🎮</span>
-                <span class="font-bold text-slate-700 dark:text-slate-200 group-hover:text-white">{{ __('Mini Games') }}</span>
+                <span class="text-xl sm:text-2xl group-hover:scale-110 transition-transform">🎮</span>
+                <span class="font-bold text-xs sm:text-sm text-slate-700 dark:text-slate-200 group-hover:text-white">{{ __('Mini Games') }}</span>
             </a>
             <a href="{{ route('student.referrals.index') }}" class="glass-card p-4 flex items-center justify-center gap-3 hover:bg-emerald-500 hover:text-white group transition-colors shadow-sm">
-                <span class="text-2xl group-hover:scale-110 transition-transform">🎁</span>
-                <span class="font-bold text-slate-700 dark:text-slate-200 group-hover:text-white">{{ __('Invite Friends') }}</span>
+                <span class="text-xl sm:text-2xl group-hover:scale-110 transition-transform">🎁</span>
+                <span class="font-bold text-xs sm:text-sm text-slate-700 dark:text-slate-200 group-hover:text-white">{{ __('Invite Friends') }}</span>
             </a>
             <a href="{{ route('student.telegram.guide') }}" class="glass-card p-4 flex items-center justify-center gap-3 hover:bg-[#0088cc] hover:text-white group transition-colors shadow-sm">
-                <span class="text-2xl group-hover:scale-110 transition-transform">🤖</span>
-                <span class="font-bold text-slate-700 dark:text-slate-200 group-hover:text-white">{{ __('Telegram Bot') }}</span>
+                <span class="text-xl sm:text-2xl group-hover:scale-110 transition-transform">🤖</span>
+                <span class="font-bold text-xs sm:text-sm text-slate-700 dark:text-slate-200 group-hover:text-white">{{ __('Telegram Bot') }}</span>
             </a>
         </div>
 
