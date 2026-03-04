@@ -19,7 +19,7 @@
         
         {{-- Video Background --}}
         <div class="absolute inset-0 w-full h-full z-0 overflow-hidden bg-slate-900">
-            <video autoplay loop muted playsinline class="absolute top-1/2 left-1/2 min-w-full min-h-full w-auto h-auto -translate-x-1/2 -translate-y-1/2 object-cover">
+            <video autoplay loop muted playsinline preload="auto" class="absolute top-1/2 left-1/2 min-w-full min-h-full w-auto h-auto -translate-x-1/2 -translate-y-1/2 object-cover opacity-90">
                 <source src="{{ asset('videos/Futuristic_Alphabet_Sphere_Animation.mp4') }}" type="video/mp4">
             </video>
             {{-- Dark/Gradient Overlay for readability --}}
