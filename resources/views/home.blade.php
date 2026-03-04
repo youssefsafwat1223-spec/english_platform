@@ -20,7 +20,7 @@
         {{-- Video Background --}}
         <div class="absolute inset-0 w-full h-full z-0 overflow-hidden bg-slate-900">
             <video autoplay loop muted playsinline preload="auto" class="absolute top-1/2 left-1/2 min-w-full min-h-full w-auto h-auto -translate-x-1/2 -translate-y-1/2 object-cover opacity-90">
-                <source src="{{ asset('videos/Futuristic_Alphabet_Sphere_Animation.webm') }}" type="video/mp4">
+                <source src="{{ asset('videos/Futuristic_Alphabet_Sphere_Animation.webm') }}" type="video/webm">
             </video>
             {{-- Dark/Gradient Overlay for readability --}}
             <div class="absolute inset-0 bg-slate-900/60 dark:bg-slate-900/80"></div>
