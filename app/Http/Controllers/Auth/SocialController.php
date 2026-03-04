@@ -74,6 +74,13 @@ class SocialController extends Controller
 
         Auth::login($newUser);
 
+        // Send welcome email
+        try {
+            \Illuminate\Support\Facades\Mail::to($newUser)->send(new \App\Mail\WelcomeMail($newUser));
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Welcome email failed (Google): ' . $e->getMessage());
+        }
+
         // Redirect to main onboarding flow
         return redirect()->route('student.onboarding');
     }
