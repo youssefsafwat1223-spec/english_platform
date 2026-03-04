@@ -5,6 +5,7 @@
      @scroll.window.throttle.50ms="scrolled = (window.pageYOffset > 20)"
      :class="scrolled ? 'shadow-2xl' : 'shadow-lg'"
      class="fixed top-2 left-2 right-2 sm:top-4 sm:left-4 sm:right-4 lg:left-8 lg:right-8 z-50 transition-shadow duration-300 ease-out glass-card will-change-transform bg-white/95 dark:bg-[#020617]/95"
+     style="overflow: visible !important; transform: none !important;"
      data-aos="fade-down" data-aos-duration="600">
     <div class="px-2 sm:px-4 md:px-6 lg:px-8">
         <div class="flex justify-between h-14 sm:h-16 lg:h-20 items-center">
@@ -13,7 +14,7 @@
             <div class="flex items-center gap-2 sm:gap-4 lg:gap-8 min-w-0">
                 <a href="{{ route('home') }}" class="flex items-center gap-2 sm:gap-3 group shrink-0">
                     <img src="{{ asset('images/logo.png') }}" alt="Simple English Logo" class="h-7 sm:h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-110">
-                    <span class="font-sans text-sm sm:text-lg lg:text-xl font-bold tracking-tight text-slate-900 dark:text-white whitespace-nowrap group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+                    <span class="font-sans text-sm sm:text-lg lg:text-xl font-bold tracking-tight text-slate-900 dark:text-white whitespace-nowrap group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors hidden min-[400px]:inline">
                         Simple English
                     </span>
                 </a>
