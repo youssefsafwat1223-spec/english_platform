@@ -4,17 +4,17 @@
 <nav x-data="{ open: false, userOpen: false, scrolled: false, gtLoaded: false }"
      @scroll.window.throttle.50ms="scrolled = (window.pageYOffset > 20)"
      :class="scrolled ? 'shadow-2xl' : 'shadow-lg'"
-     class="fixed top-2 left-2 right-2 sm:top-4 sm:left-4 sm:right-4 lg:left-8 lg:right-8 z-50 transition-shadow duration-300 ease-out glass-card will-change-transform bg-white/95 dark:bg-[#020617]/95"
+     class="fixed top-3 left-3 right-3 sm:top-4 sm:left-4 sm:right-4 lg:left-8 lg:right-8 z-50 transition-shadow duration-300 ease-out glass-card will-change-transform bg-white/95 dark:bg-[#020617]/95"
      style="overflow: visible !important; transform: none !important;"
      data-aos="fade-down" data-aos-duration="600">
-    <div class="px-2 sm:px-4 md:px-6 lg:px-8">
-        <div class="flex justify-between h-14 sm:h-16 lg:h-20 items-center">
+    <div class="px-3 sm:px-4 md:px-6 lg:px-8">
+        <div class="flex justify-between h-16 lg:h-20 items-center">
 
             {{-- ─── Logo ─── --}}
-            <div class="flex items-center gap-2 sm:gap-4 lg:gap-8 min-w-0">
+            <div class="flex items-center gap-2 sm:gap-4 lg:gap-8 shrink-0">
                 <a href="{{ route('home') }}" class="flex items-center gap-2 sm:gap-3 group shrink-0">
-                    <img src="{{ asset('images/logo.png') }}" alt="Simple English Logo" class="h-7 sm:h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-110">
-                    <span class="font-sans text-sm sm:text-lg lg:text-xl font-bold tracking-tight text-slate-900 dark:text-white whitespace-nowrap group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors hidden min-[400px]:inline">
+                    <img src="{{ asset('images/logo.png') }}" alt="Simple English Logo" class="h-8 sm:h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-110">
+                    <span class="font-sans text-sm sm:text-lg lg:text-xl font-bold tracking-tight text-slate-900 dark:text-white whitespace-nowrap group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
                         Simple English
                     </span>
                 </a>
@@ -131,12 +131,12 @@
             </div>
 
             {{-- ─── Right Side ─── --}}
-            <div class="flex items-center gap-0.5 sm:gap-1 md:gap-3">
+            <div class="flex items-center gap-1 sm:gap-2 md:gap-3">
 
                 {{-- Theme Toggle --}}
                 <button type="button"
                         onclick="toggleTheme()"
-                        class="relative w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10 rounded-xl flex items-center justify-center transition-all duration-300 hover:bg-gray-100 dark:hover:bg-white/5 border border-transparent hover:border-gray-200 dark:hover:border-white/10"
+                        class="relative w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-xl flex items-center justify-center transition-all duration-300 hover:bg-gray-100 dark:hover:bg-white/5 border border-transparent hover:border-gray-200 dark:hover:border-white/10"
                         aria-label="Toggle dark mode">
                     {{-- Moon (show in dark mode) --}}
                     <svg id="theme-toggle-dark-icon" class="hidden w-4 h-4 sm:w-5 sm:h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -179,7 +179,7 @@
                              }"
                              @click.outside="notifOpen = false">
                             <button @click="notifOpen = !notifOpen; if(notifOpen) { pollUnread(); fetchNotifications(); }"
-                                    class="relative w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10 rounded-xl flex items-center justify-center transition-all duration-300 hover:bg-gray-100 dark:hover:bg-white/5 border border-transparent hover:border-gray-200 dark:hover:border-white/10"
+                                    class="relative w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-xl flex items-center justify-center transition-all duration-300 hover:bg-gray-100 dark:hover:bg-white/5 border border-transparent hover:border-gray-200 dark:hover:border-white/10"
                                     aria-label="Notifications">
                                 <svg class="w-4 h-4 sm:w-5 sm:h-5" style="color: var(--color-text);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
@@ -252,7 +252,7 @@
 
                 {{-- Language Toggle --}}
                 <a href="{{ route('locale.switch', app()->getLocale() === 'ar' ? 'en' : 'ar') }}"
-                   class="relative w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10 rounded-xl flex items-center justify-center transition-all duration-300 hover:bg-gray-100 dark:hover:bg-white/5 border border-transparent hover:border-gray-200 dark:hover:border-white/10 text-[10px] sm:text-xs md:text-sm font-bold"
+                   class="relative w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-xl flex items-center justify-center transition-all duration-300 hover:bg-gray-100 dark:hover:bg-white/5 border border-transparent hover:border-gray-200 dark:hover:border-white/10 text-xs sm:text-sm font-bold"
                    style="color: var(--color-text);"
                    title="{{ __('Language') }}">
                     {{ app()->getLocale() === 'ar' ? 'EN' : 'ع' }}
@@ -364,9 +364,9 @@
 
                 {{-- Mobile Menu Toggle --}}
                 <button @click="open = !open"
-                        class="lg:hidden inline-flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-xl transition-colors hover:bg-gray-100 dark:hover:bg-white/5"
+                        class="lg:hidden inline-flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-xl transition-colors hover:bg-gray-100 dark:hover:bg-white/5"
                         aria-label="Toggle navigation">
-                    <svg class="h-5 w-5 sm:h-6 sm:w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24" style="color: var(--color-text);">
+                    <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24" style="color: var(--color-text);">
                         <path :class="{'hidden': open, 'inline-flex': !open}" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
                         <path :class="{'hidden': !open, 'inline-flex': open}" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
