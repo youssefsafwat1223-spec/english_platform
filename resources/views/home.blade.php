@@ -88,23 +88,7 @@
                     {{-- Ambient Glow --}}
                     <div class="absolute inset-0 bg-gradient-to-r from-primary-500/10 via-emerald-500/10 to-accent-500/10 opacity-50"></div>
 
-                    {{-- Stat 1: AI Engine --}}
-                    <div class="relative flex-1 flex items-center justify-center gap-4 p-6 group w-full md:w-auto">
-                        <div class="w-12 h-12 rounded-full bg-primary-500/20 flex items-center justify-center ring-1 ring-primary-500/50 group-hover:scale-110 group-hover:bg-primary-500/40 transition-all duration-300 shadow-[0_0_20px_rgba(99,102,241,0.3)]">
-                            <svg class="w-6 h-6 text-primary-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                        </div>
-                        <div class="text-left">
-                            <div class="text-white font-black text-xl leading-none mb-1">{{ __('AI Engine') }}</div>
-                            <div class="flex items-center gap-1.5">
-                                <span class="w-1.5 h-1.5 rounded-full bg-primary-400 animate-pulse"></span>
-                                <span class="text-xs font-bold text-primary-400 uppercase tracking-widest">{{ __('Active') }}</span>
-                            </div>
-                        </div>
-                    </div>
 
-                    {{-- Divider --}}
-                    <div class="hidden md:block w-px h-16 bg-white/10"></div>
-                    <div class="md:hidden w-3/4 h-px bg-white/10 my-2"></div>
 
                     {{-- Stat 2: Active Courses --}}
                     <div class="relative flex-1 flex items-center justify-center gap-4 p-6 group w-full md:w-auto">
@@ -229,10 +213,7 @@
                     <p class="text-sm leading-relaxed" style="color: var(--color-text-muted);">
                         {{ __('Expert-designed curriculum broken down into clear modules with progress tracking and achievements.') }}
                     </p>
-                    <div class="mt-6 flex items-center gap-2 text-accent-500 text-sm font-semibold group-hover:gap-3 transition-all">
-                        {{ __('Learn More') }}
-                        <svg class="w-4 h-4 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
-                    </div>
+
                 </div>
 
                 {{-- Feature 3: Gamified Progress --}}
@@ -246,10 +227,7 @@
                     <p class="text-sm leading-relaxed" style="color: var(--color-text-muted);">
                         {{ __('Earn XP, maintain streaks, and unlock badges. Compete on leaderboards and stay motivated daily.') }}
                     </p>
-                    <div class="mt-6 flex items-center gap-2 text-amber-500 text-sm font-semibold group-hover:gap-3 transition-all">
-                        {{ __('Learn More') }}
-                        <svg class="w-4 h-4 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
-                    </div>
+
                 </div>
 
                 {{-- Feature 4: Interactive Quizzes --}}
@@ -263,10 +241,7 @@
                     <p class="text-sm leading-relaxed" style="color: var(--color-text-muted);">
                         {{ __('Adaptive assessments that adjust to your skill level, ensuring optimal challenge and retention.') }}
                     </p>
-                    <div class="mt-6 flex items-center gap-2 text-emerald-500 text-sm font-semibold group-hover:gap-3 transition-all">
-                        {{ __('Learn More') }}
-                        <svg class="w-4 h-4 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
-                    </div>
+
                 </div>
 
                 {{-- Feature 5: Community Forum --}}
@@ -280,10 +255,7 @@
                     <p class="text-sm leading-relaxed" style="color: var(--color-text-muted);">
                         {{ __('Connect with fellow learners, ask questions, share tips, and practice conversational English.') }}
                     </p>
-                    <div class="mt-6 flex items-center gap-2 text-pink-500 text-sm font-semibold group-hover:gap-3 transition-all">
-                        {{ __('Learn More') }}
-                        <svg class="w-4 h-4 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
-                    </div>
+
                 </div>
 
                 {{-- Feature 6: Certificates --}}
@@ -297,10 +269,7 @@
                     <p class="text-sm leading-relaxed" style="color: var(--color-text-muted);">
                         {{ __('Earn verifiable certificates upon course completion. Share them on LinkedIn and boost your career.') }}
                     </p>
-                    <div class="mt-6 flex items-center gap-2 text-indigo-500 text-sm font-semibold group-hover:gap-3 transition-all">
-                        {{ __('Learn More') }}
-                        <svg class="w-4 h-4 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
-                    </div>
+
                 </div>
             </div>
         </div>
