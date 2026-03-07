@@ -55,15 +55,71 @@ class ProfileController extends Controller
 
         $data = $request->only(['name', 'email', 'phone', 'telegram_username', 'address', 'secondary_email']);
 
-        // Handle avatar upload
+        // Handle avatar upload with compression
         if ($request->hasFile('avatar')) {
             // Delete old avatar
             if ($user->avatar) {
                 Storage::disk('public')->delete($user->avatar);
             }
 
-            $data['avatar'] = $request->file('avatar')
-                ->store('avatars', 'public');
+            $file = $request->file('avatar');
+            $image = null;
+            $extension = strtolower($file->getClientOriginalExtension());
+
+            // Create image resource based on type
+            switch ($extension) {
+                case 'jpeg':
+                case 'jpg':
+                    $image = imagecreatefromjpeg($file->getRealPath());
+                    break;
+                case 'png':
+                    $image = imagecreatefrompng($file->getRealPath());
+                    break;
+                case 'gif':
+                    $image = imagecreatefromgif($file->getRealPath());
+                    break;
+            }
+
+            if ($image) {
+                // Get original dimensions
+                $origWidth = imagesx($image);
+                $origHeight = imagesy($image);
+
+                // Max dimensions for avatar
+                $maxSize = 300;
+
+                // Calculate new dimensions keeping aspect ratio
+                if ($origWidth > $maxSize || $origHeight > $maxSize) {
+                    if ($origWidth >= $origHeight) {
+                        $newWidth = $maxSize;
+                        $newHeight = (int) round($origHeight * ($maxSize / $origWidth));
+                    } else {
+                        $newHeight = $maxSize;
+                        $newWidth = (int) round($origWidth * ($maxSize / $origHeight));
+                    }
+
+                    // Resize
+                    $resized = imagecreatetruecolor($newWidth, $newHeight);
+                    imagecopyresampled($resized, $image, 0, 0, 0, 0, $newWidth, $newHeight, $origWidth, $origHeight);
+                    imagedestroy($image);
+                    $image = $resized;
+                }
+
+                // Save as compressed JPEG
+                $filename = 'avatars/' . uniqid('avatar_') . '.jpg';
+                $tempPath = sys_get_temp_dir() . '/' . uniqid() . '.jpg';
+                imagejpeg($image, $tempPath, 70); // 70% quality
+                imagedestroy($image);
+
+                // Store the compressed file
+                Storage::disk('public')->put($filename, file_get_contents($tempPath));
+                unlink($tempPath);
+
+                $data['avatar'] = $filename;
+            } else {
+                // Fallback: store as-is if GD fails
+                $data['avatar'] = $file->store('avatars', 'public');
+            }
         }
 
         $user->update($data);
