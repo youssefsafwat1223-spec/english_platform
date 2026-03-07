@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() == 'ar' ? 'rtl' : 'ltr' }}" class="dark h-full">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() == 'ar' ? 'rtl' : 'ltr' }}" class="h-full">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,16 +10,12 @@
         <link rel="icon" type="image/jpeg" href="{{ asset('favicon.jpg') }}">
         <link rel="apple-touch-icon" href="{{ asset('logo.jpg') }}">
 
-        <!-- Prevent dark mode flash -->
+        <!-- Prevent dark mode flash — runs BEFORE anything renders -->
         <script>
             (function() {
-                const theme = localStorage.getItem('theme');
-                if (theme === 'light') {
-                    document.documentElement.classList.remove('dark');
-                } else if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                var theme = localStorage.getItem('theme');
+                if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                     document.documentElement.classList.add('dark');
-                } else {
-                    document.documentElement.classList.remove('dark');
                 }
             })();
         </script>
