@@ -59,7 +59,7 @@
                             
                             <div class="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-[0.2em] mb-1 sm:mb-2">{{ __('Current Level') }}</div>
                             <div class="text-3xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-primary-600 to-accent-500 drop-shadow-lg mb-1 sm:mb-2">
-                                {{ $stats['rank'] <= 3 ? 'PRO' : 'ROOKIE' }}
+                                {{ $stats['total_enrollments'] > 0 ? 'PRO' : 'ROOKIE' }}
                             </div>
                             <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-900/10 dark:bg-black/30 text-sm font-mono text-primary-600 dark:text-primary-400 font-bold border border-primary-500/20">
                                 <svg class="w-4 h-4 text-amber-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 2a1 1 0 01.832.445l2.454 3.682 4.39.638a1 1 0 01.554 1.706l-3.176 3.097.75 4.373a1 1 0 01-1.451 1.054L10 14.73l-3.927 2.064a1 1 0 01-1.451-1.054l.75-4.373-3.176-3.097a1 1 0 01.554-1.706l4.39-.638 2.454-3.682A1 1 0 0110 2z" clip-rule="evenodd"/></svg>

@@ -105,7 +105,7 @@
                     <h3 class="font-bold text-slate-900 dark:text-white mb-2 flex items-center justify-center gap-2">
                         <span>🎁</span> {{ __('Refer & Earn') }}
                     </h3>
-                    <p class="text-sm text-slate-500 dark:text-slate-400 mb-4 mb-4">{{ __('Share your code to earn free premium access.') }}</p>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mb-4 mb-4">{{ __('Share your code to earn a free subscription if 5 people sign up through you.') }}</p>
                     
                     <div class="bg-white dark:bg-black/20 p-3 rounded-xl mb-4 border border-slate-200 dark:border-white/5">
                         <div class="font-mono text-xl font-black tracking-widest text-primary-500">{{ $user->referral_code }}</div>
@@ -188,8 +188,8 @@
                             </div>
                         @empty
                             <div class="p-8 text-center rounded-[1.5rem] border-2 border-dashed border-slate-300 dark:border-white/10">
-                                <p class="text-slate-500 dark:text-slate-400 font-medium mb-2">{{ __("You haven't started any courses.") }}</p>
-                                <a href="{{ route('student.courses.index') }}" class="text-sm font-bold text-primary-500">{{ __('Browse Courses') }} →</a>
+                                <p class="text-slate-500 dark:text-slate-400 font-medium mb-2">{{ __("You are not enrolled in the course.") }}</p>
+                                <a href="{{ route('student.courses.index') }}" class="text-sm font-bold text-primary-500">{{ __('Browse Course') }} →</a>
                             </div>
                         @endforelse
                     </div>

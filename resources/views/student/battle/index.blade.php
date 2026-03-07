@@ -49,9 +49,9 @@
         @if($enrolledCourses->isEmpty())
         <div class="glass-card p-12 text-center" data-aos="fade-up">
             <span class="text-6xl mb-4 block">📚</span>
-            <h3 class="text-xl font-bold mb-2" style="color: var(--color-text);">{{ __('No Courses Available') }}</h3>
-            <p class="mb-6" style="color: var(--color-text-muted);">{{ __('You need to be enrolled in a course with enough questions to join a battle.') }}</p>
-            <a href="{{ route('student.courses.index') }}" class="btn-primary">{{ __('Browse Courses') }}</a>
+            <h3 class="text-xl font-bold mb-2" style="color: var(--color-text);">{{ __('Not Enrolled') }}</h3>
+            <p class="mb-6" style="color: var(--color-text-muted);">{{ __('You are not enrolled in the course.') }}</p>
+            <a href="{{ route('student.courses.index') }}" class="btn-primary">{{ __('Browse Course') }}</a>
         </div>
         @else
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -110,7 +110,7 @@
                 <div class="text-center">
                     <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white text-xl font-bold mx-auto mb-3">1</div>
                     <h4 class="font-bold mb-1" style="color: var(--color-text);">{{ __('Join') }}</h4>
-                    <p class="text-sm" style="color: var(--color-text-muted);">{{ __('Click "Join Battle" and wait in the lobby') }}</p>
+                    <p class="text-sm" style="color: var(--color-text-muted);">{{ __('Click "Join Battle" and wait for your turn to enter the battle') }}</p>
                 </div>
                 <div class="text-center">
                     <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center text-white text-xl font-bold mx-auto mb-3">2</div>
