@@ -79,31 +79,15 @@
                     {{ __('The premium AI-powered platform for immersive language learning. Elevate your fluency with interactive tools and real-time feedback.') }}
                 </p>
 
-                {{-- CTA Buttons --}}
-                <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10 w-full sm:w-auto">
-                    <a href="{{ route('register') }}"
-                       class="btn-primary ripple-btn px-10 py-5 rounded-2xl shadow-[0_0_40px_-10px_rgba(99,102,241,0.6)] font-black text-lg flex items-center justify-center gap-2 group bg-gradient-to-r from-primary-600 to-accent-600 hover:from-primary-500 hover:to-accent-500 text-white border border-white/20 transition-all hover:scale-105 w-full sm:w-auto">
-                        🚀 {{ __('Start Learning Free') }}
-                    </a>
+                {{-- CTA Button --}}
+                <div class="flex items-center justify-center mb-10 w-full sm:w-auto">
                     <a href="{{ route('student.courses.index') }}"
-                       class="px-10 py-5 rounded-2xl font-black text-lg flex items-center justify-center gap-2 border border-white/30 bg-white/10 text-white backdrop-blur-md hover:bg-white/20 hover:border-white/50 transition-all hover:scale-105 shadow-lg w-full sm:w-auto group">
+                       class="btn-primary ripple-btn px-10 py-5 rounded-2xl shadow-[0_0_40px_-10px_rgba(99,102,241,0.6)] font-black text-lg flex items-center justify-center gap-2 group bg-gradient-to-r from-primary-600 to-accent-600 hover:from-primary-500 hover:to-accent-500 text-white border border-white/20 transition-all hover:scale-105 w-full sm:w-auto">
                         <svg class="w-5 h-5 text-white group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
-                        {{ __('Explore Courses') }}
+                        {{ __('Explore Course') }}
                     </a>
-                </div>
-
-                {{-- Trust signals --}}
-                <div class="flex flex-wrap items-center justify-center gap-6 text-sm font-bold text-slate-300">
-                    <div class="flex items-center gap-2 bg-black/20 px-4 py-2 rounded-full backdrop-blur-sm border border-white/10">
-                        <div class="w-5 h-5 rounded-full bg-emerald-500/30 text-emerald-400 flex items-center justify-center text-xs">✓</div>
-                        <span>{{ __('No credit card required') }}</span>
-                    </div>
-                    <div class="flex items-center gap-2 bg-black/20 px-4 py-2 rounded-full backdrop-blur-sm border border-white/10">
-                        <div class="w-5 h-5 rounded-full bg-emerald-500/30 text-emerald-400 flex items-center justify-center text-xs">✓</div>
-                        <span>{{ __('Free forever plan') }}</span>
-                    </div>
                 </div>
             </div>
 
@@ -240,10 +224,7 @@
                     <p class="text-sm leading-relaxed" style="color: var(--color-text-muted);">
                         {{ __('Real-time feedback on your accent and intonation using advanced speech recognition models.') }}
                     </p>
-                    <div class="mt-6 flex items-center gap-2 text-primary-500 text-sm font-semibold group-hover:gap-3 transition-all">
-                        {{ __('Learn More') }}
-                        <svg class="w-4 h-4 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
-                    </div>
+
                 </div>
 
                 {{-- Feature 2: Structured Courses --}}
@@ -427,7 +408,7 @@
                         1
                     </div>
                     <h3 class="text-xl font-bold mb-3" style="color: var(--color-text);">{{ __('Create Account') }}</h3>
-                    <p class="text-sm" style="color: var(--color-text-muted);">{{ __('Sign up in seconds. No credit card required, free plan available immediately.') }}</p>
+                    <p class="text-sm" style="color: var(--color-text-muted);">{{ __('Register your account in seconds.') }}</p>
                     {{-- Connector line --}}
                     <div class="hidden md:block absolute top-10 left-[60%] w-[80%] h-px bg-gradient-to-r from-primary-500 to-transparent"></div>
                 </div>
@@ -438,7 +419,7 @@
                         2
                     </div>
                     <h3 class="text-xl font-bold mb-3" style="color: var(--color-text);">{{ __('Choose Your Course') }}</h3>
-                    <p class="text-sm" style="color: var(--color-text-muted);">{{ __('Browse our catalog of expert-curated courses and pick the perfect one for your level.') }}</p>
+                    <p class="text-sm" style="color: var(--color-text-muted);">{{ __('Subscribe to the comprehensive language course.') }}</p>
                     <div class="hidden md:block absolute top-10 left-[60%] w-[80%] h-px bg-gradient-to-r from-accent-500 to-transparent"></div>
                 </div>
 
@@ -456,39 +437,6 @@
 
 
 
-    {{-- ═══════════════════════════════════════════════════════════
-         CTA SECTION — Gradient Background + Ripple Button
-         ═══════════════════════════════════════════════════════════ --}}
-    <section class="py-24 relative overflow-hidden">
-        {{-- Animated gradient background --}}
-        <div class="absolute inset-0 bg-animated-gradient opacity-90"></div>
 
-        {{-- Dot pattern overlay --}}
-        <div class="absolute inset-0 bg-dot-pattern opacity-10"></div>
-
-        {{-- Floating orbs --}}
-        <div class="absolute top-10 left-10 w-40 h-40 rounded-full bg-white/10 blur-2xl animate-float pointer-events-none"></div>
-        <div class="absolute bottom-10 right-10 w-60 h-60 rounded-full bg-white/10 blur-3xl animate-float-slow pointer-events-none"></div>
-
-        <div class="max-w-4xl mx-auto px-6 lg:px-8 text-center relative z-10" data-aos="zoom-in">
-            <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight mb-6">
-                {{ __('Ready to Transform Your English?') }}
-            </h2>
-            <p class="text-lg text-white/80 mb-10 max-w-2xl mx-auto">
-                {{ __('Join our growing community of :count learners. Start for free today.', ['count' => collect($stats)->get('total_students', 0)]) }}
-            </p>
-            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <a href="{{ route('register') }}"
-                   class="inline-flex items-center justify-center px-8 py-4 bg-white text-gray-900 font-bold text-lg rounded-2xl shadow-2xl hover:shadow-3xl hover:-translate-y-1 transition-all duration-300 ripple-btn">
-                    {{ __('Get Started — It\'s Free') }}
-                    <svg class="w-5 h-5 ml-2 rtl:mr-2 rtl:ml-0 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
-                </a>
-                <a href="{{ route('contact') }}"
-                   class="inline-flex items-center justify-center px-8 py-4 border-2 border-white/30 text-white font-semibold text-lg rounded-2xl hover:bg-white/10 transition-all duration-300">
-                    {{ __('Contact Sales') }}
-                </a>
-            </div>
-        </div>
-    </section>
 </div>
 @endsection
