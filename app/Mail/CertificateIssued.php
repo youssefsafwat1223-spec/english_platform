@@ -25,7 +25,7 @@ class CertificateIssued extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Congratulations! Your Certificate is Ready',
+            subject: 'مبروك! شهادتك جاهزة 🎓',
         );
     }
 

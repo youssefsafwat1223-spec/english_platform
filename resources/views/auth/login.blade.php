@@ -25,10 +25,10 @@
 
             <div>
                 <h2 class="text-5xl font-black text-white mb-6 leading-[1.1] tracking-tight">
-                    {{ __('Welcome back') }}<br>{{ __('to your journey.') }}
+                    {{ __('Welcome back again') }}
                 </h2>
                 <p class="text-xl text-slate-400 font-medium max-w-md leading-relaxed">
-                    {{ __('Pick up where you left off.') }}
+                    {{ __('Continue your learning journey with us.') }}
                 </p>
             </div>
             

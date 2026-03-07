@@ -27,7 +27,7 @@ class InactivityReminder extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'We miss you! 👋 Your courses are waiting',
+            subject: 'اشتقنالك! 👋 الكورسات بتاعتك في انتظارك',
         );
     }
 

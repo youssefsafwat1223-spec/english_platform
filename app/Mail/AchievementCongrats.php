@@ -27,13 +27,13 @@ class AchievementCongrats extends Mailable
     public function envelope(): Envelope
     {
         $subjects = [
-            'course_completed' => '🎉 Congratulations! You completed a course!',
-            'high_score' => '🌟 Amazing! You scored high on your quiz!',
-            'certificate_earned' => '🎓 Your certificate is ready!',
+            'course_completed' => '🎉 مبروك! أكملت الكورس!',
+            'high_score' => '🌟 ممتاز! حصلت على درجة عالية!',
+            'certificate_earned' => '🎓 شهادتك جاهزة!',
         ];
 
         return new Envelope(
-            subject: $subjects[$this->achievementType] ?? '🏆 Congratulations on your achievement!',
+            subject: $subjects[$this->achievementType] ?? '🏆 مبروك على إنجازك!',
         );
     }
 

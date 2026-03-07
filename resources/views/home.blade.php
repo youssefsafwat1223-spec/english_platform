@@ -34,15 +34,6 @@
             <div data-aos="fade-up" data-aos-duration="1000" class="relative z-20 max-w-4xl mx-auto flex flex-col items-center">
                 {{-- Status Badges --}}
                 <div class="flex flex-wrap justify-center items-center gap-3 mb-8">
-                    {{-- Platform Status --}}
-                    <div class="inline-flex items-center gap-2 glass-card px-4 py-2 !rounded-full shadow-lg border-white/10 bg-white/5 backdrop-blur-md">
-                        <span class="relative flex h-3 w-3 shrink-0">
-                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                            <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
-                        </span>
-                        <span class="text-xs font-black uppercase tracking-widest text-white">{{ __('Platform Active') }}</span>
-                    </div>
-                    
                     {{-- Live Students Counter --}}
                     @php
                         // Track activity for logged-in students visiting the home page

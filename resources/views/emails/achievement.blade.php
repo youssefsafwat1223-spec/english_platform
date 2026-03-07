@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html dir="rtl">
 <head>
     <meta charset="utf-8">
     <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background: #f3f4f6; }
+        body { font-family: 'Segoe UI', Tahoma, Arial, sans-serif; line-height: 1.8; color: #333; margin: 0; padding: 0; background: #f3f4f6; direction: rtl; }
         .container { max-width: 600px; margin: 0 auto; padding: 20px; }
         .header { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 40px 30px; text-align: center; border-radius: 12px 12px 0 0; }
         .header h1 { margin: 0 0 8px; font-size: 28px; }
@@ -22,42 +22,42 @@
     <div class="container">
         <div class="header">
             @if($achievementType === 'course_completed')
-                <h1>🎉 Course Completed!</h1>
-                <p>You've reached an amazing milestone</p>
+                <h1>🎉 تم إكمال الكورس!</h1>
+                <p>وصلت لإنجاز رائع</p>
             @elseif($achievementType === 'high_score')
-                <h1>🌟 Outstanding Score!</h1>
-                <p>Your hard work is paying off</p>
+                <h1>🌟 درجة ممتازة!</h1>
+                <p>مجهودك يؤتي ثماره</p>
             @elseif($achievementType === 'certificate_earned')
-                <h1>🎓 Certificate Earned!</h1>
-                <p>Your achievement is now official</p>
+                <h1>🎓 حصلت على شهادة!</h1>
+                <p>إنجازك أصبح رسمياً الآن</p>
             @else
-                <h1>🏆 Congratulations!</h1>
-                <p>You've achieved something great</p>
+                <h1>🏆 مبروك!</h1>
+                <p>حققت إنجاز رائع</p>
             @endif
         </div>
         <div class="content">
-            <div class="greeting">Well done, {{ $user->name }}!</div>
+            <div class="greeting">أحسنت يا {{ $user->name }}!</div>
 
             <div class="achievement-box">
                 @if($achievementType === 'course_completed')
                     <div class="achievement-icon">🎉</div>
-                    <div class="achievement-title">Course Completed!</div>
+                    <div class="achievement-title">تم إكمال الكورس!</div>
                     <div class="achievement-detail">
                         <strong>{{ $achievementData['course_title'] ?? '' }}</strong>
                     </div>
                 @elseif($achievementType === 'high_score')
                     <div class="achievement-icon">🌟</div>
-                    <div class="achievement-title">Score: {{ $achievementData['score'] ?? '' }}%</div>
+                    <div class="achievement-title">الدرجة: {{ $achievementData['score'] ?? '' }}%</div>
                     <div class="achievement-detail">
-                        Quiz: <strong>{{ $achievementData['quiz_title'] ?? '' }}</strong><br>
-                        Course: {{ $achievementData['course_title'] ?? '' }}
+                        الاختبار: <strong>{{ $achievementData['quiz_title'] ?? '' }}</strong><br>
+                        الكورس: {{ $achievementData['course_title'] ?? '' }}
                     </div>
                 @elseif($achievementType === 'certificate_earned')
                     <div class="achievement-icon">🎓</div>
-                    <div class="achievement-title">Certificate Ready!</div>
+                    <div class="achievement-title">الشهادة جاهزة!</div>
                     <div class="achievement-detail">
                         <strong>{{ $achievementData['course_title'] ?? '' }}</strong><br>
-                        Final Score: {{ $achievementData['score'] ?? '' }}% &mdash; Grade: {{ $achievementData['grade'] ?? '' }}
+                        الدرجة النهائية: {{ $achievementData['score'] ?? '' }}% &mdash; التقدير: {{ $achievementData['grade'] ?? '' }}
                     </div>
                 @endif
             </div>
@@ -65,19 +65,19 @@
             <p style="text-align: center;">
                 <a href="{{ $achievementData['action_url'] ?? route('student.dashboard') }}" class="button">
                     @if($achievementType === 'certificate_earned')
-                        View Certificate →
+                        عرض الشهادة ←
                     @else
-                        View Dashboard →
+                        عرض لوحة التحكم ←
                     @endif
                 </a>
             </p>
 
-            <p>Keep up the great work! Every step brings you closer to fluency.</p>
+            <p>استمر في التميز! كل خطوة تقربك أكتر من الطلاقة.</p>
 
-            <p>Proudly,<br><strong>The {{ config('app.name') }} Team</strong></p>
+            <p>بفخر،<br><strong>فريق Simple English</strong></p>
         </div>
         <div class="footer">
-            &copy; {{ date('Y') }} {{ config('app.name') }}. All rights reserved.
+            &copy; {{ date('Y') }} Simple English. جميع الحقوق محفوظة.
         </div>
     </div>
 </body>
