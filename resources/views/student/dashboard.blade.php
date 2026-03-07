@@ -321,7 +321,7 @@
                         <div>
                             <h4 class="font-bold text-slate-900 dark:text-white text-lg mb-2">{{ __('Pro Tip') }}</h4>
                             <p class="text-sm text-slate-600 dark:text-indigo-200/80 leading-relaxed font-medium">
-                                {{ __('Consistency is key! Spending just 15 minutes a day practicing yields better results than 2 hours once a week.') }}
+                                {{ __('Consistency is key! Spending just 30 minutes a day practicing yields better results than 2 hours once a week.') }}
                             </p>
                         </div>
                     </div>
