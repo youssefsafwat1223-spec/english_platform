@@ -197,8 +197,8 @@
                 </button>
 
                 <!-- Lang Switcher -->
-                <a href="{{ route('switch-lang', app()->getLocale() == 'en' ? 'ar' : 'en') }}" class="flex items-center gap-1 font-bold text-slate-700 dark:text-slate-300 hover:text-primary-500 transition-colors">
-                    {{ app()->getLocale() == 'en' ? '🇪🇬 AR' : '🇺🇸 EN' }}
+                <a href="{{ route('switch-lang', app()->getLocale() == 'sa' ? 'en' : 'sa') }}" class="flex items-center gap-1 font-bold text-slate-700 dark:text-slate-300 hover:text-primary-500 transition-colors text-lg">
+                    {{ app()->getLocale() == 'sa' ? '🇺🇸' : '🇸🇦' }}
                 </a>
             </div>
         </header>

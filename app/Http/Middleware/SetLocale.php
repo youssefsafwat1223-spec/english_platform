@@ -16,7 +16,7 @@ class SetLocale
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Priority: session > cookie > default (ar)
+        // Priority: session > cookie > default (sa)
         if (session()->has('locale')) {
             $locale = session('locale');
         } elseif ($request->cookie('locale')) {
@@ -24,10 +24,10 @@ class SetLocale
             // Sync cookie value back to session
             session(['locale' => $locale]);
         } else {
-            $locale = config('app.locale', 'ar');
+            $locale = config('app.locale', 'sa');
         }
 
-        if (in_array($locale, ['en', 'ar', 'sa'])) {
+        if (in_array($locale, ['en', 'sa'])) {
             App::setLocale($locale);
         }
 

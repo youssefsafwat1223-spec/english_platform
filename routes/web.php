@@ -87,7 +87,7 @@ Route::get('/ref/{referralCode}', [ReferralController::class, 'track'])
 
 // Language Switcher
 Route::get('lang/{locale}', function ($locale) {
-    if (in_array($locale, ['en', 'ar', 'sa'])) {
+    if (in_array($locale, ['en', 'sa'])) {
         session(['locale' => $locale]);
     }
     return back();

@@ -96,17 +96,12 @@
                             </div>
 
                             <!-- Language Switcher -->
-                            <div class="relative" x-data="{ langOpen: false }" @click.away="langOpen = false">
-                                <button @click="langOpen = !langOpen" class="nav-link flex items-center gap-1 font-medium">
-                                    <span class="text-lg">{{ app()->getLocale() == 'en' ? '🇺🇸' : (app()->getLocale() == 'sa' ? '🇸🇦' : '🇪🇬') }}</span>
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                                </button>
-                                <div x-show="langOpen" x-transition class="absolute top-full mt-1 bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-gray-200 dark:border-slate-700 py-1 min-w-[140px] z-50">
-                                    <a href="{{ route('switch-lang', 'en') }}" class="flex items-center gap-2 px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-slate-700 {{ app()->getLocale() == 'en' ? 'font-bold text-primary-500' : '' }}">🇺🇸 English</a>
-                                    <a href="{{ route('switch-lang', 'ar') }}" class="flex items-center gap-2 px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-slate-700 {{ app()->getLocale() == 'ar' ? 'font-bold text-primary-500' : '' }}">🇪🇬 مصري</a>
-                                    <a href="{{ route('switch-lang', 'sa') }}" class="flex items-center gap-2 px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-slate-700 {{ app()->getLocale() == 'sa' ? 'font-bold text-primary-500' : '' }}">🇸🇦 سعودي</a>
-                                </div>
-                            </div>
+                            <a href="{{ route('switch-lang', app()->getLocale() == 'sa' ? 'en' : 'sa') }}"
+                               class="nav-link flex items-center gap-1 font-medium"
+                               title="Switch Language">
+                                <span class="text-lg">{{ app()->getLocale() == 'sa' ? '🇺🇸' : '🇸🇦' }}</span>
+                                <span class="hidden xl:inline">{{ app()->getLocale() == 'sa' ? 'English' : 'العربية' }}</span>
+                            </a>
 
                             <!-- Users Dropdown -->
                             <div class="relative" x-data="{ open: false }" @click.away="open = false">
@@ -256,19 +251,12 @@
                 @endauth
 
                 {{-- Language Toggle --}}
-                <div class="relative" x-data="{ langOpen: false }" @click.away="langOpen = false">
-                    <button @click="langOpen = !langOpen"
-                       class="relative w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-xl flex items-center justify-center transition-all duration-300 hover:bg-gray-100 dark:hover:bg-white/5 border border-transparent hover:border-gray-200 dark:hover:border-white/10 text-sm"
-                       style="color: var(--color-text);"
-                       title="{{ __('Language') }}">
-                        {{ app()->getLocale() == 'en' ? '🇺🇸' : (app()->getLocale() == 'sa' ? '🇸🇦' : '🇪🇬') }}
-                    </button>
-                    <div x-show="langOpen" x-transition class="absolute top-full mt-1 {{ in_array(app()->getLocale(), ['ar', 'sa']) ? 'left-0' : 'right-0' }} bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-gray-200 dark:border-slate-700 py-1 min-w-[130px] z-50">
-                        <a href="{{ route('locale.switch', 'en') }}" class="flex items-center gap-2 px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-slate-700 {{ app()->getLocale() == 'en' ? 'font-bold text-primary-500' : '' }}">🇺🇸 English</a>
-                        <a href="{{ route('locale.switch', 'ar') }}" class="flex items-center gap-2 px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-slate-700 {{ app()->getLocale() == 'ar' ? 'font-bold text-primary-500' : '' }}">🇪🇬 مصري</a>
-                        <a href="{{ route('locale.switch', 'sa') }}" class="flex items-center gap-2 px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-slate-700 {{ app()->getLocale() == 'sa' ? 'font-bold text-primary-500' : '' }}">🇸🇦 سعودي</a>
-                    </div>
-                </div>
+                <a href="{{ route('locale.switch', app()->getLocale() == 'sa' ? 'en' : 'sa') }}"
+                   class="relative w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-xl flex items-center justify-center transition-all duration-300 hover:bg-gray-100 dark:hover:bg-white/5 border border-transparent hover:border-gray-200 dark:hover:border-white/10 text-lg"
+                   style="color: var(--color-text);"
+                   title="{{ __('Language') }}">
+                    {{ app()->getLocale() == 'sa' ? '🇺🇸' : '🇸🇦' }}
+                </a>
 
                 {{-- Desktop User Section --}}
                 <div class="hidden lg:flex items-center gap-3">
