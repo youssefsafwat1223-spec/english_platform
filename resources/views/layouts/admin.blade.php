@@ -198,16 +198,11 @@
 
                 <!-- Lang Switcher -->
                 <a href="{{ route('switch-lang', app()->getLocale() == 'sa' ? 'en' : 'sa') }}"
-                   class="flex items-center gap-2 px-2 py-1 rounded-xl bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                   class="flex items-center justify-center w-8 h-6 rounded-sm shadow-sm border border-slate-300 dark:border-slate-600 overflow-hidden shrink-0 hover:opacity-80 transition-opacity"
                    title="Switch Language">
-                    <span class="w-8 h-8 rounded-full flex items-center justify-center text-sm shadow-sm border border-slate-300 dark:border-slate-600 overflow-hidden shrink-0">
-                        <img src="{{ app()->getLocale() == 'sa' ? asset('images/flags/sa.png') : asset('images/flags/us.png') }}"
-                             alt="{{ app()->getLocale() == 'sa' ? 'Saudi Arabia' : 'United States' }}"
-                             class="w-full h-full object-cover">
-                    </span>
-                    <span class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
-                        {{ app()->getLocale() == 'sa' ? 'SAU' : 'ENG' }}
-                    </span>
+                    <img src="{{ app()->getLocale() == 'sa' ? asset('images/flags/sa.png') : asset('images/flags/us.png') }}"
+                         alt="{{ app()->getLocale() == 'sa' ? 'Saudi Arabia' : 'United States' }}"
+                         class="w-full h-full object-cover">
                 </a>
             </div>
         </header>
