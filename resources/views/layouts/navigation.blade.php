@@ -99,8 +99,8 @@
                             <a href="{{ route('switch-lang', app()->getLocale() == 'sa' ? 'en' : 'sa') }}"
                                class="nav-link flex items-center gap-1 font-medium"
                                title="Switch Language">
-                                <span class="text-lg">{{ app()->getLocale() == 'sa' ? '🇺🇸' : '🇸🇦' }}</span>
-                                <span class="hidden xl:inline">{{ app()->getLocale() == 'sa' ? 'English' : 'العربية' }}</span>
+                                <span class="text-lg">{{ app()->getLocale() == 'sa' ? '🇸🇦' : '🇺🇸' }}</span>
+                                <span class="hidden xl:inline">{{ app()->getLocale() == 'sa' ? 'العربية' : 'English' }}</span>
                             </a>
 
                             <!-- Users Dropdown -->
@@ -255,7 +255,7 @@
                    class="relative w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-xl flex items-center justify-center transition-all duration-300 hover:bg-gray-100 dark:hover:bg-white/5 border border-transparent hover:border-gray-200 dark:hover:border-white/10 text-lg"
                    style="color: var(--color-text);"
                    title="{{ __('Language') }}">
-                    {{ app()->getLocale() == 'sa' ? '🇺🇸' : '🇸🇦' }}
+                    {{ app()->getLocale() == 'sa' ? '🇸🇦' : '🇺🇸' }}
                 </a>
 
                 {{-- Desktop User Section --}}
