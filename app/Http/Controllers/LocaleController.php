@@ -8,7 +8,7 @@ class LocaleController extends Controller
 {
     public function switch($locale)
     {
-        if (in_array($locale, ['en', 'ar'])) {
+        if (in_array($locale, ['en', 'ar', 'sa'])) {
             session(['locale' => $locale]);
             
             // Also set a long-lived cookie (1 year) for persistence across sessions

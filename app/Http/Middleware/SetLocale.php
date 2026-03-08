@@ -27,7 +27,7 @@ class SetLocale
             $locale = config('app.locale', 'ar');
         }
 
-        if (in_array($locale, ['en', 'ar'])) {
+        if (in_array($locale, ['en', 'ar', 'sa'])) {
             App::setLocale($locale);
         }
 
