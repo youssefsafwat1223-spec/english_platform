@@ -49,6 +49,18 @@ return [
         'webhook_url' => env('TAP_WEBHOOK_URL'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | StreamPay Payment Gateway
+    |--------------------------------------------------------------------------
+    */
+
+    'streampay' => [
+        'api_key' => env('STREAMPAY_API_KEY'),
+        'secret_key' => env('STREAMPAY_SECRET_KEY'),
+        'webhook_url' => env('STREAMPAY_WEBHOOK_URL', env('APP_URL') . '/api/payment/webhook'),
+        'api_url' => 'https://stream-app-service.streampay.sa/api/v2',
+    ],
 
     /*
     |--------------------------------------------------------------------------

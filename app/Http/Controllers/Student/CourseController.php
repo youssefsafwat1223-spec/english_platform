@@ -209,7 +209,7 @@ class CourseController extends Controller
                 'course_id' => $course->id,
                 'transaction_id' => 'FREE-' . strtoupper(\Illuminate\Support\Str::random(16)),
                 'amount' => $course->price,
-                'currency' => 'USD',
+                'currency' => 'SAR',
                 'discount_amount' => $discountAmount,
                 'final_amount' => 0,
                 'payment_status' => 'completed',
@@ -232,7 +232,7 @@ class CourseController extends Controller
                 ->with('success', __('تم تسجيلك في الكورس مجاناً! 🎉'));
         }
 
-        // Create payment via Tap gateway
+        // Create payment via StreamPay gateway
         $result = $this->paymentService->createCharge($user, $course, $discountAmount);
 
         if ($result['success'] && $promoCode) {

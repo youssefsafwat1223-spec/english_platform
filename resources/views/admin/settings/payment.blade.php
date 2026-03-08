@@ -13,14 +13,14 @@
             <div class="glass-card overflow-hidden" data-aos="fade-up">
                 <div class="glass-card-body space-y-6">
                     <div>
-                        <label class="block text-sm font-bold mb-2" style="color: var(--color-text);">{{ __('Tap Secret Key') }}</label>
-                        <input type="text" class="input-glass font-mono" value="{{ $settings['tap_secret_key'] ?? '' }}" readonly>
-                        <p class="text-xs mt-1" style="color: var(--color-text-muted);">{{ __('Set this in your .env file as TAP_SECRET_KEY.') }}</p>
+                        <label class="block text-sm font-bold mb-2" style="color: var(--color-text);">{{ __('StreamPay API Key') }}</label>
+                        <input type="text" class="input-glass font-mono" value="{{ $settings['streampay_api_key'] ?? '' }}" readonly>
+                        <p class="text-xs mt-1" style="color: var(--color-text-muted);">{{ __('Set this in your .env file as STREAMPAY_API_KEY.') }}</p>
                     </div>
                     <div>
-                        <label class="block text-sm font-bold mb-2" style="color: var(--color-text);">{{ __('Tap Public Key') }}</label>
-                        <input type="text" class="input-glass font-mono" value="{{ $settings['tap_public_key'] ?? '' }}" readonly>
-                        <p class="text-xs mt-1" style="color: var(--color-text-muted);">{{ __('Set this in your .env file as TAP_PUBLIC_KEY.') }}</p>
+                        <label class="block text-sm font-bold mb-2" style="color: var(--color-text);">{{ __('StreamPay Secret Key') }}</label>
+                        <input type="text" class="input-glass font-mono" value="{{ $settings['streampay_secret_key'] ?? '' }}" readonly>
+                        <p class="text-xs mt-1" style="color: var(--color-text-muted);">{{ __('Set this in your .env file as STREAMPAY_SECRET_KEY.') }}</p>
                     </div>
                     <div>
                         <label class="block text-sm font-bold mb-2" style="color: var(--color-text);">{{ __('Currency *') }}</label>

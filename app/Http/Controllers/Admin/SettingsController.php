@@ -103,8 +103,8 @@ class SettingsController extends Controller
     public function payment()
     {
         $settings = [
-            'tap_secret_key' => config('services.tap.secret_key'),
-            'tap_public_key' => config('services.tap.public_key'),
+            'streampay_api_key' => config('services.streampay.api_key'),
+            'streampay_secret_key' => config('services.streampay.secret_key'),
             'currency' => SystemSetting::get('payment_currency', 'USD'),
             'tax_rate' => SystemSetting::get('tax_rate', 0),
         ];

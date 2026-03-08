@@ -19,36 +19,26 @@ class PaymentController extends Controller
 
     public function callback(Payment $payment, Request $request)
     {
-        Log::info('Payment callback received', [
+        Log::info('StreamPay payment callback received', [
             'payment_id' => $payment->id,
             'request' => $request->all(),
         ]);
 
-        $chargeId = $request->input('tap_id');
-
-        if (!$chargeId) {
-            return redirect()->route('student.dashboard')
-                ->with('error', 'Payment verification failed.');
-        }
-
-        $result = $this->paymentService->handleCallback($chargeId);
+        $result = $this->paymentService->handleCallback($payment->id);
 
         if ($result['success']) {
-            return redirect()->route('student.courses.learn', $payment->course_id)
-                ->with('success', 'Payment successful! Welcome to the course!');
+            if ($result['message'] === 'Payment successful') {
+                return redirect()->route('student.courses.learn', $payment->course_id)
+                    ->with('success', 'Payment successful! Welcome to the course!');
+            } else {
+                return redirect()->route('student.courses.show', $payment->course_id)
+                    ->with('info', $result['message']);
+            }
         }
 
         return redirect()->route('student.courses.show', $payment->course_id)
             ->with('error', $result['message']);
     }
 
-    public function webhook(Request $request)
-    {
-        Log::info('Payment webhook received', $request->all());
 
-        // Verify webhook signature
-        // Process webhook event
-
-        return response()->json(['received' => true]);
-    }
 }

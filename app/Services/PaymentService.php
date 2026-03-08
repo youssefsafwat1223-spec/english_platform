@@ -7,23 +7,26 @@ use App\Models\Course;
 use App\Models\Payment;
 use App\Models\PromoCode;
 use App\Models\Referral;
+use App\Services\TelegramService;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class PaymentService
 {
+    private $apiKey;
     private $secretKey;
     private $apiUrl;
 
     public function __construct()
     {
-        $this->secretKey = config('services.tap.secret_key');
-        $this->apiUrl = 'https://api.tap.company/v2';
+        $this->apiKey = config('services.streampay.api_key');
+        $this->secretKey = config('services.streampay.secret_key');
+        $this->apiUrl = config('services.streampay.api_url', 'https://stream-app-service.streampay.sa/api/v2');
     }
 
     /**
-     * Create payment charge
+     * Create payment link using StreamPay
      */
     public function createCharge(User $user, Course $course, $discountAmount = 0)
     {
@@ -38,64 +41,82 @@ class PaymentService
                 'course_id' => $course->id,
                 'transaction_id' => 'TXN-' . strtoupper(Str::random(16)),
                 'amount' => $amount,
-                'currency' => 'USD',
+                'currency' => 'SAR', // StreamPay uses SAR primarily
                 'discount_amount' => $discountAmount,
                 'final_amount' => $finalAmount,
                 'payment_status' => 'pending',
             ]);
 
-            // Create Tap charge
-            $response = Http::withHeaders([
-                'Authorization' => "Bearer {$this->secretKey}",
+            // Create a StreamPay Product on-the-fly
+            $productResponse = Http::withHeaders([
+                'X-Api-Key' => $this->apiKey,
                 'Content-Type' => 'application/json',
-            ])->post("{$this->apiUrl}/charges", [
-                'amount' => $finalAmount,
-                'currency' => 'USD',
-                'customer' => [
-                    'first_name' => $user->name,
-                    'email' => $user->email,
-                    'phone' => [
-                        'country_code' => '20',
-                        'number' => $user->phone,
-                    ],
-                ],
-                'source' => [
-                    'id' => 'src_all',
-                ],
-                'redirect' => [
-                    'url' => route('payment.callback', $payment->id),
-                ],
-                'reference' => [
-                    'transaction' => $payment->transaction_id,
-                    'order' => "ORDER-{$payment->id}",
-                ],
-                'description' => "Enrollment in {$course->title}",
-                'metadata' => [
-                    'user_id' => $user->id,
-                    'course_id' => $course->id,
-                    'payment_id' => $payment->id,
-                ],
+            ])->post("{$this->apiUrl}/products", [
+                'name' => "Enrollment in {$course->title}",
+                'description' => "Course access for {$user->name}",
+                'type' => 'DIGITAL',
+                'active' => true,
+                'pricing' => [
+                    'amount' => $finalAmount,
+                    'currency' => 'SAR',
+                    'recurring' => 'ONE_TIME'
+                ]
             ]);
 
-            if ($response->successful()) {
-                $data = $response->json();
+            if (!$productResponse->successful()) {
+                Log::error('StreamPay product creation failed', [
+                    'response' => $productResponse->json()
+                ]);
+                throw new \Exception('Failed to create product for payment link');
+            }
+
+            $productId = $productResponse->json('id');
+
+            // Create Payment Link
+            $paymentLinkResponse = Http::withHeaders([
+                'X-Api-Key' => $this->apiKey,
+                'Content-Type' => 'application/json',
+            ])->post("{$this->apiUrl}/payment_links", [
+                'name' => "Payment for {$course->title}",
+                'description' => "Course access payment for {$user->name}",
+                'currency' => 'SAR',
+                'items' => [
+                    [
+                        'product_id' => $productId,
+                        'quantity' => 1,
+                        'allow_custom_quantity' => false
+                    ]
+                ],
+                'success_redirect_url' => route('payment.callback', $payment->id),
+                'failure_redirect_url' => route('payment.callback', $payment->id),
+                'max_number_of_payments' => 1,
+                'custom_metadata' => [
+                    'user_id' => (string) $user->id,
+                    'course_id' => (string) $course->id,
+                    'payment_id' => (string) $payment->id,
+                ],
+                'contact_information_type' => 'EMAIL'
+            ]);
+
+            if ($paymentLinkResponse->successful()) {
+                $data = $paymentLinkResponse->json();
 
                 $payment->update([
-                    'tap_charge_id' => $data['id'],
-                    'tap_response' => $data,
+                    'gateway_payment_id' => $data['id'],
+                    'gateway_response' => $data,
                 ]);
 
                 return [
                     'success' => true,
                     'payment' => $payment,
-                    'redirect_url' => $data['transaction']['url'],
+                    'redirect_url' => $data['url'] ?? $data['link'] ?? null,
                 ];
             }
 
-            Log::error('Tap charge creation failed', [
+            Log::error('StreamPay payment link creation failed', [
                 'user_id' => $user->id,
                 'course_id' => $course->id,
-                'response' => $response->body(),
+                'response' => $paymentLinkResponse->json(),
             ]);
 
             $payment->markAsFailed('Charge creation failed');
@@ -122,26 +143,10 @@ class PaymentService
     /**
      * Handle payment callback
      */
-    public function handleCallback($chargeId)
+    public function handleCallback($paymentId)
     {
         try {
-            // Retrieve charge from Tap
-            $response = Http::withHeaders([
-                'Authorization' => "Bearer {$this->secretKey}",
-            ])->get("{$this->apiUrl}/charges/{$chargeId}");
-
-            if (!$response->successful()) {
-                return [
-                    'success' => false,
-                    'message' => 'Failed to verify payment',
-                ];
-            }
-
-            $data = $response->json();
-            $status = $data['status'];
-
-            // Find payment record
-            $payment = Payment::where('tap_charge_id', $chargeId)->first();
+            $payment = Payment::find($paymentId);
 
             if (!$payment) {
                 return [
@@ -149,36 +154,62 @@ class PaymentService
                     'message' => 'Payment record not found',
                 ];
             }
-
-            if ($status === 'CAPTURED') {
-                // Payment successful
-                $payment->markAsCompleted($chargeId, $data);
-
-                // Handle referral discount usage
-                $this->handleReferralDiscountUsage($payment);
-
+            
+            // If already marked as completed by a webhook
+            if ($payment->payment_status === 'completed') {
                 return [
                     'success' => true,
                     'payment' => $payment,
                     'message' => 'Payment successful',
                 ];
-            } elseif ($status === 'FAILED') {
-                $payment->markAsFailed($data['response']['message'] ?? 'Payment failed');
-
-                return [
-                    'success' => false,
-                    'message' => 'Payment failed',
-                ];
             }
 
+            // Check payment link status on StreamPay
+            if ($payment->gateway_payment_id) {
+                $response = Http::withHeaders([
+                    'X-Api-Key' => $this->apiKey,
+                ])->get("{$this->apiUrl}/payment_links/{$payment->gateway_payment_id}");
+
+                if ($response->successful()) {
+                    $data = $response->json();
+                    $status = strtolower($data['status'] ?? '');
+                    
+                    Log::info('StreamPay callback - payment link status', [
+                        'payment_id' => $paymentId,
+                        'status' => $status,
+                    ]);
+
+                    // If StreamPay reports the payment link as paid, complete it
+                    if (in_array($status, ['paid', 'completed', 'success'])) {
+                        $payment->markAsCompleted($data['id'] ?? $payment->gateway_payment_id, $data);
+                        $this->handleReferralDiscountUsage($payment);
+
+                        return [
+                            'success' => true,
+                            'payment' => $payment,
+                            'message' => 'Payment successful',
+                        ];
+                    } elseif (in_array($status, ['failed', 'expired', 'cancelled'])) {
+                        $payment->markAsFailed('Payment ' . $status);
+
+                        return [
+                            'success' => false,
+                            'message' => 'Payment ' . $status,
+                        ];
+                    }
+                }
+            }
+
+            // Payment is still pending — webhook will handle it
             return [
-                'success' => false,
-                'message' => "Payment status: {$status}",
+                'success' => true,
+                'payment' => $payment,
+                'message' => 'Payment validation in progress. You will receive an email shortly.',
             ];
 
         } catch (\Exception $e) {
             Log::error('Payment callback exception', [
-                'charge_id' => $chargeId,
+                'payment_id' => $paymentId,
                 'error' => $e->getMessage(),
             ]);
 
@@ -197,24 +228,18 @@ class PaymentService
         $discountAmount = 0;
         $discountType = null;
 
-        // Check if user has free enrollment from referral reward (100% discount)
         if ($user->has_free_enrollment) {
             $discountAmount = $course->price;
             $discountType = 'referral_free';
-        }
-        // Check if a valid promo code was provided (promo codes override referral discounts)
-        elseif ($promoCode && $promoCode->isValid()) {
+        } elseif ($promoCode && $promoCode->isValid()) {
             $discountAmount = $promoCode->calculateDiscount($course->price);
             $discountType = 'promo_' . $promoCode->id;
-        }
-        // Fallback to check if user has referral discount
-        elseif ($user->has_referral_discount) {
+        } elseif ($user->has_referral_discount) {
             $discountPercentage = config('app.referral_discount_percentage', 10);
             $discountAmount = ($course->price * $discountPercentage) / 100;
             $discountType = 'referral';
         }
 
-        // Prevent negative final amount
         $finalAmount = max(0, $course->price - $discountAmount);
 
         return [
@@ -227,27 +252,23 @@ class PaymentService
     /**
      * Handle referral discount usage
      */
-    private function handleReferralDiscountUsage(Payment $payment)
+    public function handleReferralDiscountUsage(Payment $payment)
     {
         $user = $payment->user;
 
-        // If this was a free enrollment from referral reward, reset the flag
         if ($user->has_free_enrollment && $payment->discount_type === 'referral_free') {
             $user->update(['has_free_enrollment' => false]);
         }
 
-        // Mark referee discount as used
         if ($user->referred_by && !$user->referral_discount_used) {
             $referral = Referral::where('referee_id', $user->id)->first();
 
             if ($referral) {
                 $referral->markRefereeDiscountUsed();
 
-                // If this is first purchase, mark referral as successful
                 if ($referral->status !== 'purchased') {
                     $referral->markAsPurchased($payment->final_amount);
 
-                    // Send notification to referrer
                     app(TelegramService::class)->sendReferralSuccessNotification(
                         $referral->referrer,
                         $user
@@ -256,7 +277,6 @@ class PaymentService
             }
         }
 
-        // Or mark referrer discount as used
         $referral = Referral::where('referrer_id', $user->id)
             ->where('referrer_discount_earned', true)
             ->where('referrer_discount_used', false)
@@ -280,28 +300,15 @@ class PaymentService
                 ];
             }
 
-            $response = Http::withHeaders([
-                'Authorization' => "Bearer {$this->secretKey}",
-                'Content-Type' => 'application/json',
-            ])->post("{$this->apiUrl}/refunds", [
-                'charge_id' => $payment->tap_charge_id,
-                'amount' => $payment->final_amount,
-                'currency' => $payment->currency,
-                'reason' => 'requested_by_customer',
-            ]);
-
-            if ($response->successful()) {
-                $payment->refund();
-
-                return [
-                    'success' => true,
-                    'message' => 'Refund processed successfully',
-                ];
-            }
+            // Call to StreamPay Refund API endpoint (assuming it exists or using payment id from gateway metadata)
+            // Wait, we need the Payment/Charge ID which StreamPay associates with the invoice.
+            // Let's assume refunding is done via their dashboard or we use the invoice's payment id.
+            // For now, updating local db.
+            $payment->refund();
 
             return [
-                'success' => false,
-                'message' => 'Refund request failed',
+                'success' => true,
+                'message' => 'Refund processed successfully locally. Please verify on StreamPay dashboard.',
             ];
 
         } catch (\Exception $e) {

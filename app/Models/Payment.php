@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\PaymentInvoiceMail;
 
 class Payment extends Model
 {
@@ -19,8 +21,8 @@ class Payment extends Model
         'final_amount',
         'payment_method',
         'payment_status',
-        'tap_charge_id',
-        'tap_response',
+        'gateway_payment_id',
+        'gateway_response',
         'error_message',
         'paid_at',
         'refunded_at',
@@ -32,7 +34,7 @@ class Payment extends Model
             'amount' => 'decimal:2',
             'discount_amount' => 'decimal:2',
             'final_amount' => 'decimal:2',
-            'tap_response' => 'array',
+            'gateway_response' => 'array',
             'paid_at' => 'datetime',
             'refunded_at' => 'datetime',
         ];
@@ -136,17 +138,27 @@ class Payment extends Model
     /**
      * Mark payment as completed
      */
-    public function markAsCompleted($tapChargeId = null, $tapResponse = null)
+    public function markAsCompleted($gatewayPaymentId = null, $gatewayResponse = null)
     {
         $this->update([
             'payment_status' => 'completed',
             'paid_at' => now(),
-            'tap_charge_id' => $tapChargeId,
-            'tap_response' => $tapResponse,
+            'gateway_payment_id' => $gatewayPaymentId,
+            'gateway_response' => $gatewayResponse,
         ]);
 
         // Create enrollment
         $this->createEnrollment();
+
+        // Send invoice email to student
+        try {
+            Mail::to($this->user->email)->send(new PaymentInvoiceMail($this));
+        } catch (\Exception $e) {
+            \Log::error('Failed to send invoice email', [
+                'payment_id' => $this->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 
     /**

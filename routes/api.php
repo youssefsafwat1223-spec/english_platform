@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\TelegramController;
 use App\Http\Controllers\Api\PaymentController;
+use App\Http\Controllers\Webhook\StreamPayWebhookController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,9 +15,9 @@ use App\Http\Controllers\Api\PaymentController;
 Route::post('/telegram/webhook', [TelegramController::class, 'webhook'])
     ->name('telegram.webhook');
 
-// Tap Payment Callback & Webhook
+// StreamPay Payment Callback & Webhook
 Route::get('/payment/callback/{payment}', [PaymentController::class, 'callback'])
     ->name('payment.callback');
 
-Route::post('/payment/webhook', [PaymentController::class, 'webhook'])
+Route::post('/payment/webhook', [StreamPayWebhookController::class, 'handle'])
     ->name('payment.webhook');

@@ -28,7 +28,7 @@
                     <div><div class="text-xs" style="color: var(--color-text-muted);">{{ __('Date') }}</div><div class="font-bold" style="color: var(--color-text);">{{ $payment->created_at->format('M d, Y H:i') }}</div></div>
                     @if($payment->paid_at)<div><div class="text-xs" style="color: var(--color-text-muted);">{{ __('Paid At') }}</div><div class="font-bold" style="color: var(--color-text);">{{ $payment->paid_at->format('M d, Y H:i') }}</div></div>@endif
                     @if($payment->transaction_id)<div><div class="text-xs" style="color: var(--color-text-muted);">{{ __('Transaction ID') }}</div><div class="font-mono text-sm" style="color: var(--color-text);">{{ $payment->transaction_id }}</div></div>@endif
-                    @if($payment->tap_charge_id)<div><div class="text-xs" style="color: var(--color-text-muted);">{{ __('Tap Charge ID') }}</div><div class="font-mono text-sm" style="color: var(--color-text);">{{ $payment->tap_charge_id }}</div></div>@endif
+                    @if($payment->gateway_payment_id)<div><div class="text-xs" style="color: var(--color-text-muted);">{{ __('Gateway Payment ID') }}</div><div class="font-mono text-sm" style="color: var(--color-text);">{{ $payment->gateway_payment_id }}</div></div>@endif
                 </div>
             </div>
         </div>
