@@ -131,6 +131,9 @@ class PaymentService
                 'user_id' => $user->id,
                 'course_id' => $course->id,
                 'error' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
             ]);
 
             return [
