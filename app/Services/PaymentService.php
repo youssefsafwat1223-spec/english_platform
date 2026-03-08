@@ -54,12 +54,11 @@ class PaymentService
             ])->post("{$this->apiUrl}/products", [
                 'name' => "Enrollment in {$course->title}",
                 'description' => "Course access for {$user->name}",
-                'type' => 'DIGITAL',
+                'type' => 'ONE_OFF',
                 'active' => true,
                 'pricing' => [
                     'amount' => $finalAmount,
                     'currency' => 'SAR',
-                    'recurring' => 'ONE_TIME'
                 ]
             ]);
 
