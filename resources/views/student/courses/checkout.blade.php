@@ -151,7 +151,7 @@
                             <div class="space-y-4">
                                 <div class="flex justify-between items-center text-slate-600 dark:text-slate-400 font-medium">
                                     <span>{{ __('Original Price') }}</span>
-                                    <span class="font-bold text-slate-900 dark:text-white">${{ number_format($course->price, 2) }}</span>
+                                    <span class="font-bold text-slate-900 dark:text-white">{{ number_format($course->price, 2) }} ر.س</span>
                                 </div>
                                 
                                 @if($discount > 0)
@@ -164,7 +164,7 @@
                                                 {{ __('Referral Discount') }}
                                             @endif
                                         </div>
-                                        <span>-${{ number_format($discount, 2) }}</span>
+                                        <span>-{{ number_format($discount, 2) }} ر.س</span>
                                     </div>
                                 @endif
                                 
@@ -172,8 +172,8 @@
                                     <div class="flex justify-between items-end">
                                         <span class="font-black text-slate-900 dark:text-white text-lg">{{ __('Total Due') }}</span>
                                         <div class="text-right">
-                                            <span class="text-4xl font-black text-primary-600 dark:text-primary-400 leading-none">${{ number_format($finalAmount, 2) }}</span>
-                                            <p class="text-xs text-slate-500 mt-1 font-medium">{{ __('Prices are shown in USD.') }}</p>
+                                            <span class="text-4xl font-black text-primary-600 dark:text-primary-400 leading-none">{{ number_format($finalAmount, 2) }} ر.س</span>
+                                            <p class="text-xs text-slate-500 mt-1 font-medium">{{ __('Prices are shown in SAR.') }}</p>
                                         </div>
                                     </div>
                                 </div>

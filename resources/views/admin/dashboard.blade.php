@@ -237,7 +237,7 @@
                                 </div>
                             </div>
                             <div class="text-right shrink-0 ml-2">
-                                <p class="text-sm font-bold text-emerald-400">+${{ number_format($payment->final_amount, 2) }}</p>
+                                <p class="text-sm font-bold text-emerald-400">+{{ number_format($payment->final_amount, 2) }} ر.س</p>
                                 <p class="text-[10px]" style="color: var(--color-text-muted);">{{ $payment->paid_at->diffForHumans() }}</p>
                             </div>
                         </div>
@@ -278,13 +278,13 @@
                                 </td>
                                 <td class="px-6 py-4">
                                     <p class="font-semibold" style="color: var(--color-text);">{{ $course->title }}</p>
-                                    <p class="text-xs mt-0.5" style="color: var(--color-text-muted);">${{ number_format($course->price, 2) }} per student</p>
+                                    <p class="text-xs mt-0.5" style="color: var(--color-text-muted);">{{ number_format($course->price, 2) }} ر.س per student</p>
                                 </td>
                                 <td class="px-6 py-4 text-center">
                                     <span class="font-bold" style="color: var(--color-text);">{{ number_format($course->total_students) }}</span>
                                 </td>
                                 <td class="px-6 py-4 text-center">
-                                    <span class="font-bold text-emerald-400">${{ number_format($course->total_students * $course->price, 2) }}</span>
+                                    <span class="font-bold text-emerald-400">{{ number_format($course->total_students * $course->price, 2) }} ر.س</span>
                                 </td>
                                 <td class="px-6 py-4 text-center">
                                     @if($course->average_rating)

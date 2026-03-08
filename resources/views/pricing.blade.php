@@ -68,7 +68,7 @@
                         <div class="flex items-end gap-2 mb-6">
                             @if($course->price > 0)
                                 <span class="text-3xl font-extrabold" style="color: var(--color-text);">{{ number_format($course->price) }}</span>
-                                <span class="text-sm mb-1" style="color: var(--color-text-muted);">{{ __('USD') }}</span>
+                                <span class="text-sm mb-1" style="color: var(--color-text-muted);">{{ __('ر.س') }}</span>
                             @else
                                 <span class="text-3xl font-extrabold text-emerald-500">{{ __('Free') }}</span>
                             @endif

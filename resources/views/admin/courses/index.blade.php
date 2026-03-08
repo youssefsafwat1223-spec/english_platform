@@ -39,7 +39,7 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td class="font-bold">${{ number_format($course->price, 2) }}</td>
+                                <td class="font-bold">{{ number_format($course->price, 2) }} ر.س</td>
                                 <td>{{ $course->lessons_count }}</td>
                                 <td>{{ $course->students_count }}</td>
                                 <td>{{ $course->enrollments_count }}</td>

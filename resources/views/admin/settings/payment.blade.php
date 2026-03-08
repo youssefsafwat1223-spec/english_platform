@@ -24,7 +24,7 @@
                     </div>
                     <div>
                         <label class="block text-sm font-bold mb-2" style="color: var(--color-text);">{{ __('Currency *') }}</label>
-                        @php($selectedCurrency = old('currency', $settings['currency'] ?? 'USD'))
+                        @php($selectedCurrency = old('currency', $settings['currency'] ?? 'SAR'))
                         <select name="currency" class="input-glass" required>
                             @foreach(['USD' => 'USD - US Dollar', 'EUR' => 'EUR - Euro', 'GBP' => 'GBP - British Pound', 'AED' => 'AED - UAE Dirham', 'SAR' => 'SAR - Saudi Riyal', 'EGP' => 'EGP - Egyptian Pound'] as $code => $label)
                             <option value="{{ $code }}" {{ $selectedCurrency == $code ? 'selected' : '' }}>{{ $label }}</option>

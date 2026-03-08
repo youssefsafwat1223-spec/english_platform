@@ -160,7 +160,7 @@ class Course extends Model
      */
     public function getFormattedPriceAttribute()
     {
-        return '$' . number_format($this->price, 2);
+        return number_format($this->price, 2) . ' ر.س';
     }
 
     /**

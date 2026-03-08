@@ -35,7 +35,7 @@
                         @error('description')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                     </div>
                     <div>
-                        <label for="price" class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('Price (USD) *') }}</label>
+                        <label for="price" class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('Price (SAR) *') }}</label>
                         <input type="number" id="price" name="price" step="0.01" min="0" class="input-glass @error('price') border-red-500 @enderror" value="{{ old('price', $course->price) }}" required>
                         @error('price')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                     </div>

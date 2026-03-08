@@ -173,7 +173,7 @@
                                             {{ number_format($course->price, 0) }}
                                         </div>
                                         <div class="flex items-center gap-3">
-                                            <span class="text-sm line-through text-slate-400 dark:text-slate-500 font-bold">${{ number_format($course->price * 1.5, 0) }}</span>
+                                            <span class="text-sm line-through text-slate-400 dark:text-slate-500 font-bold">{{ number_format($course->price * 1.5, 0) }} ر.س</span>
                                             <span class="px-2 py-0.5 rounded bg-amber-500/10 dark:bg-primary-500/20 text-amber-600 dark:text-primary-400 text-xs font-black uppercase tracking-wider border border-amber-500/20 dark:border-primary-500/30">{{ __('SAVE 33%') }}</span>
                                         </div>
                                     @endif
