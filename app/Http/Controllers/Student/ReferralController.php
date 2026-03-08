@@ -30,7 +30,13 @@ class ReferralController extends Controller
         // Check if user has available discount
         $hasDiscount = $user->has_referral_discount;
 
-        return view('student.referrals.index', compact('user', 'stats', 'referrals', 'hasDiscount'));
+        // Progress toward free enrollment (5 registrations needed)
+        $referralProgress = \App\Models\Referral::where('referrer_id', $user->id)
+            ->where('status', '!=', 'clicked')
+            ->count();
+        $hasFreeEnrollment = $user->has_free_enrollment;
+
+        return view('student.referrals.index', compact('user', 'stats', 'referrals', 'hasDiscount', 'referralProgress', 'hasFreeEnrollment'));
     }
 
     public function howItWorks()

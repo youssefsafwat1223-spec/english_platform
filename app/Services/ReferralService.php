@@ -36,6 +36,7 @@ class ReferralService
             return null;
         }
 
+
         $referrer = User::where('referral_code', $referralCode)->first();
 
         if (!$referrer || $referrer->id === $referee->id) {
@@ -60,10 +61,48 @@ class ReferralService
         // Give referee a discount (expires in 30 days)
         $this->giveRefereeDiscount($referee);
 
+        // Check if referrer reached 5 referrals → give free enrollment
+        $this->checkAndGrantFreeEnrollment($referrer);
+
         // Clear session
         session()->forget('referral_code');
 
         return $referral;
+    }
+
+    /**
+     * Give discount to referee
+     */
+    private function giveRefereeDiscount(User $referee)
+    {
+        $referee->update([
+            'referral_discount_used' => false,
+            'referral_discount_expires_at' => now()->addDays(30),
+        ]);
+    }
+
+    /**
+     * Check if referrer reached 5 referrals and grant free enrollment
+     */
+    private function checkAndGrantFreeEnrollment(User $referrer)
+    {
+        $totalRegistrations = Referral::where('referrer_id', $referrer->id)
+            ->where('status', '!=', 'clicked')
+            ->count();
+
+        // Grant free enrollment at every 5 referrals
+        if ($totalRegistrations >= 5 && !$referrer->has_free_enrollment) {
+            $referrer->update(['has_free_enrollment' => true]);
+
+            // Send notification
+            \App\Models\Notification::create([
+                'user_id' => $referrer->id,
+                'notification_type' => 'referral_reward',
+                'title' => '🎉 مبروك! حصلت على اشتراك مجاني!',
+                'message' => 'لقد أحلت 5 أشخاص بنجاح! يمكنك الآن الاشتراك في أي كورس مجاناً.',
+                'action_url' => route('student.courses.index'),
+            ]);
+        }
     }
 
     /**
@@ -154,16 +193,8 @@ class ReferralService
         ];
     }
 
-    /**
-     * Give discount to referee
-     */
-    private function giveRefereeDiscount(User $referee)
-    {
-        $referee->update([
-            'referral_discount_used' => false,
-            'referral_discount_expires_at' => now()->addDays(30),
-        ]);
-    }
+
+
 
     private function hasReachedReferralLimit(int $referrerId): bool
     {

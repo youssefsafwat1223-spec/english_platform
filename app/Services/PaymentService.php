@@ -197,8 +197,13 @@ class PaymentService
         $discountAmount = 0;
         $discountType = null;
 
+        // Check if user has free enrollment from referral reward (100% discount)
+        if ($user->has_free_enrollment) {
+            $discountAmount = $course->price;
+            $discountType = 'referral_free';
+        }
         // Check if a valid promo code was provided (promo codes override referral discounts)
-        if ($promoCode && $promoCode->isValid()) {
+        elseif ($promoCode && $promoCode->isValid()) {
             $discountAmount = $promoCode->calculateDiscount($course->price);
             $discountType = 'promo_' . $promoCode->id;
         }
@@ -225,6 +230,11 @@ class PaymentService
     private function handleReferralDiscountUsage(Payment $payment)
     {
         $user = $payment->user;
+
+        // If this was a free enrollment from referral reward, reset the flag
+        if ($user->has_free_enrollment && $payment->discount_type === 'referral_free') {
+            $user->update(['has_free_enrollment' => false]);
+        }
 
         // Mark referee discount as used
         if ($user->referred_by && !$user->referral_discount_used) {

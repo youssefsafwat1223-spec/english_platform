@@ -74,6 +74,34 @@
                         </div>
                     </div>
                 @endif
+
+                {{-- Free Enrollment Progress --}}
+                @if($hasFreeEnrollment)
+                    <div class="mt-8 rounded-2xl p-6 bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/30 max-w-xl mx-auto flex items-center gap-4 text-left">
+                        <div class="w-14 h-14 rounded-full bg-green-500 text-white flex items-center justify-center shrink-0 shadow-lg shadow-green-500/30">
+                            <span class="text-2xl">🎁</span>
+                        </div>
+                        <div>
+                            <div class="text-xl font-black text-green-600 dark:text-green-400 mb-1">🎉 {{ __('لديك اشتراك مجاني!') }}</div>
+                            <div class="text-green-700/80 dark:text-green-300/80 font-medium">{{ __('يمكنك الاشتراك في أي كورس مجاناً. اختر الكورس من صفحة الكورسات.') }}</div>
+                        </div>
+                    </div>
+                @else
+                    <div class="mt-8 max-w-xl mx-auto">
+                        <div class="rounded-2xl p-6 bg-white/60 dark:bg-slate-900/60 border border-slate-200/50 dark:border-white/10 backdrop-blur-md">
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="text-sm font-bold text-slate-700 dark:text-slate-300">🎁 {{ __('اشتراك مجاني عند إحالة 5 أشخاص') }}</span>
+                                <span class="text-sm font-black text-primary-500">{{ min($referralProgress, 5) }}/5</span>
+                            </div>
+                            <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-3 overflow-hidden">
+                                <div class="h-full rounded-full bg-gradient-to-r from-primary-500 to-accent-500 transition-all duration-500" style="width: {{ min(($referralProgress / 5) * 100, 100) }}%"></div>
+                            </div>
+                            @if($referralProgress < 5)
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">{{ __('باقي') }} {{ 5 - $referralProgress }} {{ __('إحالات للحصول على اشتراك مجاني!') }}</p>
+                            @endif
+                        </div>
+                    </div>
+                @endif
             </div>
         </div>
 
