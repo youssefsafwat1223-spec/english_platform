@@ -197,16 +197,18 @@
                 </button>
 
                 <!-- Lang Switcher -->
-                <div class="flex items-center gap-3">
-                    <a href="{{ route('switch-lang', 'sa') }}" class="flex items-center gap-1 transition-all {{ app()->getLocale() == 'sa' ? 'opacity-100 scale-105' : 'opacity-50 hover:opacity-100' }}">
-                        <span class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-sm shadow-md border-2 {{ app()->getLocale() == 'sa' ? 'border-primary-500' : 'border-slate-600' }}">🇸🇦</span>
-                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 {{ app()->getLocale() == 'sa' ? 'text-primary-600 dark:text-primary-400' : '' }}">SAU</span>
-                    </a>
-                    <a href="{{ route('switch-lang', 'en') }}" class="flex items-center gap-1 transition-all {{ app()->getLocale() == 'en' ? 'opacity-100 scale-105' : 'opacity-50 hover:opacity-100' }}">
-                        <span class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-sm shadow-md border-2 {{ app()->getLocale() == 'en' ? 'border-primary-500' : 'border-slate-600' }}">🇺🇸</span>
-                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 {{ app()->getLocale() == 'en' ? 'text-primary-600 dark:text-primary-400' : '' }}">ENG</span>
-                    </a>
-                </div>
+                <a href="{{ route('switch-lang', app()->getLocale() == 'sa' ? 'en' : 'sa') }}"
+                   class="flex items-center gap-2 px-2 py-1 rounded-xl bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                   title="Switch Language">
+                    <span class="w-8 h-8 rounded-full flex items-center justify-center text-sm shadow-sm border border-slate-300 dark:border-slate-600 overflow-hidden shrink-0">
+                        <img src="{{ app()->getLocale() == 'sa' ? asset('images/flags/sa.png') : asset('images/flags/us.png') }}"
+                             alt="{{ app()->getLocale() == 'sa' ? 'Saudi Arabia' : 'United States' }}"
+                             class="w-full h-full object-cover">
+                    </span>
+                    <span class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                        {{ app()->getLocale() == 'sa' ? 'SAU' : 'ENG' }}
+                    </span>
+                </a>
             </div>
         </header>
         

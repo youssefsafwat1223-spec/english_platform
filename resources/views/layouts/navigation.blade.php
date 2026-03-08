@@ -96,18 +96,18 @@
                             </div>
 
                             <!-- Language Switcher -->
-                            <div class="flex items-center gap-3">
-                                <a href="{{ route('switch-lang', 'sa') }}"
-                                   class="flex items-center gap-1 font-medium transition-all {{ app()->getLocale() == 'sa' ? 'opacity-100 scale-105' : 'opacity-50 hover:opacity-100' }}"
-                                   title="السعودية">
-                                    <span class="w-8 h-8 rounded-full bg-slate-800 dark:bg-slate-700 flex items-center justify-center text-sm shadow-md border-2 {{ app()->getLocale() == 'sa' ? 'border-primary-500' : 'border-slate-600' }}">🇸🇦</span>
-                                    <span class="hidden xl:inline text-xs font-bold uppercase tracking-wider {{ app()->getLocale() == 'sa' ? 'text-primary-600 dark:text-primary-400' : '' }}">SAU</span>
-                                </a>
-                                <a href="{{ route('switch-lang', 'en') }}"
-                                   class="flex items-center gap-1 font-medium transition-all {{ app()->getLocale() == 'en' ? 'opacity-100 scale-105' : 'opacity-50 hover:opacity-100' }}"
-                                   title="English">
-                                    <span class="w-8 h-8 rounded-full bg-slate-800 dark:bg-slate-700 flex items-center justify-center text-sm shadow-md border-2 {{ app()->getLocale() == 'en' ? 'border-primary-500' : 'border-slate-600' }}">🇺🇸</span>
-                                    <span class="hidden xl:inline text-xs font-bold uppercase tracking-wider {{ app()->getLocale() == 'en' ? 'text-primary-600 dark:text-primary-400' : '' }}">ENG</span>
+                            <div class="flex items-center">
+                                <a href="{{ route('switch-lang', app()->getLocale() == 'sa' ? 'en' : 'sa') }}"
+                                   class="flex items-center gap-2 font-medium px-2 py-1 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+                                   title="Switch Language">
+                                    <span class="w-8 h-8 rounded-full flex items-center justify-center text-sm shadow-sm border border-slate-300 dark:border-slate-600 overflow-hidden shrink-0">
+                                        <img src="{{ app()->getLocale() == 'sa' ? asset('images/flags/sa.png') : asset('images/flags/us.png') }}"
+                                             alt="{{ app()->getLocale() == 'sa' ? 'Saudi Arabia' : 'United States' }}"
+                                             class="w-full h-full object-cover">
+                                    </span>
+                                    <span class="hidden xl:inline text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                                        {{ app()->getLocale() == 'sa' ? 'SAU' : 'ENG' }}
+                                    </span>
                                 </a>
                             </div>
 
@@ -259,20 +259,18 @@
                 @endauth
 
                 {{-- Language Toggle --}}
-                <div class="flex items-center gap-2">
-                    <a href="{{ route('switch-lang', 'sa') }}"
-                       class="relative flex items-center gap-1.5 rounded-full px-1 py-1 transition-all duration-300 {{ app()->getLocale() == 'sa' ? 'opacity-100 scale-105' : 'opacity-50 hover:opacity-100' }}"
-                       title="السعودية">
-                        <span class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-800 dark:bg-slate-700 flex items-center justify-center text-sm shadow-md border-2 {{ app()->getLocale() == 'sa' ? 'border-primary-500' : 'border-slate-600' }}">🇸🇦</span>
-                        <span class="hidden sm:inline text-[10px] font-bold uppercase tracking-wider pe-1 {{ app()->getLocale() == 'sa' ? 'text-primary-600' : '' }}" style="color: var(--color-text);">SAU</span>
-                    </a>
-                    <a href="{{ route('switch-lang', 'en') }}"
-                       class="relative flex items-center gap-1.5 rounded-full px-1 py-1 transition-all duration-300 {{ app()->getLocale() == 'en' ? 'opacity-100 scale-105' : 'opacity-50 hover:opacity-100' }}"
-                       title="English">
-                        <span class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-800 dark:bg-slate-700 flex items-center justify-center text-sm shadow-md border-2 {{ app()->getLocale() == 'en' ? 'border-primary-500' : 'border-slate-600' }}">🇺🇸</span>
-                        <span class="hidden sm:inline text-[10px] font-bold uppercase tracking-wider pe-1 {{ app()->getLocale() == 'en' ? 'text-primary-600' : '' }}" style="color: var(--color-text);">ENG</span>
-                    </a>
-                </div>
+                <a href="{{ route('switch-lang', app()->getLocale() == 'sa' ? 'en' : 'sa') }}"
+                   class="relative flex items-center gap-1.5 rounded-full pe-3 py-1 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+                   title="Switch Language">
+                    <span class="w-8 h-8 rounded-full flex items-center justify-center text-sm shadow-sm border border-slate-300 dark:border-slate-600 overflow-hidden shrink-0">
+                        <img src="{{ app()->getLocale() == 'sa' ? asset('images/flags/sa.png') : asset('images/flags/us.png') }}"
+                             alt="{{ app()->getLocale() == 'sa' ? 'Saudi Arabia' : 'United States' }}"
+                             class="w-full h-full object-cover">
+                    </span>
+                    <span class="hidden sm:inline text-[10px] font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                        {{ app()->getLocale() == 'sa' ? 'SAU' : 'ENG' }}
+                    </span>
+                </a>
 
                 {{-- Desktop User Section --}}
                 <div class="hidden lg:flex items-center gap-3">
