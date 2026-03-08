@@ -97,10 +97,10 @@
 
                             <!-- Language Switcher -->
                             <a href="{{ route('switch-lang', app()->getLocale() == 'sa' ? 'en' : 'sa') }}"
-                               class="nav-link flex items-center gap-1 font-medium"
+                               class="nav-link flex items-center gap-2 font-medium"
                                title="Switch Language">
-                                <span class="text-lg">{{ app()->getLocale() == 'sa' ? '🇸🇦' : '🇺🇸' }}</span>
-                                <span class="hidden xl:inline">{{ app()->getLocale() == 'sa' ? 'العربية' : 'English' }}</span>
+                                <span class="w-8 h-8 rounded-full bg-slate-800 dark:bg-slate-700 flex items-center justify-center text-sm shadow-md border-2 border-slate-600">{{ app()->getLocale() == 'sa' ? '🇸🇦' : '🇺🇸' }}</span>
+                                <span class="hidden xl:inline text-xs font-bold uppercase tracking-wider">{{ app()->getLocale() == 'sa' ? 'SAU' : 'ENG' }}</span>
                             </a>
 
                             <!-- Users Dropdown -->
@@ -252,10 +252,10 @@
 
                 {{-- Language Toggle --}}
                 <a href="{{ route('locale.switch', app()->getLocale() == 'sa' ? 'en' : 'sa') }}"
-                   class="relative w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-xl flex items-center justify-center transition-all duration-300 hover:bg-gray-100 dark:hover:bg-white/5 border border-transparent hover:border-gray-200 dark:hover:border-white/10 text-lg"
-                   style="color: var(--color-text);"
+                   class="relative flex items-center gap-1.5 rounded-full px-1 py-1 transition-all duration-300 hover:bg-gray-100 dark:hover:bg-white/5 border border-transparent hover:border-gray-200 dark:hover:border-white/10"
                    title="{{ __('Language') }}">
-                    {{ app()->getLocale() == 'sa' ? '🇸🇦' : '🇺🇸' }}
+                    <span class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-800 dark:bg-slate-700 flex items-center justify-center text-sm shadow-md border-2 border-slate-600">{{ app()->getLocale() == 'sa' ? '🇸🇦' : '🇺🇸' }}</span>
+                    <span class="hidden sm:inline text-[10px] font-bold uppercase tracking-wider pe-2" style="color: var(--color-text);">{{ app()->getLocale() == 'sa' ? 'SAU' : 'ENG' }}</span>
                 </a>
 
                 {{-- Desktop User Section --}}
