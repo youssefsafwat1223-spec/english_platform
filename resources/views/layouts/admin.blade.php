@@ -197,10 +197,16 @@
                 </button>
 
                 <!-- Lang Switcher -->
-                <a href="{{ route('switch-lang', app()->getLocale() == 'sa' ? 'en' : 'sa') }}" class="flex items-center gap-2 text-slate-700 dark:text-slate-300 hover:text-primary-500 transition-colors">
-                    <span class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-sm shadow-md border-2 border-slate-600">{{ app()->getLocale() == 'sa' ? '🇸🇦' : '🇺🇸' }}</span>
-                    <span class="text-[10px] font-bold uppercase tracking-wider">{{ app()->getLocale() == 'sa' ? 'SAU' : 'ENG' }}</span>
-                </a>
+                <div class="flex items-center gap-3">
+                    <a href="{{ route('switch-lang', 'sa') }}" class="flex items-center gap-1 transition-all {{ app()->getLocale() == 'sa' ? 'opacity-100 scale-105' : 'opacity-50 hover:opacity-100' }}">
+                        <span class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-sm shadow-md border-2 {{ app()->getLocale() == 'sa' ? 'border-primary-500' : 'border-slate-600' }}">🇸🇦</span>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 {{ app()->getLocale() == 'sa' ? 'text-primary-600 dark:text-primary-400' : '' }}">SAU</span>
+                    </a>
+                    <a href="{{ route('switch-lang', 'en') }}" class="flex items-center gap-1 transition-all {{ app()->getLocale() == 'en' ? 'opacity-100 scale-105' : 'opacity-50 hover:opacity-100' }}">
+                        <span class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-sm shadow-md border-2 {{ app()->getLocale() == 'en' ? 'border-primary-500' : 'border-slate-600' }}">🇺🇸</span>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 {{ app()->getLocale() == 'en' ? 'text-primary-600 dark:text-primary-400' : '' }}">ENG</span>
+                    </a>
+                </div>
             </div>
         </header>
         

@@ -96,12 +96,20 @@
                             </div>
 
                             <!-- Language Switcher -->
-                            <a href="{{ route('switch-lang', app()->getLocale() == 'sa' ? 'en' : 'sa') }}"
-                               class="nav-link flex items-center gap-2 font-medium"
-                               title="Switch Language">
-                                <span class="w-8 h-8 rounded-full bg-slate-800 dark:bg-slate-700 flex items-center justify-center text-sm shadow-md border-2 border-slate-600">{{ app()->getLocale() == 'sa' ? '🇸🇦' : '🇺🇸' }}</span>
-                                <span class="hidden xl:inline text-xs font-bold uppercase tracking-wider">{{ app()->getLocale() == 'sa' ? 'SAU' : 'ENG' }}</span>
-                            </a>
+                            <div class="flex items-center gap-3">
+                                <a href="{{ route('switch-lang', 'sa') }}"
+                                   class="flex items-center gap-1 font-medium transition-all {{ app()->getLocale() == 'sa' ? 'opacity-100 scale-105' : 'opacity-50 hover:opacity-100' }}"
+                                   title="السعودية">
+                                    <span class="w-8 h-8 rounded-full bg-slate-800 dark:bg-slate-700 flex items-center justify-center text-sm shadow-md border-2 {{ app()->getLocale() == 'sa' ? 'border-primary-500' : 'border-slate-600' }}">🇸🇦</span>
+                                    <span class="hidden xl:inline text-xs font-bold uppercase tracking-wider {{ app()->getLocale() == 'sa' ? 'text-primary-600 dark:text-primary-400' : '' }}">SAU</span>
+                                </a>
+                                <a href="{{ route('switch-lang', 'en') }}"
+                                   class="flex items-center gap-1 font-medium transition-all {{ app()->getLocale() == 'en' ? 'opacity-100 scale-105' : 'opacity-50 hover:opacity-100' }}"
+                                   title="English">
+                                    <span class="w-8 h-8 rounded-full bg-slate-800 dark:bg-slate-700 flex items-center justify-center text-sm shadow-md border-2 {{ app()->getLocale() == 'en' ? 'border-primary-500' : 'border-slate-600' }}">🇺🇸</span>
+                                    <span class="hidden xl:inline text-xs font-bold uppercase tracking-wider {{ app()->getLocale() == 'en' ? 'text-primary-600 dark:text-primary-400' : '' }}">ENG</span>
+                                </a>
+                            </div>
 
                             <!-- Users Dropdown -->
                             <div class="relative" x-data="{ open: false }" @click.away="open = false">
@@ -251,12 +259,20 @@
                 @endauth
 
                 {{-- Language Toggle --}}
-                <a href="{{ route('locale.switch', app()->getLocale() == 'sa' ? 'en' : 'sa') }}"
-                   class="relative flex items-center gap-1.5 rounded-full px-1 py-1 transition-all duration-300 hover:bg-gray-100 dark:hover:bg-white/5 border border-transparent hover:border-gray-200 dark:hover:border-white/10"
-                   title="{{ __('Language') }}">
-                    <span class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-800 dark:bg-slate-700 flex items-center justify-center text-sm shadow-md border-2 border-slate-600">{{ app()->getLocale() == 'sa' ? '🇸🇦' : '🇺🇸' }}</span>
-                    <span class="hidden sm:inline text-[10px] font-bold uppercase tracking-wider pe-2" style="color: var(--color-text);">{{ app()->getLocale() == 'sa' ? 'SAU' : 'ENG' }}</span>
-                </a>
+                <div class="flex items-center gap-2">
+                    <a href="{{ route('switch-lang', 'sa') }}"
+                       class="relative flex items-center gap-1.5 rounded-full px-1 py-1 transition-all duration-300 {{ app()->getLocale() == 'sa' ? 'opacity-100 scale-105' : 'opacity-50 hover:opacity-100' }}"
+                       title="السعودية">
+                        <span class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-800 dark:bg-slate-700 flex items-center justify-center text-sm shadow-md border-2 {{ app()->getLocale() == 'sa' ? 'border-primary-500' : 'border-slate-600' }}">🇸🇦</span>
+                        <span class="hidden sm:inline text-[10px] font-bold uppercase tracking-wider pe-1 {{ app()->getLocale() == 'sa' ? 'text-primary-600' : '' }}" style="color: var(--color-text);">SAU</span>
+                    </a>
+                    <a href="{{ route('switch-lang', 'en') }}"
+                       class="relative flex items-center gap-1.5 rounded-full px-1 py-1 transition-all duration-300 {{ app()->getLocale() == 'en' ? 'opacity-100 scale-105' : 'opacity-50 hover:opacity-100' }}"
+                       title="English">
+                        <span class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-800 dark:bg-slate-700 flex items-center justify-center text-sm shadow-md border-2 {{ app()->getLocale() == 'en' ? 'border-primary-500' : 'border-slate-600' }}">🇺🇸</span>
+                        <span class="hidden sm:inline text-[10px] font-bold uppercase tracking-wider pe-1 {{ app()->getLocale() == 'en' ? 'text-primary-600' : '' }}" style="color: var(--color-text);">ENG</span>
+                    </a>
+                </div>
 
                 {{-- Desktop User Section --}}
                 <div class="hidden lg:flex items-center gap-3">
