@@ -179,7 +179,7 @@ class Payment extends Model
     /**
      * Create enrollment after successful payment
      */
-    private function createEnrollment()
+    public function createEnrollment()
     {
         $totalLessons = $this->course->lessons()->count();
 

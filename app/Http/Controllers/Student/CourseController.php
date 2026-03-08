@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\Controller;
 use App\Models\Course;
+use App\Models\Payment;
 use App\Models\PromoCode;
 use App\Services\CertificateService;
 use App\Services\PaymentService;
@@ -199,8 +200,39 @@ class CourseController extends Controller
         // Calculate discount
         $discountData = $this->paymentService->calculateDiscount($user, $course, $promoCode);
         $discountAmount = $discountData['discount_amount'];
+        $finalAmount = $discountData['final_amount'];
 
-        // Create payment
+        // If free (100% discount), enroll directly without payment gateway
+        if ($finalAmount <= 0) {
+            $payment = Payment::create([
+                'user_id' => $user->id,
+                'course_id' => $course->id,
+                'transaction_id' => 'FREE-' . strtoupper(\Illuminate\Support\Str::random(16)),
+                'amount' => $course->price,
+                'currency' => 'USD',
+                'discount_amount' => $discountAmount,
+                'final_amount' => 0,
+                'payment_status' => 'completed',
+                'paid_at' => now(),
+            ]);
+
+            // Create enrollment
+            $payment->createEnrollment();
+
+            // Reset free enrollment flag if applicable
+            if ($user->has_free_enrollment && $discountData['discount_type'] === 'referral_free') {
+                $user->update(['has_free_enrollment' => false]);
+            }
+
+            if ($promoCode) {
+                $promoCode->increment('used_count');
+            }
+
+            return redirect()->route('student.courses.learn', $course)
+                ->with('success', __('تم تسجيلك في الكورس مجاناً! 🎉'));
+        }
+
+        // Create payment via Tap gateway
         $result = $this->paymentService->createCharge($user, $course, $discountAmount);
 
         if ($result['success'] && $promoCode) {
