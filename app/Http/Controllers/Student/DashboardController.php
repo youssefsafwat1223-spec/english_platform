@@ -34,6 +34,7 @@ class DashboardController extends Controller
             ->pending()
             ->with('course')
             ->orderBy('created_at', 'desc')
+            ->take(5)
             ->get();
 
         // Get recent activity
