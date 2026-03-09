@@ -33,7 +33,7 @@ class PaymentService
         try {
             // Calculate final amount
             $amount = $course->price;
-            $finalAmount = $amount - $discountAmount;
+            $finalAmount = max(1, $amount - $discountAmount); // StreamPay minimum is 1 SAR
 
             // Create payment record
             $payment = Payment::create([
@@ -98,15 +98,21 @@ class PaymentService
             if ($paymentLinkResponse->successful()) {
                 $data = $paymentLinkResponse->json();
 
+                Log::info('StreamPay payment link created', ['response' => $data]);
+
                 $payment->update([
                     'gateway_payment_id' => $data['id'],
                     'gateway_response' => $data,
                 ]);
 
+                $redirectUrl = $data['url'] ?? $data['link'] ?? $data['checkout_url'] ?? $data['payment_url'] ?? $data['redirect_url'] ?? null;
+
+                Log::info('StreamPay redirect URL', ['url' => $redirectUrl]);
+
                 return [
                     'success' => true,
                     'payment' => $payment,
-                    'redirect_url' => $data['url'] ?? $data['link'] ?? null,
+                    'redirect_url' => $redirectUrl,
                 ];
             }
 
