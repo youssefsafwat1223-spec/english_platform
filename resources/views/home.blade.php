@@ -1,7 +1,9 @@
 @extends('layouts.app')
 
-@section('title', __('Master English') . ' — ' . config('app.name'))
-@section('meta_description', 'Premium AI-Powered English Learning Platform. Master speaking, grammar, and fluency with structured courses and real-time AI feedback.')
+@section('title', 'الرئيسية | ' . config('app.name', 'إتقان الإنجليزية'))
+@section('meta_description', 'تعلم اللغة الإنجليزية من الصفر حتى الاحتراف باستخدام الذكاء الاصطناعي. كورسات تفاعلية، تصحيح نطق فورى، واختبارات ذكية تناسب جميع المستويات.')
+@section('meta_keywords', 'تعلم الانجليزية, دورات انجليزي, نطق اللغة الانجليزية, الذكاء الاصطناعي في التعليم, English courses, learn English')
+@section('og_type', 'website')
 
 @section('content')
 

@@ -1,2 +1,8 @@
 User-agent: *
-Disallow:
+Allow: /
+Disallow: /admin/
+Disallow: /student/dashboard
+Disallow: /student/profile
+Disallow: /api/
+
+Sitemap: https://simple-eng.io/sitemap.xml

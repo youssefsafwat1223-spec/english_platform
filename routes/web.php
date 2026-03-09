@@ -56,6 +56,46 @@ Route::get('/careers', [HomeController::class, 'careers'])->name('careers');
 Route::get('/privacy', [HomeController::class, 'privacy'])->name('privacy');
 Route::get('/terms', [HomeController::class, 'terms'])->name('terms');
 
+// Dynamic Sitemap
+Route::get('/sitemap.xml', function () {
+    $courses = \App\Models\Course::where('is_active', true)->get();
+
+    $content = '<?xml version="1.0" encoding="UTF-8"?>';
+    $content .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
+
+    // Static pages
+    $staticPages = [
+        ['url' => route('home'), 'priority' => '1.0', 'changefreq' => 'daily'],
+        ['url' => route('about'), 'priority' => '0.8', 'changefreq' => 'monthly'],
+        ['url' => route('contact'), 'priority' => '0.7', 'changefreq' => 'monthly'],
+        ['url' => route('pricing'), 'priority' => '0.9', 'changefreq' => 'weekly'],
+        ['url' => route('register'), 'priority' => '0.8', 'changefreq' => 'monthly'],
+        ['url' => route('login'), 'priority' => '0.6', 'changefreq' => 'monthly'],
+    ];
+
+    foreach ($staticPages as $page) {
+        $content .= '<url>';
+        $content .= '<loc>' . htmlspecialchars($page['url']) . '</loc>';
+        $content .= '<changefreq>' . $page['changefreq'] . '</changefreq>';
+        $content .= '<priority>' . $page['priority'] . '</priority>';
+        $content .= '</url>';
+    }
+
+    // Course pages
+    foreach ($courses as $course) {
+        $content .= '<url>';
+        $content .= '<loc>' . htmlspecialchars(route('student.courses.show', $course)) . '</loc>';
+        $content .= '<lastmod>' . $course->updated_at->toW3cString() . '</lastmod>';
+        $content .= '<changefreq>weekly</changefreq>';
+        $content .= '<priority>0.9</priority>';
+        $content .= '</url>';
+    }
+
+    $content .= '</urlset>';
+
+    return response($content, 200)->header('Content-Type', 'application/xml');
+});
+
 // Certificate Verification (Public)
 Route::get('/verify/{certificateId}', [StudentCertificateController::class, 'verify'])
     ->name('certificates.verify');

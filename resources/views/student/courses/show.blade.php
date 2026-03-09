@@ -1,7 +1,25 @@
 @extends('layouts.app')
 
-@section('title', $course->title)
+@section('title', $course->title . ' | ' . config('app.name', 'إتقان الإنجليزية'))
+@section('meta_description', Str::limit(strip_tags($course->short_description ?: $course->description), 160))
+@section('meta_keywords', 'كورس ' . $course->title . ', تعلم الإنجليزية, كورسات إنجليزي, ' . ($course->level ?? 'جميع المستويات'))
+@section('og_title', $course->title)
+@section('og_image', $course->thumbnail ? asset(Storage::url($course->thumbnail)) : asset('logo.jpg'))
+@section('og_type', 'article')
 
+@section('json_ld')
+{
+    "@context": "https://schema.org",
+    "@type": "Course",
+    "name": "{{ $course->title }}",
+    "description": "{{ Str::limit(strip_tags($course->short_description ?: $course->description), 160) }}",
+    "provider": {
+        "@type": "Organization",
+        "name": "Simple English",
+        "sameAs": "{{ config('app.url') }}"
+    }
+}
+@endsection
 @section('content')
 <div class="relative min-h-screen">
     {{-- Cinematic Hero Background --}}

@@ -5,8 +5,48 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>@yield('title', config('app.name', 'English Platform'))</title>
-        <meta name="description" content="@yield('meta_description', 'Premium AI-Powered English Learning Platform')">
+        {{-- SEO Core --}}
+        <title>@yield('title', config('app.name', 'إتقان الإنجليزية — Simple English'))</title>
+        <meta name="description" content="@yield('meta_description', 'منصة تعليم اللغة الإنجليزية المدعومة بالذكاء الاصطناعي. كورسات شاملة، تمارين نطق، اختبارات تفاعلية وشهادات معتمدة.')">
+        <meta name="keywords" content="@yield('meta_keywords', 'تعلم الإنجليزية, كورسات إنجليزي, منصة تعليمية, نطق إنجليزي, AI English learning, English courses, learn English online')">
+        <meta name="author" content="Simple English">
+        <meta name="robots" content="index, follow">
+        <link rel="canonical" href="{{ url()->current() }}">
+        <meta name="theme-color" content="#6366f1">
+
+        {{-- Open Graph (Facebook, WhatsApp, LinkedIn) --}}
+        <meta property="og:type" content="@yield('og_type', 'website')">
+        <meta property="og:title" content="@yield('title', config('app.name', 'إتقان الإنجليزية — Simple English'))">
+        <meta property="og:description" content="@yield('meta_description', 'منصة تعليم اللغة الإنجليزية المدعومة بالذكاء الاصطناعي. كورسات شاملة، تمارين نطق، اختبارات تفاعلية وشهادات معتمدة.')">
+        <meta property="og:url" content="{{ url()->current() }}">
+        <meta property="og:image" content="@yield('og_image', asset('logo.jpg'))">
+        <meta property="og:site_name" content="Simple English">
+        <meta property="og:locale" content="{{ app()->getLocale() === 'ar' ? 'ar_SA' : 'en_US' }}">
+
+        {{-- Twitter Cards --}}
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="@yield('title', config('app.name', 'إتقان الإنجليزية — Simple English'))">
+        <meta name="twitter:description" content="@yield('meta_description', 'منصة تعليم اللغة الإنجليزية المدعومة بالذكاء الاصطناعي.')">
+        <meta name="twitter:image" content="@yield('og_image', asset('logo.jpg'))">
+
+        {{-- JSON-LD Structured Data --}}
+        <script type="application/ld+json">
+        @yield('json_ld', '{
+            "@context": "https://schema.org",
+            "@type": "EducationalOrganization",
+            "name": "Simple English",
+            "url": "' . config('app.url') . '",
+            "logo": "' . asset('logo.jpg') . '",
+            "description": "منصة تعليم اللغة الإنجليزية المدعومة بالذكاء الاصطناعي",
+            "sameAs": [],
+            "contactPoint": {
+                "@type": "ContactPoint",
+                "contactType": "customer service",
+                "availableLanguage": ["Arabic", "English"]
+            }
+        }')
+        </script>
+
         <link rel="icon" type="image/jpeg" href="{{ asset('favicon.jpg') }}">
         <link rel="apple-touch-icon" href="{{ asset('logo.jpg') }}">
 
