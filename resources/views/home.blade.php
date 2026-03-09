@@ -329,7 +329,7 @@
                         {{-- Footer --}}
                         <div class="flex items-center justify-between pt-4 border-t border-slate-200 dark:border-white/10">
                             <div class="text-lg font-bold text-primary-500">
-                                {{ $course->price > 0 ? '$' . $course->price : __('Free') }}
+                                {{ $course->price > 0 ? $course->price . ' ر.س' : __('Free') }}
                             </div>
                             <a href="{{ route('student.courses.show', $course) }}" class="btn-primary btn-sm rounded-lg">
                                 {{ __('View Course') }}

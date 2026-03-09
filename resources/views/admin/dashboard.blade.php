@@ -52,8 +52,8 @@
                     ],
                     [
                         'label' => 'Total Revenue',
-                        'value' => '$' . number_format($stats['total_revenue'], 2),
-                        'sub' => '+$' . number_format($stats['revenue_this_month'], 2) . ' this month',
+                        'value' => number_format($stats['total_revenue'], 2) . ' ر.س',
+                        'sub' => '+' . number_format($stats['revenue_this_month'], 2) . ' ر.س this month',
                         'subPositive' => true,
                         'icon' => '💰',
                         'gradient' => 'from-cyan-500/15 to-cyan-600/5',
@@ -230,7 +230,7 @@
                     @forelse($recentPayments as $payment)
                         <div class="px-5 py-3.5 flex items-center justify-between transition-colors hover:bg-white/[0.02]" style="{{ !$loop->last ? 'border-bottom: 1px solid var(--glass-border);' : '' }}">
                             <div class="flex items-center gap-3 min-w-0">
-                                <div class="w-9 h-9 rounded-xl flex items-center justify-center text-white text-sm font-bold shrink-0" style="background: linear-gradient(135deg, #10b981, #059669);">$</div>
+                                <div class="w-9 h-9 rounded-xl flex items-center justify-center text-white text-sm font-bold shrink-0" style="background: linear-gradient(135deg, #10b981, #059669);">💰</div>
                                 <div class="min-w-0">
                                     <p class="text-sm font-semibold truncate" style="color: var(--color-text);">{{ $payment->user->name }}</p>
                                     <p class="text-xs truncate" style="color: var(--color-text-muted);">{{ $payment->course->title }}</p>
@@ -369,11 +369,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 plugins: {
                     legend: { display: false },
                     tooltip: { backgroundColor: 'rgba(15, 23, 42, 0.95)', titleColor: '#94a3b8', bodyColor: '#fff', padding: 12, cornerRadius: 10, borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1,
-                        callbacks: { label: ctx => '$' + ctx.parsed.y.toFixed(2) }
+                        callbacks: { label: ctx => ctx.parsed.y.toFixed(2) + ' ر.س' }
                     }
                 },
                 scales: {
-                    y: { beginAtZero: true, grid: { color: gridColor, drawBorder: false }, ticks: { callback: v => '$' + v, color: tickColor, font: { size: 11 } } },
+                    y: { beginAtZero: true, grid: { color: gridColor, drawBorder: false }, ticks: { callback: v => v + ' ر.س', color: tickColor, font: { size: 11 } } },
                     x: { grid: { display: false }, ticks: { color: tickColor, font: { size: 10 }, maxRotation: 0, maxTicksLimit: 8 } }
                 },
                 interaction: { intersect: false, mode: 'index' },

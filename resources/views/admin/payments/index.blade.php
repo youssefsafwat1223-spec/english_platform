@@ -13,9 +13,9 @@
         </div>
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
             @php $payStats = [
-                ['v' => '$'.number_format($stats['total_revenue'], 2), 'l' => 'Total Revenue', 'c' => 'text-emerald-500'],
-                ['v' => '$'.number_format($stats['revenue_today'], 2), 'l' => 'Today', 'c' => 'text-primary-500'],
-                ['v' => '$'.number_format($stats['revenue_this_month'], 2), 'l' => 'This Month', 'c' => 'text-blue-500'],
+                ['v' => number_format($stats['total_revenue'], 2).' ر.س', 'l' => 'Total Revenue', 'c' => 'text-emerald-500'],
+                ['v' => number_format($stats['revenue_today'], 2).' ر.س', 'l' => 'Today', 'c' => 'text-primary-500'],
+                ['v' => number_format($stats['revenue_this_month'], 2).' ر.س', 'l' => 'This Month', 'c' => 'text-blue-500'],
                 ['v' => $stats['total_transactions'], 'l' => 'Total Transactions', 'c' => 'text-amber-500'],
             ]; @endphp
             @foreach($payStats as $i => $ps)
