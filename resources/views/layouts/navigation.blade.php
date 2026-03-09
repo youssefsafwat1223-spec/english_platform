@@ -448,7 +448,7 @@
 {{-- ─── Floating WhatsApp Support Button ─── --}}
 @auth
     @if(auth()->user()->is_student)
-        <a href="https://wa.me/201000000000" target="_blank"
+        <a href="https://wa.me/966537191862" target="_blank"
            class="fixed bottom-6 right-6 lg:bottom-8 lg:right-8 z-50 w-14 h-14 rounded-full bg-[#25D366] text-white flex items-center justify-center shadow-2xl hover:scale-110 hover:shadow-[#25D366]/50 transition-all duration-300 group"
            aria-label="WhatsApp Support">
             <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
