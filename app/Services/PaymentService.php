@@ -56,10 +56,8 @@ class PaymentService
                 'description' => "Course access for {$user->name}",
                 'type' => 'ONE_OFF',
                 'active' => true,
-                'price' => [
-                    'amount' => $finalAmount,
-                    'currency' => 'SAR',
-                ]
+                'price' => (float) $finalAmount,
+                'currency' => 'SAR',
             ]);
 
             if (!$productResponse->successful()) {
