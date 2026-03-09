@@ -60,6 +60,10 @@ Route::get('/terms', [HomeController::class, 'terms'])->name('terms');
 Route::get('/verify/{certificateId}', [StudentCertificateController::class, 'verify'])
     ->name('certificates.verify');
 
+// StreamPay Payment Callback (Public - StreamPay redirects user here after payment)
+Route::get('/payment/callback/{payment}', [\App\Http\Controllers\Api\PaymentController::class, 'callback'])
+    ->name('payment.callback');
+
 // TEMPORARY: Certificate Design Test (remove after testing)
 Route::get('/test-certificate', function () {
     return view('certificates.template', [

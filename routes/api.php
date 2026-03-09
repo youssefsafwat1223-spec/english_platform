@@ -15,9 +15,6 @@ use App\Http\Controllers\Webhook\StreamPayWebhookController;
 Route::post('/telegram/webhook', [TelegramController::class, 'webhook'])
     ->name('telegram.webhook');
 
-// StreamPay Payment Callback & Webhook
-Route::get('/payment/callback/{payment}', [PaymentController::class, 'callback'])
-    ->name('payment.callback');
-
+// StreamPay Webhook (stays in API - no session needed)
 Route::post('/payment/webhook', [StreamPayWebhookController::class, 'handle'])
     ->name('payment.webhook');
