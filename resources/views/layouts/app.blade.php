@@ -11,6 +11,7 @@
         <meta name="keywords" content="@yield('meta_keywords', 'تعلم الإنجليزية, كورسات إنجليزي, منصة تعليمية, نطق إنجليزي, AI English learning, English courses, learn English online')">
         <meta name="author" content="Simple English">
         <meta name="robots" content="index, follow">
+        <meta name="google-site-verification" content="ry7DT25966tK8f2tVoyjXZ3qGsJNpLnR7TpbLhgLU44" />
         <link rel="canonical" href="{{ url()->current() }}">
         <meta name="theme-color" content="#6366f1">
 
