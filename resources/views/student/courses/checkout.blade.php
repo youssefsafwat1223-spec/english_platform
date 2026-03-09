@@ -54,7 +54,7 @@
                                             <p class="text-sm font-bold text-emerald-800 dark:text-emerald-400">{{ __('Promo Code Applied!') }}</p>
                                             <p class="text-xs text-emerald-600 dark:text-emerald-500 font-mono mt-1">{{ $promoCode->code }}</p>
                                         </div>
-                                        <a href="{{ route('student.courses.enroll', $course) }}" class="text-xs font-bold text-rose-500 hover:text-rose-600 underline">{{ __('Remove') }}</a>
+                                        <a href="{{ route('courses.remove-discount', $course) }}" class="text-xs font-bold text-rose-500 hover:text-rose-600 underline">{{ __('Remove') }}</a>
                                     </div>
                                     <input type="hidden" name="promo_code_id" value="{{ $promoCode->id }}">
                                 @else

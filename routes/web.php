@@ -352,6 +352,12 @@ Route::prefix('student')->name('student.')->middleware(['auth', 'student', 'acti
     Route::get('/courses/{course}/learn', [StudentCourseController::class, 'learn'])
         ->name('courses.learn')
         ->middleware('enrolled');
+        
+    // Remove Discount
+    Route::get('/courses/{course}/remove-discount', function (\App\Models\Course $course) {
+        session()->forget('referral_code');
+        return redirect()->route('student.courses.enroll', $course)->with('success', __('تم إزالة الخصم بنجاح.'));
+    })->name('courses.remove-discount');
     
     // Lessons
     Route::prefix('courses/{course}/lessons')->name('lessons.')->middleware('enrolled')->group(function () {
