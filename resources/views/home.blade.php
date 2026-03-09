@@ -62,7 +62,7 @@
                 <h1 class="text-5xl sm:text-6xl lg:text-8xl font-black tracking-tighter leading-[1.05] mb-8 text-white drop-shadow-md">
                     {{ __('Master English') }}
                     <br>
-                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-accent-400 pb-2 inline-block">{{ __('Like a Pro.') }}</span>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-accent-400 pb-3 inline-block">{{ __('Like a Pro.') }}</span>
                 </h1>
 
                 {{-- Subtitle --}}
