@@ -355,7 +355,21 @@ Route::prefix('student')->name('student.')->middleware(['auth', 'student', 'acti
         
     // Remove Discount
     Route::get('/courses/{course}/remove-discount', function (\App\Models\Course $course) {
+        $user = auth()->user();
         session()->forget('referral_code');
+        
+        // If they had a referral discount, clear it from their profile
+        if ($user->has_referral_discount) {
+            \App\Models\Referral::where('referee_id', $user->id)
+                ->where('status', '!=', 'purchased')
+                ->delete();
+
+            $user->update([
+                'referred_by' => null,
+                'referral_discount_expires_at' => null,
+            ]);
+        }
+
         return redirect()->route('student.courses.enroll', $course)->with('success', __('تم إزالة الخصم بنجاح.'));
     })->name('courses.remove-discount');
     
