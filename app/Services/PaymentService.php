@@ -56,7 +56,7 @@ class PaymentService
                 'description' => "Course access for {$user->name}",
                 'type' => 'ONE_OFF',
                 'active' => true,
-                'pricing' => [
+                'price' => [
                     'amount' => $finalAmount,
                     'currency' => 'SAR',
                 ]
