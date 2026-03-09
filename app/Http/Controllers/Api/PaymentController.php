@@ -38,6 +38,16 @@ class PaymentController extends Controller
 
         if ($result['success']) {
             if ($result['message'] === 'Payment successful') {
+                // Increment promo code usage if one was used for this payment
+                $pendingPromoId = session('pending_promo_code_id');
+                if ($pendingPromoId) {
+                    $promo = \App\Models\PromoCode::find($pendingPromoId);
+                    if ($promo) {
+                        $promo->increment('used_count');
+                    }
+                    session()->forget('pending_promo_code_id');
+                }
+
                 return redirect()->route('student.courses.learn', $payment->course_id)
                     ->with('success', __('تم الدفع بنجاح! مرحباً بك في الكورس 🎉'));
             } else {

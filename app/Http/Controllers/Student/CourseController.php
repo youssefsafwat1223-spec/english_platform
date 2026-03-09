@@ -235,11 +235,11 @@ class CourseController extends Controller
         // Create payment via StreamPay gateway
         $result = $this->paymentService->createCharge($user, $course, $discountAmount);
 
-        if ($result['success'] && $promoCode) {
-            $promoCode->increment('used_count');
-        }
-
         if ($result['success']) {
+            // Store promo code ID in session so we can increment after payment confirmation
+            if ($promoCode) {
+                session(['pending_promo_code_id' => $promoCode->id]);
+            }
             return redirect()->away($result['redirect_url']);
         }
 

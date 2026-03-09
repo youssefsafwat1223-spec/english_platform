@@ -71,14 +71,14 @@
                     <div>
                         <label for="price_min" class="block text-sm font-bold mb-2 text-slate-700 dark:text-slate-300">{{ __('Min Price') }}</label>
                         <div class="relative">
-                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500 font-bold">$</span>
+                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500 font-bold">ر.س</span>
                             <input id="price_min" name="price_min" type="number" min="0" step="0.01" class="w-full bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-white/10 rounded-xl py-3 pl-8 pr-3 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 shadow-inner" value="{{ request('price_min') }}" placeholder="0">
                         </div>
                     </div>
                     <div>
                         <label for="price_max" class="block text-sm font-bold mb-2 text-slate-700 dark:text-slate-300">{{ __('Max Price') }}</label>
                         <div class="relative">
-                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500 font-bold">$</span>
+                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500 font-bold">ر.س</span>
                             <input id="price_max" name="price_max" type="number" min="0" step="0.01" class="w-full bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-white/10 rounded-xl py-3 pl-8 pr-3 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 shadow-inner" value="{{ request('price_max') }}" placeholder="100">
                         </div>
                     </div>
@@ -159,7 +159,7 @@
                                 @if($course->price == 0)
                                     <span class="text-emerald-500">{{ __('Free') }}</span>
                                 @else
-                                    <span class="text-primary-500 text-lg align-super">$</span>{{ number_format($course->price, 0) }}
+                                    {{ number_format($course->price, 0) }} <span class="text-primary-500 text-lg">ر.س</span>
                                 @endif
                             </span>
                             <a href="{{ route('student.courses.show', $course) }}" class="btn-primary ripple-btn px-6 py-2.5 rounded-xl shadow-lg shadow-primary-500/25 font-bold group-hover:scale-105 transition-transform flex items-center gap-2">

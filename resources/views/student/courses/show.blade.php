@@ -187,8 +187,8 @@
                                         <div class="text-5xl font-black text-emerald-500 dark:text-emerald-400">{{ __('Free') }}</div>
                                     @else
                                         <div class="flex items-start text-5xl font-black text-slate-900 dark:text-white mb-2">
-                                            <span class="text-2xl mt-1.5 mr-1 text-slate-400 dark:text-slate-500">$</span>
                                             {{ number_format($course->price, 0) }}
+                                            <span class="text-2xl mt-1.5 mr-1 text-slate-400 dark:text-slate-500">ر.س</span>
                                         </div>
                                         <div class="flex items-center gap-3">
                                             <span class="text-sm line-through text-slate-400 dark:text-slate-500 font-bold">{{ number_format($course->price * 1.5, 0) }} ر.س</span>
