@@ -115,6 +115,18 @@
                 <span class="font-medium text-sm">{{ __('Email Campaigns') }}</span>
             </a>
 
+            <p class="px-2 text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 mt-6">{{ __('الصفحة الرئيسية') }}</p>
+
+            <a href="{{ route('admin.testimonials.index') }}" class="admin-sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-all group {{ request()->routeIs('admin.testimonials.*') ? 'active' : '' }}">
+                <span class="text-xl group-hover:scale-110 transition-transform">⭐</span>
+                <span class="font-medium text-sm">{{ __('آراء الطلاب') }}</span>
+            </a>
+
+            <a href="{{ route('admin.promo-videos.index') }}" class="admin-sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-all group {{ request()->routeIs('admin.promo-videos.*') ? 'active' : '' }}">
+                <span class="text-xl group-hover:scale-110 transition-transform">🎬</span>
+                <span class="font-medium text-sm">{{ __('عينة الشروحات') }}</span>
+            </a>
+
             <p class="px-2 text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 mt-6">{{ __('Settings') }}</p>
 
             <a href="{{ route('admin.settings.general') }}" class="admin-sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-all group {{ request()->routeIs('admin.settings.general') ? 'active' : '' }}">
