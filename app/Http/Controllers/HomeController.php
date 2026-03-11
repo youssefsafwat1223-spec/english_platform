@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Course;
 use App\Models\User;
+use App\Models\Testimonial;
+use App\Models\PromoVideo;
 use App\Mail\ContactMessage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -24,7 +26,10 @@ class HomeController extends Controller
             'certificates_issued' => \App\Models\Certificate::count(),
         ];
 
-        return view('home', compact('featuredCourses', 'stats'));
+        $testimonials = Testimonial::active()->ordered()->take(6)->get();
+        $promoVideos = PromoVideo::active()->ordered()->take(4)->get();
+
+        return view('home', compact('featuredCourses', 'stats', 'testimonials', 'promoVideos'));
     }
 
     public function about()

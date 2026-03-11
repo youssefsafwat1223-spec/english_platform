@@ -23,6 +23,8 @@ use App\Http\Controllers\Admin\ForumController as AdminForumController;
 use App\Http\Controllers\Admin\SettingsController as AdminSettingsController;
 use App\Http\Controllers\Admin\EmailCampaignController as AdminEmailCampaignController;
 use App\Http\Controllers\Admin\GameSessionController as AdminGameSessionController;
+use App\Http\Controllers\Admin\TestimonialController as AdminTestimonialController;
+use App\Http\Controllers\Admin\PromoVideoController as AdminPromoVideoController;
 
 // Student Controllers
 use App\Http\Controllers\Student\DashboardController as StudentDashboardController;
@@ -317,6 +319,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin', 'active'])-
         Route::get('/battle', [AdminSettingsController::class, 'battle'])->name('battle');
         Route::post('/battle', [AdminSettingsController::class, 'updateBattle'])->name('battle.update');
     });
+
+    // Testimonials (آراء الطلاب)
+    Route::resource('testimonials', AdminTestimonialController::class)->except(['show']);
+
+    // Promo Videos (عينة من الشروحات)
+    Route::resource('promo-videos', AdminPromoVideoController::class)->except(['show']);
 });
 
 /*

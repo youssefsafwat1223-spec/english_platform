@@ -397,6 +397,145 @@
     </section>
 
 
+    {{-- ═══════════════════════════════════════════════════════════
+         SAMPLE VIDEOS SECTION — عينة من الشروحات
+         ═══════════════════════════════════════════════════════════ --}}
+    @if($promoVideos->count() > 0)
+    <section class="py-20 lg:py-28 relative overflow-hidden">
+        {{-- Background decoration --}}
+        <div class="absolute inset-0 bg-gradient-to-br from-primary-500/5 via-transparent to-accent-500/5 pointer-events-none"></div>
+        <div class="absolute top-0 right-0 w-96 h-96 bg-primary-500/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            {{-- Section Header --}}
+            <div class="text-center max-w-3xl mx-auto mb-16" data-aos="fade-up">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-500/10 border border-primary-500/20 text-primary-600 dark:text-primary-400 text-sm font-bold mb-6">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    {{ __('شاهد قبل ما تشترك') }}
+                </div>
+                <h2 class="text-4xl md:text-5xl font-black mb-4" style="color: var(--color-text);">
+                    {{ __('عينة من') }}
+                    <span class="text-gradient">{{ __('الشروحات') }}</span>
+                </h2>
+                <p class="text-lg font-medium" style="color: var(--color-text-muted);">{{ __('شوف بنفسك جودة المحتوى قبل ما تبدأ رحلتك معانا') }}</p>
+            </div>
+
+            {{-- Video Grid --}}
+            <div x-data="{ activeVideo: 0 }" class="space-y-8">
+                {{-- Main Video Player --}}
+                <div class="relative rounded-[2rem] overflow-hidden shadow-2xl border border-white/10 bg-black aspect-video max-w-4xl mx-auto" data-aos="fade-up">
+                    @foreach($promoVideos as $index => $video)
+                        <div x-show="activeVideo === {{ $index }}" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100">
+                            <iframe
+                                x-bind:src="activeVideo === {{ $index }} ? '{{ $video->embed_url }}' : ''"
+                                class="w-full h-full absolute inset-0"
+                                frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen
+                                loading="lazy">
+                            </iframe>
+                        </div>
+                    @endforeach
+                </div>
+
+                {{-- Video Selector Tabs --}}
+                @if($promoVideos->count() > 1)
+                <div class="flex flex-wrap justify-center gap-4 max-w-4xl mx-auto" data-aos="fade-up" data-aos-delay="100">
+                    @foreach($promoVideos as $index => $video)
+                    <button
+                        @click="activeVideo = {{ $index }}"
+                        :class="activeVideo === {{ $index }} ? 'border-primary-500 bg-primary-500/10 shadow-lg shadow-primary-500/20' : 'border-white/10 hover:border-primary-500/50 hover:bg-white/5'"
+                        class="flex items-center gap-3 px-5 py-3 rounded-2xl border-2 transition-all duration-300 text-start group">
+                        <div :class="activeVideo === {{ $index }} ? 'bg-primary-500 text-white' : 'bg-slate-200 dark:bg-white/10 text-slate-500 dark:text-slate-400'"
+                             class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-all group-hover:scale-105 font-bold">
+                            {{ $index + 1 }}
+                        </div>
+                        <div>
+                            <div class="font-bold text-sm" style="color: var(--color-text);">{{ $video->title }}</div>
+                            @if($video->description)
+                                <div class="text-xs mt-0.5 line-clamp-1" style="color: var(--color-text-muted);">{{ $video->description }}</div>
+                            @endif
+                        </div>
+                    </button>
+                    @endforeach
+                </div>
+                @endif
+            </div>
+        </div>
+    </section>
+    @endif
+
+
+    {{-- ═══════════════════════════════════════════════════════════
+         TESTIMONIALS SECTION — ماذا قالوا عنا
+         ═══════════════════════════════════════════════════════════ --}}
+    @if($testimonials->count() > 0)
+    <section class="py-20 lg:py-28 relative overflow-hidden">
+        {{-- Background decoration --}}
+        <div class="absolute inset-0 bg-gradient-to-tl from-accent-500/5 via-transparent to-primary-500/5 pointer-events-none"></div>
+        <div class="absolute bottom-0 left-0 w-96 h-96 bg-accent-500/10 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/2 pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            {{-- Section Header --}}
+            <div class="text-center max-w-3xl mx-auto mb-16" data-aos="fade-up">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent-500/10 border border-accent-500/20 text-accent-600 dark:text-accent-400 text-sm font-bold mb-6">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                    {{ __('تقييمات حقيقية') }}
+                </div>
+                <h2 class="text-4xl md:text-5xl font-black mb-4" style="color: var(--color-text);">
+                    {{ __('ماذا قالوا') }}
+                    <span class="text-gradient">{{ __('عنا') }}</span>
+                </h2>
+                <p class="text-lg font-medium" style="color: var(--color-text-muted);">{{ __('شوف آراء الطلاب اللي بدأوا رحلتهم معانا') }}</p>
+            </div>
+
+            {{-- Testimonials Grid --}}
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+                @foreach($testimonials as $index => $testimonial)
+                <div class="glass-card p-6 lg:p-8 relative group hover:border-accent-500/30 transition-all duration-500 hover:-translate-y-1 hover:shadow-xl"
+                     data-aos="fade-up" data-aos-delay="{{ $index * 100 }}">
+                    {{-- Quote icon --}}
+                    <div class="absolute top-4 right-4 w-10 h-10 rounded-xl bg-accent-500/10 flex items-center justify-center text-accent-500 opacity-50 group-hover:opacity-100 transition-opacity">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/></svg>
+                    </div>
+
+                    {{-- Stars --}}
+                    <div class="flex items-center gap-0.5 mb-4">
+                        @for($i = 1; $i <= 5; $i++)
+                            <svg class="w-5 h-5 {{ $i <= $testimonial->rating ? 'text-yellow-400' : 'text-slate-300 dark:text-slate-600' }}" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                            </svg>
+                        @endfor
+                    </div>
+
+                    {{-- Content --}}
+                    <p class="text-sm leading-relaxed mb-6 font-medium" style="color: var(--color-text-muted);">
+                        "{{ $testimonial->content }}"
+                    </p>
+
+                    {{-- Author --}}
+                    <div class="flex items-center gap-3 pt-4 border-t border-slate-200 dark:border-white/10">
+                        @if($testimonial->avatar)
+                            <img src="{{ Storage::url($testimonial->avatar) }}" class="w-12 h-12 rounded-full object-cover border-2 border-accent-500/30 shadow-sm" alt="{{ $testimonial->name }}">
+                        @else
+                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-accent-500 to-primary-500 flex items-center justify-center text-white font-bold shadow-sm text-lg">
+                                {{ mb_substr($testimonial->name, 0, 1) }}
+                            </div>
+                        @endif
+                        <div>
+                            <div class="font-bold text-sm" style="color: var(--color-text);">{{ $testimonial->name }}</div>
+                            @if($testimonial->role)
+                                <div class="text-xs font-medium" style="color: var(--color-text-muted);">{{ $testimonial->role }}</div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+    </section>
+    @endif
+
 
 
 </div>

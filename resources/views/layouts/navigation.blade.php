@@ -126,6 +126,12 @@
                                     <a href="{{ route('admin.email-campaigns.index') }}" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 {{ request()->routeIs('admin.email-campaigns.*') ? 'bg-gray-50 dark:bg-gray-700' : '' }}">
                                         {{ __('Email Campaigns') }}
                                     </a>
+                                    <a href="{{ route('admin.testimonials.index') }}" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 {{ request()->routeIs('admin.testimonials.*') ? 'bg-gray-50 dark:bg-gray-700' : '' }}">
+                                        💬 {{ __('آراء الطلاب') }}
+                                    </a>
+                                    <a href="{{ route('admin.promo-videos.index') }}" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 {{ request()->routeIs('admin.promo-videos.*') ? 'bg-gray-50 dark:bg-gray-700' : '' }}">
+                                        🎬 {{ __('عينة الشروحات') }}
+                                    </a>
                                 </div>
                             </div>
                         @endif
