@@ -110,16 +110,31 @@
                             {{-- Level Header --}}
                             <button @click="openLevel = openLevel === {{ $levelIndex }} ? -1 : {{ $levelIndex }}" class="w-full p-5 flex items-center justify-between gap-4 text-right">
                                 <div class="flex items-center gap-4 flex-1">
-                                    {{-- Level Number Badge --}}
-                                    <div class="shrink-0 w-14 h-14 rounded-2xl {{ $isCompleted ? 'bg-gradient-to-br from-emerald-500 to-green-500' : ($isLevelUnlocked ? 'bg-gradient-to-br from-primary-500 to-accent-500' : 'bg-slate-200 dark:bg-slate-800') }} flex items-center justify-center font-black text-lg text-white shadow-lg transition-all duration-300">
-                                        @if($isCompleted)
-                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
-                                        @elseif($isLevelUnlocked)
-                                            {{ $levelIndex + 1 }}
-                                        @else
-                                            <svg class="w-5 h-5 {{ !$isLevelUnlocked ? 'text-slate-400 dark:text-slate-500' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-                                        @endif
-                                    </div>
+                                    {{-- Level Thumbnail / Number Badge --}}
+                                    @if($level->thumbnail)
+                                        <div class="shrink-0 w-14 h-14 rounded-2xl overflow-hidden shadow-lg relative">
+                                            <img src="{{ Storage::url($level->thumbnail) }}" alt="{{ $level->title }}" class="w-full h-full object-cover {{ !$isLevelUnlocked ? 'opacity-40 grayscale' : '' }} transition-all duration-300">
+                                            @if($isCompleted)
+                                                <div class="absolute inset-0 bg-emerald-500/60 flex items-center justify-center">
+                                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                                                </div>
+                                            @elseif(!$isLevelUnlocked)
+                                                <div class="absolute inset-0 bg-slate-900/40 flex items-center justify-center">
+                                                    <svg class="w-5 h-5 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                                                </div>
+                                            @endif
+                                        </div>
+                                    @else
+                                        <div class="shrink-0 w-14 h-14 rounded-2xl {{ $isCompleted ? 'bg-gradient-to-br from-emerald-500 to-green-500' : ($isLevelUnlocked ? 'bg-gradient-to-br from-primary-500 to-accent-500' : 'bg-slate-200 dark:bg-slate-800') }} flex items-center justify-center font-black text-lg text-white shadow-lg transition-all duration-300">
+                                            @if($isCompleted)
+                                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                                            @elseif($isLevelUnlocked)
+                                                {{ $levelIndex + 1 }}
+                                            @else
+                                                <svg class="w-5 h-5 text-slate-400 dark:text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                                            @endif
+                                        </div>
+                                    @endif
                                     <div class="flex-1 text-right">
                                         <h4 class="font-bold text-lg {{ $isLevelUnlocked ? 'text-slate-900 dark:text-white' : 'text-slate-400 dark:text-slate-500' }} transition-colors">
                                             {{ $level->title }}
