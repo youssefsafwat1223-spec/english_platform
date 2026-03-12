@@ -13,6 +13,7 @@ class Lesson extends Model
 
     protected $fillable = [
         'course_id',
+        'course_level_id',
         'title',
         'slug',
         'description',
@@ -56,6 +57,14 @@ class Lesson extends Model
     public function course()
     {
         return $this->belongsTo(Course::class);
+    }
+
+    /**
+     * Level this lesson belongs to
+     */
+    public function level()
+    {
+        return $this->belongsTo(CourseLevel::class, 'course_level_id');
     }
 
     /**

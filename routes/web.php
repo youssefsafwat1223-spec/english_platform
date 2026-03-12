@@ -14,6 +14,7 @@ Route::get('/locale/{locale}', [LocaleController::class, 'switch'])->name('local
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\CourseController as AdminCourseController;
 use App\Http\Controllers\Admin\LessonController as AdminLessonController;
+use App\Http\Controllers\Admin\CourseLevelController as AdminCourseLevelController;
 use App\Http\Controllers\Admin\QuestionController as AdminQuestionController;
 use App\Http\Controllers\Admin\QuizController as AdminQuizController;
 use App\Http\Controllers\Admin\StudentController as AdminStudentController;
@@ -181,6 +182,16 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin', 'active'])-
         Route::put('/{lesson}', [AdminLessonController::class, 'update'])->name('update');
         Route::delete('/{lesson}', [AdminLessonController::class, 'destroy'])->name('destroy');
         Route::post('/reorder', [AdminLessonController::class, 'reorder'])->name('reorder');
+    });
+
+    // Course Levels
+    Route::prefix('courses/{course}/levels')->name('courses.levels.')->group(function () {
+        Route::get('/', [AdminCourseLevelController::class, 'index'])->name('index');
+        Route::get('/create', [AdminCourseLevelController::class, 'create'])->name('create');
+        Route::post('/', [AdminCourseLevelController::class, 'store'])->name('store');
+        Route::get('/{level}/edit', [AdminCourseLevelController::class, 'edit'])->name('edit');
+        Route::put('/{level}', [AdminCourseLevelController::class, 'update'])->name('update');
+        Route::delete('/{level}', [AdminCourseLevelController::class, 'destroy'])->name('destroy');
     });
     
     // Questions

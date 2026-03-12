@@ -34,7 +34,9 @@ class LessonController extends Controller
             ->orderBy('id', 'desc')
             ->get();
 
-        return view('admin.lessons.create', compact('course', 'availableQuizzes', 'availableQuestions'));
+        $levels = $course->levels()->ordered()->get();
+
+        return view('admin.lessons.create', compact('course', 'availableQuizzes', 'availableQuestions', 'levels'));
     }
 
     public function store(StoreLessonRequest $request, Course $course)
@@ -106,13 +108,16 @@ class LessonController extends Controller
 
         $pronunciationExercise = $lesson->pronunciationExercise;
 
+        $levels = $course->levels()->ordered()->get();
+
         return view('admin.lessons.edit', compact(
             'course',
             'lesson',
             'availableQuizzes',
             'availableQuestions',
             'selectedQuestionIds',
-            'pronunciationExercise'
+            'pronunciationExercise',
+            'levels'
         ));
     }
 

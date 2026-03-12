@@ -11,6 +11,7 @@
             </div>
             <div class="flex flex-wrap gap-2">
                 <a href="{{ route('admin.courses.edit', $course) }}" class="btn-primary ripple-btn">{{ __('Edit Course') }}</a>
+                <a href="{{ route('admin.courses.levels.index', $course) }}" class="btn-secondary">📊 {{ __('المستويات') }}</a>
                 <a href="{{ route('admin.courses.lessons.index', $course) }}" class="btn-secondary">{{ __('Manage Lessons') }}</a>
                 <a href="{{ route('admin.courses.lessons.create', $course) }}" class="btn-secondary">{{ __('+ Add Lesson') }}</a>
                 <form action="{{ route('admin.courses.destroy', $course) }}" method="POST" onsubmit="return confirm('Delete this course?');">@csrf @method('DELETE')
@@ -63,26 +64,45 @@
                     </div>
                 </div>
 
+                {{-- Levels & Lessons --}}
                 <div class="glass-card overflow-hidden" data-aos="fade-up">
                     <div class="glass-card-header flex justify-between items-center">
-                        <h3 class="font-bold" style="color: var(--color-text);">Lessons ({{ $course->lessons->count() }})</h3>
-                        <a href="{{ route('admin.courses.lessons.create', $course) }}" class="text-primary-500 font-bold text-sm hover:underline">{{ __('+ Add') }}</a>
+                        <h3 class="font-bold" style="color: var(--color-text);">{{ __('المستويات والدروس') }} ({{ $course->levels->count() }} {{ __('مستوى') }})</h3>
+                        <a href="{{ route('admin.courses.levels.index', $course) }}" class="text-primary-500 font-bold text-sm hover:underline">{{ __('إدارة المستويات') }}</a>
                     </div>
-                    <div class="glass-card-body divide-y" style="border-color: var(--color-border);">
-                        @forelse($course->lessons()->orderBy('order_index')->get() as $lesson)
-                            <div class="flex items-center justify-between py-3 first:pt-0 last:pb-0">
-                                <div>
-                                    <div class="font-bold text-sm" style="color: var(--color-text);">{{ $lesson->title }}</div>
-                                    <div class="flex items-center gap-2 text-xs mt-1" style="color: var(--color-text-muted);">
-                                        @if($lesson->has_quiz)<span>{{ __('Quiz') }}</span>@endif
-                                        @if($lesson->has_pronunciation_exercise)<span>{{ __('Pronunciation') }}</span>@endif
-                                        @if($lesson->is_free)<span class="badge-success text-[10px]">{{ __('Free') }}</span>@endif
+                    <div class="glass-card-body space-y-4">
+                        @forelse($course->levels()->withCount('lessons')->ordered()->get() as $level)
+                            <div class="rounded-xl border p-4" style="border-color: var(--color-border); background: var(--color-surface-hover);">
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center text-white font-bold text-sm">{{ $level->order_index + 1 }}</div>
+                                        <div>
+                                            <div class="font-bold text-sm" style="color: var(--color-text);">{{ $level->title }}</div>
+                                            <div class="text-xs" style="color: var(--color-text-muted);">{{ $level->lessons_count }} {{ __('درس') }}</div>
+                                        </div>
                                     </div>
+                                    @if(!$level->is_active)
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded-lg bg-red-500/10 text-red-500 text-xs font-bold">{{ __('مخفي') }}</span>
+                                    @endif
                                 </div>
-                                <a href="{{ route('admin.courses.lessons.show', [$course, $lesson]) }}" class="text-primary-500 font-bold text-sm hover:underline">{{ __('View') }}</a>
+                                @if($level->lessons->count())
+                                    <div class="space-y-1 mr-12">
+                                        @foreach($level->lessons as $lesson)
+                                            <div class="flex items-center justify-between py-1.5">
+                                                <div class="text-sm" style="color: var(--color-text);">{{ $lesson->title }}</div>
+                                                <a href="{{ route('admin.courses.lessons.show', [$course, $lesson]) }}" class="text-primary-500 font-bold text-xs hover:underline">{{ __('View') }}</a>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                @else
+                                    <p class="text-xs mr-12" style="color: var(--color-text-muted);">{{ __('لا توجد دروس بعد') }}</p>
+                                @endif
                             </div>
                         @empty
-                            <p class="text-center py-4 text-sm" style="color: var(--color-text-muted);">{{ __('No lessons yet') }}</p>
+                            <div class="text-center py-8">
+                                <p class="text-sm mb-3" style="color: var(--color-text-muted);">{{ __('لا توجد مستويات حتى الآن') }}</p>
+                                <a href="{{ route('admin.courses.levels.create', $course) }}" class="btn-primary ripple-btn text-sm">{{ __('+ إضافة أول مستوى') }}</a>
+                            </div>
                         @endforelse
                     </div>
                 </div>

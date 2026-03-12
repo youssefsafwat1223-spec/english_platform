@@ -58,6 +58,7 @@ class StoreLessonRequest extends FormRequest
     {
         return [
             'course_id' => 'required|exists:courses,id',
+            'course_level_id' => 'nullable|exists:course_levels,id',
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'video_url' => 'nullable|url',

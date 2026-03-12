@@ -75,8 +75,8 @@
                         <div class="flex items-center gap-2">
                             <div class="w-10 h-10 rounded-full bg-slate-200 dark:bg-white/5 flex items-center justify-center border border-slate-300 dark:border-white/10 text-slate-700 dark:text-white">📚</div>
                             <div>
-                                <div class="text-slate-500 text-xs uppercase tracking-wider mb-0.5">{{ __('Lessons') }}</div>
-                                <div class="font-bold text-slate-800 dark:text-slate-200">{{ $course->lessons->count() }} {{ __('Modules') }}</div>
+                                <div class="text-slate-500 text-xs uppercase tracking-wider mb-0.5">{{ __('Levels') }}</div>
+                                <div class="font-bold text-slate-800 dark:text-slate-200">{{ $course->levels()->active()->count() }} {{ __('مستوى') }} — {{ $course->lessons->count() }} {{ __('درس') }}</div>
                             </div>
                         </div>
                         <div class="w-px h-10 bg-slate-300 dark:bg-white/10 hidden sm:block"></div>
@@ -99,49 +99,91 @@
                         {{ __('Course Syllabus') }}
                     </h3>
                     
-                    <div class="space-y-3">
-                        @forelse($course->lessons as $index => $lesson)
+                    <div class="space-y-4" x-data="{ openLevel: 0 }">
+                        @forelse($course->levels()->active()->ordered()->with('lessons')->get() as $levelIndex => $level)
                         @php
-                            $isAccessible = $lesson->is_free || ($isEnrolled ?? false);
+                            $isLevelUnlocked = ($isEnrolled ?? false) ? $level->isUnlockedFor(auth()->user()) : ($levelIndex === 0);
+                            $completionPercent = ($isEnrolled ?? false) ? $level->getCompletionPercentageFor(auth()->user()) : 0;
+                            $isCompleted = $completionPercent === 100;
                         @endphp
-                        <div class="group relative bg-white/50 dark:bg-[#0f172a]/50 backdrop-blur-sm border border-slate-200 dark:border-white/5 rounded-2xl hover:border-primary-500/30 hover:bg-white dark:hover:bg-[#0f172a] shadow-sm hover:shadow-md dark:shadow-none transition-all duration-300 overflow-hidden">
-                            @if($isAccessible)
-                                <div class="absolute inset-y-0 left-0 w-1 bg-gradient-to-b from-primary-500 to-accent-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                            @endif
-
-                            <div class="p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative z-10">
+                        <div class="group relative bg-white/50 dark:bg-[#0f172a]/50 backdrop-blur-sm border {{ $isLevelUnlocked ? 'border-slate-200 dark:border-white/10' : 'border-slate-200/60 dark:border-white/5' }} rounded-2xl shadow-sm hover:shadow-md dark:shadow-none transition-all duration-300 overflow-hidden">
+                            {{-- Level Header --}}
+                            <button @click="openLevel = openLevel === {{ $levelIndex }} ? -1 : {{ $levelIndex }}" class="w-full p-5 flex items-center justify-between gap-4 text-right">
                                 <div class="flex items-center gap-4 flex-1">
-                                    <div class="shrink-0 w-12 h-12 rounded-xl {{ $isAccessible ? 'bg-primary-500/10 text-primary-600 dark:text-primary-400 group-hover:bg-primary-500 group-hover:text-white' : 'bg-slate-100 dark:bg-slate-800/50 text-slate-400 dark:text-slate-500' }} flex items-center justify-center font-bold text-lg border border-slate-200 dark:border-white/5 transition-all duration-300">
-                                        {{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}
+                                    {{-- Level Number Badge --}}
+                                    <div class="shrink-0 w-14 h-14 rounded-2xl {{ $isCompleted ? 'bg-gradient-to-br from-emerald-500 to-green-500' : ($isLevelUnlocked ? 'bg-gradient-to-br from-primary-500 to-accent-500' : 'bg-slate-200 dark:bg-slate-800') }} flex items-center justify-center font-black text-lg text-white shadow-lg transition-all duration-300">
+                                        @if($isCompleted)
+                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                                        @elseif($isLevelUnlocked)
+                                            {{ $levelIndex + 1 }}
+                                        @else
+                                            <svg class="w-5 h-5 {{ !$isLevelUnlocked ? 'text-slate-400 dark:text-slate-500' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                                        @endif
                                     </div>
-                                    <div>
-                                        <h4 class="font-bold text-lg {{ $isAccessible ? 'text-slate-900 dark:text-slate-200 group-hover:text-primary-600 dark:group-hover:text-white' : 'text-slate-500' }} transition-colors mb-1">
-                                            {{ $lesson->title }}
+                                    <div class="flex-1 text-right">
+                                        <h4 class="font-bold text-lg {{ $isLevelUnlocked ? 'text-slate-900 dark:text-white' : 'text-slate-400 dark:text-slate-500' }} transition-colors">
+                                            {{ $level->title }}
                                         </h4>
-                                        <div class="flex items-center gap-3 text-xs font-semibold text-slate-500">
-                                            <span class="flex items-center gap-1">
-                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                                {{ $lesson->duration_minutes ?? '15' }} {{ __('min') }}
-                                            </span>
-                                            @if($lesson->is_free)
-                                                <span class="text-emerald-500 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 uppercase tracking-wide text-[10px]">{{ __('Preview') }}</span>
+                                        <div class="flex items-center gap-3 text-xs font-semibold {{ $isLevelUnlocked ? 'text-slate-500' : 'text-slate-400 dark:text-slate-600' }} mt-1">
+                                            <span>{{ $level->lessons->count() }} {{ __('Lessons') }}</span>
+                                            @if($isEnrolled ?? false)
+                                                @if($isCompleted)
+                                                    <span class="text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">{{ __('Completed') }} ✓</span>
+                                                @elseif($isLevelUnlocked && $completionPercent > 0)
+                                                    <span class="text-primary-500 bg-primary-500/10 px-2 py-0.5 rounded border border-primary-500/20">{{ $completionPercent }}%</span>
+                                                @elseif(!$isLevelUnlocked)
+                                                    <span class="text-slate-400 bg-slate-200/50 dark:bg-slate-800/50 px-2 py-0.5 rounded">🔒 {{ __('Locked') }}</span>
+                                                @endif
                                             @endif
                                         </div>
+                                        @if($isEnrolled ?? false && $isLevelUnlocked && $completionPercent > 0 && !$isCompleted)
+                                            <div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-1.5 mt-2 overflow-hidden">
+                                                <div class="bg-gradient-to-r from-primary-500 to-accent-500 h-full rounded-full transition-all duration-700" style="width: {{ $completionPercent }}%"></div>
+                                            </div>
+                                        @endif
                                     </div>
                                 </div>
-                                
-                                <div class="shrink-0 w-full sm:w-auto mt-2 sm:mt-0 pt-4 sm:pt-0 border-t sm:border-0 border-slate-200 dark:border-white/5">
-                                    @if($isAccessible)
-                                        <a href="{{ route('student.lessons.show', [$course, $lesson]) }}" class="w-full sm:w-auto px-5 py-2.5 rounded-xl text-sm font-bold text-primary-600 dark:text-primary-400 bg-primary-500/10 hover:bg-primary-500 hover:text-white transition-all flex items-center justify-center gap-2 border border-primary-500/20 group-hover:border-primary-500/50 shadow-sm">
-                                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                                            {{ __('Play') }}
-                                        </a>
-                                    @else
-                                        <div class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800/50 text-slate-400 dark:text-slate-500 text-sm font-bold flex items-center justify-center gap-2 border border-slate-200 dark:border-white/5">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-                                            {{ __('Locked') }}
+                                {{-- Chevron --}}
+                                <svg class="w-5 h-5 text-slate-400 transition-transform duration-300 shrink-0" :class="openLevel === {{ $levelIndex }} ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </button>
+
+                            {{-- Level Lessons --}}
+                            <div x-show="openLevel === {{ $levelIndex }}" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" x-cloak class="border-t border-slate-200 dark:border-white/5">
+                                <div class="divide-y divide-slate-100 dark:divide-white/5">
+                                    @foreach($level->lessons as $lessonIndex => $lesson)
+                                    @php
+                                        $isAccessible = ($lesson->is_free || ($isEnrolled ?? false)) && $isLevelUnlocked;
+                                    @endphp
+                                    <div class="px-5 py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 {{ $isAccessible ? 'hover:bg-slate-50 dark:hover:bg-white/[0.02]' : '' }} transition-colors">
+                                        <div class="flex items-center gap-3 flex-1">
+                                            <div class="shrink-0 w-8 h-8 rounded-lg {{ $isAccessible ? 'bg-primary-500/10 text-primary-600 dark:text-primary-400' : 'bg-slate-100 dark:bg-slate-800/50 text-slate-400 dark:text-slate-500' }} flex items-center justify-center font-bold text-sm">
+                                                {{ str_pad($lessonIndex + 1, 2, '0', STR_PAD_LEFT) }}
+                                            </div>
+                                            <div>
+                                                <span class="font-semibold text-sm {{ $isAccessible ? 'text-slate-800 dark:text-slate-200' : 'text-slate-400 dark:text-slate-500' }}">{{ $lesson->title }}</span>
+                                                <div class="flex items-center gap-2 text-xs text-slate-500 mt-0.5">
+                                                    @if($lesson->video_duration)
+                                                        <span>{{ $lesson->formatted_duration }}</span>
+                                                    @endif
+                                                    @if($lesson->is_free)
+                                                        <span class="text-emerald-500 bg-emerald-500/10 px-1.5 py-0.5 rounded text-[10px] font-bold">{{ __('Preview') }}</span>
+                                                    @endif
+                                                </div>
+                                            </div>
                                         </div>
-                                    @endif
+                                        @if($isAccessible)
+                                            <a href="{{ route('student.lessons.show', [$course, $lesson]) }}" class="px-4 py-2 rounded-lg text-xs font-bold text-primary-600 dark:text-primary-400 bg-primary-500/10 hover:bg-primary-500 hover:text-white transition-all flex items-center gap-1.5 border border-primary-500/20">
+                                                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                                                {{ __('Play') }}
+                                            </a>
+                                        @else
+                                            <div class="px-4 py-2 rounded-lg bg-slate-100 dark:bg-slate-800/50 text-slate-400 dark:text-slate-500 text-xs font-bold flex items-center gap-1.5">
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                                                {{ __('Locked') }}
+                                            </div>
+                                        @endif
+                                    </div>
+                                    @endforeach
                                 </div>
                             </div>
                         </div>

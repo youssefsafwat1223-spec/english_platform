@@ -62,6 +62,14 @@ class Course extends Model
     }
 
     /**
+     * Levels in this course
+     */
+    public function levels()
+    {
+        return $this->hasMany(CourseLevel::class)->orderBy('order_index');
+    }
+
+    /**
      * Questions for this course
      */
     public function questions()
