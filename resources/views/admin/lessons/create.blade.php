@@ -50,7 +50,7 @@
                         <label for="attachments" class="block text-sm font-semibold mb-2" style="color: var(--color-text);">Attachments (PDF, DOC, etc.)</label>
                         <input type="file" id="attachments" name="attachments[]" multiple class="input-glass @error('attachments.*') border-red-500 @enderror">
                         @error('attachments.*')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
-                        <p class="text-xs mt-1" style="color: var(--color-text-muted);">{{ __('Max 10MB per file') }}</p>
+                        <p class="text-xs mt-1" style="color: var(--color-text-muted);">{{ __('Max 100MB per file') }}</p>
                     </div>
                     <div>
                         <label for="order_index" class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('Order Index') }}</label>

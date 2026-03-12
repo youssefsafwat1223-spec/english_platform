@@ -67,7 +67,7 @@ class StoreLessonRequest extends FormRequest
             'is_free' => 'boolean',
             'has_quiz' => 'boolean',
             'has_pronunciation_exercise' => 'boolean',
-            'attachments.*' => 'nullable|file|max:10240', // 10MB
+            'attachments.*' => 'nullable|file|max:102400', // 100MB
             'quiz_mode' => 'nullable|required_if:has_quiz,1|in:existing,questions',
             'quiz_id' => 'nullable|required_if:quiz_mode,existing|exists:quizzes,id',
             'question_ids' => 'nullable|required_if:quiz_mode,questions|array',
@@ -96,7 +96,7 @@ class StoreLessonRequest extends FormRequest
             'course_id.required' => 'Please select a course',
             'course_id.exists' => 'Selected course does not exist',
             'title.required' => 'Lesson title is required',
-            'attachments.*.max' => 'Attachment size must not exceed 10MB',
+            'attachments.*.max' => 'Attachment size must not exceed 100MB',
         ];
     }
 }
