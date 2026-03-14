@@ -19,10 +19,12 @@
                 <p class="mt-1" style="color: var(--color-text-muted);">{{ __('تابع تعلمك وراقب مستوى تقدمك.') }}</p>
             </div>
             @if($currentLesson)
-                <a href="{{ route('student.lessons.show', [$course, $currentLesson]) }}" class="btn-primary ripple-btn inline-flex items-center justify-center gap-2 py-3">
-                    <svg class="w-5 h-5 rtl:ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    <span class="truncate max-w-[200px]">{{ __('متابعة:') }} {{ $currentLesson->title }}</span>
-                </a>
+                <div class="mt-2 sm:mt-0 w-full sm:w-auto">
+                    <a href="{{ route('student.lessons.show', [$course, $currentLesson]) }}" class="btn-primary ripple-btn flex items-center justify-center gap-2 py-2.5 px-5 text-sm sm:text-base w-full sm:w-auto rounded-xl">
+                        <svg class="w-5 h-5 rtl:ml-2 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <span class="whitespace-normal text-center leading-tight">{{ __('متابعة:') }} {{ $currentLesson->title }}</span>
+                    </a>
+                </div>
             @endif
         </div>
 
