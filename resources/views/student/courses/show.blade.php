@@ -75,8 +75,8 @@
                         <div class="flex items-center gap-2">
                             <div class="w-10 h-10 rounded-full bg-slate-200 dark:bg-white/5 flex items-center justify-center border border-slate-300 dark:border-white/10 text-slate-700 dark:text-white">📚</div>
                             <div>
-                                <div class="text-slate-500 text-xs uppercase tracking-wider mb-0.5">{{ __('Levels') }}</div>
-                                <div class="font-bold text-slate-800 dark:text-slate-200">{{ $course->levels()->active()->count() }} {{ __('مستوى') }} — {{ $course->lessons->count() }} {{ __('درس') }}</div>
+                                <div class="text-slate-500 text-xs uppercase tracking-wider mb-0.5">{{ __('العناوين') }}</div>
+                                <div class="font-bold text-slate-800 dark:text-slate-200">{{ $course->levels()->active()->count() }} {{ __('عنوان') }} — {{ $course->lessons->count() }} {{ __('درس') }}</div>
                             </div>
                         </div>
                         <div class="w-px h-10 bg-slate-300 dark:bg-white/10 hidden sm:block"></div>
