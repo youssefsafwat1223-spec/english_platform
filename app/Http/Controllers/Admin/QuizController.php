@@ -54,8 +54,9 @@ class QuizController extends Controller
             ]);
         }
 
-        return redirect()->route('admin.quizzes.show', $quiz)
-            ->with('success', 'Quiz created successfully!');
+        $course = Course::findOrFail($data['course_id']);
+        return redirect()->route('admin.courses.quizzes.show', [$course, $quiz])
+            ->with('success', __('تم إنشاء الاختبار بنجاح!'));
     }
 
     public function show(Quiz $quiz)
@@ -109,16 +110,18 @@ class QuizController extends Controller
             ]);
         }
 
-        return redirect()->route('admin.quizzes.show', $quiz)
-            ->with('success', 'Quiz updated successfully!');
+        $course = Course::findOrFail($data['course_id']);
+        return redirect()->route('admin.courses.quizzes.show', [$course, $quiz])
+            ->with('success', __('تم تعديل الاختبار بنجاح!'));
     }
 
     public function destroy(Quiz $quiz)
     {
+        $courseId = $quiz->course_id;
         $quiz->delete();
 
-        return redirect()->route('admin.quizzes.index')
-            ->with('success', 'Quiz deleted successfully!');
+        return redirect()->route('admin.courses.quizzes.index', $courseId)
+            ->with('success', __('تم حذف الاختبار بنجاح!'));
     }
 
     public function getQuestions(Course $course, Lesson $lesson = null)

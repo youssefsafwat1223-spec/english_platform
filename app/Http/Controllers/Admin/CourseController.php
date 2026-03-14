@@ -41,8 +41,8 @@ class CourseController extends Controller
 
         $course = Course::create($data);
 
-        return redirect()->route('admin.courses.show', $course)
-            ->with('success', 'Course created successfully!');
+        return redirect()->route('admin.courses.index')
+            ->with('success', __('تم إنشاء الكورس بنجاح!'));
     }
 
     public function show(Course $course)
@@ -90,8 +90,8 @@ class CourseController extends Controller
 
         $course->update($data);
 
-        return redirect()->route('admin.courses.show', $course)
-            ->with('success', 'Course updated successfully!');
+        return redirect()->route('admin.courses.index')
+            ->with('success', __('تم تعديل الكورس بنجاح!'));
     }
 
     public function destroy(Course $course)
@@ -104,7 +104,7 @@ class CourseController extends Controller
         $course->delete();
 
         return redirect()->route('admin.courses.index')
-            ->with('success', 'Course deleted successfully!');
+            ->with('success', __('تم حذف الكورس بنجاح!'));
     }
 
     public function toggleStatus(Course $course)
@@ -115,6 +115,7 @@ class CourseController extends Controller
 
         $status = $course->is_active ? 'activated' : 'deactivated';
 
-        return back()->with('success', "Course {$status} successfully!");
+        $statusAr = $course->is_active ? __('مفعل') : __('غير مفعل');
+        return back()->with('success', __("تم تغيير حالة الكورس إلى :status بنجاح!", ['status' => $statusAr]));
     }
 }

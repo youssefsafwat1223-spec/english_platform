@@ -71,7 +71,7 @@ class LessonController extends Controller
         }
 
         return redirect()->route('admin.courses.lessons.index', $course)
-            ->with('success', 'Lesson created successfully!');
+            ->with('success', __('تم إنشاء الدرس بنجاح!'));
     }
 
     public function show(Course $course, Lesson $lesson)
@@ -160,7 +160,7 @@ class LessonController extends Controller
         }
 
         return redirect()->route('admin.courses.lessons.show', [$course, $lesson])
-            ->with('success', 'Lesson updated successfully!');
+            ->with('success', __('تم تعديل الدرس بنجاح!'));
     }
 
     public function destroy(Course $course, Lesson $lesson)
@@ -173,7 +173,7 @@ class LessonController extends Controller
         $lesson->delete();
 
         return redirect()->route('admin.courses.lessons.index', $course)
-            ->with('success', 'Lesson deleted successfully!');
+            ->with('success', __('تم حذف الدرس بنجاح!'));
     }
 
     public function reorder(Course $course)

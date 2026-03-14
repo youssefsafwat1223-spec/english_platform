@@ -87,13 +87,13 @@ class QuestionController extends Controller
 
             if (!$result['success']) {
                 return redirect()->route('admin.questions.index')
-                    ->with('success', 'Question created successfully!')
-                    ->with('error', 'TTS generation failed: ' . $result['error']);
+                    ->with('success', __('تم إنشاء السؤال بنجاح!'))
+                    ->with('error', __('فشل في إنشاء الصوت: ') . $result['error']);
             }
         }
 
         return redirect()->route('admin.questions.index')
-            ->with('success', 'Question created successfully!');
+            ->with('success', __('تم إنشاء السؤال بنجاح!'));
     }
 
     public function show(Question $question)
@@ -148,12 +148,12 @@ class QuestionController extends Controller
 
             if (!$result['success']) {
                 return redirect()->route('admin.questions.show', $question)
-                    ->with('error', 'TTS generation failed: ' . $result['error']);
+                    ->with('error', __('فشل في إنشاء الصوت: ') . $result['error']);
             }
         }
 
         return redirect()->route('admin.questions.show', $question)
-            ->with('success', 'Question updated successfully!');
+            ->with('success', __('تم تحديث السؤال بنجاح!'));
     }
 
     public function destroy(Question $question)
@@ -166,7 +166,7 @@ class QuestionController extends Controller
         $question->delete();
 
         return redirect()->route('admin.questions.index')
-            ->with('success', 'Question deleted successfully!');
+            ->with('success', __('تم حذف السؤال بنجاح!'));
     }
 
     public function generateAudio(Question $question)
@@ -174,10 +174,10 @@ class QuestionController extends Controller
         $result = $this->ttsService->generateQuestionAudio($question);
 
         if ($result['success']) {
-            return back()->with('success', 'Audio generated successfully!');
+            return back()->with('success', __('تم إنشاء الصوت بنجاح!'));
         }
 
-        return back()->with('error', 'Failed to generate audio: ' . $result['error']);
+        return back()->with('error', __('فشل في إنشاء الصوت: ') . $result['error']);
     }
 
     public function deleteAudio(Question $question)
@@ -191,10 +191,10 @@ class QuestionController extends Controller
                 'audio_duration' => null,
             ]);
 
-            return back()->with('success', 'Audio deleted successfully!');
+            return back()->with('success', __('تم حذف الصوت بنجاح!'));
         }
 
-        return back()->with('error', 'No audio to delete');
+        return back()->with('error', __('لا يوجد ملف صوتي للحذف'));
     }
 
     public function import()
