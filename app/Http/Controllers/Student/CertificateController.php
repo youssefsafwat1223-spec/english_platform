@@ -52,7 +52,7 @@ class CertificateController extends Controller
         }
 
         if (!$certificate->pdf_path) {
-            return back()->with('error', 'Certificate PDF not found.');
+            return back()->with('error', __('ملف الشهادة غير موجود.'));
         }
 
         // Increment download count
@@ -82,11 +82,11 @@ class CertificateController extends Controller
 
         try {
             \Illuminate\Support\Facades\Mail::to(auth()->user())->send(new \App\Mail\CertificateIssued($certificate));
-            return back()->with('success', 'Certificate sent to your email successfully!');
+            return back()->with('success', __('تم إرسال الشهادة إلى بريدك الإلكتروني بنجاح!'));
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error('Manual certificate email failed: ' . $e->getMessage());
             \Illuminate\Support\Facades\Log::error($e->getTraceAsString());
-            return back()->with('error', 'Failed to send email: ' . $e->getMessage()); // Show error to user temporarily
+            return back()->with('error', __('فشل في إرسال البريد الإلكتروني: ') . $e->getMessage()); // Show error to user temporarily
         }
     }
 

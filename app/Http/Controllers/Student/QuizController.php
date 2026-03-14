@@ -27,12 +27,12 @@ class QuizController extends Controller
         // Check if enrolled in course
         if (!$user->isEnrolledIn($quiz->course_id)) {
             return redirect()->route('student.courses.show', $quiz->course_id)
-                ->with('error', 'You must enroll in this course first.');
+                ->with('error', __('يجب عليك التسجيل في هذا الكورس أولاً.'));
         }
 
         // Check if can take quiz
         if (!$quiz->canUserTake($user)) {
-            return back()->with('error', 'You cannot take this quiz at this time.');
+            return back()->with('error', __('لا يمكنك إجراء هذا الاختبار في الوقت الحالي.'));
         }
 
         $quiz->load(['questions' => function ($query) {

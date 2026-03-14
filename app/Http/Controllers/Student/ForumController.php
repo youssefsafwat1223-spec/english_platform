@@ -66,8 +66,8 @@ class ForumController extends Controller
             'content' => $request->content,
         ]);
 
-        return redirect()->route('student.forum.topic', [$topic->category->slug, $topic->slug])
-            ->with('success', 'Topic created successfully!');
+        return redirect()->route('student.forum.category', $topic->category)
+            ->with('success', __('تم إنشاء الموضوع بنجاح!'));
     }
 
     public function showTopic(ForumCategory $category, ForumTopic $topic)
@@ -87,7 +87,7 @@ class ForumController extends Controller
     public function storeReply(StoreForumReplyRequest $request, ForumCategory $category, ForumTopic $topic)
     {
         if ($topic->is_locked) {
-            return back()->with('error', 'This topic is locked and cannot accept new replies.');
+            return back()->with('error', __('هذا الموضوع مغلق ولا يقبل ردود جديدة.'));
         }
 
         $reply = $topic->replies()->create([
@@ -95,7 +95,7 @@ class ForumController extends Controller
             'content' => $request->content,
         ]);
 
-        return back()->with('success', 'Reply posted successfully!');
+        return back()->with('success', __('تم إضافة الرد بنجاح!'));
     }
 
     public function toggleLike(ForumReply $reply)
@@ -130,7 +130,7 @@ class ForumController extends Controller
             'description' => $request->description,
         ]);
 
-        return back()->with('success', 'Report submitted successfully. Thank you!');
+        return back()->with('success', __('تم إرسال البلاغ بنجاح. شكرًا لك!'));
     }
 
     public function myTopics()

@@ -124,8 +124,7 @@ class ProfileController extends Controller
 
         $user->update($data);
 
-        return redirect()->route('student.profile.show')
-            ->with('success', 'Profile updated successfully!');
+        return back()->with('success', __('تم تحديث الملف الشخصي بنجاح!'));
     }
 
     public function changePassword()
@@ -151,8 +150,7 @@ class ProfileController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        return redirect()->route('student.profile.show')
-            ->with('success', 'Password changed successfully!');
+        return back()->with('success', __('تم تغيير كلمة المرور بنجاح!'));
     }
 
     public function achievements()

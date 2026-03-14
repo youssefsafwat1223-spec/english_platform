@@ -27,7 +27,7 @@ class LessonController extends Controller
         // Check enrollment
         if (!$user->isEnrolledIn($course->id)) {
             return redirect()->route('student.courses.show', $course)
-                ->with('error', 'You must enroll in this course first.');
+                ->with('error', __('يجب عليك التسجيل في هذا الكورس أولاً.'));
         }
 
         $enrollment = $user->getEnrollment($course->id);
@@ -35,7 +35,7 @@ class LessonController extends Controller
         // Check if can access lesson (previous lessons completed)
         if (!$this->canAccessLesson($user, $lesson)) {
             return redirect()->route('student.courses.learn', $course)
-                ->with('error', 'Please complete previous lessons first.');
+                ->with('error', __('يرجى إكمال الدروس السابقة أولاً.'));
         }
 
         $lesson->load([
@@ -145,7 +145,7 @@ class LessonController extends Controller
             'is_admin_reply' => false,
         ]);
 
-        return back()->with('success', 'Comment posted successfully!');
+        return back()->with('success', __('تم نشر التعليق بنجاح!'));
     }
 
     public function storeNote(StoreUserNoteRequest $request)

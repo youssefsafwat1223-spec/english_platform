@@ -252,7 +252,7 @@ class CourseController extends Controller
 
         if (!$user->isEnrolledIn($course->id)) {
             return redirect()->route('student.courses.show', $course)
-                ->with('error', 'You must enroll in this course first.');
+                ->with('error', __('يجب عليك التسجيل في هذا الكورس أولاً.'));
         }
 
         $enrollment = $user->getEnrollment($course->id);
@@ -275,7 +275,7 @@ class CourseController extends Controller
 
         if (!$enrollment) {
             return redirect()->route('student.courses.show', $course)
-                ->with('error', 'You must enroll in this course first.');
+                ->with('error', __('يجب عليك التسجيل في هذا الكورس أولاً.'));
         }
 
         $isCompleted = $enrollment->completed_at || $enrollment->progress_percentage >= 100;
@@ -308,11 +308,11 @@ class CourseController extends Controller
 
         if (!$user->isEnrolledIn($course->id)) {
             return redirect()->route('student.courses.show', $course)
-                ->with('error', 'You must enroll in this course first.');
+                ->with('error', __('يجب عليك التسجيل في هذا الكورس أولاً.'));
         }
 
-        if (!$user->is_telegram_linked) {
-            return back()->with('error', 'Please link your Telegram account first.');
+        if (!$user->telegram_chat_id) {
+            return back()->with('error', __('يرجى ربط حساب تيليجرام الخاص بك أولاً.'));
         }
 
         $enrollment = $user->getEnrollment($course->id);

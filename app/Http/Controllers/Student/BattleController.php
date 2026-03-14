@@ -54,13 +54,13 @@ class BattleController extends Controller
         // Check user is enrolled
         $isEnrolled = $course->enrollments()->where('user_id', $user->id)->exists();
         if (!$isEnrolled) {
-            return back()->with('error', 'You must be enrolled in this course to join a battle.');
+            return back()->with('error', __('يجب أن تكون مسجلًا في هذا الكورس للانضمام إلى التحدي.'));
         }
 
         // Check enough questions
         $questionCount = Question::where('course_id', $course->id)->count();
         if ($questionCount < 5) {
-            return back()->with('error', 'This course does not have enough questions for a battle yet.');
+            return back()->with('error', __('هذا الكورس لا يحتوي على أسئلة كافية للتحدي بعد.'));
         }
 
         // Check if already in a room
@@ -138,7 +138,7 @@ class BattleController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->with('error', 'Something went wrong: ' . $e->getMessage());
+            return back()->with('error', __('حدث خطأ: ') . $e->getMessage());
         }
     }
 
@@ -160,7 +160,7 @@ class BattleController extends Controller
                 ]);
             } else {
                 return redirect()->route('student.battle.index')
-                    ->with('error', 'This battle room is no longer available.');
+                    ->with('error', __('غرفة التحدي هذه لم تعد متاحة.'));
             }
         }
 
@@ -190,7 +190,7 @@ class BattleController extends Controller
         $participant = $room->participants()->where('user_id', $user->id)->first();
         if (!$participant) {
             return redirect()->route('student.battle.index')
-                ->with('error', 'You are not in this battle room.');
+                ->with('error', __('أنت لست في غرفة التحدي هذه.'));
         }
 
         if ($room->status === 'waiting') {
@@ -395,7 +395,7 @@ class BattleController extends Controller
         $user = auth()->user();
 
         if ($room->status !== 'waiting') {
-            return back()->with('error', 'Cannot leave a game in progress.');
+            return back()->with('error', __('لا يمكنك المغادرة أثناء سير التحدي.'));
         }
 
         $room->participants()->where('user_id', $user->id)->delete();
@@ -406,7 +406,7 @@ class BattleController extends Controller
         }
 
         return redirect()->route('student.battle.index')
-            ->with('success', 'You left the battle room.');
+            ->with('success', __('لقد غادرت غرفة التحدي.'));
     }
 
     /**

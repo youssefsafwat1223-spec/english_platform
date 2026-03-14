@@ -43,7 +43,7 @@ class NotificationController extends Controller
                 'read_at' => now(),
             ]);
 
-        return back()->with('success', 'All notifications marked as read');
+        return back()->with('success', __('تم تحديد جميع الإشعارات كمقروءة'));
     }
 
     public function getUnreadCount()
