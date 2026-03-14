@@ -89,6 +89,7 @@ class LessonController extends Controller
 
     public function edit(Course $course, Lesson $lesson)
     {
+        $lesson->load('attachments');
         $availableQuizzes = $course->quizzes()
             ->where('quiz_type', 'lesson')
             ->where(function ($query) use ($lesson) {
@@ -134,6 +135,15 @@ class LessonController extends Controller
 
         $this->syncLessonQuiz($request, $course, $lesson);
         $this->syncPronunciationExercise($request, $lesson);
+
+        // Delete selected attachments
+        if ($request->has('delete_attachments')) {
+            $attachmentsToDelete = $lesson->attachments()->whereIn('id', $request->input('delete_attachments'))->get();
+            foreach ($attachmentsToDelete as $attachment) {
+                Storage::disk('public')->delete($attachment->file_path);
+                $attachment->delete();
+            }
+        }
 
         // Handle new attachments
         if ($request->hasFile('attachments')) {
