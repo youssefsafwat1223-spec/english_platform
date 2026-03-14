@@ -48,10 +48,21 @@
                                 @if($lesson->video_embed_url)
                                     <iframe class="w-full h-full absolute inset-0 rounded-[1.5rem]" src="{{ $lesson->video_embed_url }}" title="{{ $lesson->title }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
                                 @else
-                                    <video id="lessonVideo" class="w-full h-full object-contain absolute inset-0 rounded-[1.5rem]" controls playsinline preload="metadata">
-                                        <source src="{{ $lesson->video_url }}" type="video/mp4">
+                                    {{-- Video source hidden via Blob & right-click disabled --}}
+                                    <video id="lessonVideo" class="w-full h-full object-contain absolute inset-0 rounded-[1.5rem]" 
+                                           controls playsinline preload="metadata" 
+                                           controlsList="nodownload" oncontextmenu="return false;"
+                                           data-src="{{ $lesson->video_url }}">
                                         {{ __('المتصفح لا يدعم تشغيل الفيديو.') }}
                                     </video>
+                                    
+                                    {{-- Loading overlay while fetching Blob --}}
+                                    <div id="videoLoaderOverlay" class="absolute inset-0 flex items-center justify-center bg-black/80 z-20">
+                                        <div class="flex flex-col items-center gap-3">
+                                            <svg class="w-10 h-10 text-primary-500 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                                            <span class="text-white font-bold text-sm tracking-wider">{{ __('جاري تجهيز الفيديو...') }}</span>
+                                        </div>
+                                    </div>
                                 @endif
                             </div>
                         </div>
@@ -472,10 +483,51 @@ function notesManager() {
     };
 }
 
-// Video Progress Tracking
+// Video Progress Tracking & Blob Protection
 document.addEventListener('DOMContentLoaded', function() {
     const video = document.getElementById('lessonVideo');
     if (video) {
+        // Blob Video Protection
+        const originalSrc = video.getAttribute('data-src');
+        const loader = document.getElementById('videoLoaderOverlay');
+        
+        if (originalSrc) {
+            fetch(originalSrc)
+                .then(response => response.blob())
+                .then(blob => {
+                    const blobUrl = URL.createObjectURL(blob);
+                    video.src = blobUrl;
+                    
+                    // Revoke the original URL and blob URL right after it starts to make extraction extremely narrow-windowed
+                    video.addEventListener('loadeddata', () => {
+                        URL.revokeObjectURL(blobUrl);
+                        video.removeAttribute('data-src');
+                    });
+                    
+                    if(loader) loader.style.display = 'none';
+                })
+                .catch(err => {
+                    console.error('Error loading video securely:', err);
+                    // Fallback to direct src if fetch fails (e.g. CORS)
+                    video.src = originalSrc;
+                    if(loader) loader.style.display = 'none';
+                });
+        }
+    
+        // Disable Right Click & Keyboard shortcuts on video
+        video.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('keydown', e => {
+            // Prevent common Developer Tools shortcuts if video is focused/hovered
+            if(video.matches(':hover') && (
+                e.key === 'F12' || 
+                (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) ||
+                (e.ctrlKey && e.key === 'U')
+            )) {
+                e.preventDefault();
+            }
+        });
+
+        // Tracking
         let lastReportedTime = 0;
         
         video.addEventListener('timeupdate', function() {
