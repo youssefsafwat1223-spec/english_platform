@@ -19,16 +19,16 @@
                         @error('title')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                     </div>
                     <div>
-                        <label for="course_level_id" class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('المستوى') }} <span class="text-red-500">*</span></label>
+                        <label for="course_level_id" class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('العنوان') }} <span class="text-red-500">*</span></label>
                         <select id="course_level_id" name="course_level_id" class="input-glass @error('course_level_id') border-red-500 @enderror" required>
-                            <option value="">{{ __('— اختار المستوى —') }}</option>
+                            <option value="">{{ __('— اختار العنوان —') }}</option>
                             @foreach($levels as $level)
                                 <option value="{{ $level->id }}" {{ old('course_level_id') == $level->id ? 'selected' : '' }}>{{ $level->title }}</option>
                             @endforeach
                         </select>
                         @error('course_level_id')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                         @if($levels->isEmpty())
-                            <p class="text-xs mt-1 text-amber-500 font-bold">⚠️ {{ __('لازم تضيف مستوى للكورس الأول') }} — <a href="{{ route('admin.courses.levels.create', $course) }}" class="text-primary-500 hover:underline">{{ __('إضافة مستوى') }}</a></p>
+                            <p class="text-xs mt-1 text-amber-500 font-bold">⚠️ {{ __('لازم تضيف عنوان للكورس الأول') }} — <a href="{{ route('admin.courses.levels.create', $course) }}" class="text-primary-500 hover:underline">{{ __('إضافة عنوان') }}</a></p>
                         @endif
                     </div>
                     <div>

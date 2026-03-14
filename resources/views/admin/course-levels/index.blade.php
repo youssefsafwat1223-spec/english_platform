@@ -1,17 +1,17 @@
 @extends('layouts.admin')
-@section('title', __('إدارة المستويات') . ' — ' . $course->title)
+@section('title', __('إدارة العناوين') . ' — ' . $course->title)
 @section('content')
 <div class="py-12 relative overflow-hidden">
     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[400px] bg-gradient-to-b from-primary-500/8 to-transparent pointer-events-none z-0"></div>
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 relative z-10">
         <div class="flex justify-between items-center mb-8" data-aos="fade-down">
             <div>
-                <h1 class="text-3xl font-extrabold"><span class="text-gradient">{{ __('إدارة المستويات') }}</span></h1>
+                <h1 class="text-3xl font-extrabold"><span class="text-gradient">{{ __('إدارة العناوين') }}</span></h1>
                 <p class="mt-2" style="color: var(--color-text-muted);">{{ $course->title }}</p>
             </div>
             <div class="flex gap-3">
                 <a href="{{ route('admin.courses.show', $course) }}" class="btn-secondary">{{ __('← العودة للكورس') }}</a>
-                <a href="{{ route('admin.courses.levels.create', $course) }}" class="btn-primary ripple-btn">{{ __('+ إضافة مستوى') }}</a>
+                <a href="{{ route('admin.courses.levels.create', $course) }}" class="btn-primary ripple-btn">{{ __('+ إضافة عنوان') }}</a>
             </div>
         </div>
 
@@ -47,7 +47,7 @@
                     {{-- Actions --}}
                     <div class="flex items-center gap-2">
                         <a href="{{ route('admin.courses.levels.edit', [$course, $level]) }}" class="text-primary-500 text-sm font-bold hover:underline">{{ __('تعديل') }}</a>
-                        <form action="{{ route('admin.courses.levels.destroy', [$course, $level]) }}" method="POST" class="inline" onsubmit="return confirm('هل أنت متأكد من حذف هذا المستوى وكل دروسه؟')">
+                        <form action="{{ route('admin.courses.levels.destroy', [$course, $level]) }}" method="POST" class="inline" onsubmit="return confirm('هل أنت متأكد من حذف هذا العنوان وكل دروسه؟')">
                             @csrf @method('DELETE')
                             <button type="submit" class="text-red-500 text-sm font-bold hover:underline">{{ __('حذف') }}</button>
                         </form>
@@ -58,9 +58,9 @@
             <div class="glass-card overflow-hidden" data-aos="fade-up">
                 <div class="text-center py-16" style="color: var(--color-text-muted);">
                     <div class="text-5xl mb-4">📊</div>
-                    <p class="text-lg font-bold mb-2" style="color: var(--color-text);">{{ __('لا توجد مستويات حتى الآن') }}</p>
-                    <p class="mb-6">{{ __('ابدأ بإضافة المستوى الأول للكورس') }}</p>
-                    <a href="{{ route('admin.courses.levels.create', $course) }}" class="btn-primary ripple-btn">{{ __('+ إضافة أول مستوى') }}</a>
+                    <p class="text-lg font-bold mb-2" style="color: var(--color-text);">{{ __('لا توجد عناوين حتى الآن') }}</p>
+                    <p class="mb-6">{{ __('ابدأ بإضافة العنوان الأول للكورس') }}</p>
+                    <a href="{{ route('admin.courses.levels.create', $course) }}" class="btn-primary ripple-btn">{{ __('+ إضافة أول عنوان') }}</a>
                 </div>
             </div>
             @endforelse

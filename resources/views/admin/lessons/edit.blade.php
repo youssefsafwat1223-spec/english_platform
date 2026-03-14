@@ -19,9 +19,9 @@
                         @error('title')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                     </div>
                     <div>
-                        <label for="course_level_id" class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('المستوى') }} <span class="text-red-500">*</span></label>
+                        <label for="course_level_id" class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('العنوان') }} <span class="text-red-500">*</span></label>
                         <select id="course_level_id" name="course_level_id" class="input-glass" required>
-                            <option value="">{{ __('— اختار المستوى —') }}</option>
+                            <option value="">{{ __('— اختار العنوان —') }}</option>
                             @foreach($levels as $level)
                                 <option value="{{ $level->id }}" {{ old('course_level_id', $lesson->course_level_id) == $level->id ? 'selected' : '' }}>{{ $level->title }}</option>
                             @endforeach

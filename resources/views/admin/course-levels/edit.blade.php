@@ -1,12 +1,12 @@
 @extends('layouts.admin')
-@section('title', __('تعديل المستوى'))
+@section('title', __('تعديل العنوان'))
 @section('content')
 <div class="py-12 relative overflow-hidden">
     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[400px] bg-gradient-to-b from-primary-500/8 to-transparent pointer-events-none z-0"></div>
     <div class="max-w-3xl mx-auto sm:px-6 lg:px-8 relative z-10">
         <div class="mb-8" data-aos="fade-down">
-            <a href="{{ route('admin.courses.levels.index', $course) }}" class="text-sm font-bold hover:underline" style="color: var(--color-text-muted);">← {{ __('العودة لإدارة المستويات') }}</a>
-            <h1 class="text-3xl font-extrabold mt-4"><span class="text-gradient">{{ __('تعديل المستوى') }}</span></h1>
+            <a href="{{ route('admin.courses.levels.index', $course) }}" class="text-sm font-bold hover:underline" style="color: var(--color-text-muted);">← {{ __('العودة لإدارة العناوين') }}</a>
+            <h1 class="text-3xl font-extrabold mt-4"><span class="text-gradient">{{ __('تعديل العنوان') }}</span></h1>
             <p class="mt-2" style="color: var(--color-text-muted);">{{ $course->title }}</p>
         </div>
 
@@ -15,19 +15,19 @@
                 @csrf @method('PUT')
                 <div class="glass-card-body space-y-6">
                     <div>
-                        <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('اسم المستوى') }} <span class="text-red-500">*</span></label>
+                        <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('اسم العنوان') }} <span class="text-red-500">*</span></label>
                         <input type="text" name="title" value="{{ old('title', $level->title) }}" required class="input-glass">
                         @error('title') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
 
                     <div>
-                        <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('وصف المستوى') }}</label>
+                        <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('وصف العنوان') }}</label>
                         <textarea name="description" rows="3" class="input-glass">{{ old('description', $level->description) }}</textarea>
                         @error('description') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
 
                     <div>
-                        <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('صورة المستوى (اختياري)') }}</label>
+                        <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('صورة العنوان (اختياري)') }}</label>
                         @if($level->thumbnail)
                             <div class="flex items-center gap-4 mb-3">
                                 <img src="{{ Storage::url($level->thumbnail) }}" class="w-24 h-16 rounded-xl object-cover border-2 border-primary-500/30" alt="{{ $level->title }}">

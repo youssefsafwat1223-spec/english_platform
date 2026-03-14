@@ -11,7 +11,7 @@
             </div>
             <div class="flex flex-wrap gap-2">
                 <a href="{{ route('admin.courses.edit', $course) }}" class="btn-primary ripple-btn">{{ __('Edit Course') }}</a>
-                <a href="{{ route('admin.courses.levels.index', $course) }}" class="btn-secondary">📊 {{ __('المستويات') }}</a>
+                <a href="{{ route('admin.courses.levels.index', $course) }}" class="btn-secondary">📊 {{ __('العناوين') }}</a>
                 <a href="{{ route('admin.courses.lessons.index', $course) }}" class="btn-secondary">{{ __('Manage Lessons') }}</a>
                 <a href="{{ route('admin.courses.lessons.create', $course) }}" class="btn-secondary">{{ __('+ Add Lesson') }}</a>
                 <form action="{{ route('admin.courses.destroy', $course) }}" method="POST" onsubmit="return confirm('Delete this course?');">@csrf @method('DELETE')
@@ -67,8 +67,8 @@
                 {{-- Levels & Lessons --}}
                 <div class="glass-card overflow-hidden" data-aos="fade-up">
                     <div class="glass-card-header flex justify-between items-center">
-                        <h3 class="font-bold" style="color: var(--color-text);">{{ __('المستويات والدروس') }} ({{ $course->levels->count() }} {{ __('مستوى') }})</h3>
-                        <a href="{{ route('admin.courses.levels.index', $course) }}" class="text-primary-500 font-bold text-sm hover:underline">{{ __('إدارة المستويات') }}</a>
+                        <h3 class="font-bold" style="color: var(--color-text);">{{ __('العناوين والدروس') }} ({{ $course->levels->count() }} {{ __('عنوان') }})</h3>
+                        <a href="{{ route('admin.courses.levels.index', $course) }}" class="text-primary-500 font-bold text-sm hover:underline">{{ __('إدارة العناوين') }}</a>
                     </div>
                     <div class="glass-card-body space-y-4">
                         @forelse($course->levels()->withCount('lessons')->ordered()->get() as $level)
@@ -100,8 +100,8 @@
                             </div>
                         @empty
                             <div class="text-center py-8">
-                                <p class="text-sm mb-3" style="color: var(--color-text-muted);">{{ __('لا توجد مستويات حتى الآن') }}</p>
-                                <a href="{{ route('admin.courses.levels.create', $course) }}" class="btn-primary ripple-btn text-sm">{{ __('+ إضافة أول مستوى') }}</a>
+                                <p class="text-sm mb-3" style="color: var(--color-text-muted);">{{ __('لا توجد عناوين حتى الآن') }}</p>
+                                <a href="{{ route('admin.courses.levels.create', $course) }}" class="btn-primary ripple-btn text-sm">{{ __('+ إضافة أول عنوان') }}</a>
                             </div>
                         @endforelse
                     </div>
