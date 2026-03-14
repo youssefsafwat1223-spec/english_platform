@@ -46,7 +46,11 @@
                         <div class="p-2 sm:p-4 bg-slate-900">
                             <div class="aspect-video bg-black rounded-[1.5rem] overflow-hidden shadow-2xl relative group">
                                 @if($lesson->video_embed_url)
-                                    <iframe class="w-full h-full absolute inset-0 rounded-[1.5rem]" src="{{ $lesson->video_embed_url }}" title="{{ $lesson->title }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                                    <div class="relative w-full h-full rounded-[1.5rem] overflow-hidden">
+                                        <iframe class="w-full h-full absolute inset-0" src="{{ $lesson->video_embed_url }}" title="{{ $lesson->title }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                                        {{-- Invisible overlay to block the top-right pop-out button (specifically for Google Drive embeds) --}}
+                                        <div class="absolute top-0 right-0 w-16 h-16 bg-transparent z-10" title="Pop-out disabled"></div>
+                                    </div>
                                 @else
                                     {{-- Video source hidden via Blob & right-click disabled --}}
                                     <video id="lessonVideo" class="w-full h-full object-contain absolute inset-0 rounded-[1.5rem]" 
