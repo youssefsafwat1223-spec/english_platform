@@ -119,17 +119,102 @@
                                         {{ __('Enable audio') }}
                                     </label>
                                 </div>
-                                <div>
+                                <div x-data="inlineQuestionCreator()" x-init="init()">
                                     <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('Select Questions') }}</label>
-                                    <div class="max-h-64 overflow-y-auto rounded-xl p-3 space-y-2" style="background: var(--color-surface); border: 1px solid var(--color-border);">
+                                    <div class="max-h-64 overflow-y-auto rounded-xl p-3 space-y-2" id="questionsListContainer" style="background: var(--color-surface); border: 1px solid var(--color-border);">
                                         @forelse($availableQuestions as $question)
                                             <label class="flex items-start gap-2 text-sm" style="color: var(--color-text);">
                                                 <input type="checkbox" name="question_ids[]" value="{{ $question->id }}" {{ in_array($question->id, $selectedQuestions, true) ? 'checked' : '' }} class="mt-1 w-4 h-4 text-primary-500 rounded">
                                                 <span>{{ $question->question_text }} <span class="text-xs" style="color: var(--color-text-muted);">({{ ucfirst($question->difficulty) }})</span></span>
                                             </label>
                                         @empty
-                                            <p class="text-sm" style="color: var(--color-text-muted);">{{ __('No questions found.') }}</p>
+                                            <p class="text-sm no-questions-msg" style="color: var(--color-text-muted);">{{ __('No questions found.') }}</p>
                                         @endforelse
+                                    </div>
+
+                                    {{-- Add Question Button --}}
+                                    <button type="button" @click="showModal = true" class="mt-3 inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold text-white bg-primary-500 hover:bg-primary-600 transition-colors shadow-lg shadow-primary-500/30">
+                                        <i class="fas fa-plus"></i> {{ __('إضافة سؤال جديد') }}
+                                    </button>
+
+                                    {{-- Modal --}}
+                                    <div x-show="showModal" x-cloak class="fixed inset-0 z-[9999] flex items-center justify-center p-4" style="background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);">
+                                        <div @click.away="showModal = false" class="glass-card w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+                                            <div class="glass-card-body space-y-4">
+                                                <div class="flex items-center justify-between">
+                                                    <h3 class="text-lg font-bold" style="color: var(--color-text);">{{ __('إضافة سؤال جديد') }}</h3>
+                                                    <button type="button" @click="showModal = false" class="text-xl" style="color: var(--color-text-muted);">&times;</button>
+                                                </div>
+                                                <input type="hidden" x-model="form.course_id">
+                                                <div>
+                                                    <label class="block text-sm font-bold mb-1" style="color: var(--color-text);">{{ __('نص السؤال *') }}</label>
+                                                    <textarea x-model="form.question_text" rows="2" class="input-glass w-full" required></textarea>
+                                                </div>
+                                                <div class="grid grid-cols-2 gap-4">
+                                                    <div>
+                                                        <label class="block text-sm font-bold mb-1" style="color: var(--color-text);">{{ __('نوع السؤال *') }}</label>
+                                                        <select x-model="form.question_type" class="input-glass w-full">
+                                                            <option value="multiple_choice">{{ __('اختيار من متعدد') }}</option>
+                                                            <option value="true_false">{{ __('صح / غلط') }}</option>
+                                                            <option value="fill_blank">{{ __('أكمل الفراغ') }}</option>
+                                                        </select>
+                                                    </div>
+                                                    <div>
+                                                        <label class="block text-sm font-bold mb-1" style="color: var(--color-text);">{{ __('الصعوبة *') }}</label>
+                                                        <select x-model="form.difficulty" class="input-glass w-full">
+                                                            <option value="easy">{{ __('سهل') }}</option>
+                                                            <option value="medium">{{ __('متوسط') }}</option>
+                                                            <option value="hard">{{ __('صعب') }}</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="grid grid-cols-2 gap-4">
+                                                    <div>
+                                                        <label class="block text-sm font-bold mb-1" style="color: var(--color-text);">{{ __('الاختيار A *') }}</label>
+                                                        <input type="text" x-model="form.option_a" class="input-glass w-full">
+                                                    </div>
+                                                    <div>
+                                                        <label class="block text-sm font-bold mb-1" style="color: var(--color-text);">{{ __('الاختيار B *') }}</label>
+                                                        <input type="text" x-model="form.option_b" class="input-glass w-full">
+                                                    </div>
+                                                    <div>
+                                                        <label class="block text-sm font-bold mb-1" style="color: var(--color-text);">{{ __('الاختيار C') }}</label>
+                                                        <input type="text" x-model="form.option_c" class="input-glass w-full">
+                                                    </div>
+                                                    <div>
+                                                        <label class="block text-sm font-bold mb-1" style="color: var(--color-text);">{{ __('الاختيار D') }}</label>
+                                                        <input type="text" x-model="form.option_d" class="input-glass w-full">
+                                                    </div>
+                                                </div>
+                                                <div class="grid grid-cols-2 gap-4">
+                                                    <div>
+                                                        <label class="block text-sm font-bold mb-1" style="color: var(--color-text);">{{ __('الإجابة الصحيحة *') }}</label>
+                                                        <select x-model="form.correct_answer" class="input-glass w-full">
+                                                            <option value="A">A</option>
+                                                            <option value="B">B</option>
+                                                            <option value="C">C</option>
+                                                            <option value="D">D</option>
+                                                        </select>
+                                                    </div>
+                                                    <div>
+                                                        <label class="block text-sm font-bold mb-1" style="color: var(--color-text);">{{ __('النقاط') }}</label>
+                                                        <input type="number" x-model="form.points" min="1" class="input-glass w-full" placeholder="10">
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <label class="block text-sm font-bold mb-1" style="color: var(--color-text);">{{ __('الشرح (اختياري)') }}</label>
+                                                    <textarea x-model="form.explanation" rows="2" class="input-glass w-full"></textarea>
+                                                </div>
+                                                <p x-show="errorMsg" x-text="errorMsg" class="text-red-500 text-sm font-bold"></p>
+                                                <div class="flex justify-end gap-3 pt-2">
+                                                    <button type="button" @click="showModal = false" class="btn-secondary">{{ __('إلغاء') }}</button>
+                                                    <button type="button" @click="submitQuestion()" :disabled="saving" class="btn-primary ripple-btn">
+                                                        <span x-show="!saving">{{ __('حفظ السؤال') }}</span>
+                                                        <span x-show="saving">{{ __('جاري الحفظ...') }}</span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -247,6 +332,83 @@
         toggleQuizOptions();
         togglePronunciationOptions();
     });
+
+    function inlineQuestionCreator() {
+        return {
+            showModal: false,
+            saving: false,
+            errorMsg: '',
+            form: {
+                course_id: '{{ $course->id }}',
+                question_text: '',
+                question_type: 'multiple_choice',
+                difficulty: 'medium',
+                option_a: '',
+                option_b: '',
+                option_c: '',
+                option_d: '',
+                correct_answer: 'A',
+                explanation: '',
+                points: 10,
+            },
+            init() {},
+            resetForm() {
+                this.form.question_text = '';
+                this.form.question_type = 'multiple_choice';
+                this.form.difficulty = 'medium';
+                this.form.option_a = '';
+                this.form.option_b = '';
+                this.form.option_c = '';
+                this.form.option_d = '';
+                this.form.correct_answer = 'A';
+                this.form.explanation = '';
+                this.form.points = 10;
+                this.errorMsg = '';
+            },
+            async submitQuestion() {
+                this.saving = true;
+                this.errorMsg = '';
+                try {
+                    const res = await fetch('{{ route("admin.questions.ajax-store") }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Accept': 'application/json',
+                        },
+                        body: JSON.stringify(this.form),
+                    });
+                    const data = await res.json();
+                    if (!res.ok) {
+                        const errors = data.errors ? Object.values(data.errors).flat().join('\n') : (data.message || 'حدث خطأ');
+                        this.errorMsg = errors;
+                        this.saving = false;
+                        return;
+                    }
+                    if (data.success) {
+                        const container = document.getElementById('questionsListContainer');
+                        const noMsg = container.querySelector('.no-questions-msg');
+                        if (noMsg) noMsg.remove();
+
+                        const q = data.question;
+                        const diffLabel = q.difficulty.charAt(0).toUpperCase() + q.difficulty.slice(1);
+                        const label = document.createElement('label');
+                        label.className = 'flex items-start gap-2 text-sm';
+                        label.style.color = 'var(--color-text)';
+                        label.innerHTML = `<input type="checkbox" name="question_ids[]" value="${q.id}" checked class="mt-1 w-4 h-4 text-primary-500 rounded"><span>${q.question_text} <span class="text-xs" style="color: var(--color-text-muted);">(${diffLabel})</span></span>`;
+                        container.appendChild(label);
+                        container.scrollTop = container.scrollHeight;
+
+                        this.resetForm();
+                        this.showModal = false;
+                    }
+                } catch(e) {
+                    this.errorMsg = 'حدث خطأ في الاتصال بالسيرفر';
+                }
+                this.saving = false;
+            }
+        };
+    }
 </script>
 @endpush
 @endsection

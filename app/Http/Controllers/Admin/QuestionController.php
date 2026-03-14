@@ -96,6 +96,35 @@ class QuestionController extends Controller
             ->with('success', __('تم إنشاء السؤال بنجاح!'));
     }
 
+    public function storeAjax(Request $request)
+    {
+        $validated = $request->validate([
+            'course_id' => 'required|exists:courses,id',
+            'question_text' => 'required|string',
+            'question_type' => 'required|in:multiple_choice,true_false,fill_blank',
+            'option_a' => 'required|string|max:500',
+            'option_b' => 'required|string|max:500',
+            'option_c' => 'nullable|string|max:500',
+            'option_d' => 'nullable|string|max:500',
+            'correct_answer' => 'required|in:A,B,C,D',
+            'explanation' => 'nullable|string',
+            'difficulty' => 'required|in:easy,medium,hard',
+            'points' => 'nullable|integer|min:1',
+        ]);
+
+        $question = Question::create($validated);
+
+        return response()->json([
+            'success' => true,
+            'question' => [
+                'id' => $question->id,
+                'question_text' => $question->question_text,
+                'difficulty' => $question->difficulty,
+                'question_type' => $question->question_type,
+            ],
+        ]);
+    }
+
     public function show(Question $question)
     {
         $question->load(['course', 'lesson', 'quizzes']);

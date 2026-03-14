@@ -207,6 +207,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin', 'active'])-
         ->name('questions.generate-audio');
     Route::delete('/questions/{question}/audio', [AdminQuestionController::class, 'deleteAudio'])
         ->name('questions.delete-audio');
+    Route::post('/questions/ajax-store', [AdminQuestionController::class, 'storeAjax'])
+        ->name('questions.ajax-store');
     
     // Quizzes
     Route::resource('quizzes', AdminQuizController::class);
