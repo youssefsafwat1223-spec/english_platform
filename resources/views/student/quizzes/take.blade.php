@@ -212,53 +212,55 @@
                 @endforeach
             </div>
 
-            {{-- Post-Questions Navigation spacer (Increased for mobile) --}}
-            <div class="h-16 md:h-10"></div> 
+            {{-- Post-Questions Navigation spacer (Increased for mobile to account for fixed footer) --}}
+            <div class="h-28 md:h-10"></div> 
 
-            {{-- Footer Navigation Controls --}}
-            <div class="mt-4 flex items-center justify-between glass-card px-4 sm:px-6 py-4 sm:py-5 shadow-xl border-white/20 dark:border-white/10 relative z-20" data-aos="fade-up" data-aos-delay="200">
-                <button type="button" @click="currentQuestion = Math.max(0, currentQuestion - 1)" 
-                    class="btn-secondary flex items-center gap-2 px-4 sm:px-6 py-3 rounded-xl font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed border-0 hover:bg-slate-200 dark:hover:bg-slate-700 bg-white dark:bg-slate-800"
-                    :disabled="currentQuestion === 0">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-                    <span class="hidden sm:inline">{{ __('Previous') }}</span>
-                </button>
-
-                {{-- Dot Indicators --}}
-                <div class="hidden md:flex items-center gap-2.5 px-6">
-                    @foreach($quiz->questions as $i => $q)
-                        <button type="button" @click="currentQuestion = {{ $i }}" 
-                            class="w-3.5 h-3.5 rounded-full transition-all duration-300 shrink-0 border border-transparent hover:scale-125 focus:outline-none"
-                            :class="{
-                                'bg-primary-500 shadow-[0_0_12px_rgba(var(--color-primary-500),0.6)] scale-125 ring-2 ring-primary-500/30 ring-offset-2 dark:ring-offset-slate-900': currentQuestion === {{ $i }},
-                                'bg-emerald-400': currentQuestion !== {{ $i }} && answers[{{ $i }}],
-                                'bg-slate-200 dark:bg-slate-700 border-slate-300 dark:border-slate-600': currentQuestion !== {{ $i }} && !answers[{{ $i }}]
-                            }"
-                            title="Question {{ $i + 1 }}"></button>
-                    @endforeach
-                </div>
-
-                <div class="flex items-center gap-3">
-                    <button type="button" @click="currentQuestion = Math.min({{ count($quiz->questions ?? []) - 1 }}, currentQuestion + 1)" 
-                        x-show="currentQuestion < {{ count($quiz->questions ?? []) - 1 }}" 
-                        class="btn-primary flex items-center gap-2 px-8 py-3 rounded-xl font-bold shadow-lg shadow-primary-500/25 transition-all transform hover:-translate-y-1">
-                        <span class="hidden sm:inline">{{ __('Next') }}</span>
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            {{-- Footer Navigation Controls (Sticky bottom on mobile, normal flow on desktop) --}}
+            <div class="fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-lg border-t border-slate-200 dark:border-white/10 md:relative md:bg-transparent md:dark:bg-transparent md:backdrop-blur-none md:border-0 md:p-0 transition-all duration-300">
+                <div class="max-w-4xl mx-auto flex items-center justify-between p-4 sm:p-6 md:glass-card md:px-6 md:py-5 md:shadow-xl md:border md:border-white/20 md:dark:border-white/10" data-aos="fade-up" data-aos-delay="200">
+                    <button type="button" @click="currentQuestion = Math.max(0, currentQuestion - 1)" 
+                        class="btn-secondary flex items-center gap-2 px-4 sm:px-6 py-3 rounded-xl font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed border-0 hover:bg-slate-200 dark:hover:bg-slate-700 bg-slate-100 dark:bg-slate-800 md:bg-white md:dark:bg-slate-800"
+                        :disabled="currentQuestion === 0">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                        <span class="hidden sm:inline">{{ __('Previous') }}</span>
                     </button>
-                    
-                    <button type="button" @click="$refs.submitModal.showModal()"
-                        x-show="currentQuestion === {{ count($quiz->questions ?? []) - 1 }}" 
-                        class="btn-primary flex items-center gap-2 px-8 py-3 rounded-xl font-black shadow-xl shadow-accent-500/30 bg-gradient-to-r from-accent-500 to-primary-600 hover:from-accent-400 hover:to-primary-500 transition-all transform hover:-translate-y-1 border-0" 
-                        :disabled="loading">
-                        <span x-show="!loading" class="flex items-center gap-2">
-                            {{ __('Submit Quiz') }}
-                            <svg class="w-5 h-5 bg-white/20 rounded-full p-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
-                        </span>
-                        <span x-show="loading" x-cloak class="flex items-center gap-2">
-                            <svg class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/></svg>
-                            {{ __('Submitting...') }}
-                        </span>
-                    </button>
+
+                    {{-- Dot Indicators --}}
+                    <div class="hidden md:flex items-center gap-2.5 px-6">
+                        @foreach($quiz->questions as $i => $q)
+                            <button type="button" @click="currentQuestion = {{ $i }}" 
+                                class="w-3.5 h-3.5 rounded-full transition-all duration-300 shrink-0 border border-transparent hover:scale-125 focus:outline-none"
+                                :class="{
+                                    'bg-primary-500 shadow-[0_0_12px_rgba(var(--color-primary-500),0.6)] scale-125 ring-2 ring-primary-500/30 ring-offset-2 dark:ring-offset-slate-900': currentQuestion === {{ $i }},
+                                    'bg-emerald-400': currentQuestion !== {{ $i }} && answers[{{ $i }}],
+                                    'bg-slate-200 dark:bg-slate-700 border-slate-300 dark:border-slate-600': currentQuestion !== {{ $i }} && !answers[{{ $i }}]
+                                }"
+                                title="Question {{ $i + 1 }}"></button>
+                        @endforeach
+                    </div>
+
+                    <div class="flex items-center gap-3">
+                        <button type="button" @click="currentQuestion = Math.min({{ count($quiz->questions ?? []) - 1 }}, currentQuestion + 1)" 
+                            x-show="currentQuestion < {{ count($quiz->questions ?? []) - 1 }}" 
+                            class="btn-primary flex items-center gap-2 px-8 py-3 rounded-xl font-bold shadow-lg shadow-primary-500/25 transition-all transform hover:-translate-y-1">
+                            <span class="hidden sm:inline">{{ __('Next') }}</span>
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </button>
+                        
+                        <button type="button" @click="$refs.submitModal.showModal()"
+                            x-show="currentQuestion === {{ count($quiz->questions ?? []) - 1 }}" 
+                            class="btn-primary flex items-center gap-2 px-8 py-3 rounded-xl font-black shadow-xl shadow-accent-500/30 bg-gradient-to-r from-accent-500 to-primary-600 hover:from-accent-400 hover:to-primary-500 transition-all transform hover:-translate-y-1 border-0" 
+                            :disabled="loading">
+                            <span x-show="!loading" class="flex items-center gap-2">
+                                {{ __('Submit Quiz') }}
+                                <svg class="w-5 h-5 bg-white/20 rounded-full p-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                            </span>
+                            <span x-show="loading" x-cloak class="flex items-center gap-2">
+                                <svg class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/></svg>
+                                {{ __('Submitting...') }}
+                            </span>
+                        </button>
+                    </div>
                 </div>
             </div>
 
