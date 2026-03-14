@@ -128,15 +128,14 @@
                         {{ __('المنهج الدراسي') }}
                     </h3>
                     
-                    <div class="space-y-4 lg:space-y-5" x-data="{ openLevel: 0 }">
+                    <div class="space-y-4 lg:space-y-5">
                         @forelse($course->levels()->active()->ordered()->with('lessons')->get() as $levelIndex => $level)
                         @php
-                            $isLevelUnlocked = clone $level; // Just ensuring scope
                             $isLevelUnlocked = $level->isUnlockedFor(auth()->user());
                             $completionPercent = $level->getCompletionPercentageFor(auth()->user());
                             $isCompleted = $completionPercent === 100;
                         @endphp
-                        <div class="bg-white dark:bg-[#0f172a] border {{ $isLevelUnlocked ? 'border-slate-200 hover:border-primary-200 dark:border-white/5 dark:hover:border-primary-900/50' : 'border-slate-200/60 dark:border-white/5' }} rounded-[1.5rem] lg:rounded-[2rem] shadow-sm hover:shadow-md transition-all duration-300 relative overflow-hidden group">
+                        <div x-data="{ openLevel: {{ $isLevelUnlocked ? 'true' : 'false' }} }" class="bg-white dark:bg-[#0f172a] border {{ $isLevelUnlocked ? 'border-slate-200 hover:border-primary-200 dark:border-white/5 dark:hover:border-primary-900/50' : 'border-slate-200/60 dark:border-white/5' }} rounded-[1.5rem] lg:rounded-[2rem] shadow-sm hover:shadow-md transition-all duration-300 relative overflow-hidden group">
                             
                             {{-- Locked Overlay Effect --}}
                             @if(!$isLevelUnlocked)
@@ -144,7 +143,7 @@
                             @endif
 
                             {{-- Level Header --}}
-                            <div @click="openLevel = openLevel === {{ $levelIndex }} ? -1 : {{ $levelIndex }}" class="w-full p-4 lg:p-6 flex flex-col gap-5 text-right relative z-20 outline-none cursor-pointer transition-colors" :class="openLevel === {{ $levelIndex }} ? 'bg-slate-50/50 dark:bg-white/[0.02]' : ''">
+                            <div @click="openLevel = !openLevel" class="w-full p-4 lg:p-6 flex flex-col gap-5 text-right relative z-20 outline-none cursor-pointer transition-colors" :class="openLevel ? 'bg-slate-50/50 dark:bg-white/[0.02]' : ''">
                                 <div class="flex items-center justify-between gap-4">
                                     <h4 class="font-black text-lg lg:text-xl {{ $isLevelUnlocked ? 'text-slate-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400' : 'text-slate-500 dark:text-slate-400' }} break-words transition-colors leading-snug flex-1">
                                         {{ $level->title }}
@@ -163,9 +162,9 @@
                                 {{-- Flexible button like screenshot 1 --}}
                                 <div class="w-full">
                                     <button class="w-full py-3 rounded-xl text-sm lg:text-base font-black flex items-center justify-center transition-all border"
-                                            :class="openLevel === {{ $levelIndex }} ? 'bg-slate-100 border-slate-200 text-slate-600 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300' : '{{ $isCompleted ? 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50 dark:bg-transparent dark:border-white/10 dark:text-slate-300 dark:hover:bg-white/5' : ($isLevelUnlocked ? 'bg-primary-600 border-primary-500 text-white shadow-md shadow-primary-500/20' : 'bg-slate-100 border-slate-200 text-slate-400 dark:bg-slate-800/50 dark:border-white/5 dark:text-slate-500') }}'">
-                                        <span x-text="openLevel === {{ $levelIndex }} ? '{{ __('إخفاء الدروس') }}' : '{{ $isCompleted ? __('مراجعة') : ($isLevelUnlocked ? __('ابدأ / استعراض') : __('مغلق')) }}'"></span>
-                                        <svg x-show="openLevel !== {{ $levelIndex }} && {{ $isLevelUnlocked ? 'true' : 'false' }}" class="w-4 h-4 rtl:mr-2 rtl:rotate-180 ltr:ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
+                                            :class="openLevel ? 'bg-slate-100 border-slate-200 text-slate-600 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300' : '{{ $isCompleted ? 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50 dark:bg-transparent dark:border-white/10 dark:text-slate-300 dark:hover:bg-white/5' : ($isLevelUnlocked ? 'bg-primary-600 border-primary-500 text-white shadow-md shadow-primary-500/20' : 'bg-slate-100 border-slate-200 text-slate-400 dark:bg-slate-800/50 dark:border-white/5 dark:text-slate-500') }}'">
+                                        <span x-text="openLevel ? '{{ __('إخفاء الدروس') }}' : '{{ $isCompleted ? __('مراجعة') : ($isLevelUnlocked ? __('ابدأ / استعراض') : __('مغلق')) }}'"></span>
+                                        <svg x-show="!openLevel && {{ $isLevelUnlocked ? 'true' : 'false' }}" class="w-4 h-4 rtl:mr-2 rtl:rotate-180 ltr:ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
                                     </button>
                                 </div>
                             </div>
@@ -178,7 +177,7 @@
                             @endif
 
                             {{-- Level Lessons Accordion --}}
-                            <div x-show="openLevel === {{ $levelIndex }}" x-collapse x-cloak class="border-t border-slate-100 dark:border-white/5 relative z-20 bg-slate-50/30 dark:bg-slate-900/20">
+                            <div x-show="openLevel" x-collapse x-cloak class="border-t border-slate-100 dark:border-white/5 relative z-20 bg-slate-50/30 dark:bg-slate-900/20">
                                 <div class="divide-y divide-slate-100 dark:divide-white/5 p-2 lg:p-4">
                                     @foreach($level->lessons as $lessonIndex => $lesson)
                                     @php
