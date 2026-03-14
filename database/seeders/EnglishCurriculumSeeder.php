@@ -517,6 +517,11 @@ class EnglishCurriculumSeeder extends Seeder
                     'is_active'   => true,
                 ]);
 
+                // If level has no lessons, create one lesson with the level's title
+                if (empty($lessons)) {
+                    $lessons = [$levelTitle];
+                }
+
                 foreach ($lessons as $lessonTitle) {
                     $baseSlug = Str::slug($lessonTitle);
                     if (empty($baseSlug)) {
