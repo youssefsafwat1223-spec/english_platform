@@ -129,9 +129,15 @@
                 @foreach($questionList as $index => $answer)
                     @php 
                         $isCorrect = $answer->is_correct ?? false; 
-                        $userAnswerText = $answer->question->options[$answer->user_answer] ?? $answer->user_answer ?? '-';
-                        $correctOption = $answer->question->correct_answer ?? null;
-                        $correctAnswerText = $correctOption ? ($answer->question->options[$correctOption] ?? $correctOption) : '-';
+                        $isDragDrop = ($answer->question->question_type ?? '') === 'drag_drop';
+                        if ($isDragDrop) {
+                            $userPairs = json_decode($answer->user_answer, true) ?? [];
+                            $correctPairs = $answer->question->matching_pairs ?? [];
+                        } else {
+                            $userAnswerText = $answer->question->options[$answer->user_answer] ?? $answer->user_answer ?? '-';
+                            $correctOption = $answer->question->correct_answer ?? null;
+                            $correctAnswerText = $correctOption ? ($answer->question->options[$correctOption] ?? $correctOption) : '-';
+                        }
                     @endphp
                     <div class="glass-card overflow-hidden rounded-3xl border {{ $isCorrect ? 'border-emerald-500/30 bg-emerald-50/30 dark:bg-emerald-900/10' : 'border-rose-500/30 bg-rose-50/30 dark:bg-rose-900/10' }}" data-aos="fade-up" data-aos-delay="{{ min($index * 50, 500) }}">
                         <div class="p-6 md:p-8">
@@ -151,32 +157,62 @@
                                     <h3 class="text-lg md:text-xl font-bold text-slate-900 dark:text-white mb-6 leading-relaxed">{{ $answer->question->text ?? $answer->question_text ?? 'Question ' . ($index + 1) }}</h3>
                                     
                                     <div class="space-y-3">
-                                        {{-- User's Answer --}}
-                                        <div class="flex items-center gap-3 p-4 rounded-xl border {{ $isCorrect ? 'bg-emerald-100/50 dark:bg-emerald-500/20 border-emerald-200 dark:border-emerald-500/30' : 'bg-rose-100/50 dark:bg-rose-500/20 border-rose-200 dark:border-rose-500/30' }}">
-                                            <div class="shrink-0 flex items-center justify-center w-6 h-6 rounded-full {{ $isCorrect ? 'bg-emerald-500 text-white' : 'bg-rose-500 text-white' }}">
-                                                @if($isCorrect)
-                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
-                                                @else
-                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"/></svg>
-                                                @endif
+                                        @if($isDragDrop)
+                                            {{-- Drag & Drop Answer Display --}}
+                                            <div class="p-4 rounded-xl border {{ $isCorrect ? 'bg-emerald-100/50 dark:bg-emerald-500/20 border-emerald-200 dark:border-emerald-500/30' : 'bg-rose-100/50 dark:bg-rose-500/20 border-rose-200 dark:border-rose-500/30' }}">
+                                                <div class="text-xs font-bold uppercase tracking-wider mb-3 {{ $isCorrect ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400' }}">{{ __('Your Answer') }}</div>
+                                                <div class="space-y-2">
+                                                    @foreach($userPairs as $pair)
+                                                        <div class="flex items-center gap-2 text-sm font-bold text-slate-900 dark:text-white">
+                                                            <span class="bg-white dark:bg-slate-700 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-600">{{ $pair['left'] ?? '' }}</span>
+                                                            <span class="text-slate-400">→</span>
+                                                            <span class="bg-white dark:bg-slate-700 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-600">{{ $pair['right'] ?? '' }}</span>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
                                             </div>
-                                            <div>
-                                                <div class="text-xs font-bold uppercase tracking-wider {{ $isCorrect ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400' }}">{{ __('Your Answer') }}</div>
-                                                <div class="font-bold text-slate-900 dark:text-white text-base mt-0.5">{{ $userAnswerText }}</div>
-                                            </div>
-                                        </div>
 
-                                        {{-- Correct Answer (if user was wrong) --}}
-                                        @if(!$isCorrect)
-                                            <div class="flex items-center gap-3 p-4 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-                                                <div class="shrink-0 flex items-center justify-center w-6 h-6 rounded-full bg-emerald-500 text-white opacity-80">
-                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                                            @if(!$isCorrect)
+                                                <div class="p-4 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                                                    <div class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">{{ __('Correct Answer') }}</div>
+                                                    <div class="space-y-2">
+                                                        @foreach($correctPairs as $pair)
+                                                            <div class="flex items-center gap-2 text-sm font-bold text-slate-900 dark:text-white">
+                                                                <span class="bg-emerald-100 dark:bg-emerald-900/40 px-3 py-1.5 rounded-lg border border-emerald-200 dark:border-emerald-700">{{ $pair['left'] ?? '' }}</span>
+                                                                <span class="text-emerald-400">→</span>
+                                                                <span class="bg-emerald-100 dark:bg-emerald-900/40 px-3 py-1.5 rounded-lg border border-emerald-200 dark:border-emerald-700">{{ $pair['right'] ?? '' }}</span>
+                                                            </div>
+                                                        @endforeach
+                                                    </div>
+                                                </div>
+                                            @endif
+                                        @else
+                                            {{-- Standard Answer Display --}}
+                                            <div class="flex items-center gap-3 p-4 rounded-xl border {{ $isCorrect ? 'bg-emerald-100/50 dark:bg-emerald-500/20 border-emerald-200 dark:border-emerald-500/30' : 'bg-rose-100/50 dark:bg-rose-500/20 border-rose-200 dark:border-rose-500/30' }}">
+                                                <div class="shrink-0 flex items-center justify-center w-6 h-6 rounded-full {{ $isCorrect ? 'bg-emerald-500 text-white' : 'bg-rose-500 text-white' }}">
+                                                    @if($isCorrect)
+                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                                                    @else
+                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"/></svg>
+                                                    @endif
                                                 </div>
                                                 <div>
-                                                    <div class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">{{ __('Correct Answer') }}</div>
-                                                    <div class="font-bold text-slate-900 dark:text-white text-base mt-0.5">{{ $correctAnswerText }}</div>
+                                                    <div class="text-xs font-bold uppercase tracking-wider {{ $isCorrect ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400' }}">{{ __('Your Answer') }}</div>
+                                                    <div class="font-bold text-slate-900 dark:text-white text-base mt-0.5">{{ $userAnswerText }}</div>
                                                 </div>
                                             </div>
+
+                                            @if(!$isCorrect)
+                                                <div class="flex items-center gap-3 p-4 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                                                    <div class="shrink-0 flex items-center justify-center w-6 h-6 rounded-full bg-emerald-500 text-white opacity-80">
+                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                                                    </div>
+                                                    <div>
+                                                        <div class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">{{ __('Correct Answer') }}</div>
+                                                        <div class="font-bold text-slate-900 dark:text-white text-base mt-0.5">{{ $correctAnswerText }}</div>
+                                                    </div>
+                                                </div>
+                                            @endif
                                         @endif
                                     </div>
                                 </div>
