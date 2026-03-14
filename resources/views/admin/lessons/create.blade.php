@@ -165,16 +165,17 @@
 
                                                 <div>
                                                     <label class="block text-sm font-bold mb-1" style="color: var(--color-text);">{{ __('نص السؤال *') }}</label>
-                                                    <textarea x-model="form.question_text" rows="2" class="input-glass w-full" required></textarea>
+                                                <textarea x-model="form.question_text" rows="2" class="input-glass w-full"></textarea>
                                                 </div>
 
                                                 <div class="grid grid-cols-2 gap-4">
                                                     <div>
                                                         <label class="block text-sm font-bold mb-1" style="color: var(--color-text);">{{ __('نوع السؤال *') }}</label>
-                                                        <select x-model="form.question_type" class="input-glass w-full">
+                                                        <select x-model="form.question_type" class="input-glass w-full" @change="onTypeChange()">
                                                             <option value="multiple_choice">{{ __('اختيار من متعدد') }}</option>
                                                             <option value="true_false">{{ __('صح / غلط') }}</option>
                                                             <option value="fill_blank">{{ __('أكمل الفراغ') }}</option>
+                                                            <option value="drag_drop">{{ __('وصّل (سحب وإفلات)') }}</option>
                                                         </select>
                                                     </div>
                                                     <div>
@@ -187,7 +188,8 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="grid grid-cols-2 gap-4">
+                                                {{-- Options A-D: shown for multiple_choice --}}
+                                                <div class="grid grid-cols-2 gap-4" x-show="form.question_type === 'multiple_choice'">
                                                     <div>
                                                         <label class="block text-sm font-bold mb-1" style="color: var(--color-text);">{{ __('الاختيار A *') }}</label>
                                                         <input type="text" x-model="form.option_a" class="input-glass w-full">
@@ -206,20 +208,57 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="grid grid-cols-2 gap-4">
+                                                {{-- True/False: read-only options --}}
+                                                <div x-show="form.question_type === 'true_false'" class="grid grid-cols-2 gap-4">
+                                                    <div>
+                                                        <label class="block text-sm font-bold mb-1" style="color: var(--color-text);">{{ __('الاختيار A') }}</label>
+                                                        <input type="text" x-model="form.option_a" class="input-glass w-full bg-gray-100" readonly>
+                                                    </div>
+                                                    <div>
+                                                        <label class="block text-sm font-bold mb-1" style="color: var(--color-text);">{{ __('الاختيار B') }}</label>
+                                                        <input type="text" x-model="form.option_b" class="input-glass w-full bg-gray-100" readonly>
+                                                    </div>
+                                                </div>
+
+                                                {{-- Fill Blank: show correct answer text input --}}
+                                                <div x-show="form.question_type === 'fill_blank'">
+                                                    <label class="block text-sm font-bold mb-1" style="color: var(--color-text);">{{ __('الإجابة الصحيحة (نص) *') }}</label>
+                                                    <input type="text" x-model="form.option_a" class="input-glass w-full" placeholder="{{ __('اكتب الإجابة الصحيحة هنا') }}">
+                                                    <p class="text-xs mt-1" style="color: var(--color-text-muted);">{{ __('اكتب الكلمة أو العبارة الصحيحة التي تملأ الفراغ') }}</p>
+                                                </div>
+
+                                                {{-- Drag & Drop: pairs editor --}}
+                                                <div x-show="form.question_type === 'drag_drop'" class="space-y-3">
+                                                    <label class="block text-sm font-bold mb-1" style="color: var(--color-text);">{{ __('الأزواج (وصّل العمود الأيسر بالأيمن) *') }}</label>
+                                                    <template x-for="(pair, index) in form.matching_pairs" :key="index">
+                                                        <div class="flex items-center gap-2">
+                                                            <input type="text" x-model="pair.left" class="input-glass w-full" :placeholder="'{{ __('العنصر') }} ' + (index + 1)">
+                                                            <span class="text-lg font-bold" style="color: var(--color-text-muted);">↔</span>
+                                                            <input type="text" x-model="pair.right" class="input-glass w-full" :placeholder="'{{ __('المطابق') }} ' + (index + 1)">
+                                                            <button type="button" @click="form.matching_pairs.splice(index, 1)" class="text-red-500 hover:text-red-700 text-lg shrink-0" x-show="form.matching_pairs.length > 2">&times;</button>
+                                                        </div>
+                                                    </template>
+                                                    <button type="button" @click="form.matching_pairs.push({left: '', right: ''})" class="text-sm font-bold text-primary-500 hover:underline">+ {{ __('إضافة زوج جديد') }}</button>
+                                                </div>
+
+                                                <div class="grid grid-cols-2 gap-4" x-show="form.question_type !== 'fill_blank' && form.question_type !== 'drag_drop'">
                                                     <div>
                                                         <label class="block text-sm font-bold mb-1" style="color: var(--color-text);">{{ __('الإجابة الصحيحة *') }}</label>
                                                         <select x-model="form.correct_answer" class="input-glass w-full">
                                                             <option value="A">A</option>
                                                             <option value="B">B</option>
-                                                            <option value="C">C</option>
-                                                            <option value="D">D</option>
+                                                            <option value="C" x-show="form.question_type === 'multiple_choice'">C</option>
+                                                            <option value="D" x-show="form.question_type === 'multiple_choice'">D</option>
                                                         </select>
                                                     </div>
                                                     <div>
                                                         <label class="block text-sm font-bold mb-1" style="color: var(--color-text);">{{ __('النقاط') }}</label>
                                                         <input type="number" x-model="form.points" min="1" class="input-glass w-full" placeholder="10">
                                                     </div>
+                                                </div>
+                                                <div x-show="form.question_type === 'fill_blank' || form.question_type === 'drag_drop'">
+                                                    <label class="block text-sm font-bold mb-1" style="color: var(--color-text);">{{ __('النقاط') }}</label>
+                                                    <input type="number" x-model="form.points" min="1" class="input-glass w-full" placeholder="10">
                                                 </div>
 
                                                 <div>
@@ -334,8 +373,38 @@
                 correct_answer: 'A',
                 explanation: '',
                 points: 10,
+                matching_pairs: [{left: '', right: ''}, {left: '', right: ''}],
             },
             init() {},
+            onTypeChange() {
+                if (this.form.question_type === 'true_false') {
+                    this.form.option_a = 'True';
+                    this.form.option_b = 'False';
+                    this.form.option_c = '';
+                    this.form.option_d = '';
+                    this.form.correct_answer = 'A';
+                } else if (this.form.question_type === 'fill_blank') {
+                    this.form.option_a = '';
+                    this.form.option_b = '';
+                    this.form.option_c = '';
+                    this.form.option_d = '';
+                    this.form.correct_answer = 'A';
+                } else if (this.form.question_type === 'drag_drop') {
+                    this.form.option_a = '';
+                    this.form.option_b = '';
+                    this.form.option_c = '';
+                    this.form.option_d = '';
+                    this.form.correct_answer = 'A';
+                    if (this.form.matching_pairs.length < 2) {
+                        this.form.matching_pairs = [{left: '', right: ''}, {left: '', right: ''}];
+                    }
+                } else {
+                    this.form.option_a = '';
+                    this.form.option_b = '';
+                    this.form.option_c = '';
+                    this.form.option_d = '';
+                }
+            },
             resetForm() {
                 this.form.question_text = '';
                 this.form.question_type = 'multiple_choice';
@@ -347,11 +416,19 @@
                 this.form.correct_answer = 'A';
                 this.form.explanation = '';
                 this.form.points = 10;
+                this.form.matching_pairs = [{left: '', right: ''}, {left: '', right: ''}];
                 this.errorMsg = '';
             },
             async submitQuestion() {
                 this.saving = true;
                 this.errorMsg = '';
+
+                // Build payload — only send matching_pairs for drag_drop
+                const payload = {...this.form};
+                if (payload.question_type !== 'drag_drop') {
+                    delete payload.matching_pairs;
+                }
+
                 try {
                     const res = await fetch('{{ route("admin.questions.ajax-store") }}', {
                         method: 'POST',
@@ -360,7 +437,7 @@
                             'X-CSRF-TOKEN': '{{ csrf_token() }}',
                             'Accept': 'application/json',
                         },
-                        body: JSON.stringify(this.form),
+                        body: JSON.stringify(payload),
                     });
                     const data = await res.json();
                     if (!res.ok) {
@@ -371,7 +448,6 @@
                     }
                     if (data.success) {
                         const container = document.getElementById('questionsListContainer');
-                        // Remove "no questions" message if present
                         const noMsg = container.querySelector('.no-questions-msg');
                         if (noMsg) noMsg.remove();
 

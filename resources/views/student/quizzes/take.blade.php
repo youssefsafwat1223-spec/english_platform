@@ -109,42 +109,103 @@
 
                             <div class="space-y-4">
                                 <input type="hidden" name="answers[{{ $qIndex }}][question_id]" value="{{ $question->id }}">
-                                @foreach($question->options as $oIndex => $option)
-                                    @php
-                                        // Fix for showing "0" or falsy options properly
-                                        $displayOption = (string)$option;
-                                    @endphp
-                                    @if(strlen(trim($displayOption)) > 0)
-                                    <label class="group flex items-center p-5 rounded-2xl cursor-pointer transition-all duration-300 border-2 relative overflow-hidden focus-within:ring-4 focus-within:ring-primary-500/30"
-                                        :class="answers[{{ $qIndex }}] === '{{ $oIndex }}' ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/30 shadow-lg shadow-primary-500/10 scale-[1.02] z-10' : 'border-slate-200 dark:border-white/10 bg-white dark:bg-slate-800/50 hover:border-primary-400/50 hover:bg-slate-50 dark:hover:bg-slate-800 hover:shadow-md'">
+                                
+                                @if($question->question_type === 'drag_drop' && $question->matching_pairs)
+                                    {{-- Drag & Drop Matching UI --}}
+                                    <div x-data="matchingQuestion{{ $qIndex }}()" class="space-y-6">
+                                        <input type="hidden" name="answers[{{ $qIndex }}][user_answer]" :value="getAnswerJSON()">
                                         
-                                        <input type="radio" name="answers[{{ $qIndex }}][user_answer]" value="{{ $oIndex }}" class="sr-only" x-model="answers[{{ $qIndex }}]">
-                                        
-                                        {{-- Custom Premium Radio Indicator --}}
-                                        <div class="shrink-0 mr-5 flex flex-col items-center justify-center">
-                                            <div class="w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all duration-300"
-                                                :class="answers[{{ $qIndex }}] === '{{ $oIndex }}' ? 'border-primary-500' : 'border-slate-300 dark:border-slate-600 group-hover:border-primary-400'">
-                                                <div class="w-3.5 h-3.5 rounded-full bg-primary-500 transition-all duration-300 transform"
-                                                    :class="answers[{{ $qIndex }}] === '{{ $oIndex }}' ? 'scale-100 opacity-100 shadow-sm' : 'scale-0 opacity-0'"></div>
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                            {{-- Left Column (Items to match) --}}
+                                            <div class="space-y-3">
+                                                <h4 class="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3">{{ __('العناصر') }}</h4>
+                                                <template x-for="(item, idx) in leftItems" :key="'left-'+idx">
+                                                    <div class="flex items-center gap-3 p-4 rounded-2xl border-2 transition-all duration-300 cursor-pointer"
+                                                         :class="selectedLeft === idx 
+                                                            ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/30 shadow-lg shadow-primary-500/10 scale-[1.02]' 
+                                                            : (matches[idx] !== null 
+                                                                ? 'border-emerald-400 bg-emerald-50 dark:bg-emerald-900/20' 
+                                                                : 'border-slate-200 dark:border-white/10 bg-white dark:bg-slate-800/50 hover:border-primary-400/50 hover:shadow-md')"
+                                                         @click="selectLeft(idx)">
+                                                        <div class="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm shrink-0 transition-all"
+                                                             :class="matches[idx] !== null ? 'bg-emerald-500 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-500'">
+                                                            <span x-text="idx + 1"></span>
+                                                        </div>
+                                                        <span class="font-bold text-lg flex-1" style="color: var(--color-text);" x-text="item"></span>
+                                                        <template x-if="matches[idx] !== null">
+                                                            <div class="flex items-center gap-2">
+                                                                <span class="text-sm font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/40 px-3 py-1 rounded-full" x-text="rightItems[matches[idx]]"></span>
+                                                                <button type="button" @click.stop="clearMatch(idx)" class="text-red-400 hover:text-red-600 text-sm">✕</button>
+                                                            </div>
+                                                        </template>
+                                                    </div>
+                                                </template>
+                                            </div>
+
+                                            {{-- Right Column (Choices - shuffled) --}}
+                                            <div class="space-y-3">
+                                                <h4 class="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3">{{ __('المطابقات') }}</h4>
+                                                <template x-for="(item, idx) in rightItems" :key="'right-'+idx">
+                                                    <div class="p-4 rounded-2xl border-2 transition-all duration-300 cursor-pointer"
+                                                         :class="isRightUsed(idx)
+                                                            ? 'border-emerald-400/50 bg-emerald-50/50 dark:bg-emerald-900/10 opacity-50'
+                                                            : (selectedLeft !== null
+                                                                ? 'border-accent-400 bg-accent-50 dark:bg-accent-900/20 hover:shadow-lg hover:scale-[1.02] animate-pulse-subtle'
+                                                                : 'border-slate-200 dark:border-white/10 bg-white dark:bg-slate-800/50 hover:border-primary-400/50')"
+                                                         @click="matchRight(idx)">
+                                                        <div class="flex items-center gap-3">
+                                                            <div class="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm shrink-0"
+                                                                 :class="isRightUsed(idx) ? 'bg-emerald-200 dark:bg-emerald-800 text-emerald-600' : 'bg-accent-100 dark:bg-accent-900/40 text-accent-600'">
+                                                                <span x-text="String.fromCharCode(65 + idx)"></span>
+                                                            </div>
+                                                            <span class="font-bold text-lg" style="color: var(--color-text);" x-text="item"></span>
+                                                            <template x-if="isRightUsed(idx)">
+                                                                <span class="ml-auto text-emerald-500">✓</span>
+                                                            </template>
+                                                        </div>
+                                                    </div>
+                                                </template>
                                             </div>
                                         </div>
-                                        
-                                        {{-- Option Letter (A, B, C...) --}}
-                                        <div class="shrink-0 w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm mr-5 transition-all duration-300 shadow-sm"
-                                            :class="answers[{{ $qIndex }}] === '{{ $oIndex }}' ? 'bg-gradient-to-br from-primary-500 to-accent-500 text-white shadow-primary-500/30' : 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 group-hover:bg-slate-200 dark:group-hover:bg-slate-600'">
-                                            {{ $oIndex }}
-                                        </div>
 
-                                        <span class="font-bold text-lg md:text-xl transition-all duration-300 flex-1"
-                                            :class="answers[{{ $qIndex }}] === '{{ $oIndex }}' ? 'text-primary-700 dark:text-primary-300' : 'text-slate-700 dark:text-slate-300 group-hover:text-slate-900 dark:group-hover:text-white'">
-                                            {{ $displayOption }}
-                                        </span>
-                                        
-                                        {{-- Hover/Active Glow --}}
-                                        <div class="absolute inset-0 bg-gradient-to-r from-primary-500/5 via-accent-500/5 to-transparent opacity-0 transition-opacity duration-300 pointer-events-none" :class="answers[{{ $qIndex }}] === '{{ $oIndex }}' ? 'opacity-100' : 'group-hover:opacity-100'"></div>
-                                    </label>
-                                    @endif
-                                @endforeach
+                                        <p class="text-sm text-center" style="color: var(--color-text-muted);">
+                                            <span x-show="selectedLeft === null">{{ __('اضغط على عنصر من اليسار ثم اختر المطابق من اليمين') }}</span>
+                                            <span x-show="selectedLeft !== null" class="text-primary-500 font-bold">{{ __('الآن اختر المطابق من العمود الأيمن') }}</span>
+                                        </p>
+                                    </div>
+                                @else
+                                    {{-- Standard Options (Radio Buttons) --}}
+                                    @foreach($question->options as $oIndex => $option)
+                                        @php $displayOption = (string)$option; @endphp
+                                        @if(strlen(trim($displayOption)) > 0)
+                                        <label class="group flex items-center p-5 rounded-2xl cursor-pointer transition-all duration-300 border-2 relative overflow-hidden focus-within:ring-4 focus-within:ring-primary-500/30"
+                                            :class="answers[{{ $qIndex }}] === '{{ $oIndex }}' ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/30 shadow-lg shadow-primary-500/10 scale-[1.02] z-10' : 'border-slate-200 dark:border-white/10 bg-white dark:bg-slate-800/50 hover:border-primary-400/50 hover:bg-slate-50 dark:hover:bg-slate-800 hover:shadow-md'">
+                                            
+                                            <input type="radio" name="answers[{{ $qIndex }}][user_answer]" value="{{ $oIndex }}" class="sr-only" x-model="answers[{{ $qIndex }}]">
+                                            
+                                            <div class="shrink-0 mr-5 flex flex-col items-center justify-center">
+                                                <div class="w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all duration-300"
+                                                    :class="answers[{{ $qIndex }}] === '{{ $oIndex }}' ? 'border-primary-500' : 'border-slate-300 dark:border-slate-600 group-hover:border-primary-400'">
+                                                    <div class="w-3.5 h-3.5 rounded-full bg-primary-500 transition-all duration-300 transform"
+                                                        :class="answers[{{ $qIndex }}] === '{{ $oIndex }}' ? 'scale-100 opacity-100 shadow-sm' : 'scale-0 opacity-0'"></div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="shrink-0 w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm mr-5 transition-all duration-300 shadow-sm"
+                                                :class="answers[{{ $qIndex }}] === '{{ $oIndex }}' ? 'bg-gradient-to-br from-primary-500 to-accent-500 text-white shadow-primary-500/30' : 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 group-hover:bg-slate-200 dark:group-hover:bg-slate-600'">
+                                                {{ $oIndex }}
+                                            </div>
+
+                                            <span class="font-bold text-lg md:text-xl transition-all duration-300 flex-1"
+                                                :class="answers[{{ $qIndex }}] === '{{ $oIndex }}' ? 'text-primary-700 dark:text-primary-300' : 'text-slate-700 dark:text-slate-300 group-hover:text-slate-900 dark:group-hover:text-white'">
+                                                {{ $displayOption }}
+                                            </span>
+                                            
+                                            <div class="absolute inset-0 bg-gradient-to-r from-primary-500/5 via-accent-500/5 to-transparent opacity-0 transition-opacity duration-300 pointer-events-none" :class="answers[{{ $qIndex }}] === '{{ $oIndex }}' ? 'opacity-100' : 'group-hover:opacity-100'"></div>
+                                        </label>
+                                        @endif
+                                    @endforeach
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -314,6 +375,77 @@ function quizController() {
         }
     };
 }
+
+{{-- Matching Question Components --}}
+@foreach($quiz->questions as $qIndex => $question)
+    @if($question->question_type === 'drag_drop' && $question->matching_pairs)
+    function matchingQuestion{{ $qIndex }}() {
+        const pairs = @json($question->matching_pairs);
+        const leftItems = pairs.map(p => p.left);
+        // Shuffle right items
+        const rightItems = pairs.map(p => p.right).sort(() => Math.random() - 0.5);
+
+        return {
+            leftItems,
+            rightItems,
+            selectedLeft: null,
+            matches: new Array(leftItems.length).fill(null), // matches[leftIdx] = rightIdx
+
+            selectLeft(idx) {
+                if (this.matches[idx] !== null) {
+                    // Already matched, deselect
+                    this.selectedLeft = null;
+                    return;
+                }
+                this.selectedLeft = idx;
+            },
+
+            matchRight(rightIdx) {
+                if (this.selectedLeft === null) return;
+                if (this.isRightUsed(rightIdx)) return;
+
+                this.matches[this.selectedLeft] = rightIdx;
+                this.selectedLeft = null;
+
+                // Mark as answered in parent quiz controller
+                if (this.allMatched()) {
+                    // Set a special marker in the parent answers
+                    const quizCtrl = Alpine.closestDataStack(this.$el).find(d => d.answers !== undefined);
+                    if (quizCtrl) {
+                        quizCtrl.answers[{{ $qIndex }}] = 'matched';
+                    }
+                }
+            },
+
+            clearMatch(leftIdx) {
+                this.matches[leftIdx] = null;
+                // Clear parent answer marker
+                const quizCtrl = Alpine.closestDataStack(this.$el).find(d => d.answers !== undefined);
+                if (quizCtrl) {
+                    delete quizCtrl.answers[{{ $qIndex }}];
+                }
+            },
+
+            isRightUsed(rightIdx) {
+                return this.matches.includes(rightIdx);
+            },
+
+            allMatched() {
+                return this.matches.every(m => m !== null);
+            },
+
+            getAnswerJSON() {
+                if (!this.allMatched()) return '';
+                const result = this.leftItems.map((left, idx) => ({
+                    left: left,
+                    right: this.rightItems[this.matches[idx]]
+                }));
+                return JSON.stringify(result);
+            }
+        };
+    }
+    @endif
+@endforeach
 </script>
 <style>
 /* Custom animations & scrollbar */
@@ -322,6 +454,13 @@ function quizController() {
     100% { opacity: 1; transform: scale(1) translateY(0); }
 }
 .animate-zoom-in { animation: zoom-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+/* Subtle pulse for matching UI */
+@keyframes pulse-subtle {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.85; }
+}
+.animate-pulse-subtle { animation: pulse-subtle 1.5s ease-in-out infinite; }
 
 /* Custom audio player styling */
 audio.custom-audio-player::-webkit-media-controls-panel {

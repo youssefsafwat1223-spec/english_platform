@@ -20,6 +20,7 @@ class Question extends Model
         'option_b',
         'option_c',
         'option_d',
+        'matching_pairs',
         'correct_answer',
         'explanation',
         'difficulty',
@@ -35,6 +36,7 @@ class Question extends Model
         return [
             'has_audio' => 'boolean',
             'tts_settings' => 'array',
+            'matching_pairs' => 'array',
         ];
     }
 
@@ -126,6 +128,35 @@ class Question extends Model
      */
     public function isCorrect($answer)
     {
+        if ($this->question_type === 'drag_drop') {
+            // answer is a JSON string of user's matched pairs
+            $userPairs = is_string($answer) ? json_decode($answer, true) : $answer;
+            if (!is_array($userPairs) || !is_array($this->matching_pairs)) {
+                return false;
+            }
+
+            // Build correct map: left => right
+            $correctMap = [];
+            foreach ($this->matching_pairs as $pair) {
+                $correctMap[trim(strtolower($pair['left']))] = trim(strtolower($pair['right']));
+            }
+
+            // Check user's pairs
+            if (count($userPairs) !== count($correctMap)) {
+                return false;
+            }
+
+            foreach ($userPairs as $pair) {
+                $left = trim(strtolower($pair['left'] ?? ''));
+                $right = trim(strtolower($pair['right'] ?? ''));
+                if (!isset($correctMap[$left]) || $correctMap[$left] !== $right) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         return strtoupper($answer) === strtoupper($this->correct_answer);
     }
 
