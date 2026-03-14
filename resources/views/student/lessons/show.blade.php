@@ -19,12 +19,12 @@
                 </li>
                 <li class="opacity-50">/</li>
                 <li>
-                    <a href="{{ route('student.courses.learn', $course) }}" class="hover:text-primary-500 transition-colors truncate max-w-[150px] sm:max-w-[200px] inline-block align-bottom">
+                    <a href="{{ route('student.courses.learn', $course) }}" class="hover:text-primary-500 transition-colors truncate max-w-[200px] sm:max-w-[250px] md:max-w-none inline-block align-bottom">
                         {{ $course->title }}
                     </a>
                 </li>
                 <li class="opacity-50">/</li>
-                <li class="text-slate-900 dark:text-white font-bold truncate max-w-[150px] sm:max-w-[300px] inline-block align-bottom">
+                <li class="text-slate-900 dark:text-white font-bold truncate max-w-[200px] sm:max-w-[400px] md:max-w-none inline-block align-bottom">
                     {{ $lesson->title }}
                 </li>
             </ol>
