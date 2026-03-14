@@ -79,7 +79,7 @@
             <input type="hidden" name="completed_at" x-model="completedAt">
 
             {{-- Questions Container --}}
-            <div class="relative grid items-start">
+            <div class="relative grid items-start pb-24 md:pb-12"> {{-- Added padding bottom to prevent overlap with sticky footer on mobile --}}
                 @foreach($quiz->questions as $qIndex => $question)
                     <div class="col-start-1 row-start-1 w-full transition-all duration-500 ease-in-out"
                          x-show="currentQuestion === {{ $qIndex }}"
@@ -90,12 +90,12 @@
                          x-transition:leave-start="opacity-100 translate-x-0"
                          x-transition:leave-end="opacity-0 -translate-x-8 lg:-translate-x-16">
                         
-                        <div class="glass-card overflow-hidden shadow-2xl border border-white/40 dark:border-white/10 relative p-8 md:p-10 rounded-[2rem]">
+                        <div class="glass-card overflow-hidden shadow-2xl border border-white/40 dark:border-white/10 relative p-6 sm:p-8 md:p-10 rounded-[2rem]">
                             {{-- Fancy Top Accent --}}
                             <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-primary-500 via-accent-500 to-violet-500"></div>
                             
                             @if($question->has_audio && $question->audio_url)
-                                <div class="mb-8 p-1 rounded-2xl bg-gradient-to-r from-primary-500/20 to-accent-500/20 shadow-inner inline-block w-full sm:max-w-sm">
+                                <div class="mb-6 md:mb-8 p-1 rounded-2xl bg-gradient-to-r from-primary-500/20 to-accent-500/20 shadow-inner inline-block w-full sm:max-w-sm">
                                     <audio id="audio-{{ $qIndex }}" controls class="w-full h-12 rounded-[1rem] custom-audio-player focus:outline-none" style="background: transparent;">
                                         <source src="{{ $question->audio_url }}" type="audio/mpeg">
                                         Your browser does not support the audio element.
@@ -212,13 +212,13 @@
                 @endforeach
             </div>
 
-            {{-- Post-Questions Navigation spacer --}}
-            <div class="h-10"></div> 
+            {{-- Post-Questions Navigation spacer (Increased for mobile) --}}
+            <div class="h-16 md:h-10"></div> 
 
             {{-- Footer Navigation Controls --}}
-            <div class="mt-4 flex items-center justify-between glass-card px-6 py-5 shadow-xl border-white/20 dark:border-white/10" data-aos="fade-up" data-aos-delay="200">
+            <div class="mt-4 flex items-center justify-between glass-card px-4 sm:px-6 py-4 sm:py-5 shadow-xl border-white/20 dark:border-white/10 relative z-20" data-aos="fade-up" data-aos-delay="200">
                 <button type="button" @click="currentQuestion = Math.max(0, currentQuestion - 1)" 
-                    class="btn-secondary flex items-center gap-2 px-6 py-3 rounded-xl font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed border-0 hover:bg-slate-200 dark:hover:bg-slate-700 bg-white dark:bg-slate-800"
+                    class="btn-secondary flex items-center gap-2 px-4 sm:px-6 py-3 rounded-xl font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed border-0 hover:bg-slate-200 dark:hover:bg-slate-700 bg-white dark:bg-slate-800"
                     :disabled="currentQuestion === 0">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                     <span class="hidden sm:inline">{{ __('Previous') }}</span>
