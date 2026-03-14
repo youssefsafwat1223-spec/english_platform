@@ -102,28 +102,52 @@ class QuestionController extends Controller
             'course_id' => 'required|exists:courses,id',
             'question_text' => 'required|string',
             'question_type' => 'required|in:multiple_choice,true_false,fill_blank,drag_drop',
-            'option_a' => 'required_unless:question_type,drag_drop|nullable|string|max:500',
-            'option_b' => 'required_if:question_type,multiple_choice,true_false|nullable|string|max:500',
+            'option_a' => 'nullable|string|max:500',
+            'option_b' => 'nullable|string|max:500',
             'option_c' => 'nullable|string|max:500',
             'option_d' => 'nullable|string|max:500',
-            'matching_pairs' => 'required_if:question_type,drag_drop|nullable|array|min:2',
-            'matching_pairs.*.left' => 'required_with:matching_pairs|string',
-            'matching_pairs.*.right' => 'required_with:matching_pairs|string',
-            'correct_answer' => 'required_unless:question_type,drag_drop|nullable|in:A,B,C,D',
+            'matching_pairs' => 'nullable|array|min:2',
+            'matching_pairs.*.left' => 'nullable|string',
+            'matching_pairs.*.right' => 'nullable|string',
+            'correct_answer' => 'nullable|in:A,B,C,D',
             'explanation' => 'nullable|string',
             'difficulty' => 'required|in:easy,medium,hard',
             'points' => 'nullable|integer|min:1',
         ]);
 
-        // For fill_blank, correct_answer is always A (option_a holds the answer)
-        if ($validated['question_type'] === 'fill_blank') {
+        $type = $validated['question_type'];
+
+        // Manual required checks based on type
+        if (in_array($type, ['multiple_choice', 'true_false', 'fill_blank'])) {
+            if (empty($validated['option_a'])) {
+                return response()->json(['errors' => ['option_a' => ['الاختيار A مطلوب']]], 422);
+            }
+        }
+        if (in_array($type, ['multiple_choice', 'true_false'])) {
+            if (empty($validated['option_b'])) {
+                return response()->json(['errors' => ['option_b' => ['الاختيار B مطلوب']]], 422);
+            }
+            if (empty($validated['correct_answer'])) {
+                return response()->json(['errors' => ['correct_answer' => ['الإجابة الصحيحة مطلوبة']]], 422);
+            }
+        }
+        if ($type === 'drag_drop') {
+            if (empty($validated['matching_pairs']) || count($validated['matching_pairs']) < 2) {
+                return response()->json(['errors' => ['matching_pairs' => ['يجب إضافة زوجين على الأقل']]], 422);
+            }
+            foreach ($validated['matching_pairs'] as $i => $pair) {
+                if (empty($pair['left']) || empty($pair['right'])) {
+                    return response()->json(['errors' => ['matching_pairs' => ['يجب ملء جميع الأزواج (يسار ويمين)']]], 422);
+                }
+            }
             $validated['correct_answer'] = 'A';
         }
 
-        // For drag_drop, set a default correct_answer since it's not used
-        if ($validated['question_type'] === 'drag_drop') {
+        // For fill_blank, correct_answer is always A
+        if ($type === 'fill_blank') {
             $validated['correct_answer'] = 'A';
         }
+
         $question = Question::create($validated);
 
         return response()->json([

@@ -24,7 +24,7 @@ class SubmitQuizRequest extends FormRequest
         return [
             'answers' => 'required|array',
             'answers.*.question_id' => 'required|exists:questions,id',
-            'answers.*.user_answer' => 'required|in:A,B,C,D',
+            'answers.*.user_answer' => 'required|string',
             'answers.*.time_taken' => 'nullable|integer',
             'answers.*.audio_played' => 'nullable|boolean',
             'answers.*.audio_replay_count' => 'nullable|integer',
