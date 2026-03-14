@@ -135,8 +135,8 @@
                                             @endif
                                         </div>
                                     @endif
-                                    <div class="flex-1 text-right">
-                                        <h4 class="font-bold text-lg {{ $isLevelUnlocked ? 'text-slate-900 dark:text-white' : 'text-slate-400 dark:text-slate-500' }} transition-colors">
+                                    <div class="flex-1 text-right min-w-0">
+                                        <h4 class="font-bold text-base sm:text-lg {{ $isLevelUnlocked ? 'text-slate-900 dark:text-white' : 'text-slate-400 dark:text-slate-500' }} transition-colors break-words leading-snug">
                                             {{ $level->title }}
                                         </h4>
                                         <div class="flex items-center gap-3 text-xs font-semibold {{ $isLevelUnlocked ? 'text-slate-500' : 'text-slate-400 dark:text-slate-600' }} mt-1">
