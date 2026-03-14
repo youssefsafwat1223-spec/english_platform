@@ -236,6 +236,77 @@
                             <div class="text-sm font-semibold opacity-70">{{ __('المحاضر بيجهز محتوى عظيم، خليك قريب!') }}</div>
                         </div>
                         @endforelse
+
+                        {{-- Fallback: Lessons NOT assigned to any level --}}
+                        @php
+                            $orphanLessons = $course->lessons->whereNull('course_level_id');
+                        @endphp
+                        @if($orphanLessons->count() > 0)
+                        <div x-data="{ openOrphan: true }" class="bg-white dark:bg-[#0f172a] border border-slate-200 hover:border-primary-200 dark:border-white/5 dark:hover:border-primary-900/50 rounded-[1.5rem] lg:rounded-[2rem] shadow-sm hover:shadow-md transition-all duration-300 relative overflow-hidden group">
+                            {{-- Header --}}
+                            <div @click="openOrphan = !openOrphan" class="w-full p-4 lg:p-6 flex flex-col gap-5 text-right relative z-20 outline-none cursor-pointer transition-colors" :class="openOrphan ? 'bg-slate-50/50 dark:bg-white/[0.02]' : ''">
+                                <div class="flex items-center justify-between gap-4">
+                                    <h4 class="font-black text-lg lg:text-xl text-slate-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400 break-words transition-colors leading-snug flex-1">
+                                        {{ __('دروس إضافية') }}
+                                    </h4>
+                                    <div class="shrink-0 w-12 h-12 lg:w-14 lg:h-14 rounded-[1rem] bg-primary-50 text-primary-600 border border-primary-100 dark:bg-primary-500/10 dark:text-primary-400 dark:border-primary-500/20 flex items-center justify-center font-black text-xl transition-all duration-300 shadow-sm">
+                                        📚
+                                    </div>
+                                </div>
+                                <div class="w-full">
+                                    <button class="w-full py-3 rounded-xl text-sm lg:text-base font-black flex items-center justify-center transition-all border"
+                                            :class="openOrphan ? 'bg-slate-100 border-slate-200 text-slate-600 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300' : 'bg-primary-600 border-primary-500 text-white shadow-md shadow-primary-500/20'">
+                                        <span x-text="openOrphan ? '{{ __('إخفاء الدروس') }}' : '{{ __('ابدأ / استعراض') }}'"></span>
+                                        <svg x-show="!openOrphan" class="w-4 h-4 rtl:mr-2 rtl:rotate-180 ltr:ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
+                                    </button>
+                                </div>
+                            </div>
+
+                            {{-- Orphan Lessons List --}}
+                            <div x-show="openOrphan" x-collapse x-cloak class="border-t border-slate-100 dark:border-white/5 relative z-20 bg-slate-50/30 dark:bg-slate-900/20">
+                                <div class="divide-y divide-slate-100 dark:divide-white/5 p-2 lg:p-4">
+                                    @foreach($orphanLessons as $lesson)
+                                    @php
+                                        $lessonProgress = collect($enrollment->lessonProgress)->firstWhere('lesson_id', $lesson->id);
+                                        $isLessonCompleted = $lessonProgress && $lessonProgress->is_completed;
+                                        $isCurrent = $currentLesson && $currentLesson->id === $lesson->id;
+                                    @endphp
+                                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3 lg:p-4 rounded-xl lg:rounded-2xl hover:bg-white dark:hover:bg-[#0f172a] hover:shadow-sm cursor-pointer border border-transparent hover:border-slate-200 dark:hover:border-white/5 {{ $isCurrent ? 'ring-2 ring-primary-500/50 bg-white dark:bg-[#0f172a]' : '' }} transition-all"
+                                         onclick="window.location='{{ route('student.lessons.show', [$course, $lesson]) }}'">
+                                        
+                                        <div class="flex items-center gap-4 flex-1 min-w-0">
+                                            <div class="shrink-0 w-10 h-10 rounded-full {{ $isLessonCompleted ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-500 border border-emerald-100 dark:border-emerald-500/20 shadow-inner' : 'bg-primary-50 dark:bg-primary-500/10 text-primary-600 dark:text-primary-400 border border-primary-100 dark:border-primary-500/20 font-black' }} flex items-center justify-center text-sm shadow-inner transition-colors">
+                                                @if($isLessonCompleted)
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                                @else
+                                                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                                                @endif
+                                            </div>
+                                            <div class="min-w-0">
+                                                <h5 class="font-bold text-sm lg:text-base text-slate-900 dark:text-slate-100 line-clamp-2 transition-colors">{{ $lesson->title }}</h5>
+                                                <div class="flex flex-wrap items-center gap-2 text-xs font-bold mt-1 text-slate-500 dark:text-slate-400">
+                                                    @if($lesson->video_duration)
+                                                        <span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-slate-300 dark:bg-slate-600"></span> {{ $lesson->formatted_duration }}</span>
+                                                    @endif
+                                                    @if($lesson->has_quiz)
+                                                        <span class="inline-flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.5 rounded bg-violet-50 text-violet-600 dark:bg-violet-500/10 dark:text-violet-400 ml-1">🧠 اختبار</span>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="w-full sm:w-auto mt-2 sm:mt-0">
+                                            <span class="flex w-full justify-center lg:justify-start items-center gap-1.5 px-5 py-2.5 rounded-xl text-xs font-black text-slate-700 bg-slate-100 dark:text-slate-300 dark:bg-slate-800 {{ $isLessonCompleted ? 'hover:bg-slate-200 dark:hover:bg-slate-700' : 'hover:bg-primary-600 hover:text-white dark:hover:bg-primary-500' }} transition-colors shadow-sm">
+                                                {{ $isLessonCompleted ? __('مراجعة الدرس') : ($isCurrent ? __('متابعة الدرس') : __('شاهد الدرس')) }}
+                                                <svg class="w-3.5 h-3.5 rtl:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                        @endif
                     </div>
                 </div>
             </div>
