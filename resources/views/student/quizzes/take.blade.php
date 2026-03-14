@@ -263,7 +263,7 @@
             </div>
 
             {{-- Submit Confirmation Modal --}}
-            <dialog x-ref="submitModal" class="glass-card overflow-visible rounded-[2rem] p-0 backdrop:bg-slate-900/80 backdrop:backdrop-blur-sm open:animate-zoom-in bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 shadow-2xl w-full max-w-md m-auto">
+            <dialog x-ref="submitModal" class="glass-card overflow-visible rounded-[2rem] p-0 backdrop:bg-slate-900/80 backdrop:backdrop-blur-sm open:animate-zoom-in bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 shadow-2xl w-full max-w-md m-auto z-50">
                 <div class="p-8 text-center relative overflow-hidden rounded-[2rem]">
                     <div class="absolute inset-0 bg-gradient-to-b from-primary-500/10 to-transparent pointer-events-none"></div>
                     
