@@ -168,6 +168,45 @@
                             </div>
                         </div>
                     </div>
+
+                    {{-- ─── Attachments Section ─── --}}
+                    <div class="space-y-4">
+                        <label class="block text-sm font-semibold" style="color: var(--color-text);">{{ __('المرفقات — Attachments') }}</label>
+
+                        {{-- Existing Attachments --}}
+                        @if($lesson->attachments && $lesson->attachments->count() > 0)
+                        <div class="space-y-2">
+                            <p class="text-xs font-semibold" style="color: var(--color-text-muted);">{{ __('المرفقات الحالية:') }}</p>
+                            @foreach($lesson->attachments as $attachment)
+                            <div class="flex items-center justify-between gap-3 p-3 rounded-xl" style="background: var(--color-surface-hover); border: 1px solid var(--color-border);">
+                                <div class="flex items-center gap-3 min-w-0 flex-1">
+                                    <div class="w-10 h-10 rounded-lg flex items-center justify-center text-lg shrink-0" style="background: var(--color-primary-50); color: var(--color-primary);">
+                                        📎
+                                    </div>
+                                    <div class="min-w-0">
+                                        <div class="font-bold text-sm truncate" style="color: var(--color-text);">{{ $attachment->title }}</div>
+                                        <div class="text-xs" style="color: var(--color-text-muted);">{{ strtoupper($attachment->file_type) }} — {{ $attachment->file_size }} KB</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2 shrink-0">
+                                    <a href="{{ Storage::url($attachment->file_path) }}" class="text-primary-500 text-xs font-bold hover:underline" download>{{ __('تحميل') }}</a>
+                                    <label class="flex items-center gap-1 text-xs text-red-500 font-bold cursor-pointer">
+                                        <input type="checkbox" name="delete_attachments[]" value="{{ $attachment->id }}" class="w-3.5 h-3.5 rounded text-red-500">
+                                        {{ __('حذف') }}
+                                    </label>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+                        @endif
+
+                        {{-- Upload New Attachments --}}
+                        <div>
+                            <label for="attachments" class="block text-xs font-semibold mb-1" style="color: var(--color-text-muted);">{{ __('إضافة مرفقات جديدة (PDF, DOC, صور, إلخ)') }}</label>
+                            <input type="file" id="attachments" name="attachments[]" multiple class="input-glass @error('attachments.*') border-red-500 @enderror">
+                            @error('attachments.*')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                        </div>
+                    </div>
                 </div>
 
                 <div class="glass-card-footer flex justify-between">
