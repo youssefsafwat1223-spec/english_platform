@@ -84,7 +84,17 @@ class LessonController extends Controller
             'completion_rate' => $this->calculateCompletionRate($lesson),
         ];
 
-        return view('admin.lessons.show', compact('course', 'lesson', 'stats'));
+        $previousLesson = $course->lessons()
+            ->where('order_index', '<', $lesson->order_index)
+            ->orderBy('order_index', 'desc')
+            ->first();
+
+        $nextLesson = $course->lessons()
+            ->where('order_index', '>', $lesson->order_index)
+            ->orderBy('order_index', 'asc')
+            ->first();
+
+        return view('admin.lessons.show', compact('course', 'lesson', 'stats', 'previousLesson', 'nextLesson'));
     }
 
     public function edit(Course $course, Lesson $lesson)

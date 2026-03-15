@@ -9,12 +9,26 @@
                 <h1 class="text-3xl font-extrabold"><span class="text-gradient">{{ $lesson->title }}</span></h1>
                 <p class="mt-2" style="color: var(--color-text-muted);">{{ $course->title }}</p>
             </div>
-            <div class="flex flex-wrap gap-2">
-                <a href="{{ route('admin.courses.lessons.edit', [$course, $lesson]) }}" class="btn-primary ripple-btn">{{ __('Edit Lesson') }}</a>
-                <form action="{{ route('admin.courses.lessons.destroy', [$course, $lesson]) }}" method="POST" onsubmit="return confirm('Delete this lesson?');">@csrf @method('DELETE')
-                    <button type="submit" class="inline-flex items-center px-4 py-2 rounded-xl bg-red-500/10 text-red-500 text-sm font-bold hover:bg-red-500/20 transition-colors">{{ __('Delete') }}</button>
-                </form>
-                <a href="{{ route('admin.courses.lessons.index', $course) }}" class="btn-secondary">{{ __('← Back') }}</a>
+            <div class="flex flex-col sm:flex-row gap-4 items-center">
+                <div class="flex items-center gap-2">
+                    @if($previousLesson)
+                        <a href="{{ route('admin.courses.lessons.show', [$course, $previousLesson]) }}" class="btn-secondary py-2 px-4 text-sm flex items-center gap-2" title="{{ $previousLesson->title }}">
+                            <i class="fas fa-chevron-right rtl:fa-chevron-left"></i> {{ __('Previous Lesson') }}
+                        </a>
+                    @endif
+                    @if($nextLesson)
+                        <a href="{{ route('admin.courses.lessons.show', [$course, $nextLesson]) }}" class="btn-secondary py-2 px-4 text-sm flex items-center gap-2" title="{{ $nextLesson->title }}">
+                            {{ __('Next Lesson') }} <i class="fas fa-chevron-left rtl:fa-chevron-right"></i>
+                        </a>
+                    @endif
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <a href="{{ route('admin.courses.lessons.edit', [$course, $lesson]) }}" class="btn-primary ripple-btn">{{ __('Edit Lesson') }}</a>
+                    <form action="{{ route('admin.courses.lessons.destroy', [$course, $lesson]) }}" method="POST" onsubmit="return confirm('Delete this lesson?');">@csrf @method('DELETE')
+                        <button type="submit" class="inline-flex items-center px-4 py-2 rounded-xl bg-red-500/10 text-red-500 text-sm font-bold hover:bg-red-500/20 transition-colors">{{ __('Delete') }}</button>
+                    </form>
+                    <a href="{{ route('admin.courses.lessons.index', $course) }}" class="btn-secondary">{{ __('← Back') }}</a>
+                </div>
             </div>
         </div>
 
@@ -26,11 +40,6 @@
                         @if($lesson->video_url)
                             <div class="aspect-video bg-black rounded-xl overflow-hidden mb-4">
                                 @if($lesson->video_embed_url)
-                                    <iframe class="w-full h-full" src="{{ $lesson->video_embed_url }}" title="{{ $lesson->title }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-                                @else
-                                    <video src="{{ $lesson->video_url }}" controls class="w-full h-full"></video>
-                                @endif
-                            </div>
                         @endif
                         @if($lesson->text_content)
                             <div class="prose max-w-none" style="color: var(--color-text);"><p class="whitespace-pre-line">{{ $lesson->text_content }}</p></div>
