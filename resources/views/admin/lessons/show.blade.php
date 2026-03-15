@@ -40,13 +40,13 @@
                         @if($lesson->video_url)
                             <div class="aspect-video bg-black rounded-xl overflow-hidden mb-4">
                                 @if($lesson->video_embed_url)
+                                    <iframe class="w-full h-full" src="{{ $lesson->video_embed_url }}" title="{{ $lesson->title }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                                @else
+                                    <video src="{{ $lesson->video_url }}" controls class="w-full h-full"></video>
+                                @endif
+                            </div>
                         @endif
                         @if($lesson->text_content)
-                            <div class="prose max-w-none" style="color: var(--color-text);"><p class="whitespace-pre-line">{{ $lesson->text_content }}</p></div>
-                        @else
-                            <p style="color: var(--color-text-muted);">{{ __('No text content added.') }}</p>
-                        @endif
-                    </div>
                 </div>
 
                 @if($lesson->attachments->count() > 0)
