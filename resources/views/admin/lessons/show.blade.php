@@ -47,6 +47,11 @@
                             </div>
                         @endif
                         @if($lesson->text_content)
+                            <div class="prose max-w-none" style="color: var(--color-text);"><p class="whitespace-pre-line">{{ $lesson->text_content }}</p></div>
+                        @else
+                            <p style="color: var(--color-text-muted);">{{ __('No text content added.') }}</p>
+                        @endif
+                    </div>
                 </div>
 
                 @if($lesson->attachments->count() > 0)
