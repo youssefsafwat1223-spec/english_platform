@@ -4,9 +4,23 @@
 <div class="py-12 relative overflow-hidden">
     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[400px] bg-gradient-to-b from-primary-500/8 to-transparent pointer-events-none z-0"></div>
     <div class="max-w-4xl mx-auto sm:px-6 lg:px-8 relative z-10">
-        <div class="mb-8" data-aos="fade-down">
-            <h1 class="text-3xl font-extrabold"><span class="text-gradient">{{ __('Edit Lesson') }}</span></h1>
-            <p class="mt-2" style="color: var(--color-text-muted);">{{ $course->title }}</p>
+        <div class="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4" data-aos="fade-down">
+            <div>
+                <h1 class="text-3xl font-extrabold"><span class="text-gradient">{{ __('Edit Lesson') }}</span></h1>
+                <p class="mt-2" style="color: var(--color-text-muted);">{{ $course->title }}</p>
+            </div>
+            <div class="flex items-center gap-2">
+                @if($previousLesson)
+                    <a href="{{ route('admin.courses.lessons.edit', [$course, $previousLesson]) }}" class="btn-secondary py-2 px-4 text-sm flex items-center gap-2" title="{{ $previousLesson->title }}">
+                        <i class="fas fa-chevron-right rtl:fa-chevron-left"></i> {{ __('Previous Lesson') }}
+                    </a>
+                @endif
+                @if($nextLesson)
+                    <a href="{{ route('admin.courses.lessons.edit', [$course, $nextLesson]) }}" class="btn-secondary py-2 px-4 text-sm flex items-center gap-2" title="{{ $nextLesson->title }}">
+                        {{ __('Next Lesson') }} <i class="fas fa-chevron-left rtl:fa-chevron-right"></i>
+                    </a>
+                @endif
+            </div>
         </div>
 
         <form action="{{ route('admin.courses.lessons.update', [$course, $lesson]) }}" method="POST" enctype="multipart/form-data" x-data="{ loading: false }" @submit="loading = true">

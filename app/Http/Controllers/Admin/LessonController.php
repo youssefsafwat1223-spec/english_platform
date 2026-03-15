@@ -111,6 +111,16 @@ class LessonController extends Controller
 
         $levels = $course->levels()->ordered()->get();
 
+        $previousLesson = $course->lessons()
+            ->where('order_index', '<', $lesson->order_index)
+            ->orderBy('order_index', 'desc')
+            ->first();
+
+        $nextLesson = $course->lessons()
+            ->where('order_index', '>', $lesson->order_index)
+            ->orderBy('order_index', 'asc')
+            ->first();
+
         return view('admin.lessons.edit', compact(
             'course',
             'lesson',
@@ -118,7 +128,9 @@ class LessonController extends Controller
             'availableQuestions',
             'selectedQuestionIds',
             'pronunciationExercise',
-            'levels'
+            'levels',
+            'previousLesson',
+            'nextLesson'
         ));
     }
 
