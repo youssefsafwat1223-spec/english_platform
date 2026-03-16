@@ -46,10 +46,34 @@
                         <div class="p-2 sm:p-4 bg-slate-900">
                             <div class="aspect-video bg-black rounded-[1.5rem] overflow-hidden shadow-2xl relative group">
                                 @if($lesson->video_embed_url)
+                                    @php
+                                        // تشفيه الرابط باستخدام Base64 عشان ما يبقاش واضح في السورس كود
+                                        $encodedUrl = base64_encode($lesson->video_embed_url);
+                                    @endphp
                                     <div class="relative w-full h-full rounded-[1.5rem] overflow-hidden">
-                                        <iframe class="w-full h-full absolute inset-0" src="{{ $lesson->video_embed_url }}" title="{{ $lesson->title }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                                        {{-- تم إزالة ال src واستخدام data-esrc للرابط المشفر --}}
+                                        <iframe id="protected-iframe" class="w-full h-full absolute inset-0 bg-slate-900" title="{{ $lesson->title }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen data-esrc="{{ $encodedUrl }}"></iframe>
+                                        
+                                        {{-- سكريبت لفك التشفير وإضافة الرابط بعد ثانية لمنع برامج النسخ المباشر من أخذ الرابط بسهولة --}}
+                                        <script>
+                                            document.addEventListener('DOMContentLoaded', function() {
+                                                setTimeout(function() {
+                                                    var iframe = document.getElementById('protected-iframe');
+                                                    if(iframe) {
+                                                        // فك تشفير الرابط ووضعه في ال src
+                                                        iframe.src = atob(iframe.getAttribute('data-esrc'));
+                                                        
+                                                        // منع الضغط كليك يمين على ال iframe نفسه قدر الإمكان (رغم صعوبته في الدومين المختلف)
+                                                        iframe.addEventListener('contextmenu', e => e.preventDefault());
+                                                    }
+                                                }, 300); // تأخير بسيط
+                                            });
+                                        </script>
+
                                         {{-- Invisible overlay to block the top-right pop-out button (specifically for Google Drive embeds) --}}
-                                        <div class="absolute top-0 right-0 w-16 h-16 bg-transparent z-10" title="Pop-out disabled"></div>
+                                        <div class="absolute top-0 right-0 w-16 h-16 w-full h-full bg-transparent z-10 hidden md:block" title="Pop-out disabled" oncontextmenu="return false;"></div>
+                                        <div class="absolute inset-0 bg-transparent z-10" title="Protected Video" oncontextmenu="return false;" style="background: transparent; z-index: 5; pointer-events: none;"></div>
+                                        
                                     </div>
                                 @else
                                     {{-- Video source hidden via Blob & right-click disabled --}}
