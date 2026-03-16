@@ -70,9 +70,10 @@
                                             });
                                         </script>
 
-                                        {{-- Invisible overlay to block the top-right pop-out button (specifically for Google Drive embeds) --}}
-                                        <div class="absolute top-0 right-0 w-16 h-16 w-full h-full bg-transparent z-10 hidden md:block" title="Pop-out disabled" oncontextmenu="return false;"></div>
-                                        <div class="absolute inset-0 bg-transparent z-10" title="Protected Video" oncontextmenu="return false;" style="background: transparent; z-index: 5; pointer-events: none;"></div>
+                                        {{-- Invisible overlay to block the top-right pop-out button (specifically for Google Drive embeds) ONLY. We must allow clicks on the rest of the video to play/pause --}}
+                                        <div class="absolute top-0 right-0 w-20 h-20 bg-transparent z-10 hidden md:block" title="Pop-out disabled" oncontextmenu="return false;"></div>
+                                        
+                                        {{-- We REMOVED the full-screen transparent overlay because it blocks PLAY/PAUSE clicks. --}}
                                         
                                         {{-- Dynamic Watermark (Anti-Screen Record Deterrent) --}}
                                         <div id="dynamic-watermark" class="absolute z-20 pointer-events-none opacity-40 mix-blend-overlay text-white/50 text-sm md:text-base font-bold tracking-widest uppercase transition-all duration-[6000ms] ease-in-out" style="top: 10%; left: 10%; user-select: none; text-shadow: 0 0 4px rgba(0,0,0,0.8);">
