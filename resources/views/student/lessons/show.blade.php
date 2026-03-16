@@ -74,6 +74,31 @@
                                         <div class="absolute top-0 right-0 w-16 h-16 w-full h-full bg-transparent z-10 hidden md:block" title="Pop-out disabled" oncontextmenu="return false;"></div>
                                         <div class="absolute inset-0 bg-transparent z-10" title="Protected Video" oncontextmenu="return false;" style="background: transparent; z-index: 5; pointer-events: none;"></div>
                                         
+                                        {{-- Dynamic Watermark (Anti-Screen Record Deterrent) --}}
+                                        <div id="dynamic-watermark" class="absolute z-20 pointer-events-none opacity-40 mix-blend-overlay text-white/50 text-sm md:text-base font-bold tracking-widest uppercase transition-all duration-[6000ms] ease-in-out" style="top: 10%; left: 10%; user-select: none; text-shadow: 0 0 4px rgba(0,0,0,0.8);">
+                                            {{ auth()->user()->name }} 
+                                            @if(auth()->user()->phone)
+                                                • {{ auth()->user()->phone }}
+                                            @endif
+                                            <br>
+                                            <span class="text-xs opacity-50">{{ request()->ip() }}</span>
+                                        </div>
+
+                                        <script>
+                                            document.addEventListener('DOMContentLoaded', function() {
+                                                const watermark = document.getElementById('dynamic-watermark');
+                                                if(watermark) {
+                                                    setInterval(() => {
+                                                        // Move watermark randomly within 10% to 80% of width/height to keep it on screen
+                                                        const randomTop = Math.floor(Math.random() * 70) + 10;
+                                                        const randomLeft = Math.floor(Math.random() * 70) + 10;
+                                                        
+                                                        watermark.style.top = randomTop + '%';
+                                                        watermark.style.left = randomLeft + '%';
+                                                    }, 5000); // Change position every 5 seconds
+                                                }
+                                            });
+                                        </script>
                                     </div>
                                 @else
                                     {{-- Video source hidden via Blob & right-click disabled --}}
