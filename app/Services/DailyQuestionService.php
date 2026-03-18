@@ -111,11 +111,12 @@ class DailyQuestionService
     }
 
     /**
-     * Check if user should receive quiz today (every other day)
+     * Check if user should receive quiz today
+     * Now always returns true so users can get quizzes every day
      */
     private function shouldSendQuestionToday(User $user)
     {
-        $sendAlternateDays = config('app.send_daily_questions_alternate_days', true);
+        $sendAlternateDays = config('app.send_daily_questions_alternate_days', false);
 
         if (!$sendAlternateDays) {
             return true; // Send every day
@@ -157,7 +158,14 @@ class DailyQuestionService
 
         $availableCount = Question::whereIn('lesson_id', $lessonIds)->count();
         if ($availableCount === 0) {
-            return ['questions' => collect(), 'course' => $enrollment->course, 'lesson' => $lesson];
+            // Ultimate fallback: check ALL lessons in the course
+            $allLessonIds = $lesson->course->lessons()->pluck('id');
+            $availableCount = Question::whereIn('lesson_id', $allLessonIds)->count();
+            if ($availableCount === 0) {
+                return ['questions' => collect(), 'course' => $enrollment->course, 'lesson' => $lesson];
+            }
+            // Use all lessons instead
+            $lessonIds = $allLessonIds;
         }
 
         $count = $this->getDailyQuizQuestionCount($availableCount);
@@ -191,7 +199,7 @@ class DailyQuestionService
             $selected = $selected->merge($fallback);
         }
 
-        // Allow repeats if still not enough
+        // Allow repeats if still not enough (ignore 7-day exclusion)
         if ($selected->count() < $count) {
             $needed = $count - $selected->count();
 
@@ -202,6 +210,15 @@ class DailyQuestionService
                 ->get();
 
             $selected = $selected->merge($fallback);
+        }
+
+        // Ultimate Fallback: If STILL empty, grab any question from the ENTIRE course
+        if ($selected->count() === 0) {
+            $courseLessonIds = $lesson->course->lessons()->pluck('id');
+            $selected = Question::whereIn('lesson_id', $courseLessonIds)
+                ->inRandomOrder()
+                ->take($count)
+                ->get();
         }
 
         return [
