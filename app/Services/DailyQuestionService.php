@@ -129,6 +129,10 @@ class DailyQuestionService
             return true; // First time
         }
 
+        if ($lastQuestion->scheduled_for->isToday()) {
+            return true; // Scheduled for today, allow sending the prompt again
+        }
+
         return $lastQuestion->scheduled_for->diffInDays(today()) >= 2;
     }
 

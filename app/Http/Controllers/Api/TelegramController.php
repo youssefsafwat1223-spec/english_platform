@@ -129,7 +129,23 @@ class TelegramController extends Controller
                         return response()->json(['ok' => true]);
                     }
 
-                    $message = "No daily quiz available right now. Quizzes are sent at 6 PM every other day.";
+                    $unanswered = \App\Models\DailyQuestion::where('user_id', $user->id)
+                        ->whereDate('scheduled_for', today())
+                        ->whereNull('answered_at')
+                        ->count();
+                        
+                    $answeredToday = \App\Models\DailyQuestion::where('user_id', $user->id)
+                        ->whereDate('scheduled_for', today())
+                        ->whereNotNull('answered_at')
+                        ->count();
+
+                    if ($answeredToday > 0 && $unanswered == 0) {
+                        $message = "You have already completed today's quiz! Check back later for the next one.";
+                    } elseif ($user->enrollments()->count() === 0) {
+                        $message = "You are not enrolled in any courses. Please enroll in a course to receive daily quizzes.";
+                    } else {
+                        $message = "No daily quiz available right now. Quizzes are sent at 6 PM every other day.";
+                    }
                 }
                 break;
 
