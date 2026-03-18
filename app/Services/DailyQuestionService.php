@@ -157,15 +157,16 @@ class DailyQuestionService
             ->pluck('id');
 
         $availableCount = Question::whereIn('lesson_id', $lessonIds)->count();
-        if ($availableCount === 0) {
-            // Ultimate fallback: check ALL lessons in the course
+        if ($availableCount < 3) {
+            // Expand to ALL lessons in the course to get enough questions
             $allLessonIds = $lesson->course->lessons()->pluck('id');
-            $availableCount = Question::whereIn('lesson_id', $allLessonIds)->count();
-            if ($availableCount === 0) {
+            $allAvailable = Question::whereIn('lesson_id', $allLessonIds)->count();
+            if ($allAvailable === 0) {
                 return ['questions' => collect(), 'course' => $enrollment->course, 'lesson' => $lesson];
             }
             // Use all lessons instead
             $lessonIds = $allLessonIds;
+            $availableCount = $allAvailable;
         }
 
         $count = $this->getDailyQuizQuestionCount($availableCount);
