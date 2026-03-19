@@ -131,16 +131,13 @@
                     <div class="space-y-4 lg:space-y-5">
                         @forelse($course->levels()->active()->ordered()->with('lessons')->get() as $levelIndex => $level)
                         @php
-                            $isLevelUnlocked = $level->isUnlockedFor(auth()->user());
+                            $isLevelUnlocked = true;
                             $completionPercent = $level->getCompletionPercentageFor(auth()->user());
                             $isCompleted = $completionPercent === 100;
                         @endphp
                         <div x-data="{ openLevel: {{ $isLevelUnlocked ? 'true' : 'false' }} }" class="bg-white dark:bg-[#0f172a] border {{ $isLevelUnlocked ? 'border-slate-200 hover:border-primary-200 dark:border-white/5 dark:hover:border-primary-900/50' : 'border-slate-200/60 dark:border-white/5' }} rounded-[1.5rem] lg:rounded-[2rem] shadow-sm hover:shadow-md transition-all duration-300 relative overflow-hidden group">
                             
-                            {{-- Locked Overlay Effect --}}
-                            @if(!$isLevelUnlocked)
-                            <div class="absolute inset-0 bg-slate-50/60 dark:bg-[#0f172a]/80 backdrop-blur-[1px] z-10 pointer-events-none"></div>
-                            @endif
+
 
                             {{-- Level Header --}}
                             <div @click="openLevel = !openLevel" class="w-full p-4 lg:p-6 flex flex-col gap-5 text-right relative z-20 outline-none cursor-pointer transition-colors" :class="openLevel ? 'bg-slate-50/50 dark:bg-white/[0.02]' : ''">
@@ -151,10 +148,8 @@
                                     <div class="shrink-0 w-12 h-12 lg:w-14 lg:h-14 rounded-[1rem] {{ $isCompleted ? 'bg-emerald-50 text-emerald-500 border border-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20' : ($isLevelUnlocked ? 'bg-primary-50 text-primary-600 border border-primary-100 dark:bg-primary-500/10 dark:text-primary-400 dark:border-primary-500/20' : 'bg-slate-100 text-slate-400 border border-slate-200 dark:bg-slate-800 dark:text-slate-500 dark:border-white/5') }} flex items-center justify-center font-black text-xl transition-all duration-300 shadow-sm">
                                         @if($isCompleted)
                                             <svg class="w-6 h-6 lg:w-7 lg:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
-                                        @elseif($isLevelUnlocked)
-                                            {{ $levelIndex + 1 }}
                                         @else
-                                            <svg class="w-5 h-5 lg:w-6 lg:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                                            {{ $levelIndex + 1 }}
                                         @endif
                                     </div>
                                 </div>
@@ -183,7 +178,7 @@
                                     @php
                                         $lessonProgress = collect($enrollment->lessonProgress)->firstWhere('lesson_id', $lesson->id);
                                         $isLessonCompleted = $lessonProgress && $lessonProgress->is_completed;
-                                        $isAccessible = $isLevelUnlocked;
+                                        $isAccessible = true;
                                         $isCurrent = $currentLesson && $currentLesson->id === $lesson->id;
                                     @endphp
                                     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3 lg:p-4 rounded-xl lg:rounded-2xl {{ $isAccessible ? 'hover:bg-white dark:hover:bg-[#0f172a] hover:shadow-sm cursor-pointer border border-transparent hover:border-slate-200 dark:hover:border-white/5' : 'opacity-60' }} {{ $isCurrent ? 'ring-2 ring-primary-500/50 bg-white dark:bg-[#0f172a]' : '' }} transition-all"
@@ -193,10 +188,8 @@
                                             <div class="shrink-0 w-10 h-10 rounded-full {{ $isLessonCompleted ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-500 border border-emerald-100 dark:border-emerald-500/20 shadow-inner' : ($isAccessible ? 'bg-primary-50 dark:bg-primary-500/10 text-primary-600 dark:text-primary-400 border border-primary-100 dark:border-primary-500/20 font-black' : 'bg-slate-100 dark:bg-slate-800 text-slate-400 border border-slate-200 dark:border-white/5') }} flex items-center justify-center text-sm shadow-inner transition-colors">
                                                 @if($isLessonCompleted)
                                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-                                                @elseif($isAccessible)
-                                                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
                                                 @else
-                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                                                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
                                                 @endif
                                             </div>
                                             <div class="min-w-0">

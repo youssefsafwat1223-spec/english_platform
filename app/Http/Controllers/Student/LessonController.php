@@ -32,11 +32,7 @@ class LessonController extends Controller
 
         $enrollment = $user->getEnrollment($course->id);
 
-        // Check if can access lesson (previous lessons completed)
-        if (!$this->canAccessLesson($user, $lesson)) {
-            return redirect()->route('student.courses.learn', $course)
-                ->with('error', __('يرجى إكمال الدروس السابقة أولاً.'));
-        }
+        // All lessons are now open — no sequential access restriction
 
         $lesson->load([
             'attachments',
@@ -183,25 +179,4 @@ class LessonController extends Controller
         return response()->json(['success' => true]);
     }
 
-    private function canAccessLesson(User $user, Lesson $lesson)
-    {
-        // Free lessons are always accessible
-        if ($lesson->is_free) {
-            return true;
-        }
-
-        // Get all previous lessons
-        $previousLessons = $lesson->course->lessons()
-            ->where('order_index', '<', $lesson->order_index)
-            ->get();
-
-        // Check if all previous lessons are completed
-        foreach ($previousLessons as $prevLesson) {
-            if (!$user->hasCompletedLesson($prevLesson->id)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
 }

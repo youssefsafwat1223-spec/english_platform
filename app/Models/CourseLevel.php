@@ -80,32 +80,7 @@ class CourseLevel extends Model
      */
     public function isUnlockedFor(User $user): bool
     {
-        // Get the previous level (the one with the closest lower order_index)
-        $previousLevel = self::where('course_id', $this->course_id)
-            ->where('is_active', true)
-            ->where('order_index', '<', $this->order_index)
-            ->orderBy('order_index', 'desc')
-            ->first();
-
-        // If there's no previous level, this is the first level — always unlocked
-        if (!$previousLevel) {
-            return true;
-        }
-
-        // Check if the user completed ALL lessons in the previous level
-        $previousLessons = $previousLevel->lessons;
-
-        if ($previousLessons->isEmpty()) {
-            // Previous level has no lessons, consider it completed
-            return true;
-        }
-
-        foreach ($previousLessons as $lesson) {
-            if (!$lesson->isCompletedBy($user)) {
-                return false;
-            }
-        }
-
+        // All levels are now open — no sequential locking
         return true;
     }
 
