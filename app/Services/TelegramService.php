@@ -142,7 +142,7 @@ class TelegramService
     }
 
     /**
-     * Send daily quiz prompt
+     * Send daily quiz prompt (Arabic)
      */
     public function sendDailyQuizPrompt($user, $course, $lesson, int $questionCount)
     {
@@ -150,16 +150,16 @@ class TelegramService
             return false;
         }
 
-        $text = "<b>Daily Quiz Ready</b>\n\n";
-        $text .= "Course: {$course->title}\n";
-        $text .= "Lesson: {$lesson->title}\n";
-        $text .= "Questions: {$questionCount}\n\n";
-        $text .= "Press <b>Quiz</b> to start.";
+        $text = "<b>🎯 كويز اليوم جاهز!</b>\n\n";
+        $text .= "📚 الكورس: {$course->title}\n";
+        $text .= "📖 الدرس: {$lesson->title}\n";
+        $text .= "❓ عدد الأسئلة: {$questionCount}\n\n";
+        $text .= "هل أنت مستعد؟ دوس على الزرار وابدأ! 💪";
 
         $keyboard = [
             'inline_keyboard' => [
                 [
-                    ['text' => 'Quiz', 'callback_data' => 'daily_quiz_start'],
+                    ['text' => 'ابدأ الكويز 🚀', 'callback_data' => 'daily_quiz_start'],
                 ],
             ],
         ];

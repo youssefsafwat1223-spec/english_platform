@@ -20,32 +20,42 @@ class DailyQuestionService
     }
 
     /**
-     * Schedule daily quiz questions for all active users
+     * Schedule daily quiz questions for all active users (called by cron at 6 PM)
      */
     public function scheduleQuestionsForToday()
     {
         $scheduledCount = 0;
         $sentCount = 0;
 
-        // Get all active users with telegram linked
+        // Get all active students with telegram linked
         $users = User::active()
             ->students()
             ->telegramLinked()
             ->get();
 
         foreach ($users as $user) {
-            $result = $this->scheduleQuestionsForUser($user, true, false);
+            // Check if this user should receive a quiz today (every other day)
+            if (!$this->shouldSendQuestionToday($user)) {
+                continue;
+            }
 
-            $scheduledCount += $result['scheduled'];
+            // Loop over ALL enrolled courses for this user
+            $enrollments = $user->enrollments()->with('course')->get();
 
-            if ($result['prompt_sent']) {
-                $sentCount++;
+            foreach ($enrollments as $enrollment) {
+                $result = $this->scheduleQuestionsForEnrollment($user, $enrollment);
+
+                $scheduledCount += $result['scheduled'];
+
+                if ($result['prompt_sent']) {
+                    $sentCount++;
+                }
             }
         }
 
         Log::info('Daily questions scheduled', [
             'scheduled' => $scheduledCount,
-            'sent' => $sentCount,
+            'prompts_sent' => $sentCount,
         ]);
 
         return [
@@ -55,40 +65,57 @@ class DailyQuestionService
     }
 
     /**
-     * Schedule daily quiz questions for a specific user
+     * Schedule 10 questions for a specific user + enrollment (one course)
      */
-    public function scheduleQuestionsForUser(User $user, bool $sendPrompt = true, bool $promptIfExisting = false): array
+    public function scheduleQuestionsForEnrollment(User $user, Enrollment $enrollment, bool $sendPrompt = true): array
     {
-        if (!$this->shouldSendQuestionToday($user)) {
+        $course = $enrollment->course;
+
+        if (!$course) {
             return ['scheduled' => 0, 'prompt_sent' => false];
         }
 
+        // Check if questions already scheduled for this user + course today
         $todayQuestions = DailyQuestion::where('user_id', $user->id)
             ->whereDate('scheduled_for', today())
+            ->whereHas('question', function ($q) use ($course) {
+                $q->whereHas('lesson', function ($lq) use ($course) {
+                    $lq->where('course_id', $course->id);
+                });
+            })
             ->count();
 
         if ($todayQuestions > 0) {
-            $promptSent = false;
-            if ($sendPrompt && $promptIfExisting) {
-                $promptSent = $this->sendPromptForUser($user, $todayQuestions);
+            // Already scheduled — just re-send prompt if needed
+            if ($sendPrompt) {
+                $lesson = $this->getTargetLesson($user, $enrollment);
+                if ($lesson) {
+                    $this->telegramService->sendDailyQuizPrompt($user, $course, $lesson, $todayQuestions);
+                    return ['scheduled' => 0, 'prompt_sent' => true];
+                }
             }
-
-            return ['scheduled' => 0, 'prompt_sent' => (bool) $promptSent];
-        }
-
-        $selection = $this->selectQuestionsForUser($user);
-        $questions = $selection['questions'];
-        $course = $selection['course'];
-        $lesson = $selection['lesson'];
-
-        if ($questions->isEmpty() || !$course || !$lesson) {
             return ['scheduled' => 0, 'prompt_sent' => false];
         }
 
+        // Get the lesson the student has reached
+        $lesson = $this->getTargetLesson($user, $enrollment);
+        if (!$lesson) {
+            return ['scheduled' => 0, 'prompt_sent' => false];
+        }
+
+        // Select 10 questions from lesson 1 → current lesson
+        $questions = $this->selectQuestionsForEnrollment($user, $enrollment, $lesson);
+
+        if ($questions->isEmpty()) {
+            return ['scheduled' => 0, 'prompt_sent' => false];
+        }
+
+        // Save the selected questions as DailyQuestion records
         foreach ($questions as $question) {
             $this->createDailyQuestion($user, $question);
         }
 
+        // Send the "Ready?" prompt via Telegram
         $promptSent = false;
         if ($sendPrompt) {
             $promptSent = $this->telegramService->sendDailyQuizPrompt(
@@ -99,11 +126,12 @@ class DailyQuestionService
             );
         }
 
+        // Create in-app notification
         Notification::create([
             'user_id' => $user->id,
             'notification_type' => 'daily_question',
             'title' => 'Daily Quiz Ready',
-            'message' => "Your daily quiz for {$course->title} - {$lesson->title} is ready.",
+            'message' => "Your daily quiz for {$course->title} is ready ({$questions->count()} questions).",
             'action_url' => route('student.courses.learn', $course),
         ]);
 
@@ -111,12 +139,36 @@ class DailyQuestionService
     }
 
     /**
-     * Check if user should receive quiz today
-     * Now always returns true so users can get quizzes every day
+     * Manually trigger quiz for a user (via /today command) — all courses
+     */
+    public function scheduleQuestionsForUser(User $user, bool $sendPrompt = true, bool $promptIfExisting = false): array
+    {
+        $totalScheduled = 0;
+        $anySent = false;
+
+        $enrollments = $user->enrollments()->with('course')->get();
+
+        if ($enrollments->isEmpty()) {
+            return ['scheduled' => 0, 'prompt_sent' => false];
+        }
+
+        foreach ($enrollments as $enrollment) {
+            $result = $this->scheduleQuestionsForEnrollment($user, $enrollment, $sendPrompt);
+            $totalScheduled += $result['scheduled'];
+            if ($result['prompt_sent']) {
+                $anySent = true;
+            }
+        }
+
+        return ['scheduled' => $totalScheduled, 'prompt_sent' => $anySent];
+    }
+
+    /**
+     * Check if user should receive quiz today (every other day)
      */
     private function shouldSendQuestionToday(User $user)
     {
-        $sendAlternateDays = config('app.send_daily_questions_alternate_days', false);
+        $sendAlternateDays = config('app.send_daily_questions_alternate_days', true);
 
         if (!$sendAlternateDays) {
             return true; // Send every day
@@ -131,89 +183,77 @@ class DailyQuestionService
         }
 
         if ($lastQuestion->scheduled_for->isToday()) {
-            return true; // Scheduled for today, allow sending the prompt again
+            return true; // Already scheduled for today, allow re-prompting
         }
 
         return $lastQuestion->scheduled_for->diffInDays(today()) >= 2;
     }
 
     /**
-     * Select appropriate questions for user based on current lesson
+     * Select 10 questions for a specific enrollment (lesson 1 → current lesson)
      */
-    private function selectQuestionsForUser(User $user)
+    private function selectQuestionsForEnrollment(User $user, Enrollment $enrollment, Lesson $lesson)
     {
-        $enrollment = $this->getTargetEnrollment($user);
-        if (!$enrollment) {
-            return ['questions' => collect(), 'course' => null, 'lesson' => null];
-        }
+        $count = 10;
 
-        $lesson = $this->getTargetLesson($user, $enrollment);
-        if (!$lesson) {
-            return ['questions' => collect(), 'course' => $enrollment->course, 'lesson' => null];
-        }
-
+        // Get all lesson IDs from lesson 1 up to the student's current lesson
         $lessonIds = $lesson->course->lessons()
             ->where('order_index', '<=', $lesson->order_index)
             ->pluck('id');
 
         $availableCount = Question::whereIn('lesson_id', $lessonIds)->count();
+
+        // If fewer than 3 questions in the range, expand to ALL course lessons
         if ($availableCount < 3) {
-            // Expand to ALL lessons in the course to get enough questions
-            $allLessonIds = $lesson->course->lessons()->pluck('id');
-            $allAvailable = Question::whereIn('lesson_id', $allLessonIds)->count();
-            if ($allAvailable === 0) {
-                return ['questions' => collect(), 'course' => $enrollment->course, 'lesson' => $lesson];
+            $lessonIds = $lesson->course->lessons()->pluck('id');
+            $availableCount = Question::whereIn('lesson_id', $lessonIds)->count();
+            if ($availableCount === 0) {
+                return collect();
             }
-            // Use all lessons instead
-            $lessonIds = $allLessonIds;
-            $availableCount = $allAvailable;
         }
 
-        $count = $this->getDailyQuizQuestionCount($availableCount);
+        // Cap count to available
+        $count = min($count, $availableCount);
 
+        // Questions asked to this user in the last 7 days (try to avoid repeats)
         $recentlyAskedQuestionIds = DailyQuestion::where('user_id', $user->id)
             ->where('scheduled_for', '>=', today()->subDays(7))
             ->pluck('question_id');
 
         $selected = collect();
 
-        // Prefer questions from the current lesson
+        // 1. Fresh questions from the current lesson
         $primary = Question::where('lesson_id', $lesson->id)
             ->whereNotIn('id', $recentlyAskedQuestionIds)
             ->inRandomOrder()
             ->take($count)
             ->get();
-
         $selected = $selected->merge($primary);
 
-        // Fallback to previous lessons in the same course
+        // 2. Fresh questions from previous lessons
         if ($selected->count() < $count) {
             $needed = $count - $selected->count();
-
             $fallback = Question::whereIn('lesson_id', $lessonIds)
                 ->whereNotIn('id', $recentlyAskedQuestionIds)
                 ->whereNotIn('id', $selected->pluck('id'))
                 ->inRandomOrder()
                 ->take($needed)
                 ->get();
-
             $selected = $selected->merge($fallback);
         }
 
-        // Allow repeats if still not enough (ignore 7-day exclusion)
+        // 3. Allow repeats if still not enough
         if ($selected->count() < $count) {
             $needed = $count - $selected->count();
-
             $fallback = Question::whereIn('lesson_id', $lessonIds)
                 ->whereNotIn('id', $selected->pluck('id'))
                 ->inRandomOrder()
                 ->take($needed)
                 ->get();
-
             $selected = $selected->merge($fallback);
         }
 
-        // Ultimate Fallback: If STILL empty, grab any question from the ENTIRE course
+        // 4. Ultimate fallback: any question from the entire course
         if ($selected->count() === 0) {
             $courseLessonIds = $lesson->course->lessons()->pluck('id');
             $selected = Question::whereIn('lesson_id', $courseLessonIds)
@@ -222,21 +262,12 @@ class DailyQuestionService
                 ->get();
         }
 
-        return [
-            'questions' => $selected,
-            'course' => $enrollment->course,
-            'lesson' => $lesson,
-        ];
+        return $selected;
     }
 
-    private function getTargetEnrollment(User $user): ?Enrollment
-    {
-        return $user->enrollments()
-            ->with('course')
-            ->orderByRaw('COALESCE(last_accessed_at, started_at, created_at) desc')
-            ->first();
-    }
-
+    /**
+     * Get the last lesson the student accessed in the enrollment
+     */
     private function getTargetLesson(User $user, Enrollment $enrollment): ?Lesson
     {
         $progress = $user->lessonProgress()
@@ -249,35 +280,10 @@ class DailyQuestionService
             return $progress->lesson;
         }
 
+        // Default to the first lesson
         return $enrollment->course->lessons()
             ->orderBy('order_index')
             ->first();
-    }
-
-    private function sendPromptForUser(User $user, int $questionCount): bool
-    {
-        $enrollment = $this->getTargetEnrollment($user);
-        if (!$enrollment) {
-            return false;
-        }
-
-        $lesson = $this->getTargetLesson($user, $enrollment);
-        if (!$lesson) {
-            return false;
-        }
-
-        return (bool) $this->telegramService->sendDailyQuizPrompt(
-            $user,
-            $enrollment->course,
-            $lesson,
-            $questionCount
-        );
-    }
-
-    private function getDailyQuizQuestionCount(int $maxAvailable): int
-    {
-        $desired = random_int(3, 5);
-        return max(1, min($desired, $maxAvailable));
     }
 
     /**
@@ -464,5 +470,61 @@ class DailyQuestionService
             ->with('question')
             ->orderBy('id')
             ->first();
+    }
+
+    /**
+     * Send reminders to users who haven't started their quiz (called at 7 PM)
+     */
+    public function sendQuizReminders()
+    {
+        $remindedCount = 0;
+
+        // Find users who have questions scheduled for today but none answered
+        $userIds = DailyQuestion::whereDate('scheduled_for', today())
+            ->whereNull('answered_at')
+            ->pluck('user_id')
+            ->unique();
+
+        foreach ($userIds as $userId) {
+            $user = User::find($userId);
+
+            if (!$user || !$user->is_telegram_linked) {
+                continue;
+            }
+
+            // Check if user has answered ANY question today
+            $answeredToday = DailyQuestion::where('user_id', $userId)
+                ->whereDate('scheduled_for', today())
+                ->whereNotNull('answered_at')
+                ->exists();
+
+            if ($answeredToday) {
+                continue; // Already started, skip
+            }
+
+            $unansweredCount = DailyQuestion::where('user_id', $userId)
+                ->whereDate('scheduled_for', today())
+                ->whereNull('answered_at')
+                ->count();
+
+            $text = "<b>⏰ تذكير!</b>\n\n";
+            $text .= "كويز اليوم لسه مستنيك! عندك {$unansweredCount} سؤال.\n\n";
+            $text .= "ابدأ دلوقتي عشان متفوتش اليوم! 💪";
+
+            $keyboard = [
+                'inline_keyboard' => [
+                    [
+                        ['text' => 'ابدأ الكويز 🚀', 'callback_data' => 'daily_quiz_start'],
+                    ],
+                ],
+            ];
+
+            $this->telegramService->sendMessage($user->telegram_chat_id, $text, $keyboard);
+            $remindedCount++;
+        }
+
+        Log::info('Quiz reminders sent', ['reminded' => $remindedCount]);
+
+        return $remindedCount;
     }
 }

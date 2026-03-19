@@ -14,6 +14,10 @@ Schedule::call(function () {
 })->dailyAt('18:00')->name('send-daily-questions');
 
 Schedule::call(function () {
+    app(DailyQuestionService::class)->sendQuizReminders();
+})->dailyAt('19:00')->name('send-quiz-reminders');
+
+Schedule::call(function () {
     // Send study reminders to inactive users
     $inactiveUsers = \App\Models\User::students()
         ->active()

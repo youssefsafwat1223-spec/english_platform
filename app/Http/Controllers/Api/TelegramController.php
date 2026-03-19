@@ -123,28 +123,35 @@ class TelegramController extends Controller
                 if (!$user) {
                     $message = "Please link your account first by sending your phone number.";
                 } else {
-                    $result = $this->dailyQuestionService->scheduleQuestionsForUser($user, true, true);
+                    $result = $this->dailyQuestionService->scheduleQuestionsForUser($user, true);
 
                     if ($result['prompt_sent'] || $result['scheduled'] > 0) {
                         return response()->json(['ok' => true]);
                     }
 
+                    // Check if there are unanswered questions from today
                     $unanswered = \App\Models\DailyQuestion::where('user_id', $user->id)
                         ->whereDate('scheduled_for', today())
                         ->whereNull('answered_at')
                         ->count();
-                        
+
+                    if ($unanswered > 0) {
+                        // Start the quiz directly
+                        $this->dailyQuestionService->startDailyQuiz($user);
+                        return response()->json(['ok' => true]);
+                    }
+
                     $answeredToday = \App\Models\DailyQuestion::where('user_id', $user->id)
                         ->whereDate('scheduled_for', today())
                         ->whereNotNull('answered_at')
                         ->count();
 
                     if ($answeredToday > 0 && $unanswered == 0) {
-                        $message = "You have already completed today's quiz! Check back later for the next one.";
+                        $message = "✅ خلصت كويز اليوم! استنى الكويز الجاي.";
                     } elseif ($user->enrollments()->count() === 0) {
-                        $message = "You are not enrolled in any courses. Please enroll in a course to receive daily quizzes.";
+                        $message = "مش مسجل في أي كورس. سجل في كورس عشان تبدأ تاخد كويزات يومية.";
                     } else {
-                        $message = "No daily quiz available right now. Quizzes are sent at 6 PM every other day.";
+                        $message = "مفيش كويز متاح دلوقتي. الكويزات بتتبعت الساعة 6 مساءً يوم ويوم.";
                     }
                 }
                 break;
