@@ -265,14 +265,26 @@ class TelegramController extends Controller
         $user = \App\Models\User::where('telegram_chat_id', $chatId)->first();
 
         if (!$user) {
-            $this->telegramService->sendMessage($chatId, "Please link your account first by sending your phone number.");
+            $this->telegramService->sendMessage($chatId, "من فضلك اربط حسابك الأول عن طريق إرسال رقم تليفونك.");
             return response()->json(['ok' => true]);
         }
 
-        if (!$this->dailyQuestionService->startDailyQuiz($user)) {
-            $this->telegramService->sendMessage($chatId, "No daily quiz available right now. Check back later.");
+        // Try to start the quiz directly
+        if ($this->dailyQuestionService->startDailyQuiz($user)) {
+            return response()->json(['ok' => true]);
         }
 
+        // If no questions found, try scheduling first then starting
+        $result = $this->dailyQuestionService->scheduleQuestionsForUser($user, false);
+
+        if ($result['scheduled'] > 0) {
+            // Now try starting
+            if ($this->dailyQuestionService->startDailyQuiz($user)) {
+                return response()->json(['ok' => true]);
+            }
+        }
+
+        $this->telegramService->sendMessage($chatId, "مفيش كويز متاح دلوقتي. جرب تاني بعدين! 🙏");
         return response()->json(['ok' => true]);
     }
 
