@@ -76,7 +76,7 @@ class TelegramController extends Controller
             Log::info('Telegram: No handler matched, sending default response');
             $this->telegramService->sendMessage(
                 $chatId,
-                "I didn't understand that. Use /help to see available commands."
+                "ما فهمت عليك 😅 استخدم /help عشان تشوف الأوامر المتاحة."
             );
 
             return response()->json(['ok' => true]);
@@ -100,20 +100,20 @@ class TelegramController extends Controller
             case '/start':
                 $user = \App\Models\User::where('telegram_chat_id', $chatId)->first();
                 if ($user) {
-                    $message = "Welcome back, {$user->name}!\n\n";
-                    $message .= "You are already connected to your account.\n";
-                    $message .= "Use /status to check your progress or /help to see available commands.";
+                    $message = "أهلاً ومرحباً فيك يا {$user->name}! 👋\n\n";
+                    $message .= "حسابك مربوط بالفعل ✅\n";
+                    $message .= "استخدم /status عشان تشوف تقدمك أو /help عشان تشوف كل الأوامر.";
                 } else {
-                    $message = "Welcome to Simple English!\n\n";
-                    $message .= "To link your account, please send your registered phone number.\n\n";
-                    $message .= "Example: 01012345678";
+                    $message = "أهلاً فيك في Simple English! 🎓\n\n";
+                    $message .= "عشان تربط حسابك، أرسل رقم جوالك المسجل عندنا.\n\n";
+                    $message .= "مثال: 01012345678";
                 }
                 break;
 
             case '/status':
                 $message = $this->telegramService->getUserProgress($chatId);
                 if (!$message) {
-                    $message = "Please link your account first by sending your phone number.";
+                    $message = "اربط حسابك أول عن طريق إرسال رقم جوالك 📱";
                 }
                 break;
 
@@ -121,7 +121,7 @@ class TelegramController extends Controller
                 $user = \App\Models\User::where('telegram_chat_id', $chatId)->first();
 
                 if (!$user) {
-                    $message = "Please link your account first by sending your phone number.";
+                    $message = "اربط حسابك أول عن طريق إرسال رقم جوالك 📱";
                 } else {
                     $result = $this->dailyQuestionService->scheduleQuestionsForUser($user, true);
 
@@ -136,7 +136,6 @@ class TelegramController extends Controller
                         ->count();
 
                     if ($unanswered > 0) {
-                        // Start the quiz directly
                         $this->dailyQuestionService->startDailyQuiz($user);
                         return response()->json(['ok' => true]);
                     }
@@ -147,27 +146,27 @@ class TelegramController extends Controller
                         ->count();
 
                     if ($answeredToday > 0 && $unanswered == 0) {
-                        $message = "✅ خلصت كويز اليوم! استنى الكويز الجاي.";
+                        $message = "✅ ما شاء الله خلّصت كويز اليوم! انتظر الكويز الجاي.";
                     } elseif ($user->enrollments()->count() === 0) {
-                        $message = "مش مسجل في أي كورس. سجل في كورس عشان تبدأ تاخد كويزات يومية.";
+                        $message = "ما أنت مسجل بأي كورس. سجل بكورس عشان تبدأ تاخذ كويزات يومية 📚";
                     } else {
-                        $message = "مفيش كويز متاح دلوقتي. الكويزات بتتبعت الساعة 6 مساءً يوم ويوم.";
+                        $message = "ما فيه كويز متاح الحين. الكويزات تنرسل الساعة 6 المسا يوم ويوم 🕕";
                     }
                 }
                 break;
 
             case '/help':
-                $message = "<b>Available Commands:</b>\n\n";
-                $message .= "/status - View your progress\n";
-                $message .= "/today - Get today's question\n";
-                $message .= "/courses - View your enrolled courses\n";
-                $message .= "/leaderboard - Top 10 students\n";
-                $message .= "/streak - Your current streak\n";
-                $message .= "/certificate - Your certificates\n";
-                $message .= "/unlink - Unlink your account\n";
-                $message .= "/remind - Toggle daily reminder\n";
-                $message .= "/help - Show this message\n\n";
-                $message .= "To answer daily questions, reply with A, B, C, or D.";
+                $message = "<b>الأوامر المتاحة:</b>\n\n";
+                $message .= "/status - شوف تقدمك 📊\n";
+                $message .= "/today - كويز اليوم ❓\n";
+                $message .= "/courses - كورساتك المسجلة 📚\n";
+                $message .= "/leaderboard - أفضل 10 طلاب 🏆\n";
+                $message .= "/streak - سلسلة أيامك 🔥\n";
+                $message .= "/certificate - شهاداتك 🏅\n";
+                $message .= "/unlink - فك ربط الحساب 🔓\n";
+                $message .= "/remind - تفعيل/تعطيل التذكيرات 🔔\n";
+                $message .= "/help - عرض هالرسالة ℹ️\n\n";
+                $message .= "عشان تجاوب على الكويز، اختار الإجابة A أو B أو C أو D.";
                 break;
 
             case '/courses':
@@ -190,7 +189,7 @@ class TelegramController extends Controller
                 return $this->handleRemindCommand($chatId);
 
             default:
-                $message = "Unknown command. Use /help to see available commands.";
+                $message = "أمر مو معروف 🤔 استخدم /help عشان تشوف الأوامر المتاحة.";
         }
 
         $this->telegramService->sendMessage($chatId, $message);
@@ -265,7 +264,7 @@ class TelegramController extends Controller
         $user = \App\Models\User::where('telegram_chat_id', $chatId)->first();
 
         if (!$user) {
-            $this->telegramService->sendMessage($chatId, "من فضلك اربط حسابك الأول عن طريق إرسال رقم تليفونك.");
+            $this->telegramService->sendMessage($chatId, "اربط حسابك أول عن طريق إرسال رقم جوالك 📱");
             return response()->json(['ok' => true]);
         }
 
@@ -278,13 +277,12 @@ class TelegramController extends Controller
         $result = $this->dailyQuestionService->scheduleQuestionsForUser($user, false);
 
         if ($result['scheduled'] > 0) {
-            // Now try starting
             if ($this->dailyQuestionService->startDailyQuiz($user)) {
                 return response()->json(['ok' => true]);
             }
         }
 
-        $this->telegramService->sendMessage($chatId, "مفيش كويز متاح دلوقتي. جرب تاني بعدين! 🙏");
+        $this->telegramService->sendMessage($chatId, "ما فيه كويز متاح الحين. جرب مرة ثانية بعدين! 🙏");
         return response()->json(['ok' => true]);
     }
 
@@ -293,25 +291,25 @@ class TelegramController extends Controller
         $user = \App\Models\User::where('telegram_chat_id', $chatId)->first();
 
         if (!$user) {
-            $this->telegramService->sendMessage($chatId, "Please link your account first by sending your phone number.");
+            $this->telegramService->sendMessage($chatId, "اربط حسابك أول عن طريق إرسال رقم جوالك 📱");
             return response()->json(['ok' => true]);
         }
 
         $enrollments = $user->enrollments()->with('course')->get();
 
         if ($enrollments->isEmpty()) {
-            $message = "📚 You haven't enrolled in any courses yet.\n\n";
-            $message .= "Visit the website to browse available courses!\n";
-            $message .= "<a href='" . config('app.url') . "/student/courses'>Browse Courses</a>";
+            $message = "📚 ما سجلت بأي كورس لحد الآن.\n\n";
+            $message .= "زور الموقع عشان تشوف الكورسات المتاحة!\n";
+            $message .= "<a href='" . config('app.url') . "/student/courses'>تصفح الكورسات</a>";
         } else {
-            $message = "<b>📚 Your Courses:</b>\n\n";
+            $message = "<b>📚 كورساتك:</b>\n\n";
             foreach ($enrollments as $enrollment) {
                 $progress = round($enrollment->progress_percentage);
                 $emoji = $progress >= 100 ? '✅' : ($progress > 50 ? '📖' : '📕');
                 $message .= "{$emoji} <b>{$enrollment->course->title}</b>\n";
-                $message .= "   Progress: {$progress}% ({$enrollment->completed_lessons}/{$enrollment->total_lessons} lessons)\n\n";
+                $message .= "   التقدم: {$progress}% ({$enrollment->completed_lessons}/{$enrollment->total_lessons} دروس)\n\n";
             }
-            $message .= "<a href='" . config('app.url') . "/student/courses/my-courses'>View on Website</a>";
+            $message .= "<a href='" . config('app.url') . "/student/courses/my-courses'>شوفها بالموقع</a>";
         }
 
         $this->telegramService->sendMessage($chatId, $message);
@@ -326,7 +324,7 @@ class TelegramController extends Controller
             ->limit(10)
             ->get(['name', 'total_points']);
 
-        $message = "<b>🏆 Leaderboard — Top 10</b>\n\n";
+        $message = "<b>🏆 قائمة المتصدرين — أفضل 10</b>\n\n";
 
         $medals = ['🥇', '🥈', '🥉'];
 
@@ -341,7 +339,7 @@ class TelegramController extends Controller
         if ($user) {
             $userRank = $user->getRank();
             $message .= "\n—————————————\n";
-            $message .= "📍 Your Rank: #{$userRank} ({$user->total_points} XP)";
+            $message .= "📍 ترتيبك: #{$userRank} ({$user->total_points} XP)";
         }
 
         $this->telegramService->sendMessage($chatId, $message);
@@ -353,7 +351,7 @@ class TelegramController extends Controller
         $user = \App\Models\User::where('telegram_chat_id', $chatId)->first();
 
         if (!$user) {
-            $this->telegramService->sendMessage($chatId, "Please link your account first by sending your phone number.");
+            $this->telegramService->sendMessage($chatId, "اربط حسابك أول عن طريق إرسال رقم جوالك 📱");
             return response()->json(['ok' => true]);
         }
 
@@ -362,18 +360,18 @@ class TelegramController extends Controller
 
         $fire = str_repeat('🔥', min($current, 10));
 
-        $message = "<b>🔥 Your Streak</b>\n\n";
-        $message .= "Current Streak: <b>{$current} days</b> {$fire}\n";
-        $message .= "Longest Streak: <b>{$longest} days</b>\n\n";
+        $message = "<b>🔥 سلسلتك</b>\n\n";
+        $message .= "السلسلة الحالية: <b>{$current} يوم</b> {$fire}\n";
+        $message .= "أطول سلسلة: <b>{$longest} يوم</b>\n\n";
 
         if ($current === 0) {
-            $message .= "Start studying today to begin your streak! 💪";
+            $message .= "ابدأ اليوم عشان تبدأ سلسلتك! 💪";
         } elseif ($current >= 7) {
-            $message .= "Amazing! You're on fire! Keep it up! 🚀";
+            $message .= "ما شاء الله عليك! كمّل على كذا! 🚀";
         } elseif ($current >= 3) {
-            $message .= "Great progress! Don't break the chain! 💪";
+            $message .= "أحسنت! لا توقف واستمر! 💪";
         } else {
-            $message .= "Good start! Keep going every day! ⭐";
+            $message .= "بداية حلوة! استمر كل يوم! ⭐";
         }
 
         $this->telegramService->sendMessage($chatId, $message);
@@ -385,24 +383,24 @@ class TelegramController extends Controller
         $user = \App\Models\User::where('telegram_chat_id', $chatId)->first();
 
         if (!$user) {
-            $this->telegramService->sendMessage($chatId, "Please link your account first by sending your phone number.");
+            $this->telegramService->sendMessage($chatId, "اربط حسابك أول عن طريق إرسال رقم جوالك 📱");
             return response()->json(['ok' => true]);
         }
 
         $certificates = $user->certificates()->with('course')->get();
 
         if ($certificates->isEmpty()) {
-            $message = "🏅 You haven't earned any certificates yet.\n\n";
-            $message .= "Complete a course to earn your first certificate!";
+            $message = "🏅 ما عندك شهادات لحد الآن.\n\n";
+            $message .= "خلّص كورس كامل عشان تحصل على شهادتك الأولى! 🎓";
         } else {
-            $message = "<b>🏅 Your Certificates:</b>\n\n";
+            $message = "<b>🏅 شهاداتك:</b>\n\n";
             foreach ($certificates as $cert) {
-                $courseName = $cert->course->title ?? 'Unknown Course';
+                $courseName = $cert->course->title ?? 'كورس غير معروف';
                 $message .= "📜 <b>{$courseName}</b>\n";
-                $message .= "   Grade: {$cert->grade} — Score: {$cert->final_score}%\n";
-                $message .= "   ID: <code>{$cert->certificate_id}</code>\n";
+                $message .= "   التقدير: {$cert->grade} — الدرجة: {$cert->final_score}%\n";
+                $message .= "   الرقم: <code>{$cert->certificate_id}</code>\n";
                 if ($cert->verification_url) {
-                    $message .= "   <a href='{$cert->verification_url}'>Download</a>\n";
+                    $message .= "   <a href='{$cert->verification_url}'>حمّل الشهادة</a>\n";
                 }
                 $message .= "\n";
             }
@@ -417,7 +415,7 @@ class TelegramController extends Controller
         $user = \App\Models\User::where('telegram_chat_id', $chatId)->first();
 
         if (!$user) {
-            $this->telegramService->sendMessage($chatId, "Your account is not linked. Send your phone number to link it.");
+            $this->telegramService->sendMessage($chatId, "حسابك مو مربوط. أرسل رقم جوالك عشان تربطه 📱");
             return response()->json(['ok' => true]);
         }
 
@@ -426,8 +424,8 @@ class TelegramController extends Controller
             'telegram_linked_at' => null,
         ]);
 
-        $message = "✅ Your account has been unlinked from Telegram.\n\n";
-        $message .= "You can link it again anytime by sending /start and your phone number.";
+        $message = "✅ تم فك ربط حسابك من تيليجرام.\n\n";
+        $message .= "تقدر تربطه مرة ثانية بأي وقت عن طريق /start وإرسال رقم جوالك.";
 
         $this->telegramService->sendMessage($chatId, $message);
         return response()->json(['ok' => true]);
@@ -438,7 +436,7 @@ class TelegramController extends Controller
         $user = \App\Models\User::where('telegram_chat_id', $chatId)->first();
 
         if (!$user) {
-            $this->telegramService->sendMessage($chatId, "Please link your account first by sending your phone number.");
+            $this->telegramService->sendMessage($chatId, "اربط حسابك أول عن طريق إرسال رقم جوالك 📱");
             return response()->json(['ok' => true]);
         }
 
@@ -449,11 +447,11 @@ class TelegramController extends Controller
         $user->update(['telegram_reminders' => $newSetting]);
 
         if ($newSetting) {
-            $message = "🔔 Daily study reminders are now <b>ON</b>.\n\n";
-            $message .= "I'll remind you if you haven't studied for a while!";
+            $message = "🔔 التذكيرات اليومية <b>مفعّلة</b> الحين.\n\n";
+            $message .= "بنذكرك إذا ما درست من فترة!";
         } else {
-            $message = "🔕 Daily study reminders are now <b>OFF</b>.\n\n";
-            $message .= "You can turn them back on anytime with /remind.";
+            $message = "🔕 التذكيرات اليومية <b>متوقفة</b> الحين.\n\n";
+            $message .= "تقدر تفعلها مرة ثانية بـ /remind.";
         }
 
         $this->telegramService->sendMessage($chatId, $message);

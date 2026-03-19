@@ -154,7 +154,7 @@ class TelegramService
         $text .= "📚 الكورس: {$course->title}\n";
         $text .= "📖 الدرس: {$lesson->title}\n";
         $text .= "❓ عدد الأسئلة: {$questionCount}\n\n";
-        $text .= "هل أنت مستعد؟ دوس على الزرار وابدأ! 💪";
+        $text .= "مستعد؟ اضغط على الزر وابدأ! 💪";
 
         $keyboard = [
             'inline_keyboard' => [
@@ -180,7 +180,7 @@ class TelegramService
 
         $question = $dailyQuestion->question;
 
-        $text = "<b>Daily Quiz Question</b>\n\n";
+        $text = "<b>❓ سؤال الكويز</b>\n\n";
         $text .= "{$question->question_text}\n\n";
         $text .= "A) {$question->option_a}\n";
         $text .= "B) {$question->option_b}\n";
@@ -213,7 +213,7 @@ class TelegramService
             }
         }
 
-        $text .= "\nChoose the correct option.";
+        $text .= "\nاختار الإجابة الصحيحة 👇";
 
         $keyboard = ['inline_keyboard' => $buttons];
 
@@ -254,7 +254,7 @@ class TelegramService
 
         if ($notification->action_url) {
             $text .= "
-<a href='{$notification->action_url}'>View Details</a>";
+<a href='{$notification->action_url}'>شوف التفاصيل</a>";
         }
 
         $result = $this->sendMessage($user->telegram_chat_id, $text);
@@ -276,20 +276,22 @@ class TelegramService
             return false;
         }
 
-        $status = $attempt->passed ? 'PASSED' : 'FAILED';
+        // status set below in the text block
 
-        $text = "<b>Quiz Result</b>\n\n";
-        $text .= "Course: {$quiz->course->title}\n";
-        $text .= "Quiz: {$quiz->title}\n";
-        $text .= "Score: {$attempt->score}%\n";
-        $text .= "Correct: {$attempt->correct_answers}/{$attempt->total_questions}\n";
-        $text .= "Time: {$attempt->formatted_time}\n";
-        $text .= "Status: <b>{$status}</b>\n\n";
+        $status = $attempt->passed ? 'نجحت ✅' : 'ما نجحت ❌';
+
+        $text = "<b>📝 نتيجة الكويز</b>\n\n";
+        $text .= "الكورس: {$quiz->course->title}\n";
+        $text .= "الكويز: {$quiz->title}\n";
+        $text .= "الدرجة: {$attempt->score}%\n";
+        $text .= "الصحيح: {$attempt->correct_answers}/{$attempt->total_questions}\n";
+        $text .= "الوقت: {$attempt->formatted_time}\n";
+        $text .= "الحالة: <b>{$status}</b>\n\n";
 
         if ($attempt->passed) {
-            $text .= "Great job! Keep it up.";
+            $text .= "ما شاء الله عليك! كمّل على كذا 🚀";
         } else {
-            $text .= "Try again to improve your score.";
+            $text .= "حاول مرة ثانية عشان تحسن درجتك 💪";
         }
 
         return $this->sendMessage($user->telegram_chat_id, $text);
@@ -304,29 +306,18 @@ class TelegramService
             return false;
         }
 
-        $text = "<b>Purchase Successful!</b>
-
-";
-        $text .= "You've enrolled in:
-";
-        $text .= "<b>{$course->title}</b>
-
-";
-        $text .= "Total Lessons: {$enrollment->total_lessons}
-";
-        $text .= "Amount Paid: \${$enrollment->price_paid}
-";
+        $text = "<b>🎉 تم الشراء بنجاح!</b>\n\n";
+        $text .= "سجلت في:\n";
+        $text .= "<b>{$course->title}</b>\n\n";
+        $text .= "عدد الدروس: {$enrollment->total_lessons}\n";
+        $text .= "المبلغ المدفوع: \${$enrollment->price_paid}\n";
 
         if ($enrollment->discount_amount > 0) {
-            $text .= "Discount: \${$enrollment->discount_amount}
-";
+            $text .= "الخصم: \${$enrollment->discount_amount}\n";
         }
 
-        $text .= "
-Start learning now!
-";
-        $text .= "I'll send you daily questions to help you practice.
-";
+        $text .= "\nابدأ التعلم الحين! 🚀\n";
+        $text .= "بنرسلك أسئلة يومية عشان تتدرب.";
 
         return $this->sendMessage($user->telegram_chat_id, $text);
     }
@@ -340,24 +331,14 @@ Start learning now!
             return false;
         }
 
-        $text = "<b>Congratulations!</b>
-
-";
-        $text .= "You've completed:
-";
-        $text .= "<b>{$course->title}</b>
-
-";
-        $text .= "Final Score: {$certificate->final_score}%
-";
-        $text .= "Grade: {$certificate->grade}
-";
-        $text .= "Certificate ID: {$certificate->certificate_id}
-
-";
-        $text .= "Your certificate is ready!
-";
-        $text .= "<a href='{$certificate->verification_url}'>Download Certificate</a>";
+        $text = "<b>🎉 مبروك!</b>\n\n";
+        $text .= "خلّصت كورس:\n";
+        $text .= "<b>{$course->title}</b>\n\n";
+        $text .= "الدرجة النهائية: {$certificate->final_score}%\n";
+        $text .= "التقدير: {$certificate->grade}\n";
+        $text .= "رقم الشهادة: {$certificate->certificate_id}\n\n";
+        $text .= "شهادتك جاهزة! 🏅\n";
+        $text .= "<a href='{$certificate->verification_url}'>حمّل الشهادة</a>";
 
         return $this->sendMessage($user->telegram_chat_id, $text);
     }
@@ -373,18 +354,11 @@ Start learning now!
 
         $percentage = config('app.referral_discount_percentage', 10);
 
-        $text = "<b>Referral Used!</b>
-
-";
-        $text .= "{$referee->name} used your referral code and got the discount.
-
-";
-        $text .= "You earned a <b>{$percentage}% discount</b> on your next course.
-";
-        $text .= "Valid for 30 days
-
-";
-        $text .= "Keep sharing to earn more discounts!";
+        $text = "<b>🎁 تم استخدام كود الإحالة!</b>\n\n";
+        $text .= "{$referee->name} استخدم كود الإحالة حقك وحصل على الخصم.\n\n";
+        $text .= "حصلت على <b>خصم {$percentage}%</b> على كورسك الجاي.\n";
+        $text .= "صالح لمدة 30 يوم\n\n";
+        $text .= "استمر بالمشاركة عشان تحصل خصومات أكثر! 🚀";
 
         return $this->sendMessage($referrer->telegram_chat_id, $text);
     }
@@ -398,11 +372,11 @@ Start learning now!
             return false;
         }
 
-        $text = "<b>Study Reminder</b>\n\n";
-        $text .= "Hey {$user->name}!\n\n";
-        $text .= "It's been {$daysSinceLastActivity} days since your last activity.\n";
-        $text .= "Don't lose your streak!\n\n";
-        $text .= "Continue your learning journey today!";
+        $text = "<b>📢 تذكير بالدراسة</b>\n\n";
+        $text .= "هلا {$user->name}! 👋\n\n";
+        $text .= "صار لك {$daysSinceLastActivity} يوم ما دخلت.\n";
+        $text .= "لا تضيع سلسلتك! 🔥\n\n";
+        $text .= "كمّل رحلة التعلم اليوم! 💪";
 
         return $this->sendMessage($user->telegram_chat_id, $text);
     }
@@ -442,7 +416,7 @@ Start learning now!
         if (!$user) {
             return [
                 'success' => false,
-                'message' => 'No account found with this phone number.',
+                'message' => 'ما لقينا حساب بهالرقم. تأكد من الرقم وحاول مرة ثانية 📱',
             ];
         }
 
@@ -451,7 +425,7 @@ Start learning now!
             return [
                 'success' => true,
                 'user' => $user,
-                'message' => "Your account is already linked!\nWelcome back {$user->name}!",
+                'message' => "حسابك مربوط بالفعل! ✅\nأهلاً فيك مرة ثانية يا {$user->name}! 👋",
             ];
         }
 
@@ -471,7 +445,7 @@ Start learning now!
         return [
             'success' => true,
             'user' => $user,
-            'message' => "Account linked successfully!\nWelcome {$user->name}!",
+            'message' => "تم ربط الحساب بنجاح! ✅\nأهلاً فيك يا {$user->name}! 🎉",
         ];
     }
 
@@ -488,11 +462,11 @@ Start learning now!
 
         $enrollments = $user->enrollments()->with('course')->get();
 
-        $text = "<b>Your Progress</b>\n\n";
+        $text = "<b>📊 تقدمك</b>\n\n";
 
         if ($enrollments->isEmpty()) {
-            $text .= "You haven't enrolled in any courses yet.\n";
-            $text .= "Visit the website to browse available courses!";
+            $text .= "ما سجلت بأي كورس لحد الآن.\n";
+            $text .= "زور الموقع عشان تشوف الكورسات المتاحة! 📚";
         } else {
             foreach ($enrollments as $enrollment) {
                 $progress = round($enrollment->progress_percentage);
@@ -500,12 +474,12 @@ Start learning now!
 
                 $text .= "<b>{$enrollment->course->title}</b>\n";
                 $text .= "{$progressBar} {$progress}%\n";
-                $text .= "{$enrollment->completed_lessons}/{$enrollment->total_lessons} lessons\n\n";
+                $text .= "{$enrollment->completed_lessons}/{$enrollment->total_lessons} دروس\n\n";
             }
 
-            $text .= "Total Points: {$user->total_points}\n";
-            $text .= "Rank: #{$user->getRank()}\n";
-            $text .= "Streak: {$user->current_streak} days";
+            $text .= "النقاط: {$user->total_points}\n";
+            $text .= "الترتيب: #{$user->getRank()}\n";
+            $text .= "السلسلة: {$user->current_streak} يوم 🔥";
         }
 
         return $text;

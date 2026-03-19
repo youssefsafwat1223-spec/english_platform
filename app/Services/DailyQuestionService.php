@@ -130,8 +130,8 @@ class DailyQuestionService
         Notification::create([
             'user_id' => $user->id,
             'notification_type' => 'daily_question',
-            'title' => 'Daily Quiz Ready',
-            'message' => "Your daily quiz for {$course->title} is ready ({$questions->count()} questions).",
+            'title' => 'كويز اليوم جاهز',
+            'message' => "كويز اليوم لكورس {$course->title} جاهز ({$questions->count()} أسئلة).",
             'action_url' => route('student.courses.learn', $course),
         ]);
 
@@ -330,7 +330,7 @@ class DailyQuestionService
         if (!$user) {
             return [
                 'success' => false,
-                'message' => 'User not found.',
+                'message' => 'ما لقينا حسابك.',
             ];
         }
 
@@ -349,7 +349,7 @@ class DailyQuestionService
         if (!$dailyQuestion) {
             return [
                 'success' => false,
-                'message' => 'No pending quiz questions right now.',
+                'message' => 'ما فيه أسئلة كويز الحين.',
             ];
         }
 
@@ -363,21 +363,21 @@ class DailyQuestionService
         if (!in_array($answer, ['A', 'B', 'C', 'D'])) {
             return [
                 'success' => false,
-                'message' => 'Please answer with A, B, C, or D.',
+                'message' => 'جاوب بـ A أو B أو C أو D.',
             ];
         }
 
         if ($dailyQuestion->answered_at) {
             return [
                 'success' => false,
-                'message' => 'This question was already answered.',
+                'message' => 'هالسؤال تم الإجابة عليه مسبقاً.',
             ];
         }
 
         if ($dailyQuestion->scheduled_for->toDateString() !== today()->toDateString()) {
             return [
                 'success' => false,
-                'message' => 'This quiz is no longer active.',
+                'message' => 'هالكويز انتهى.',
             ];
         }
 
@@ -385,14 +385,14 @@ class DailyQuestionService
         $question = $dailyQuestion->question;
 
         $response = $isCorrect
-            ? '<b>Correct!</b>'
-            : '<b>Incorrect.</b>';
+            ? '<b>✅ صح!</b>'
+            : '<b>❌ غلط.</b>';
 
-        $response .= "\nYour answer: {$answer}";
-        $response .= "\nCorrect answer: {$question->correct_answer} - {$question->correct_option_text}";
+        $response .= "\nإجابتك: {$answer}";
+        $response .= "\nالإجابة الصحيحة: {$question->correct_answer} - {$question->correct_option_text}";
 
         if ($question->explanation) {
-            $response .= "\n\nExplanation:\n{$question->explanation}";
+            $response .= "\n\nالشرح:\n{$question->explanation}";
         }
 
         $totalCount = DailyQuestion::where('user_id', $user->id)
@@ -404,7 +404,7 @@ class DailyQuestionService
             ->whereNotNull('answered_at')
             ->count();
 
-        $response .= "\n\nProgress: {$answeredCount}/{$totalCount}";
+        $response .= "\n\nالتقدم: {$answeredCount}/{$totalCount}";
 
         $nextQuestion = $this->getUnansweredQuestion($user);
 
@@ -414,7 +414,7 @@ class DailyQuestionService
                 ->where('is_correct', true)
                 ->count();
 
-            $response .= "\n\nDaily quiz complete! Score: {$correctCount}/{$totalCount}.";
+            $response .= "\n\n🎉 خلّصت كويز اليوم! النتيجة: {$correctCount}/{$totalCount}.";
 
             $lesson = $question->lesson;
             $course = $lesson ? $lesson->course : null;
@@ -422,8 +422,8 @@ class DailyQuestionService
             Notification::create([
                 'user_id' => $user->id,
                 'notification_type' => 'quiz_result',
-                'title' => 'Daily Quiz Result',
-                'message' => "You answered {$correctCount}/{$totalCount} correctly in today's quiz.",
+                'title' => 'نتيجة الكويز اليومي',
+                'message' => "جاوبت {$correctCount}/{$totalCount} صح في كويز اليوم.",
                 'action_url' => $course ? route('student.courses.learn', $course) : null,
             ]);
         }
@@ -508,8 +508,8 @@ class DailyQuestionService
                 ->count();
 
             $text = "<b>⏰ تذكير!</b>\n\n";
-            $text .= "كويز اليوم لسه مستنيك! عندك {$unansweredCount} سؤال.\n\n";
-            $text .= "ابدأ دلوقتي عشان متفوتش اليوم! 💪";
+            $text .= "كويز اليوم لسّا مستنيك! عندك {$unansweredCount} سؤال.\n\n";
+            $text .= "ابدأ الحين عشان ما يفوتك اليوم! 💪";
 
             $keyboard = [
                 'inline_keyboard' => [
