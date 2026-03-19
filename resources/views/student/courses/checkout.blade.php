@@ -20,7 +20,7 @@
                     <span class="w-8 h-8 rounded-full bg-slate-200 dark:bg-white/5 flex items-center justify-center mr-3 group-hover:bg-slate-300 dark:group-hover:bg-white/10 transition-colors border border-slate-300 dark:border-white/10 text-slate-600 dark:text-slate-300">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                     </span>
-                    {{ __('العودة للكورس') }}
+                    {{ __('رجوع للكورس') }}
                 </a>
                 <h1 class="text-4xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight drop-shadow-sm dark:drop-shadow-lg">{{ __('إتمام الدفع بأمان') }}</h1>
             </div>
@@ -61,18 +61,18 @@
                                     <div class="p-4 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 rounded-xl flex items-center justify-between">
                                         <div>
                                             <p class="text-sm font-bold text-emerald-800 dark:text-emerald-400">{{ __('تم تطبيق خصم الدعوة!') }}</p>
-                                            <p class="text-xs text-emerald-600 dark:text-emerald-500 font-medium mt-1">{{ session('referral_code', __('مطبق على حسابك الحالي')) }}</p>
+                                            <p class="text-xs text-emerald-600 dark:text-emerald-500 font-medium mt-1">{{ session('referral_code', __('مطبّق على حسابك')) }}</p>
                                         </div>
                                         <a href="{{ route('student.courses.remove-discount', $course) }}" class="text-xs font-bold text-rose-500 hover:text-rose-600 underline px-2">{{ __('حذف') }}</a>
                                     </div>
                                 @else
-                                    <label class="block text-sm font-bold text-slate-700 dark:text-slate-300">{{ __('هل معاك كود دعوة؟ (من صديق)') }}</label>
+                                    <label class="block text-sm font-bold text-slate-700 dark:text-slate-300">{{ __('عندك كود دعوة؟ (من صاحبك)') }}</label>
                                     <div class="relative flex gap-2">
                                         <div class="relative flex-grow">
                                             <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
                                                 <svg class="w-5 h-5 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
                                             </div>
-                                            <input id="referral_code" name="referral_code" type="text" class="w-full bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-white/10 rounded-xl py-4 pr-12 pl-4 text-slate-900 dark:text-white font-semibold focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors shadow-inner" placeholder="{{ __('أدخل كود الدعوة (اختياري)') }}" value="{{ old('referral_code', session('referral_code')) }}">
+                                            <input id="referral_code" name="referral_code" type="text" class="w-full bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-white/10 rounded-xl py-4 pr-12 pl-4 text-slate-900 dark:text-white font-semibold focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors shadow-inner" placeholder="{{ __('حط كود الدعوة (اختياري)') }}" value="{{ old('referral_code', session('referral_code')) }}">
                                         </div>
                                     </div>
                                     @error('referral_code')
@@ -86,7 +86,7 @@
                             
                             @if(!isset($promoCode))
                             <div class="mb-8 p-4 bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl">
-                                <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">{{ __('أو معاك كوبون خصم؟ (من المنصة)') }}</label>
+                                <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">{{ __('أو عندك كوبون خصم؟ (من المنصة)') }}</label>
                                 <div class="flex gap-2">
                                     <input type="text" id="promo_code_input" class="w-full bg-white dark:bg-black/20 border border-slate-200 dark:border-white/10 rounded-xl py-3 px-4 text-sm font-mono uppercase text-slate-900 dark:text-white focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors" placeholder="مثال: SUMMER50">
                                     <button type="button" onclick="applyPromoCode()" class="bg-slate-800 dark:bg-white text-white dark:text-slate-900 px-4 py-2 rounded-xl text-sm font-bold hover:bg-slate-700 dark:hover:bg-slate-200 whitespace-nowrap">{{ __('تطبيق') }}</button>
@@ -103,12 +103,12 @@
                             
                             <button type="submit" class="w-full bg-gradient-to-r from-primary-600 to-accent-600 hover:from-primary-500 hover:to-accent-500 text-white font-black text-lg py-4 rounded-xl shadow-lg shadow-primary-500/30 transform hover:scale-[1.02] transition-all flex items-center justify-center border-0" :disabled="loading" :class="loading ? 'opacity-70 cursor-not-allowed transform-none' : ''">
                                 <span x-show="!loading" class="flex items-center justify-center gap-2">
-                                    {{ __('الانتقال للدفع') }}
+                                    {{ __('ادفع الحين') }}
                                     <svg class="w-5 h-5 ml-1 mr-2 scale-x-[-1]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                                 </span>
                                 <span x-show="loading" x-cloak class="flex items-center justify-center gap-2">
                                     <svg class="animate-spin w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/></svg>
-                                    {{ __('جاري تحويلك للدفع بأمان...') }}
+                                    {{ __('يتم تحويلك للدفع بأمان...') }}
                                 </span>
                             </button>
                         </form>
@@ -118,9 +118,9 @@
                 {{-- What Happens Next --}}
                 <div class="glass-card overflow-hidden rounded-[2rem] border border-slate-200 dark:border-white/5 bg-white/30 dark:bg-black/10" data-aos="fade-up" data-aos-delay="200">
                     <div class="p-6 sm:p-8">
-                        <h3 class="font-bold text-lg mb-6 text-slate-900 dark:text-white">{{ __('إيه اللي هيحصل بعدين؟') }}</h3>
+                        <h3 class="font-bold text-lg mb-6 text-slate-900 dark:text-white">{{ __('وش بيصير بعدين؟') }}</h3>
                         <div class="space-y-6">
-                            @php $steps = ['هتكمل عملية الدفع بأمان على بوابة الدفع.', 'هيتم تفعيل الكورس في حسابك تلقائياً.', 'هتقدر تبدأ مذاكرة فوراً من لوحة تحكمك.']; @endphp
+                            @php $steps = ['بتكمل عملية الدفع بأمان على بوابة الدفع.', 'بيتم تفعيل الكورس في حسابك تلقائياً.', 'تقدر تبدأ مذاكرة على طول من لوحة تحكمك.']; @endphp
                             @foreach($steps as $step)
                                 <div class="flex items-start gap-4">
                                     <div class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-300 dark:border-white/10 flex items-center justify-center text-sm font-bold shrink-0 shadow-inner mt-0.5">{{ $loop->iteration }}</div>
@@ -158,7 +158,7 @@
 
                             <div class="space-y-4">
                                 <div class="flex justify-between items-center mb-4">
-                                    <span class="text-slate-600 dark:text-slate-400 font-medium">{{ __('السعر الأصلي للكورس') }}</span>
+                                    <span class="text-slate-600 dark:text-slate-400 font-medium">{{ __('سعر الكورس الأصلي') }}</span>
                                     <span class="font-bold text-slate-900 dark:text-white">{{ number_format($course->price, 2) }} ر.س</span>
                                 </div>
                                 
@@ -178,10 +178,10 @@
                                 
                                 <div class="pt-6 mt-4 border-t border-slate-200 dark:border-white/10 border-dashed">
                                     <div class="flex justify-between items-end">
-                                        <span class="font-black text-slate-900 dark:text-white text-lg">{{ __('الإجمالي المطلوب') }}</span>
+                                        <span class="font-black text-slate-900 dark:text-white text-lg">{{ __('المبلغ الإجمالي') }}</span>
                                         <div class="text-left">
                                             <span class="text-4xl font-black text-primary-600 dark:text-primary-400 leading-none">{{ number_format($finalAmount, 2) }} ر.س</span>
-                                            <p class="text-xs text-slate-500 mt-1 font-medium">{{ __('السعر معروض بالريال السعودي.') }}</p>
+                                            <p class="text-xs text-slate-500 mt-1 font-medium">{{ __('السعر بالريال السعودي.') }}</p>
                                         </div>
                                     </div>
                                 </div>
