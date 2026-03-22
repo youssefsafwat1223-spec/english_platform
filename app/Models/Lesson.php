@@ -11,6 +11,14 @@ class Lesson extends Model
 {
     use HasFactory, SoftDeletes;
 
+    /**
+     * Get the route key for the model.
+     */
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
+
     protected $fillable = [
         'course_id',
         'course_level_id',
