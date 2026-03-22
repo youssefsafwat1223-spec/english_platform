@@ -68,7 +68,7 @@ class StoreLessonRequest extends FormRequest
             'is_free' => 'boolean',
             'has_quiz' => 'boolean',
             'has_pronunciation_exercise' => 'boolean',
-            'attachments.*' => 'nullable|file|max:102400', // 100MB
+            'attachments.*' => 'nullable|file|max:102400|mimes:pdf,doc,docx,ppt,pptx,xls,xlsx,zip,rar,jpg,jpeg,png,gif,mp3,wav,mp4,webm', // 100MB, safe types only
             'quiz_mode' => 'nullable|required_if:has_quiz,1|in:existing,questions',
             'quiz_id' => 'nullable|required_if:quiz_mode,existing|exists:quizzes,id',
             'question_ids' => 'nullable|required_if:quiz_mode,questions|array',

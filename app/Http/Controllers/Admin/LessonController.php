@@ -200,10 +200,13 @@ class LessonController extends Controller
 
     public function reorder(Course $course)
     {
-        $order = request()->input('order', []);
+        $validated = request()->validate([
+            'order' => 'required|array',
+            'order.*' => 'integer',
+        ]);
 
-        foreach ($order as $index => $lessonId) {
-            Lesson::where('id', $lessonId)
+        foreach ($validated['order'] as $index => $lessonId) {
+            $course->lessons()->where('id', $lessonId)
                 ->update(['order_index' => $index]);
         }
 

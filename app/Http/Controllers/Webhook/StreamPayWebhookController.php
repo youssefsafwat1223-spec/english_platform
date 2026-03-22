@@ -19,6 +19,23 @@ class StreamPayWebhookController extends Controller
 
     public function handle(Request $request)
     {
+        // ── Verify webhook signature ──
+        $signature = $request->header('X-Signature') 
+                  ?? $request->header('X-StreamPay-Signature')
+                  ?? $request->header('Signature');
+        $payload = $request->getContent();
+        $secret = config('services.streampay.secret_key');
+
+        if ($secret && $signature) {
+            $expected = hash_hmac('sha256', $payload, $secret);
+            if (!hash_equals($expected, $signature)) {
+                Log::warning('StreamPay webhook: Invalid signature', [
+                    'ip' => $request->ip(),
+                ]);
+                return response()->json(['error' => 'Invalid signature'], 403);
+            }
+        }
+
         Log::info('StreamPay webhook received', $request->all());
 
         try {

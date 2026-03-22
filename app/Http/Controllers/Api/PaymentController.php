@@ -19,6 +19,11 @@ class PaymentController extends Controller
 
     public function callback(Payment $payment, Request $request)
     {
+        // ── Verify payment ownership ──
+        if (auth()->check() && auth()->id() !== $payment->user_id) {
+            abort(403, 'Unauthorized');
+        }
+
         Log::info('StreamPay payment callback received', [
             'payment_id' => $payment->id,
             'request' => $request->all(),

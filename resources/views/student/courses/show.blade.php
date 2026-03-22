@@ -159,7 +159,7 @@
                     <div class="bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-white/5 rounded-[1.5rem] lg:rounded-[2rem] shadow-sm p-6 lg:p-8 relative overflow-hidden group">
                         <div class="prose dark:prose-invert max-w-none prose-slate prose-img:rounded-xl prose-headings:font-black prose-a:text-primary-600 dark:prose-a:text-primary-400">
                             @if($course->description)
-                                {!! $course->description !!}
+                                {!! nl2br(e($course->description)) !!}
                             @else
                                 <p class="text-slate-500 dark:text-slate-400 italic text-center py-8">{{ __('لا يوجد وصف متاح حالياً لهذا الكورس.') }}</p>
                             @endif

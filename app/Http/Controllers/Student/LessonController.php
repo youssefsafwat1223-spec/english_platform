@@ -185,10 +185,14 @@ class LessonController extends Controller
 
     public function updateNote($noteId)
     {
+        $validated = request()->validate([
+            'note_text' => 'required|string|max:10000',
+        ]);
+
         $note = auth()->user()->notes()->findOrFail($noteId);
 
         $note->update([
-            'note_text' => request('note_text'),
+            'note_text' => $validated['note_text'],
         ]);
 
         return response()->json([

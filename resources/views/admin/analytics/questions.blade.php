@@ -70,7 +70,7 @@
                             <td>
                                 <div class="max-w-md">
                                     <div class="text-sm font-medium line-clamp-2" style="color: var(--color-text);">
-                                        {!! strip_tags($question->question_text) !!}
+                                        {{ Str::limit(strip_tags($question->question_text), 100) }}
                                     </div>
                                 </div>
                             </td>

@@ -107,20 +107,22 @@ Route::get('/verify/{certificateId}', [StudentCertificateController::class, 'ver
 Route::get('/payment/callback/{payment}', [\App\Http\Controllers\Api\PaymentController::class, 'callback'])
     ->name('payment.callback');
 
-// TEMPORARY: Certificate Design Test (remove after testing)
-Route::get('/test-certificate', function () {
-    return view('certificates.template', [
-        'certificate_id' => 'CERT-2026-0001',
-        'user_name' => 'Youssef Safwat',
-        'course_title' => 'Advanced English Grammar',
-        'final_score' => 95,
-        'issue_date' => now()->format('F d, Y'),
-        'signatory_name' => 'Dr. Ahmed Hassan',
-        'signatory_title' => 'Academic Director',
-        'certificate_logo' => '',
-        'qr_code_path' => '',
-    ]);
-});
+// Test routes — only accessible in local development
+if (app()->environment('local')) {
+    Route::get('/test-certificate', function () {
+        return view('certificates.template', [
+            'certificate_id' => 'CERT-2026-0001',
+            'user_name' => 'Youssef Safwat',
+            'course_title' => 'Advanced English Grammar',
+            'final_score' => 95,
+            'issue_date' => now()->format('F d, Y'),
+            'signatory_name' => 'Dr. Ahmed Hassan',
+            'signatory_title' => 'Academic Director',
+            'certificate_logo' => '',
+            'qr_code_path' => '',
+        ]);
+    });
+}
 
 // Referral Landing
 Route::get('/ref/{referralCode}', [ReferralController::class, 'track'])
@@ -508,26 +510,27 @@ Route::prefix('student')->name('student.')->middleware(['auth', 'student', 'acti
     Route::view('/telegram-guide', 'student.telegram.guide')->name('telegram.guide');
 });
 
-Route::get('/test-telegram', function () {
-    $token = config('services.telegram.bot_token');
-    $webhook = config('services.telegram.webhook_url');
-    
-    if (!$token) return response()->json(['error' => 'No bot token found in config']);
-    
-    // Check with Telegram API
-    try {
-        $response = \Illuminate\Support\Facades\Http::get("https://api.telegram.org/bot{$token}/getWebhookInfo");
-        return response()->json([
-            'local_config_webhook' => $webhook,
-            'telegram_api_response' => $response->json()
-        ]);
-    } catch (\Exception $e) {
-        return response()->json([
-            'error' => $e->getMessage(),
-            'hint' => 'Check your internet connection or if the token is correct.'
-        ]);
-    }
-});
+if (app()->environment('local')) {
+    Route::get('/test-telegram', function () {
+        $token = config('services.telegram.bot_token');
+        $webhook = config('services.telegram.webhook_url');
+        
+        if (!$token) return response()->json(['error' => 'No bot token found in config']);
+        
+        try {
+            $response = \Illuminate\Support\Facades\Http::get("https://api.telegram.org/bot{$token}/getWebhookInfo");
+            return response()->json([
+                'local_config_webhook' => $webhook,
+                'telegram_api_response' => $response->json()
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+                'hint' => 'Check your internet connection or if the token is correct.'
+            ]);
+        }
+    });
+}
 // Forgot Password Routes
 Route::get('forgot-password', [App\Http\Controllers\Auth\ForgotPasswordController::class, 'showLinkRequestForm'])
     ->middleware('guest')
