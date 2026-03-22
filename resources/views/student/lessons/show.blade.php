@@ -43,43 +43,68 @@
                     </div>
                     
                     @if($lesson->isVdoCipherVideo() && $vdoCipherOtp && $vdoCipherPlaybackInfo)
-                        {{-- ═══ VdoCipher DRM Protected Player ═══ --}}
+                        {{-- ═══ VdoCipher DRM Protected Player — Works on ALL devices & browsers ═══ --}}
+                        {{-- iOS Safari = FairPlay DRM | Android Chrome = Widevine DRM | Desktop = Widevine/FairPlay --}}
                         <div class="p-2 sm:p-4 bg-slate-900">
                             <div class="aspect-video bg-black rounded-[1.5rem] overflow-hidden shadow-2xl relative" id="vdo-player-container">
-                                <div id="vdo-player" style="width: 100%; height: 100%;"></div>
+                                {{-- Loading spinner — shown until iframe loads --}}
+                                <div id="vdo-loading" class="absolute inset-0 flex items-center justify-center bg-black z-10">
+                                    <div class="flex flex-col items-center gap-3">
+                                        <svg class="w-10 h-10 text-primary-500 animate-spin" fill="none" viewBox="0 0 24 24">
+                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                        </svg>
+                                        <span class="text-white font-bold text-sm tracking-wider">{{ __('جاري تحميل الفيديو...') }}</span>
+                                    </div>
+                                </div>
+                                <iframe
+                                    id="vdo-iframe"
+                                    src="https://player.vdocipher.com/v2/?otp={{ $vdoCipherOtp }}&playbackInfo={{ $vdoCipherPlaybackInfo }}"
+                                    style="border: 0; width: 100%; height: 100%; position: absolute; top: 0; left: 0;"
+                                    allow="encrypted-media; autoplay; fullscreen"
+                                    allowfullscreen
+                                    webkitallowfullscreen
+                                    mozallowfullscreen
+                                    playsinline
+                                    onload="document.getElementById('vdo-loading').style.display='none';"
+                                ></iframe>
                             </div>
                         </div>
-                        <script src="https://player.vdocipher.com/v2/api.js"></script>
                         <script>
+                            // VdoCipher iframe progress tracking via postMessage API
                             document.addEventListener('DOMContentLoaded', function() {
-                                const player = VdoPlayer.getInstance('#vdo-player', {
-                                    otp: "{{ $vdoCipherOtp }}",
-                                    playbackInfo: "{{ $vdoCipherPlaybackInfo }}",
-                                    theme: "9ae8bbe8dd964ddc9bdb932cca1cb59a",
-                                    container: document.querySelector("#vdo-player"),
-                                });
-
-                                // Video progress tracking
                                 let lastReportedTime = 0;
-                                player.video.addEventListener('timeupdate', function() {
-                                    const currentTime = player.video.currentTime;
-                                    if (currentTime - lastReportedTime > 15) {
-                                        lastReportedTime = currentTime;
-                                        axios.post('{{ route('student.lessons.update-progress', [$course, $lesson]) }}', {
-                                            position: Math.floor(currentTime),
-                                            time_spent: 15,
-                                            duration: player.video.duration
-                                        }).catch(e => console.log('Silently ignoring progress update fail'));
-                                    }
-                                });
+                                const progressUrl = '{{ route('student.lessons.update-progress', [$course, $lesson]) }}';
 
-                                player.video.addEventListener('ended', function() {
-                                    axios.post('{{ route('student.lessons.update-progress', [$course, $lesson]) }}', {
-                                        position: Math.floor(player.video.duration),
-                                        time_spent: Math.floor(player.video.currentTime - lastReportedTime),
-                                        duration: player.video.duration,
-                                        is_completed: true
-                                    }).catch(e => console.log('Silently ignoring progress update fail'));
+                                window.addEventListener('message', function(e) {
+                                    // Accept messages from VdoCipher player only
+                                    if (e.origin !== 'https://player.vdocipher.com') return;
+                                    
+                                    try {
+                                        const data = typeof e.data === 'string' ? JSON.parse(e.data) : e.data;
+                                        
+                                        // Track progress every 15 seconds
+                                        if (data.currentTime && data.currentTime - lastReportedTime > 15) {
+                                            lastReportedTime = data.currentTime;
+                                            axios.post(progressUrl, {
+                                                position: Math.floor(data.currentTime),
+                                                time_spent: 15,
+                                                duration: data.duration || 0
+                                            }).catch(function() {});
+                                        }
+
+                                        // Track video ended
+                                        if (data.event === 'ended' || data.ended) {
+                                            axios.post(progressUrl, {
+                                                position: Math.floor(data.duration || data.currentTime || 0),
+                                                time_spent: Math.floor((data.currentTime || 0) - lastReportedTime),
+                                                duration: data.duration || 0,
+                                                is_completed: true
+                                            }).catch(function() {});
+                                        }
+                                    } catch(err) {
+                                        // Ignore non-VdoCipher messages
+                                    }
                                 });
                             });
                         </script>
