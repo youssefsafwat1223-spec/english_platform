@@ -62,6 +62,7 @@ class StoreLessonRequest extends FormRequest
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'video_url' => 'nullable|url',
+            'vdocipher_video_id' => 'nullable|string|max:50',
             'text_content' => 'nullable|string',
             'order_index' => 'nullable|integer',
             'is_free' => 'boolean',

@@ -10,14 +10,17 @@ use App\Models\User;
 use App\Http\Requests\StoreLessonCommentRequest;
 use App\Http\Requests\StoreUserNoteRequest;
 use App\Services\AchievementService;
+use App\Services\VdoCipherService;
 
 class LessonController extends Controller
 {
     protected $achievementService;
+    protected $vdoCipherService;
 
-    public function __construct(AchievementService $achievementService)
+    public function __construct(AchievementService $achievementService, VdoCipherService $vdoCipherService)
     {
         $this->achievementService = $achievementService;
+        $this->vdoCipherService = $vdoCipherService;
     }
 
     public function show(Course $course, Lesson $lesson)
@@ -56,13 +59,36 @@ class LessonController extends Controller
         $previousLesson = $lesson->previous_lesson;
         $nextLesson = $lesson->next_lesson;
 
+        // VdoCipher OTP generation
+        $vdoCipherOtp = null;
+        $vdoCipherPlaybackInfo = null;
+
+        if ($lesson->isVdoCipherVideo()) {
+            $watermarkText = $user->name;
+            if ($user->phone) {
+                $watermarkText .= ' • ' . $user->phone;
+            }
+
+            $otpData = $this->vdoCipherService->getOTPWithWatermark(
+                $lesson->vdocipher_video_id,
+                $watermarkText
+            );
+
+            if ($otpData) {
+                $vdoCipherOtp = $otpData['otp'];
+                $vdoCipherPlaybackInfo = $otpData['playbackInfo'];
+            }
+        }
+
         return view('student.lessons.show', compact(
             'course',
             'lesson',
             'progress',
             'notes',
             'previousLesson',
-            'nextLesson'
+            'nextLesson',
+            'vdoCipherOtp',
+            'vdoCipherPlaybackInfo'
         ));
     }
 

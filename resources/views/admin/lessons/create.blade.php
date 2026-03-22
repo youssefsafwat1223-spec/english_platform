@@ -42,6 +42,12 @@
                         @error('video_url')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                     </div>
                     <div>
+                        <label for="vdocipher_video_id" class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('VdoCipher Video ID') }}</label>
+                        <input type="text" id="vdocipher_video_id" name="vdocipher_video_id" class="input-glass @error('vdocipher_video_id') border-red-500 @enderror" value="{{ old('vdocipher_video_id') }}" placeholder="{{ __('e.g. 1234abcd5678efgh') }}">
+                        @error('vdocipher_video_id')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                        <p class="text-xs mt-1" style="color: var(--color-text-muted);">{{ __('اختياري — لو عندك فيديو على VdoCipher، حط الـ Video ID هنا. لو موجود هيتم استخدامه بدل الـ Video URL.') }}</p>
+                    </div>
+                    <div>
                         <label for="text_content" class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('Text Content') }}</label>
                         <textarea id="text_content" name="text_content" rows="10" class="input-glass @error('text_content') border-red-500 @enderror">{{ old('text_content') }}</textarea>
                         @error('text_content')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror

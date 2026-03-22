@@ -24,6 +24,7 @@ class Lesson extends Model
         'is_free',
         'has_quiz',
         'has_pronunciation_exercise',
+        'vdocipher_video_id',
     ];
 
     protected function casts(): array
@@ -229,6 +230,14 @@ class Lesson extends Model
     }
 
     // ==================== METHODS ====================
+
+    /**
+     * Check if this lesson uses VdoCipher for video
+     */
+    public function isVdoCipherVideo(): bool
+    {
+        return !empty($this->vdocipher_video_id);
+    }
 
     /**
      * Check if user has completed this lesson

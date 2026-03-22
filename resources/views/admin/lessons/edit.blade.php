@@ -51,6 +51,12 @@
                         <input type="url" name="video_url" class="input-glass" value="{{ old('video_url', $lesson->video_url) }}">
                     </div>
                     <div>
+                        <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('VdoCipher Video ID') }}</label>
+                        <input type="text" name="vdocipher_video_id" class="input-glass @error('vdocipher_video_id') border-red-500 @enderror" value="{{ old('vdocipher_video_id', $lesson->vdocipher_video_id) }}" placeholder="{{ __('e.g. 1234abcd5678efgh') }}">
+                        @error('vdocipher_video_id')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                        <p class="text-xs mt-1" style="color: var(--color-text-muted);">{{ __('اختياري — لو عندك فيديو على VdoCipher، حط الـ Video ID هنا. لو موجود هيتم استخدامه بدل الـ Video URL.') }}</p>
+                    </div>
+                    <div>
                         <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('Text Content') }}</label>
                         <textarea name="text_content" rows="10" class="input-glass">{{ old('text_content', $lesson->text_content) }}</textarea>
                     </div>

@@ -42,7 +42,49 @@
                         </h1>
                     </div>
                     
-                    @if($lesson->video_url || $lesson->video_embed_url)
+                    @if($lesson->isVdoCipherVideo() && $vdoCipherOtp && $vdoCipherPlaybackInfo)
+                        {{-- ═══ VdoCipher DRM Protected Player ═══ --}}
+                        <div class="p-2 sm:p-4 bg-slate-900">
+                            <div class="aspect-video bg-black rounded-[1.5rem] overflow-hidden shadow-2xl relative" id="vdo-player-container">
+                                <div id="vdo-player" style="width: 100%; height: 100%;"></div>
+                            </div>
+                        </div>
+                        <script src="https://player.vdocipher.com/v2/api.js"></script>
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                const player = VdoPlayer.getInstance('#vdo-player', {
+                                    otp: "{{ $vdoCipherOtp }}",
+                                    playbackInfo: "{{ $vdoCipherPlaybackInfo }}",
+                                    theme: "9ae8bbe8dd964ddc9bdb932cca1cb59a",
+                                    container: document.querySelector("#vdo-player"),
+                                });
+
+                                // Video progress tracking
+                                let lastReportedTime = 0;
+                                player.video.addEventListener('timeupdate', function() {
+                                    const currentTime = player.video.currentTime;
+                                    if (currentTime - lastReportedTime > 15) {
+                                        lastReportedTime = currentTime;
+                                        axios.post('{{ route('student.lessons.update-progress', [$course, $lesson]) }}', {
+                                            position: Math.floor(currentTime),
+                                            time_spent: 15,
+                                            duration: player.video.duration
+                                        }).catch(e => console.log('Silently ignoring progress update fail'));
+                                    }
+                                });
+
+                                player.video.addEventListener('ended', function() {
+                                    axios.post('{{ route('student.lessons.update-progress', [$course, $lesson]) }}', {
+                                        position: Math.floor(player.video.duration),
+                                        time_spent: Math.floor(player.video.currentTime - lastReportedTime),
+                                        duration: player.video.duration,
+                                        is_completed: true
+                                    }).catch(e => console.log('Silently ignoring progress update fail'));
+                                });
+                            });
+                        </script>
+                    @elseif($lesson->video_url || $lesson->video_embed_url)
+                        {{-- ═══ Legacy Video Player (YouTube / Vimeo / Drive / Direct) ═══ --}}
                         <div class="p-2 sm:p-4 bg-slate-900">
                             <div class="aspect-video bg-black rounded-[1.5rem] overflow-hidden shadow-2xl relative group">
                                 @if($lesson->video_embed_url)
