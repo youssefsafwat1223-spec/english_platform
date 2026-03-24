@@ -22,40 +22,40 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🎉 أهلاً بك في Simple English!</h1>
-            <p>رحلتك في تعلم اللغة الإنجليزية تبدأ الآن</p>
+            <h1>🎉 {{ __('أهلاً بك في Simple English!') }}</h1>
+            <p>{{ __('رحلتك في تعلم اللغة الإنجليزية تبدأ الآن') }}</p>
         </div>
         <div class="content">
-            <div class="greeting">مرحباً {{ $user->name }}!</div>
+            <div class="greeting">{{ __('مرحباً') }} {{ $user->name }}!</div>
             
-            <p>سعداء بانضمامك لمجتمعنا التعليمي! إليك كيف تبدأ:</p>
+            <p>{{ __('سعداء بانضمامك لمجتمعنا التعليمي! إليك كيف تبدأ:') }}</p>
 
             <div class="step">
                 <div class="step-number">1</div>
                 <div class="step-content">
-                    <div class="step-title">تصفح الكورس</div>
-                    <div class="step-desc">استكشف كورس اللغة الإنجليزية الشامل المصمم لجميع المستويات.</div>
+                    <div class="step-title">{{ __('تصفح الكورس') }}</div>
+                    <div class="step-desc">{{ __('استكشف كورس اللغة الإنجليزية الشامل المصمم لجميع المستويات.') }}</div>
                 </div>
             </div>
 
             <div class="step">
                 <div class="step-number">2</div>
                 <div class="step-content">
-                    <div class="step-title">اشترك وتعلم</div>
-                    <div class="step-desc">اشترك في الكورس وابدأ التعلم بالسرعة التي تناسبك.</div>
+                    <div class="step-title">{{ __('اشترك وتعلم') }}</div>
+                    <div class="step-desc">{{ __('اشترك في الكورس وابدأ التعلم بالسرعة التي تناسبك.') }}</div>
                 </div>
             </div>
 
             <div class="step">
                 <div class="step-number">3</div>
                 <div class="step-content">
-                    <div class="step-title">ربط بوت التليجرام</div>
+                    <div class="step-title">{{ __('ربط بوت التليجرام') }}</div>
                     <div class="step-desc">
-                        اربط حسابك ببوت التليجرام الخاص بنا لتلقي الإشعارات والأسئلة اليومية والشهادات مباشرة على هاتفك.
+                        {{ __('اربط حسابك ببوت التليجرام الخاص بنا لتلقي الإشعارات والأسئلة اليومية والشهادات مباشرة على هاتفك.') }}
                         <br>
                         @if(config('services.telegram.bot_username'))
                         <a href="https://t.me/{{ config('services.telegram.bot_username') }}?start={{ $user->id }}" style="color: #6366f1; text-decoration: none; font-weight: bold;">
-                            اضغط هنا للربط ←
+                            {{ __('اضغط هنا للربط') }} &larr;
                         </a>
                         @endif
                     </div>
@@ -65,23 +65,23 @@
             <div class="step">
                 <div class="step-number">4</div>
                 <div class="step-content">
-                    <div class="step-title">حل الاختبارات واحصل على الشهادات</div>
-                    <div class="step-desc">اختبر معلوماتك واحصل على شهادات لإثبات مهاراتك.</div>
+                    <div class="step-title">{{ __('حل الاختبارات واحصل على الشهادات') }}</div>
+                    <div class="step-desc">{{ __('اختبر معلوماتك واحصل على شهادات لإثبات مهاراتك.') }}</div>
                 </div>
             </div>
 
             <p style="text-align: center;">
                 <a href="{{ route('student.courses.index') }}" class="button">
-                    ابدأ التعلم الآن ←
+                    {{ __('ابدأ التعلم الآن') }} &larr;
                 </a>
             </p>
 
-            <p style="color: #6b7280; font-size: 14px;">إذا كان لديك أي استفسارات، لا تتردد في التواصل معنا عبر واتساب.</p>
+            <p style="color: #6b7280; font-size: 14px;">{{ __('إذا كان لديك أي استفسارات، لا تتردد في التواصل معنا عبر واتساب.') }}</p>
 
-            <p>تعلم ممتع!<br><strong>فريق Simple English</strong></p>
+            <p>{{ __('تعلم ممتع!') }}<br><strong>{{ __('فريق Simple English') }}</strong></p>
         </div>
         <div class="footer">
-            &copy; {{ date('Y') }} Simple English. جميع الحقوق محفوظة.
+            &copy; {{ date('Y') }} Simple English. {{ __('جميع الحقوق محفوظة.') }}
         </div>
     </div>
 </body>

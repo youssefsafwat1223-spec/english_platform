@@ -24,7 +24,7 @@
                     <h3 class="font-bold pb-2 pt-4" style="color: var(--color-text); border-bottom: 1px solid var(--color-border);">{{ __('Referral Settings') }}</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-sm font-bold mb-2" style="color: var(--color-text);">Referral Discount (%)</label>
+                            <label class="block text-sm font-bold mb-2" style="color: var(--color-text);">{{ __('Referral Discount (%)') }}</label>
                             <input type="number" name="referral_discount_percentage" step="1" class="input-glass" value="{{ old('referral_discount_percentage', $settings['referral_discount_percentage'] ?? 10) }}">
                         </div>
                     </div>

@@ -6,9 +6,9 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
         {{-- SEO Core --}}
-        <title>@yield('title', config('app.name', 'إتقان الإنجليزية — Simple English'))</title>
-        <meta name="description" content="@yield('meta_description', 'منصة تعليم اللغة الإنجليزية المدعومة بالذكاء الاصطناعي. كورسات شاملة، تمارين نطق، اختبارات تفاعلية وشهادات معتمدة.')">
-        <meta name="keywords" content="@yield('meta_keywords', 'تعلم الإنجليزية, كورسات إنجليزي, منصة تعليمية, نطق إنجليزي, AI English learning, English courses, learn English online')">
+        <title>@yield('title', config('app.name', '{{ __('إتقان الإنجليزية — Simple English') }}'))</title>
+        <meta name="description" content="@yield('meta_description', '{{ __('منصة تعليم اللغة الإنجليزية المدعومة بالذكاء الاصطناعي. كورسات شاملة، تمارين نطق، اختبارات تفاعلية وشهادات معتمدة.') }}')">
+        <meta name="keywords" content="@yield('meta_keywords', '{{ __('تعلم الإنجليزية, كورسات إنجليزي, منصة تعليمية, نطق إنجليزي, AI English learning, English courses, learn English online') }}')">
         <meta name="author" content="Simple English">
         <meta name="robots" content="index, follow">
         <meta name="google-site-verification" content="ry7DT25966tK8f2tVoyjXZ3qGsJNpLnR7TpbLhgLU44" />
@@ -17,8 +17,8 @@
 
         {{-- Open Graph (Facebook, WhatsApp, LinkedIn) --}}
         <meta property="og:type" content="@yield('og_type', 'website')">
-        <meta property="og:title" content="@yield('title', config('app.name', 'إتقان الإنجليزية — Simple English'))">
-        <meta property="og:description" content="@yield('meta_description', 'منصة تعليم اللغة الإنجليزية المدعومة بالذكاء الاصطناعي. كورسات شاملة، تمارين نطق، اختبارات تفاعلية وشهادات معتمدة.')">
+        <meta property="og:title" content="@yield('title', config('app.name', '{{ __('إتقان الإنجليزية — Simple English') }}'))">
+        <meta property="og:description" content="@yield('meta_description', '{{ __('منصة تعليم اللغة الإنجليزية المدعومة بالذكاء الاصطناعي. كورسات شاملة، تمارين نطق، اختبارات تفاعلية وشهادات معتمدة.') }}')">
         <meta property="og:url" content="{{ url()->current() }}">
         <meta property="og:image" content="@yield('og_image', asset('logo.jpg'))">
         <meta property="og:site_name" content="Simple English">
@@ -26,7 +26,7 @@
 
         {{-- Twitter Cards --}}
         <meta name="twitter:card" content="summary_large_image">
-        <meta name="twitter:title" content="@yield('title', config('app.name', 'إتقان الإنجليزية — Simple English'))">
+        <meta name="twitter:title" content="@yield('title', config('app.name', '{{ __('إتقان الإنجليزية — Simple English') }}'))">
         <meta name="twitter:description" content="@yield('meta_description', 'منصة تعليم اللغة الإنجليزية المدعومة بالذكاء الاصطناعي.')">
         <meta name="twitter:image" content="@yield('og_image', asset('logo.jpg'))">
 

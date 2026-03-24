@@ -40,7 +40,7 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
                 <div class="glass-card p-6" data-aos="fade-up" data-aos-delay="100">
                     <div class="text-sm font-bold uppercase tracking-wider mb-1" style="color: var(--color-text-muted);">{{ __('Total Revenue') }}</div>
-                    <div class="text-3xl font-black text-emerald-400">{{ number_format($stats['total_revenue'], 2) }} ر.س</div>
+                    <div class="text-3xl font-black text-emerald-400">{{ number_format($stats['total_revenue'], 2) }} {{ __('ر.س') }}</div>
                 </div>
                 <div class="glass-card p-6" data-aos="fade-up" data-aos-delay="200">
                     <div class="text-sm font-bold uppercase tracking-wider mb-1" style="color: var(--color-text-muted);">{{ __('Transactions') }}</div>
@@ -48,7 +48,7 @@
                 </div>
                 <div class="glass-card p-6" data-aos="fade-up" data-aos-delay="300">
                     <div class="text-sm font-bold uppercase tracking-wider mb-1" style="color: var(--color-text-muted);">{{ __('Average Value') }}</div>
-                    <div class="text-3xl font-black text-purple-400">{{ number_format($stats['average_value'], 2) }} ر.س</div>
+                    <div class="text-3xl font-black text-purple-400">{{ number_format($stats['average_value'], 2) }} {{ __('ر.س') }}</div>
                 </div>
             </div>
 
@@ -84,7 +84,7 @@
                                 <td class="p-4 text-sm" style="color: var(--color-text);">{{ $payment->created_at->format('M d, Y H:i') }}</td>
                                 <td class="p-4 text-sm font-bold" style="color: var(--color-text);">{{ $payment->user->name ?? 'Unknown' }}</td>
                                 <td class="p-4 text-sm" style="color: var(--color-text);">{{ $payment->course->title ?? '-' }}</td>
-                                <td class="p-4 text-sm font-mono font-bold" style="color: var(--color-text);">{{ number_format($payment->final_amount, 2) }} ر.س</td>
+                                <td class="p-4 text-sm font-mono font-bold" style="color: var(--color-text);">{{ number_format($payment->final_amount, 2) }} {{ __('ر.س') }}</td>
                                 <td class="p-4">
                                     <span class="px-2 py-1 rounded-full text-xs font-bold 
                                         {{ $payment->payment_status === 'completed' ? 'bg-emerald-500/10 text-emerald-400' : '' }}

@@ -24,8 +24,8 @@
                         @error('course_id')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                     </div>
                     <div>
-                        <label for="lesson_id" class="block text-sm font-bold mb-2" style="color: var(--color-text);">Lesson (Optional)</label>
-                        <select id="lesson_id" name="lesson_id" class="input-glass"><option value="">None (Final Exam)</option></select>
+                        <label for="lesson_id" class="block text-sm font-bold mb-2" style="color: var(--color-text);">{{ __('Lesson (Optional)') }}</label>
+                        <select id="lesson_id" name="lesson_id" class="input-glass"><option value="">{{ __('None (Final Exam)') }}</option></select>
                         @error('lesson_id')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                     </div>
                     <div>
@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const questionsContainer = document.getElementById('questionsContainer');
     const escapeHtml = (value) => {{ __('String(value).replace(/&/g, \'&amp;\').replace(/') }}</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
     const renderLessons = (courseId) => {
-        lessonSelect.innerHTML = '<option value="">None (Final Exam)</option>';
+        lessonSelect.innerHTML = '<option value="">{{ __('None (Final Exam)') }}</option>';
         lessons.filter((l) => String(l.course_id) === String(courseId)).forEach((l) => {
             const o = document.createElement('option'); o.value = l.id; o.textContent = l.title; lessonSelect.appendChild(o);
         });

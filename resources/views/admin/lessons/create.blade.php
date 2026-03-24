@@ -6,7 +6,7 @@
     <div class="max-w-4xl mx-auto sm:px-6 lg:px-8 relative z-10">
         <div class="mb-8" data-aos="fade-down">
             <h1 class="text-3xl font-extrabold"><span class="text-gradient">{{ __('Create Lesson') }}</span></h1>
-            <p class="mt-2" style="color: var(--color-text-muted);">Add a new lesson to {{ $course->title }}</p>
+            <p class="mt-2" style="color: var(--color-text-muted);">{{ __('Add a new lesson to') }} {{ $course->title }}</p>
         </div>
 
         <form action="{{ route('admin.courses.lessons.store', $course) }}" method="POST" enctype="multipart/form-data" x-data="{ loading: false }" @submit="loading = true">
@@ -53,7 +53,7 @@
                         @error('text_content')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                     </div>
                     <div>
-                        <label for="attachments" class="block text-sm font-semibold mb-2" style="color: var(--color-text);">Attachments (PDF, DOC, etc.)</label>
+                        <label for="attachments" class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('Attachments (PDF, DOC, etc.)') }}</label>
                         <input type="file" id="attachments" name="attachments[]" multiple class="input-glass @error('attachments.*') border-red-500 @enderror">
                         @error('attachments.*')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                         <p class="text-xs mt-1" style="color: var(--color-text-muted);">{{ __('Max 100MB per file') }}</p>
@@ -114,11 +114,11 @@
                                 </div>
                                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                     <div>
-                                        <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">Duration (minutes)</label>
+                                        <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('Duration (minutes)') }}</label>
                                         <input type="number" name="quiz_duration_minutes" class="input-glass" min="1" value="{{ old('quiz_duration_minutes', 10) }}">
                                     </div>
                                     <div>
-                                        <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">Passing Score (%)</label>
+                                        <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('Passing Score (%)') }}</label>
                                         <input type="number" name="quiz_passing_score" class="input-glass" min="0" max="100" value="{{ old('quiz_passing_score', 70) }}">
                                     </div>
                                     <div class="flex items-center gap-2 pt-6">
@@ -306,11 +306,11 @@
                             </div>
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div>
-                                    <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">Passing Score (%)</label>
+                                    <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('Passing Score (%)') }}</label>
                                     <input type="number" name="pronunciation_passing_score" class="input-glass" min="0" max="100" value="{{ old('pronunciation_passing_score', 70) }}">
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">Max Duration (seconds)</label>
+                                    <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('Max Duration (seconds)') }}</label>
                                     <input type="number" name="pronunciation_max_duration" class="input-glass" min="1" value="{{ old('pronunciation_max_duration', 10) }}">
                                 </div>
                                 <div class="flex items-center gap-2 pt-6">
@@ -447,7 +447,7 @@
                     });
                     const data = await res.json();
                     if (!res.ok) {
-                        const errors = data.errors ? Object.values(data.errors).flat().join('\n') : (data.message || 'حدث خطأ');
+                        const errors = data.errors ? Object.values(data.errors).flat().join('\n') : (data.message || '{{ __('حدث خطأ') }}');
                         this.errorMsg = errors;
                         this.saving = false;
                         return;
@@ -470,7 +470,7 @@
                         this.showModal = false;
                     }
                 } catch(e) {
-                    this.errorMsg = 'حدث خطأ في الاتصال بالسيرفر';
+                    this.errorMsg = '{{ __('حدث خطأ في الاتصال بالسيرفر') }}';
                 }
                 this.saving = false;
             }

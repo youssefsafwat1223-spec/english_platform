@@ -9,7 +9,7 @@
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 relative z-10">
         <div class="flex items-center justify-between mb-8" data-aos="fade-down">
             <div>
-                <h1 class="text-3xl font-extrabold"><span class="text-gradient">Pronunciation Practice</span></h1>
+                <h1 class="text-3xl font-extrabold"><span class="text-gradient">{{ __('Pronunciation Practice') }}</span></h1>
                 <p class="mt-2" style="color: var(--color-text-muted);">Track your speaking progress and improve your accent.</p>
             </div>
         </div>

@@ -32,7 +32,7 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-bold mb-2" style="color: var(--color-text);">Tax Rate (%)</label>
+                        <label class="block text-sm font-bold mb-2" style="color: var(--color-text);">{{ __('Tax Rate (%)') }}</label>
                         <input type="number" name="tax_rate" step="0.01" class="input-glass" value="{{ old('tax_rate', $settings['tax_rate'] ?? 0) }}">
                     </div>
                 </div>

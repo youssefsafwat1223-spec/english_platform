@@ -1,0 +1,1070 @@
+{
+    "sa_json_untranslated": {
+        "Games": "🎮 Games",
+        "AI Engine": "AI",
+        "any())": "any())",
+        "all() as $error)": "all() as $error)",
+        "status === 'draft')": "status === 'draft')",
+        "hasPages())": "hasPages())",
+        "status == 'pending')": "status == 'pending')",
+        "status == 'resolved')": "status == 'resolved')",
+        "is_pinned)": "is_pinned)",
+        "is_locked)": "is_locked)",
+        "replies as $reply)": "replies as $reply)",
+        "idx + 1\">": "idx + 1\">",
+        "status === 'scheduled')": "status === 'scheduled')",
+        "status === 'active')": "status === 'active')",
+        "status === 'completed')": "status === 'completed')",
+        "s | 🏆": "s | 🏆",
+        "questions as $index => $question)": "questions as $index => $question)",
+        "$lesson)": "$lesson)",
+        "video_url)": "video_url)",
+        "video_embed_url)": "video_embed_url)",
+        "text_content)": "text_content)",
+        "attachments as $attachment)": "attachments as $attachment)",
+        "$ps)": "$ps)",
+        "payment_status == 'completed')": "payment_status == 'completed')",
+        "payment_status == 'pending')": "payment_status == 'pending')",
+        "payment_status == 'failed')": "payment_status == 'failed')",
+        "isNotEmpty())": "isNotEmpty())",
+        "paid_at)": "paid_at)",
+        "transaction_id)": "transaction_id)",
+        "tap_charge_id)": "tap_charge_id)",
+        "error_message)": "error_message)",
+        "refunded_at)": "refunded_at)",
+        "question_text,question_type,difficulty,option_a,option_b,option_c,option_d,correct_answer,explanation": "question_text,question_type,difficulty,option_a,option_b,option_c,option_d,correct_answer,explanation",
+        "lesson)": "lesson)",
+        "difficulty == 'easy')": "difficulty == 'easy')",
+        "difficulty == 'medium')": "difficulty == 'medium')",
+        "correct_answer == $letter)": "correct_answer == $letter)",
+        "explanation)": "explanation)",
+        "has_audio)": "has_audio)",
+        "audio_path)": "audio_path)",
+        "$ds)": "$ds)",
+        "answers as $index => $answer)": "answers as $index => $answer)",
+        "is_correct)": "is_correct)",
+        "$as)": "$as)",
+        "passed)": "passed)",
+        "String(value).replace(\/&\/g, '&amp;').replace(\/": "String(value).replace(\/&\/g, '&amp;').replace(\/",
+        "is_final_exam)": "is_final_exam)",
+        "description)": "description)",
+        "Tap Public Key": "Tap Public Key",
+        "Set this in your .env file as TAP_PUBLIC_KEY.": "Set this in your .env file as TAP_PUBLIC_KEY.",
+        "Currency *": "Currency *",
+        "'USD - US Dollar', 'EUR' => 'EUR - Euro', 'GBP' => 'GBP - British Pound', 'AED' => 'AED - UAE Dirham', 'SAR' => 'SAR - Saudi Riyal', 'EGP' => 'EGP - Egyptian Pound'] as $code => $label)": "'USD - US Dollar', 'EUR' => 'EUR - Euro', 'GBP' => 'GBP - British Pound', 'AED' => 'AED - UAE Dirham', 'SAR' => 'SAR - Saudi Riyal', 'EGP' => 'EGP - Egyptian Pound'] as $code => $label)",
+        "Tax Rate (%)": "Tax Rate (%)",
+        "Points and Rewards Settings": "Points and Rewards Settings",
+        "Points Configuration": "Points Configuration",
+        "Referral Settings": "Referral Settings",
+        "Referral Discount (%)": "Referral Discount (%)",
+        "Bot Token": "Bot Token",
+        "Set this in your .env file as TELEGRAM_BOT_TOKEN.": "Set this in your .env file as TELEGRAM_BOT_TOKEN.",
+        "Webhook URL": "Webhook URL",
+        "Send daily questions on alternate days": "Send daily questions on alternate days",
+        "Daily Question Time": "Daily Question Time",
+        "Enable Telegram notifications": "Enable Telegram notifications",
+        "Webhook Management": "Webhook Management",
+        "Set Webhook": "Set Webhook",
+        "Delete Webhook": "Delete Webhook",
+        "Bot Info": "Bot Info",
+        "is_completed)": "is_completed)",
+        "is_telegram_linked)": "is_telegram_linked)"
+    },
+    "blade_english_hardcoded": [
+        {
+            "file": "resources\/views\/admin\/courses\/create.blade.php",
+            "line": 25,
+            "text": "Brief overview (max 500 characters)"
+        },
+        {
+            "file": "resources\/views\/admin\/courses\/create.blade.php",
+            "line": 49,
+            "text": "Estimated Duration (weeks)"
+        },
+        {
+            "file": "resources\/views\/admin\/courses\/edit.blade.php",
+            "line": 53,
+            "text": "Estimated Duration (weeks)"
+        },
+        {
+            "file": "resources\/views\/admin\/email-campaigns\/create.blade.php",
+            "line": 55,
+            "text": "Button Text (Optional)"
+        },
+        {
+            "file": "resources\/views\/admin\/email-campaigns\/create.blade.php",
+            "line": 60,
+            "text": "Button URL (Optional)"
+        },
+        {
+            "file": "resources\/views\/admin\/email-campaigns\/create.blade.php",
+            "line": 83,
+            "text": "✅ Active Students (last 7 days)"
+        },
+        {
+            "file": "resources\/views\/admin\/email-campaigns\/create.blade.php",
+            "line": 84,
+            "text": "⏸️ Inactive Students (7+ days)"
+        },
+        {
+            "file": "resources\/views\/admin\/forum\/categories.blade.php",
+            "line": 30,
+            "text": "topics,  posts, order"
+        },
+        {
+            "file": "resources\/views\/admin\/forum\/index.blade.php",
+            "line": 29,
+            "text": "pending"
+        },
+        {
+            "file": "resources\/views\/admin\/forum\/index.blade.php",
+            "line": 41,
+            "text": "topics"
+        },
+        {
+            "file": "resources\/views\/admin\/forum\/index.blade.php",
+            "line": 42,
+            "text": "Order"
+        },
+        {
+            "file": "resources\/views\/admin\/forum\/reports.blade.php",
+            "line": 27,
+            "text": "Reported by"
+        },
+        {
+            "file": "resources\/views\/admin\/forum\/topic-details.blade.php",
+            "line": 20,
+            "text": "views"
+        },
+        {
+            "file": "resources\/views\/admin\/forum\/topic-details.blade.php",
+            "line": 21,
+            "text": "replies"
+        },
+        {
+            "file": "resources\/views\/admin\/games\/create.blade.php",
+            "line": 33,
+            "text": "idx + 1\">"
+        },
+        {
+            "file": "resources\/views\/admin\/games\/show.blade.php",
+            "line": 144,
+            "text": "⏱ s | 🏆 pts"
+        },
+        {
+            "file": "resources\/views\/admin\/lessons\/create.blade.php",
+            "line": 9,
+            "text": "Add a new lesson to"
+        },
+        {
+            "file": "resources\/views\/admin\/lessons\/create.blade.php",
+            "line": 56,
+            "text": "Attachments (PDF, DOC, etc.)"
+        },
+        {
+            "file": "resources\/views\/admin\/lessons\/create.blade.php",
+            "line": 117,
+            "text": "Duration (minutes)"
+        },
+        {
+            "file": "resources\/views\/admin\/lessons\/create.blade.php",
+            "line": 121,
+            "text": "Passing Score (%)"
+        },
+        {
+            "file": "resources\/views\/admin\/lessons\/create.blade.php",
+            "line": 309,
+            "text": "Passing Score (%)"
+        },
+        {
+            "file": "resources\/views\/admin\/lessons\/create.blade.php",
+            "line": 313,
+            "text": "Max Duration (seconds)"
+        },
+        {
+            "file": "resources\/views\/admin\/lessons\/create.blade.php",
+            "line": 465,
+            "text": "${q.question_text}"
+        },
+        {
+            "file": "resources\/views\/admin\/lessons\/create.blade.php",
+            "line": 465,
+            "text": "(${diffLabel})"
+        },
+        {
+            "file": "resources\/views\/admin\/lessons\/edit.blade.php",
+            "line": 117,
+            "text": "Duration (minutes)"
+        },
+        {
+            "file": "resources\/views\/admin\/lessons\/edit.blade.php",
+            "line": 121,
+            "text": "Passing Score (%)"
+        },
+        {
+            "file": "resources\/views\/admin\/lessons\/edit.blade.php",
+            "line": 302,
+            "text": "Passing Score (%)"
+        },
+        {
+            "file": "resources\/views\/admin\/lessons\/edit.blade.php",
+            "line": 306,
+            "text": "Max Duration (seconds)"
+        },
+        {
+            "file": "resources\/views\/admin\/lessons\/edit.blade.php",
+            "line": 496,
+            "text": "${q.question_text}"
+        },
+        {
+            "file": "resources\/views\/admin\/lessons\/edit.blade.php",
+            "line": 496,
+            "text": "(${diffLabel})"
+        },
+        {
+            "file": "resources\/views\/admin\/payments\/show.blade.php",
+            "line": 8,
+            "text": "Payment #"
+        },
+        {
+            "file": "resources\/views\/admin\/payments\/show.blade.php",
+            "line": 50,
+            "text": "Payment was refunded on"
+        },
+        {
+            "file": "resources\/views\/admin\/questions\/create.blade.php",
+            "line": 25,
+            "text": "Lesson (Optional)"
+        },
+        {
+            "file": "resources\/views\/admin\/questions\/create.blade.php",
+            "line": 77,
+            "text": "Points (Optional)"
+        },
+        {
+            "file": "resources\/views\/admin\/questions\/create.blade.php",
+            "line": 81,
+            "text": "Upload Custom Audio (MP3\/WAV)"
+        },
+        {
+            "file": "resources\/views\/admin\/questions\/edit.blade.php",
+            "line": 25,
+            "text": "Lesson (Optional)"
+        },
+        {
+            "file": "resources\/views\/admin\/questions\/edit.blade.php",
+            "line": 72,
+            "text": "Points (Optional)"
+        },
+        {
+            "file": "resources\/views\/admin\/questions\/index.blade.php",
+            "line": 58,
+            "text": "quizzes"
+        },
+        {
+            "file": "resources\/views\/admin\/quizzes\/attempt-details.blade.php",
+            "line": 34,
+            "text": "Question"
+        },
+        {
+            "file": "resources\/views\/admin\/quizzes\/create.blade.php",
+            "line": 27,
+            "text": "Lesson (Optional)"
+        },
+        {
+            "file": "resources\/views\/admin\/quizzes\/create.blade.php",
+            "line": 28,
+            "text": "None (Final Exam)"
+        },
+        {
+            "file": "resources\/views\/admin\/quizzes\/create.blade.php",
+            "line": 99,
+            "text": "None (Final Exam)"
+        },
+        {
+            "file": "resources\/views\/admin\/quizzes\/create.blade.php",
+            "line": 118,
+            "text": "${escapeHtml(q.question_text)}"
+        },
+        {
+            "file": "resources\/views\/admin\/quizzes\/create.blade.php",
+            "line": 119,
+            "text": "${escapeHtml(q.difficulty)}"
+        },
+        {
+            "file": "resources\/views\/admin\/quizzes\/edit.blade.php",
+            "line": 27,
+            "text": "Lesson (Optional)"
+        },
+        {
+            "file": "resources\/views\/admin\/quizzes\/edit.blade.php",
+            "line": 28,
+            "text": "None (Final Exam)"
+        },
+        {
+            "file": "resources\/views\/admin\/quizzes\/edit.blade.php",
+            "line": 99,
+            "text": "None (Final Exam)"
+        },
+        {
+            "file": "resources\/views\/admin\/quizzes\/edit.blade.php",
+            "line": 118,
+            "text": "${escapeHtml(q.question_text)}"
+        },
+        {
+            "file": "resources\/views\/admin\/quizzes\/edit.blade.php",
+            "line": 119,
+            "text": "${escapeHtml(q.difficulty)}"
+        },
+        {
+            "file": "resources\/views\/admin\/quizzes\/index.blade.php",
+            "line": 31,
+            "text": "min"
+        },
+        {
+            "file": "resources\/views\/admin\/settings\/battle.blade.php",
+            "line": 38,
+            "text": "(seconds)"
+        },
+        {
+            "file": "resources\/views\/admin\/settings\/battle.blade.php",
+            "line": 45,
+            "text": "How long players wait in lobby before game starts. Default: 120s (2 min)"
+        },
+        {
+            "file": "resources\/views\/admin\/settings\/battle.blade.php",
+            "line": 50,
+            "text": "(seconds)"
+        },
+        {
+            "file": "resources\/views\/admin\/settings\/payment.blade.php",
+            "line": 35,
+            "text": "Tax Rate (%)"
+        },
+        {
+            "file": "resources\/views\/admin\/settings\/points.blade.php",
+            "line": 27,
+            "text": "Referral Discount (%)"
+        },
+        {
+            "file": "resources\/views\/admin\/students\/enrollments.blade.php",
+            "line": 8,
+            "text": "— Enrollments"
+        },
+        {
+            "file": "resources\/views\/admin\/students\/enrollments.blade.php",
+            "line": 22,
+            "text": "Enrolled"
+        },
+        {
+            "file": "resources\/views\/admin\/students\/index.blade.php",
+            "line": 36,
+            "text": "Joined"
+        },
+        {
+            "file": "resources\/views\/auth\/register.blade.php",
+            "line": 94,
+            "text": "% off"
+        },
+        {
+            "file": "resources\/views\/certificates\/template.blade.php",
+            "line": 5,
+            "text": "Certificate -"
+        },
+        {
+            "file": "resources\/views\/certificates\/template.blade.php",
+            "line": 366,
+            "text": ":  &bull;"
+        },
+        {
+            "file": "resources\/views\/emails\/promotional.blade.php",
+            "line": 24,
+            "text": "Hello !"
+        },
+        {
+            "file": "resources\/views\/emails\/promotional.blade.php",
+            "line": 38,
+            "text": "Best regards,"
+        },
+        {
+            "file": "resources\/views\/emails\/promotional.blade.php",
+            "line": 38,
+            "text": "The  Team"
+        },
+        {
+            "file": "resources\/views\/emails\/reset-password.blade.php",
+            "line": 48,
+            "text": "Reset Your Password"
+        },
+        {
+            "file": "resources\/views\/emails\/reset-password.blade.php",
+            "line": 51,
+            "text": "Hello,"
+        },
+        {
+            "file": "resources\/views\/emails\/reset-password.blade.php",
+            "line": 53,
+            "text": "You are receiving this email because we received a password reset request for your account."
+        },
+        {
+            "file": "resources\/views\/emails\/reset-password.blade.php",
+            "line": 61,
+            "text": "This password reset link will expire in  minutes."
+        },
+        {
+            "file": "resources\/views\/emails\/reset-password.blade.php",
+            "line": 63,
+            "text": "If you did not request a password reset, no further action is required."
+        },
+        {
+            "file": "resources\/views\/emails\/reset-password.blade.php",
+            "line": 65,
+            "text": "If you're having trouble clicking the button, copy and paste the URL below into your web browser:"
+        },
+        {
+            "file": "resources\/views\/emails\/reset-password.blade.php",
+            "line": 68,
+            "text": "Thanks,"
+        },
+        {
+            "file": "resources\/views\/emails\/reset-password.blade.php",
+            "line": 68,
+            "text": "Team"
+        },
+        {
+            "file": "resources\/views\/emails\/reset-password.blade.php",
+            "line": 71,
+            "text": "&copy;  . All rights reserved."
+        },
+        {
+            "file": "resources\/views\/errors\/403.blade.php",
+            "line": 6,
+            "text": "403 - Access Denied"
+        },
+        {
+            "file": "resources\/views\/errors\/403.blade.php",
+            "line": 20,
+            "text": "Access Denied"
+        },
+        {
+            "file": "resources\/views\/errors\/404.blade.php",
+            "line": 6,
+            "text": "404 - Page Not Found"
+        },
+        {
+            "file": "resources\/views\/errors\/404.blade.php",
+            "line": 20,
+            "text": "Page Not Found"
+        },
+        {
+            "file": "resources\/views\/errors\/500.blade.php",
+            "line": 6,
+            "text": "500 - Server Error"
+        },
+        {
+            "file": "resources\/views\/errors\/500.blade.php",
+            "line": 19,
+            "text": "Server Error"
+        },
+        {
+            "file": "resources\/views\/errors\/503.blade.php",
+            "line": 6,
+            "text": "503 - Maintenance Mode"
+        },
+        {
+            "file": "resources\/views\/errors\/503.blade.php",
+            "line": 19,
+            "text": "We'll Be Right Back"
+        },
+        {
+            "file": "resources\/views\/errors\/503.blade.php",
+            "line": 20,
+            "text": "Scheduled Maintenance"
+        },
+        {
+            "file": "resources\/views\/errors\/503.blade.php",
+            "line": 26,
+            "text": "Need immediate assistance?"
+        },
+        {
+            "file": "resources\/views\/layouts\/app.blade.php",
+            "line": 85,
+            "text": "[x-cloak] { display: none !important; }"
+        },
+        {
+            "file": "resources\/views\/layouts\/footer.blade.php",
+            "line": 25,
+            "text": "Simple English"
+        },
+        {
+            "file": "resources\/views\/layouts\/navigation.blade.php",
+            "line": 198,
+            "text": "9 ? '9+' : unreadCount\">"
+        },
+        {
+            "file": "resources\/views\/layouts\/navigation.blade.php",
+            "line": 416,
+            "text": "Dashboard"
+        },
+        {
+            "file": "resources\/views\/layouts\/navigation.blade.php",
+            "line": 417,
+            "text": "Courses"
+        },
+        {
+            "file": "resources\/views\/layouts\/navigation.blade.php",
+            "line": 418,
+            "text": "Questions"
+        },
+        {
+            "file": "resources\/views\/layouts\/navigation.blade.php",
+            "line": 419,
+            "text": "Quizzes"
+        },
+        {
+            "file": "resources\/views\/layouts\/navigation.blade.php",
+            "line": 420,
+            "text": "Students"
+        },
+        {
+            "file": "resources\/views\/layouts\/navigation.blade.php",
+            "line": 421,
+            "text": "📧 Emails"
+        },
+        {
+            "file": "resources\/views\/privacy.blade.php",
+            "line": 23,
+            "text": "1. Information We Collect"
+        },
+        {
+            "file": "resources\/views\/privacy.blade.php",
+            "line": 24,
+            "text": "We collect information you provide directly, including your name, email address, and profile data when you register. We also collect usage data such as courses accessed, quiz results, and learning progress to personalize your experience."
+        },
+        {
+            "file": "resources\/views\/privacy.blade.php",
+            "line": 28,
+            "text": "2. How We Use Your Information"
+        },
+        {
+            "file": "resources\/views\/privacy.blade.php",
+            "line": 30,
+            "text": "Provide, maintain, and improve our platform and services"
+        },
+        {
+            "file": "resources\/views\/privacy.blade.php",
+            "line": 31,
+            "text": "Track your learning progress and generate certificates"
+        },
+        {
+            "file": "resources\/views\/privacy.blade.php",
+            "line": 32,
+            "text": "Send you notifications about achievements, course updates, and promotions"
+        },
+        {
+            "file": "resources\/views\/privacy.blade.php",
+            "line": 33,
+            "text": "Personalize your learning experience and recommendations"
+        },
+        {
+            "file": "resources\/views\/privacy.blade.php",
+            "line": 34,
+            "text": "Provide customer support and respond to inquiries"
+        },
+        {
+            "file": "resources\/views\/privacy.blade.php",
+            "line": 39,
+            "text": "3. Data Security"
+        },
+        {
+            "file": "resources\/views\/privacy.blade.php",
+            "line": 40,
+            "text": "We implement industry-standard security measures to protect your personal information. Passwords are hashed and encrypted. We use HTTPS for all communications and regularly audit our security practices."
+        },
+        {
+            "file": "resources\/views\/privacy.blade.php",
+            "line": 44,
+            "text": "4. Cookies"
+        },
+        {
+            "file": "resources\/views\/privacy.blade.php",
+            "line": 45,
+            "text": "We use cookies and similar technologies to maintain your session, remember your preferences (such as dark mode), and analyze how our platform is used. You can control cookie settings through your browser."
+        },
+        {
+            "file": "resources\/views\/privacy.blade.php",
+            "line": 49,
+            "text": "5. Third-Party Services"
+        },
+        {
+            "file": "resources\/views\/privacy.blade.php",
+            "line": 50,
+            "text": "We may use third-party services for payment processing, email delivery, and analytics. These services have their own privacy policies and handle data in accordance with their terms."
+        },
+        {
+            "file": "resources\/views\/privacy.blade.php",
+            "line": 54,
+            "text": "6. Your Rights"
+        },
+        {
+            "file": "resources\/views\/privacy.blade.php",
+            "line": 56,
+            "text": "Access and download your personal data"
+        },
+        {
+            "file": "resources\/views\/privacy.blade.php",
+            "line": 57,
+            "text": "Request correction of inaccurate information"
+        },
+        {
+            "file": "resources\/views\/privacy.blade.php",
+            "line": 58,
+            "text": "Request deletion of your account and data"
+        },
+        {
+            "file": "resources\/views\/privacy.blade.php",
+            "line": 59,
+            "text": "Opt out of promotional communications"
+        },
+        {
+            "file": "resources\/views\/privacy.blade.php",
+            "line": 64,
+            "text": "7. Contact Us"
+        },
+        {
+            "file": "resources\/views\/privacy.blade.php",
+            "line": 65,
+            "text": "If you have any questions about this Privacy Policy, please"
+        },
+        {
+            "file": "resources\/views\/privacy.blade.php",
+            "line": 65,
+            "text": "contact us"
+        },
+        {
+            "file": "resources\/views\/student\/battle\/lobby.blade.php",
+            "line": 200,
+            "text": "(You)"
+        },
+        {
+            "file": "resources\/views\/student\/battle\/lobby.blade.php",
+            "line": 214,
+            "text": "Waiting..."
+        },
+        {
+            "file": "resources\/views\/student\/certificates\/show.blade.php",
+            "line": 11,
+            "text": "Certificate"
+        },
+        {
+            "file": "resources\/views\/student\/certificates\/show.blade.php",
+            "line": 19,
+            "text": "Certificate ID:"
+        },
+        {
+            "file": "resources\/views\/student\/certificates\/show.blade.php",
+            "line": 23,
+            "text": "Issued:"
+        },
+        {
+            "file": "resources\/views\/student\/certificates\/show.blade.php",
+            "line": 27,
+            "text": "Final Score:"
+        },
+        {
+            "file": "resources\/views\/student\/certificates\/show.blade.php",
+            "line": 31,
+            "text": "Grade:"
+        },
+        {
+            "file": "resources\/views\/student\/certificates\/show.blade.php",
+            "line": 41,
+            "text": "Certificate PDF is not available yet."
+        },
+        {
+            "file": "resources\/views\/student\/certificates\/show.blade.php",
+            "line": 53,
+            "text": "Share on LinkedIn"
+        },
+        {
+            "file": "resources\/views\/student\/certificates\/verify-failed.blade.php",
+            "line": 11,
+            "text": "Certificate Verification Failed"
+        },
+        {
+            "file": "resources\/views\/student\/certificates\/verify-failed.blade.php",
+            "line": 14,
+            "text": "Go to Home"
+        },
+        {
+            "file": "resources\/views\/student\/certificates\/verify-failed.blade.php",
+            "line": 15,
+            "text": "Browse Courses"
+        },
+        {
+            "file": "resources\/views\/student\/certificates\/verify.blade.php",
+            "line": 6,
+            "text": "Certificate Verification"
+        },
+        {
+            "file": "resources\/views\/student\/certificates\/verify.blade.php",
+            "line": 15,
+            "text": "Certificate Verified!"
+        },
+        {
+            "file": "resources\/views\/student\/certificates\/verify.blade.php",
+            "line": 38,
+            "text": "This certificate was issued by  and is valid."
+        },
+        {
+            "file": "resources\/views\/student\/certificates\/verify.blade.php",
+            "line": 39,
+            "text": "Visit Platform"
+        },
+        {
+            "file": "resources\/views\/student\/courses\/show.blade.php",
+            "line": 141,
+            "text": "PREVIEW"
+        },
+        {
+            "file": "resources\/views\/student\/games\/room.blade.php",
+            "line": 243,
+            "text": "Top Teams"
+        },
+        {
+            "file": "resources\/views\/student\/games\/room.blade.php",
+            "line": 255,
+            "text": "2\" class=\"text-sm font-black text-slate-400 dark:text-slate-500\" x-text=\"idx + 1\">"
+        },
+        {
+            "file": "resources\/views\/student\/notes\/export-pdf.blade.php",
+            "line": 5,
+            "text": "My Notes —"
+        },
+        {
+            "file": "resources\/views\/student\/notes\/export-pdf.blade.php",
+            "line": 17,
+            "text": "📝 My Notes"
+        },
+        {
+            "file": "resources\/views\/student\/profile\/change-password.blade.php",
+            "line": 56,
+            "text": "Current Password *"
+        },
+        {
+            "file": "resources\/views\/student\/profile\/change-password.blade.php",
+            "line": 70,
+            "text": "New Password *"
+        },
+        {
+            "file": "resources\/views\/student\/profile\/change-password.blade.php",
+            "line": 84,
+            "text": "Confirm New Password *"
+        },
+        {
+            "file": "resources\/views\/student\/profile\/change-password.blade.php",
+            "line": 99,
+            "text": "Cancel"
+        },
+        {
+            "file": "resources\/views\/student\/profile\/change-password.blade.php",
+            "line": 101,
+            "text": "Update Password"
+        },
+        {
+            "file": "resources\/views\/student\/profile\/points-history.blade.php",
+            "line": 60,
+            "text": "Activity"
+        },
+        {
+            "file": "resources\/views\/student\/profile\/points-history.blade.php",
+            "line": 61,
+            "text": "Points"
+        },
+        {
+            "file": "resources\/views\/student\/profile\/points-history.blade.php",
+            "line": 62,
+            "text": "Date"
+        },
+        {
+            "file": "resources\/views\/student\/profile\/points-history.blade.php",
+            "line": 76,
+            "text": "No points history yet."
+        },
+        {
+            "file": "resources\/views\/student\/pronunciation\/my-attempts.blade.php",
+            "line": 12,
+            "text": "Pronunciation Practice"
+        },
+        {
+            "file": "resources\/views\/student\/pronunciation\/my-attempts.blade.php",
+            "line": 13,
+            "text": "Track your speaking progress and improve your accent."
+        },
+        {
+            "file": "resources\/views\/student\/pronunciation\/my-attempts.blade.php",
+            "line": 43,
+            "text": "Exercise"
+        },
+        {
+            "file": "resources\/views\/student\/pronunciation\/my-attempts.blade.php",
+            "line": 44,
+            "text": "Lesson"
+        },
+        {
+            "file": "resources\/views\/student\/pronunciation\/my-attempts.blade.php",
+            "line": 45,
+            "text": "Score"
+        },
+        {
+            "file": "resources\/views\/student\/pronunciation\/my-attempts.blade.php",
+            "line": 46,
+            "text": "Date"
+        },
+        {
+            "file": "resources\/views\/student\/pronunciation\/my-attempts.blade.php",
+            "line": 67,
+            "text": "No pronunciation attempts yet. Try a lesson with pronunciation exercises!"
+        },
+        {
+            "file": "resources\/views\/student\/pronunciation\/practice.blade.php",
+            "line": 15,
+            "text": "Pronunciation Practice"
+        },
+        {
+            "file": "resources\/views\/student\/pronunciation\/practice.blade.php",
+            "line": 22,
+            "text": "Browser Not Supported"
+        },
+        {
+            "file": "resources\/views\/student\/pronunciation\/practice.blade.php",
+            "line": 24,
+            "text": "Google Chrome"
+        },
+        {
+            "file": "resources\/views\/student\/pronunciation\/practice.blade.php",
+            "line": 24,
+            "text": "Microsoft Edge"
+        },
+        {
+            "file": "resources\/views\/student\/pronunciation\/practice.blade.php",
+            "line": 37,
+            "text": "Sentence"
+        },
+        {
+            "file": "resources\/views\/student\/pronunciation\/practice.blade.php",
+            "line": 83,
+            "text": "Tap to start speaking"
+        },
+        {
+            "file": "resources\/views\/student\/pronunciation\/practice.blade.php",
+            "line": 84,
+            "text": "🎙️ Listening... Tap to stop"
+        },
+        {
+            "file": "resources\/views\/student\/pronunciation\/practice.blade.php",
+            "line": 97,
+            "text": "Evaluating..."
+        },
+        {
+            "file": "resources\/views\/student\/pronunciation\/practice.blade.php",
+            "line": 124,
+            "text": "= 90 ? 'Excellent! 🌟' : (results[]?.score || 0) >= 70 ? 'Great job! 👏' : (results[]?.score || 0) >= 50 ? 'Good try! 💪' : 'Keep practicing! 🎯'\">"
+        },
+        {
+            "file": "resources\/views\/student\/pronunciation\/practice.blade.php",
+            "line": 157,
+            "text": "Listen to the correct pronunciation"
+        },
+        {
+            "file": "resources\/views\/student\/pronunciation\/practice.blade.php",
+            "line": 177,
+            "text": "Previous best:"
+        },
+        {
+            "file": "resources\/views\/student\/pronunciation\/practice.blade.php",
+            "line": 180,
+            "text": "attempts"
+        },
+        {
+            "file": "resources\/views\/student\/telegram\/guide.blade.php",
+            "line": 75,
+            "text": "\/start"
+        },
+        {
+            "file": "resources\/views\/student\/telegram\/guide.blade.php",
+            "line": 134,
+            "text": "\/start"
+        },
+        {
+            "file": "resources\/views\/student\/telegram\/guide.blade.php",
+            "line": 144,
+            "text": "\/today"
+        },
+        {
+            "file": "resources\/views\/student\/telegram\/guide.blade.php",
+            "line": 154,
+            "text": "\/status"
+        },
+        {
+            "file": "resources\/views\/student\/telegram\/guide.blade.php",
+            "line": 164,
+            "text": "\/help"
+        },
+        {
+            "file": "resources\/views\/student\/telegram\/guide.blade.php",
+            "line": 174,
+            "text": "\/courses"
+        },
+        {
+            "file": "resources\/views\/student\/telegram\/guide.blade.php",
+            "line": 184,
+            "text": "\/leaderboard"
+        },
+        {
+            "file": "resources\/views\/student\/telegram\/guide.blade.php",
+            "line": 194,
+            "text": "\/streak"
+        },
+        {
+            "file": "resources\/views\/student\/telegram\/guide.blade.php",
+            "line": 204,
+            "text": "\/certificate"
+        },
+        {
+            "file": "resources\/views\/student\/telegram\/guide.blade.php",
+            "line": 214,
+            "text": "\/unlink"
+        },
+        {
+            "file": "resources\/views\/student\/telegram\/guide.blade.php",
+            "line": 224,
+            "text": "\/remind"
+        },
+        {
+            "file": "resources\/views\/terms.blade.php",
+            "line": 23,
+            "text": "1. Acceptance of Terms"
+        },
+        {
+            "file": "resources\/views\/terms.blade.php",
+            "line": 24,
+            "text": "By creating an account or using , you agree to be bound by these Terms of Service. If you do not agree with any part of these terms, you may not use our services."
+        },
+        {
+            "file": "resources\/views\/terms.blade.php",
+            "line": 28,
+            "text": "2. User Accounts"
+        },
+        {
+            "file": "resources\/views\/terms.blade.php",
+            "line": 30,
+            "text": "You must provide accurate and complete information when creating an account"
+        },
+        {
+            "file": "resources\/views\/terms.blade.php",
+            "line": 31,
+            "text": "You are responsible for maintaining the security of your account credentials"
+        },
+        {
+            "file": "resources\/views\/terms.blade.php",
+            "line": 32,
+            "text": "You must be at least 13 years old to use this platform"
+        },
+        {
+            "file": "resources\/views\/terms.blade.php",
+            "line": 33,
+            "text": "One person may not maintain more than one account"
+        },
+        {
+            "file": "resources\/views\/terms.blade.php",
+            "line": 38,
+            "text": "3. Course Access & Payments"
+        },
+        {
+            "file": "resources\/views\/terms.blade.php",
+            "line": 39,
+            "text": "Paid courses grant you lifetime access to the content available at the time of purchase. We reserve the right to update course content. Refund requests may be submitted within 7 days of purchase if you have completed less than 25% of the course."
+        },
+        {
+            "file": "resources\/views\/terms.blade.php",
+            "line": 43,
+            "text": "4. Certificates"
+        },
+        {
+            "file": "resources\/views\/terms.blade.php",
+            "line": 44,
+            "text": "Certificates are issued upon successful completion of a course and its assessments. Each certificate includes a unique verification code. Certificates represent course completion and are not accredited academic degrees."
+        },
+        {
+            "file": "resources\/views\/terms.blade.php",
+            "line": 48,
+            "text": "5. Community Guidelines"
+        },
+        {
+            "file": "resources\/views\/terms.blade.php",
+            "line": 50,
+            "text": "Be respectful and constructive in forum discussions"
+        },
+        {
+            "file": "resources\/views\/terms.blade.php",
+            "line": 51,
+            "text": "Do not share answers or quiz solutions"
+        },
+        {
+            "file": "resources\/views\/terms.blade.php",
+            "line": 52,
+            "text": "Do not post spam, offensive, or inappropriate content"
+        },
+        {
+            "file": "resources\/views\/terms.blade.php",
+            "line": 53,
+            "text": "Do not impersonate other users or staff members"
+        },
+        {
+            "file": "resources\/views\/terms.blade.php",
+            "line": 58,
+            "text": "6. Intellectual Property"
+        },
+        {
+            "file": "resources\/views\/terms.blade.php",
+            "line": 59,
+            "text": "All course content, including text, videos, images, and quizzes, is the property of  and its content creators. You may not reproduce, distribute, or share course materials without explicit permission."
+        },
+        {
+            "file": "resources\/views\/terms.blade.php",
+            "line": 63,
+            "text": "7. Account Termination"
+        },
+        {
+            "file": "resources\/views\/terms.blade.php",
+            "line": 64,
+            "text": "We reserve the right to suspend or terminate accounts that violate these terms, engage in fraudulent activity, or abuse the platform. You may delete your account at any time through your profile settings."
+        },
+        {
+            "file": "resources\/views\/terms.blade.php",
+            "line": 68,
+            "text": "8. Changes to Terms"
+        },
+        {
+            "file": "resources\/views\/terms.blade.php",
+            "line": 69,
+            "text": "We may update these terms from time to time. Continued use of the platform after changes constitutes acceptance of the updated terms. We will notify users of significant changes via email or in-app notification."
+        },
+        {
+            "file": "resources\/views\/terms.blade.php",
+            "line": 73,
+            "text": "9. Contact"
+        },
+        {
+            "file": "resources\/views\/terms.blade.php",
+            "line": 74,
+            "text": "For questions about these Terms of Service, please"
+        },
+        {
+            "file": "resources\/views\/terms.blade.php",
+            "line": 74,
+            "text": "contact us"
+        }
+    ]
+}

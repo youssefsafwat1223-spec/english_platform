@@ -114,11 +114,11 @@
                                 </div>
                                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                     <div>
-                                        <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">Duration (minutes)</label>
+                                        <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('Duration (minutes)') }}</label>
                                         <input type="number" name="quiz_duration_minutes" class="input-glass" min="1" value="{{ old('quiz_duration_minutes', $lesson->quiz?->duration_minutes ?? 10) }}">
                                     </div>
                                     <div>
-                                        <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">Passing Score (%)</label>
+                                        <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('Passing Score (%)') }}</label>
                                         <input type="number" name="quiz_passing_score" class="input-glass" min="0" max="100" value="{{ old('quiz_passing_score', $lesson->quiz?->passing_score ?? 70) }}">
                                     </div>
                                     <div class="flex items-center gap-2 pt-6">
@@ -299,11 +299,11 @@
                             </div>
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div>
-                                    <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">Passing Score (%)</label>
+                                    <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('Passing Score (%)') }}</label>
                                     <input type="number" name="pronunciation_passing_score" class="input-glass" min="0" max="100" value="{{ old('pronunciation_passing_score', $pronunciationExercise?->passing_score ?? 70) }}">
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">Max Duration (seconds)</label>
+                                    <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('Max Duration (seconds)') }}</label>
                                     <input type="number" name="pronunciation_max_duration" class="input-glass" min="1" value="{{ old('pronunciation_max_duration', $pronunciationExercise?->max_duration_seconds ?? 10) }}">
                                 </div>
                                 <div class="flex items-center gap-2 pt-6">
@@ -478,7 +478,7 @@
                     });
                     const data = await res.json();
                     if (!res.ok) {
-                        const errors = data.errors ? Object.values(data.errors).flat().join('\n') : (data.message || 'حدث خطأ');
+                        const errors = data.errors ? Object.values(data.errors).flat().join('\n') : (data.message || '{{ __('حدث خطأ') }}');
                         this.errorMsg = errors;
                         this.saving = false;
                         return;
@@ -501,7 +501,7 @@
                         this.showModal = false;
                     }
                 } catch(e) {
-                    this.errorMsg = 'حدث خطأ في الاتصال بالسيرفر';
+                    this.errorMsg = '{{ __('حدث خطأ في الاتصال بالسيرفر') }}';
                 }
                 this.saving = false;
             }

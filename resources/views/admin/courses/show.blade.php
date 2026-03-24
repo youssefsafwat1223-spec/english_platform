@@ -41,7 +41,7 @@
                     <div class="glass-card-body">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             @php $details = [
-                                ['label' => 'Price', 'value' => number_format($course->price, 2) . ' ر.س'],
+                                ['label' => 'Price', 'value' => number_format($course->price, 2) . ' ' . __('ر.س')],
                                 ['label' => 'Status', 'badge' => true],
                                 ['label' => 'Duration', 'value' => $course->estimated_duration_weeks ? $course->estimated_duration_weeks . ' weeks' : 'Not set'],
                                 ['label' => 'Created By', 'value' => $course->creator?->name ?? 'System'],
@@ -120,7 +120,7 @@
                             ['l' => 'Lessons', 'v' => $stats['total_lessons']],
                             ['l' => 'Questions', 'v' => $stats['total_questions']],
                             ['l' => 'Quizzes', 'v' => $stats['total_quizzes']],
-                            ['l' => 'Revenue', 'v' => number_format($stats['revenue'], 2) . ' ر.س', 'color' => 'text-emerald-500'],
+                            ['l' => 'Revenue', 'v' => number_format($stats['revenue'], 2) . ' ' . __('ر.س'), 'color' => 'text-emerald-500'],
                         ]; @endphp
                         @foreach($statItems as $si)
                             <div class="flex justify-between">

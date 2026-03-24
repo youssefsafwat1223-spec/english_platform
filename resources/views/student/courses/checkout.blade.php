@@ -88,7 +88,7 @@
                             <div class="mb-8 p-4 bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl">
                                 <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">{{ __('أو عندك كوبون خصم؟ (من المنصة)') }}</label>
                                 <div class="flex gap-2">
-                                    <input type="text" id="promo_code_input" class="w-full bg-white dark:bg-black/20 border border-slate-200 dark:border-white/10 rounded-xl py-3 px-4 text-sm font-mono uppercase text-slate-900 dark:text-white focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors" placeholder="مثال: SUMMER50">
+                                    <input type="text" id="promo_code_input" class="w-full bg-white dark:bg-black/20 border border-slate-200 dark:border-white/10 rounded-xl py-3 px-4 text-sm font-mono uppercase text-slate-900 dark:text-white focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors" placeholder="{{ __('مثال:') }} SUMMER50">
                                     <button type="button" onclick="applyPromoCode()" class="bg-slate-800 dark:bg-white text-white dark:text-slate-900 px-4 py-2 rounded-xl text-sm font-bold hover:bg-slate-700 dark:hover:bg-slate-200 whitespace-nowrap">{{ __('تطبيق') }}</button>
                                 </div>
                                 <script>
@@ -120,7 +120,7 @@
                     <div class="p-6 sm:p-8">
                         <h3 class="font-bold text-lg mb-6 text-slate-900 dark:text-white">{{ __('وش بيصير بعدين؟') }}</h3>
                         <div class="space-y-6">
-                            @php $steps = ['بتكمل عملية الدفع بأمان على بوابة الدفع.', 'بيتم تفعيل الكورس في حسابك تلقائياً.', 'تقدر تبدأ مذاكرة على طول من لوحة تحكمك.']; @endphp
+                            @php $steps = ['{{ __('تكتمل عملية الدفع بأمان على بوابة الدفع.') }}', '{{ __('يتم تفعيل الكورس في حسابك تلقائياً.') }}', '{{ __('تقدر تبدأ المذاكرة على طول من لوحة تحكمك.') }}']; @endphp
                             @foreach($steps as $step)
                                 <div class="flex items-start gap-4">
                                     <div class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-300 dark:border-white/10 flex items-center justify-center text-sm font-bold shrink-0 shadow-inner mt-0.5">{{ $loop->iteration }}</div>
@@ -159,7 +159,7 @@
                             <div class="space-y-4">
                                 <div class="flex justify-between items-center mb-4">
                                     <span class="text-slate-600 dark:text-slate-400 font-medium">{{ __('سعر الكورس الأصلي') }}</span>
-                                    <span class="font-bold text-slate-900 dark:text-white">{{ number_format($course->price, 2) }} ر.س</span>
+                                    <span class="font-bold text-slate-900 dark:text-white">{{ number_format($course->price, 2) }} {{ __('ر.س') }}</span>
                                 </div>
                                 
                                 @if($discount > 0)
@@ -172,7 +172,7 @@
                                                 {{ __('خصم الدعوة') }}
                                             @endif
                                         </div>
-                                        <span>-{{ number_format($discount, 2) }} ر.س</span>
+                                        <span>-{{ number_format($discount, 2) }} {{ __('ر.س') }}</span>
                                     </div>
                                 @endif
                                 
@@ -180,7 +180,7 @@
                                     <div class="flex justify-between items-end">
                                         <span class="font-black text-slate-900 dark:text-white text-lg">{{ __('المبلغ الإجمالي') }}</span>
                                         <div class="text-left">
-                                            <span class="text-4xl font-black text-primary-600 dark:text-primary-400 leading-none">{{ number_format($finalAmount, 2) }} ر.س</span>
+                                            <span class="text-4xl font-black text-primary-600 dark:text-primary-400 leading-none">{{ number_format($finalAmount, 2) }} {{ __('ر.س') }}</span>
                                             <p class="text-xs text-slate-500 mt-1 font-medium">{{ __('السعر بالريال السعودي.') }}</p>
                                         </div>
                                     </div>

@@ -22,20 +22,20 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>👋 اشتقنالك!</h1>
-            <p>مر {{ $daysSinceActive }} يوم من آخر زيارة لك</p>
+            <h1>👋 {{ __('اشتقنالك!') }}</h1>
+            <p>{{ __('مر') }} {{ $daysSinceActive }} {{ __('يوم من آخر زيارة لك') }}</p>
         </div>
         <div class="content">
-            <div class="greeting">مرحباً {{ $user->name }}!</div>
+            <div class="greeting">{{ __('مرحباً') }} {{ $user->name }}!</div>
             
-            <p>لاحظنا إنك مش نشط من <strong>{{ $daysSinceActive }} يوم</strong>. رحلتك التعليمية في انتظارك!</p>
+            <p>{{ __('لاحظنا إنك غير نشط من') }} <strong>{{ $daysSinceActive }} {{ __('يوم') }}</strong>. {{ __('رحلتك التعليمية في انتظارك!') }}</p>
 
             @if($enrolledCourses && count($enrolledCourses) > 0)
-                <p style="font-weight: bold; color: #1f2937;">الكورسات بتاعتك لسه موجودة:</p>
+                <p style="font-weight: bold; color: #1f2937;">{{ __('كورساتك للحين موجودة:') }}</p>
                 @foreach($enrolledCourses as $enrollment)
                     <div class="course-card">
                         <div class="course-name">📚 {{ $enrollment->course->title ?? 'كورس' }}</div>
-                        <div class="course-progress">التقدم: {{ $enrollment->progress_percentage ?? 0 }}%</div>
+                        <div class="course-progress">{{ __('التقدم:') }} {{ $enrollment->progress_percentage ?? 0 }}%</div>
                         <div class="progress-bar">
                             <div class="progress-fill" style="width: {{ $enrollment->progress_percentage ?? 0 }}%"></div>
                         </div>
@@ -45,16 +45,16 @@
 
             <p style="text-align: center;">
                 <a href="{{ route('student.dashboard') }}" class="button">
-                    استمر في التعلم ←
+                    است{{ __('مر') }} في التعلم ←
                 </a>
             </p>
 
-            <p style="color: #6b7280; font-size: 14px;">🔥 نصيحة: الممارسة اليومية المستمرة، حتى لو 30 دقيقة بس، هي المفتاح لإتقان الإنجليزية!</p>
+            <p style="color: #6b7280; font-size: 14px;">🔥 {{ __('نصيحة: الممارسة اليومية المستمرة، حتى لو 30 دقيقة بس، هي المفتاح لإتقان الإنجليزية!') }}</p>
 
-            <p>نشوفك قريب!<br><strong>فريق Simple English</strong></p>
+            <p>{{ __('نشوفك قريب!') }}<br><strong>{{ __('فريق Simple English') }}</strong></p>
         </div>
         <div class="footer">
-            &copy; {{ date('Y') }} Simple English. جميع الحقوق محفوظة.
+            &copy; {{ date('Y') }} Simple English. {{ __('جميع الحقوق محفوظة.') }}
         </div>
     </div>
 </body>

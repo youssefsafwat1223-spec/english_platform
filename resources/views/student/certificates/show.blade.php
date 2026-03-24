@@ -8,7 +8,7 @@
 
     <div class="max-w-4xl mx-auto sm:px-6 lg:px-8 relative z-10">
         <div class="text-center mb-8" data-aos="fade-down">
-            <h1 class="text-3xl font-extrabold"><span class="text-gradient">Certificate</span></h1>
+            <h1 class="text-3xl font-extrabold"><span class="text-gradient">{{ __('Certificate') }}</span></h1>
             <p class="mt-2" style="color: var(--color-text-muted);">{{ $certificate->course->title }}</p>
         </div>
 
@@ -16,19 +16,19 @@
             <div class="glass-card-body space-y-4">
                 <div class="flex flex-wrap gap-6 text-sm">
                     <div>
-                        <span class="font-bold" style="color: var(--color-text);">Certificate ID:</span>
+                        <span class="font-bold" style="color: var(--color-text);">{{ __('Certificate ID:') }}</span>
                         <span class="font-mono text-primary-500 ml-1">{{ $certificate->certificate_id }}</span>
                     </div>
                     <div>
-                        <span class="font-bold" style="color: var(--color-text);">Issued:</span>
+                        <span class="font-bold" style="color: var(--color-text);">{{ __('Issued:') }}</span>
                         <span style="color: var(--color-text-muted);" class="ml-1">{{ $certificate->issued_at?->format('M d, Y') }}</span>
                     </div>
                     <div>
-                        <span class="font-bold" style="color: var(--color-text);">Final Score:</span>
+                        <span class="font-bold" style="color: var(--color-text);">{{ __('Final Score:') }}</span>
                         <span class="text-emerald-500 font-bold ml-1">{{ $certificate->final_score }}%</span>
                     </div>
                     <div>
-                        <span class="font-bold" style="color: var(--color-text);">Grade:</span>
+                        <span class="font-bold" style="color: var(--color-text);">{{ __('Grade:') }}</span>
                         <span class="badge-primary ml-1">{{ $certificate->grade }}</span>
                     </div>
                 </div>
@@ -38,7 +38,7 @@
                 @else
                     <div class="text-center py-12 rounded-xl" style="background: var(--color-surface-hover);">
                         <div class="text-4xl mb-3">📜</div>
-                        <p style="color: var(--color-text-muted);">Certificate PDF is not available yet.</p>
+                        <p style="color: var(--color-text-muted);">{{ __('Certificate PDF is not available yet.') }}</p>
                     </div>
                 @endif
             </div>
@@ -50,7 +50,7 @@
                 Download PDF
             </a>
             @if(!$certificate->linkedin_shared)
-                <a href="{{ route('student.certificates.share-linkedin', $certificate) }}" class="btn-secondary">Share on LinkedIn</a>
+                <a href="{{ route('student.certificates.share-linkedin', $certificate) }}" class="btn-secondary">{{ __('Share on LinkedIn') }}</a>
             @endif
             <button type="button" onclick="copyVerificationLink()" class="btn-secondary">
                 <svg class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>

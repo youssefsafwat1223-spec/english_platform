@@ -199,7 +199,7 @@
                                                         <span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-slate-300 dark:bg-slate-600"></span> {{ $lesson->formatted_duration }}</span>
                                                     @endif
                                                     @if($lesson->has_quiz)
-                                                        <span class="inline-flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.5 rounded bg-violet-50 text-violet-600 dark:bg-violet-500/10 dark:text-violet-400 ml-1">🧠 اختبار</span>
+                                                        <span class="inline-flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.5 rounded bg-violet-50 text-violet-600 dark:bg-violet-500/10 dark:text-violet-400 ml-1">🧠 {{ __('اختبار') }}</span>
                                                     @endif
                                                 </div>
                                             </div>
@@ -282,7 +282,7 @@
                                                         <span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-slate-300 dark:bg-slate-600"></span> {{ $lesson->formatted_duration }}</span>
                                                     @endif
                                                     @if($lesson->has_quiz)
-                                                        <span class="inline-flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.5 rounded bg-violet-50 text-violet-600 dark:bg-violet-500/10 dark:text-violet-400 ml-1">🧠 اختبار</span>
+                                                        <span class="inline-flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.5 rounded bg-violet-50 text-violet-600 dark:bg-violet-500/10 dark:text-violet-400 ml-1">🧠 {{ __('اختبار') }}</span>
                                                     @endif
                                                 </div>
                                             </div>

@@ -14,34 +14,34 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🎓 مبروك!</h1>
+            <h1>🎓 {{ __('مبروك!') }}</h1>
         </div>
         <div class="content">
-            <h2>مرحباً {{ $certificate->user->name }}!</h2>
+            <h2>{{ __('مرحباً') }} {{ $certificate->user->name }}!</h2>
             
-            <p>مبروك عليك إنهاء كورس <strong>{{ $certificate->course->title }}</strong>!</p>
+            <p>{{ __('مبروك عليك إنهاء كورس') }} <strong>{{ $certificate->course->title }}</strong>!</p>
             
-            <p>شهادتك جاهزة للتحميل الآن.</p>
+            <p>{{ __('شهادتك جاهزة للتحميل الآن.') }}</p>
 
             <div class="stats">
-                <h3>نتائجك:</h3>
+                <h3>{{ __('نتائجك:') }}</h3>
                 <ul>
-                    <li><strong>الدرجة النهائية:</strong> {{ $certificate->final_score }}%</li>
-                    <li><strong>التقدير:</strong> {{ $certificate->grade }}</li>
-                    <li><strong>مستوى الأداء:</strong> {{ $certificate->performance_level }}</li>
-                    <li><strong>رقم الشهادة:</strong> {{ $certificate->certificate_id }}</li>
+                    <li><strong>{{ __('الدرجة النهائية:') }}</strong> {{ $certificate->final_score }}%</li>
+                    <li><strong>{{ __('التقدير:') }}</strong> {{ $certificate->grade }}</li>
+                    <li><strong>{{ __('مستوى الأداء:') }}</strong> {{ $certificate->performance_level }}</li>
+                    <li><strong>{{ __('رقم الشهادة:') }}</strong> {{ $certificate->certificate_id }}</li>
                 </ul>
             </div>
 
             <p style="text-align: center;">
                 <a href="{{ route('student.certificates.show', $certificate) }}" class="button">
-                    تحميل الشهادة
+                    {{ __('تحميل الشهادة') }}
                 </a>
             </p>
 
-            <p>يمكنك التحقق من شهادتك في أي وقت باستخدام رقم الشهادة.</p>
+            <p>{{ __('يمكنك التحقق من شهادتك في أي وقت باستخدام رقم الشهادة.') }}</p>
 
-            <p>استمر في التميز!<br><strong>فريق Simple English</strong></p>
+            <p>{{ __('استمر في التميز!') }}<br><strong>{{ __('فريق Simple English') }}</strong></p>
         </div>
     </div>
 </body>

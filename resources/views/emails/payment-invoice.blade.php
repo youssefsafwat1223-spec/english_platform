@@ -34,64 +34,64 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🧾 فاتورة الدفع</h1>
-            <p>شكراً لاشتراكك في Simple English</p>
+            <h1>🧾 {{ __('فاتورة الدفع') }}</h1>
+            <p>{{ __('شكراً لاشتراكك في Simple English') }}</p>
         </div>
         <div class="content">
-            <div class="greeting">مرحباً {{ $payment->user->name }}!</div>
+            <div class="greeting">{{ __('مرحباً') }} {{ $payment->user->name }}!</div>
             
-            <p>تم اشتراكك بنجاح! إليك تفاصيل الفاتورة الخاصة بك:</p>
+            <p>{{ __('تم اشتراكك بنجاح! إليك {{ __('تفاصيل الفاتورة') }} الخاصة بك:') }}</p>
 
             <div class="invoice-box">
-                <div class="invoice-title">تفاصيل الفاتورة</div>
+                <div class="invoice-title">{{ __('تفاصيل الفاتورة') }}</div>
                 
                 <table>
                     <tr>
-                        <td class="label">رقم المعاملة</td>
+                        <td class="label">{{ __('رقم المعاملة') }}</td>
                         <td class="value" style="font-family: monospace; font-size: 12px;">{{ $payment->transaction_id }}</td>
                     </tr>
                     <tr>
-                        <td class="label">تاريخ الدفع</td>
+                        <td class="label">{{ __('تاريخ الدفع') }}</td>
                         <td class="value">{{ $payment->paid_at ? $payment->paid_at->format('Y/m/d - h:i A') : $payment->created_at->format('Y/m/d - h:i A') }}</td>
                     </tr>
                     <tr>
-                        <td class="label">الكورس</td>
+                        <td class="label">{{ __('الكورس') }}</td>
                         <td class="value">{{ $payment->course->title }}</td>
                     </tr>
                     <tr>
-                        <td class="label">السعر الأصلي</td>
+                        <td class="label">{{ __('السعر الأصلي') }}</td>
                         <td class="value">{{ $payment->currency }} {{ number_format($payment->amount, 2) }}</td>
                     </tr>
                     @if($payment->discount_amount > 0)
                     <tr>
-                        <td class="label">الخصم</td>
+                        <td class="label">{{ __('الخصم') }}</td>
                         <td class="value" style="color: #10b981;">- {{ $payment->currency }} {{ number_format($payment->discount_amount, 2) }}</td>
                     </tr>
                     @endif
                     <tr class="total-row">
-                        <td class="label">المبلغ المدفوع</td>
+                        <td class="label">{{ __('المبلغ المدفوع') }}</td>
                         <td class="value">{{ $payment->currency }} {{ number_format($payment->final_amount, 2) }}</td>
                     </tr>
                 </table>
             </div>
 
             <p style="text-align: center;">
-                <span class="status-badge">✅ تم الدفع بنجاح</span>
+                <span class="status-badge">✅ {{ __('تم الدفع بنجاح') }}</span>
             </p>
 
             <p style="text-align: center;">
                 <a href="{{ route('student.courses.learn', $payment->course_id) }}" class="button">
-                    ابدأ التعلم الآن ←
+                    {{ __('ابدأ التعلم الآن') }} &larr;
                 </a>
             </p>
 
-            <p class="info-text">يمكنك الوصول لكورسك في أي وقت من خلال لوحة التحكم الخاصة بك. إذا كان لديك أي استفسار، تواصل معنا عبر واتساب.</p>
+            <p class="info-text">{{ __('يمكنك الوصول لكورسك في أي وقت من خلال لوحة التحكم الخاصة بك. إذا كان لديك أي استفسار، تواصل معنا عبر واتساب.') }}</p>
 
-            <p>تعلم ممتع!<br><strong>فريق Simple English</strong></p>
+            <p>{{ __('تعلم ممتع!') }}<br><strong>{{ __('فريق Simple English') }}</strong></p>
         </div>
         <div class="footer">
-            &copy; {{ date('Y') }} Simple English. جميع الحقوق محفوظة.<br>
-            <span style="font-size: 11px; color: #d1d5db;">هذه الفاتورة تم إنشاؤها تلقائياً عبر بوابة StreamPay.</span>
+            &copy; {{ date('Y') }} Simple English. {{ __('جميع الحقوق محفوظة.') }}<br>
+            <span style="font-size: 11px; color: #d1d5db;">{{ __('هذه الفاتورة تم إنشاؤها تلقائياً عبر بوابة StreamPay.') }}</span>
         </div>
     </div>
 </body>

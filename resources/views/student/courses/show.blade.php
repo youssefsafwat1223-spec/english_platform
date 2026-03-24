@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
-@section('title', $course->title . ' | ' . config('app.name', 'إتقان الإنجليزية'))
+@section('title', $course->title . ' | ' . config('app.name', '{{ __('إتقان الإنجليزية') }}'))
 @section('meta_description', Str::limit(strip_tags($course->short_description ?: $course->description), 160))
-@section('meta_keywords', 'كورس ' . $course->title . ', تعلم الإنجليزية, كورسات إنجليزي, ' . ($course->level ?? 'جميع المستويات'))
+@section('meta_keywords', '{{ __('كورس') }} ' . $course->title . ', {{ __('تعلم الإنجليزية') }}, {{ __('كورسات إنجليزي') }}, ' . ($course->level ?? '{{ __('جميع المستويات') }}'))
 @section('og_title', $course->title)
 @section('og_image', $course->thumbnail ? asset(Storage::url($course->thumbnail)) : asset('logo.jpg'))
 @section('og_type', 'article')
@@ -196,10 +196,10 @@
                             @else
                                 <div class="flex items-end justify-center gap-1.5 mb-1.5">
                                     <span class="text-4xl sm:text-5xl font-black text-slate-900 dark:text-white leading-none tracking-tight drop-shadow-sm">{{ number_format($course->price, 0) }}</span>
-                                    <span class="text-xl font-bold text-slate-500 dark:text-slate-400 mb-1">ر.س</span>
+                                    <span class="text-xl font-bold text-slate-500 dark:text-slate-400 mb-1">{{ __('ر.س') }}</span>
                                 </div>
                                 <div class="flex items-center justify-center gap-2 mt-2">
-                                    <span class="text-sm line-through text-slate-400 dark:text-slate-500 font-bold decoration-2">{{ number_format($course->price * 1.5, 0) }} ر.س</span>
+                                    <span class="text-sm line-through text-slate-400 dark:text-slate-500 font-bold decoration-2">{{ number_format($course->price * 1.5, 0) }} {{ __('ر.س') }}</span>
                                     <span class="px-2 py-0.5 rounded border border-amber-200 bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:border-amber-500/20 dark:text-amber-400 text-[10px] font-black uppercase tracking-wider">{{ __('وفر 33%') }}</span>
                                 </div>
                             @endif
@@ -234,7 +234,7 @@
 
                         {{-- Features List --}}
                         <div class="pt-6 border-t border-slate-100 dark:border-white/5">
-                            <h4 class="font-black mb-5 text-slate-800 dark:text-white text-sm bg-slate-50 dark:bg-white/5 inline-block px-3 py-1 rounded-lg">{{ __('هذا الكورس يتضمن:') }}</h4>
+                            <h4 class="font-black mb-5 text-slate-800 dark:text-white text-sm bg-slate-50 dark:bg-white/5 inline-block px-3 py-1 rounded-lg">{{ __('هذا ال{{ __('كورس') }} يتضمن:') }}</h4>
                             <ul class="space-y-4 text-sm font-bold text-slate-600 dark:text-slate-400">
                                 <li class="flex items-center gap-3.5">
                                     <div class="w-8 h-8 rounded-lg bg-emerald-50 border border-emerald-100 dark:bg-emerald-500/10 dark:border-emerald-500/20 text-emerald-500 flex items-center justify-center shrink-0 shadow-sm"><svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg></div>
@@ -274,7 +274,7 @@
                 @if($course->price == 0)
                     <span class="font-black text-xl text-emerald-500 drop-shadow-sm leading-none">{{ __('مجانًا') }}</span>
                 @else
-                    <span class="font-black text-xl text-slate-900 dark:text-white leading-none drop-shadow-sm">{{ number_format($course->price, 0) }}<span class="text-[10px] font-bold ml-1 text-slate-500">ر.س</span></span>
+                    <span class="font-black text-xl text-slate-900 dark:text-white leading-none drop-shadow-sm">{{ number_format($course->price, 0) }}<span class="text-[10px] font-bold ml-1 text-slate-500">{{ __('ر.س') }}</span></span>
                 @endif
             @endif
         </div>

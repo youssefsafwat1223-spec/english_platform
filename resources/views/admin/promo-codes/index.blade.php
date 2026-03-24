@@ -33,7 +33,7 @@
                             </td>
                             <td>
                                 <span class="badge-accent text-sm">
-                                    {{ $code->discount_type === 'percentage' ? $code->discount_amount . '%' : $code->discount_amount . ' ر.س' }}
+                                    {{ $code->discount_type === 'percentage' ? $code->discount_amount . '%' : $code->discount_amount . ' ' . __('ر.س') }}
                                 </span>
                             </td>
                             <td>

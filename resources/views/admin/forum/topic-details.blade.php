@@ -17,8 +17,8 @@
                 </div>
                 <div class="text-sm leading-relaxed" style="color: var(--color-text);">{{ $topic->content }}</div>
                 <div class="flex items-center gap-6 text-xs font-bold mt-4 pt-4" style="border-top: 1px solid var(--color-border); color: var(--color-text-muted);">
-                    <span>{{ $topic->view_count }} views</span>
-                    <span>{{ $topic->reply_count }} replies</span>
+                    <span>{{ $topic->view_count }} {{ __('views') }}</span>
+                    <span>{{ $topic->reply_count }} {{ __('replies') }}</span>
                 </div>
             </div>
         </div>

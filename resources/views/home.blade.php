@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
-@section('title', 'إتقان الإنجليزية | منصة لتعليم اللغة الإنجليزية')
-@section('meta_description', 'أفضل منصة لتعليم اللغة الإنجليزية وتطوير مهارات التحدث، القواعد، والطلاقة. كورسات تفاعلية مع تقييم النطق باستخدام الذكاء الاصطناعي.')
-@section('meta_keywords', 'تعلم الانجليزية, دورات انجليزي, نطق اللغة الانجليزية, الذكاء الاصطناعي, English courses, learn English')
+@section('title', '{{ __('إتقان الإنجليزية | منصة لتعليم اللغة الإنجليزية') }}')
+@section('meta_description', '{{ __('أفضل منصة لتعليم اللغة الإنجليزية وتطوير مهارات التحدث، القواعد، والطلاقة. كورسات تفاعلية مع تقييم النطق باستخدام الذكاء الاصطناعي.') }}')
+@section('meta_keywords', '{{ __('تعلم الانجليزية, دورات انجليزي, نطق اللغة الانجليزية, الذكاء الاصطناعي, English courses, learn English') }}')
 
 @section('content')
 
@@ -330,7 +330,7 @@
                         {{-- Footer --}}
                         <div class="flex items-center justify-between pt-4 border-t border-slate-200 dark:border-white/10">
                             <div class="text-lg font-bold text-primary-500">
-                                {{ $course->price > 0 ? $course->price . ' ر.س' : __('Free') }}
+                                {{ $course->price > 0 ? $course->price . ' ' . __('ر.س') : __('Free') }}
                             </div>
                             <a href="{{ route('student.courses.show', $course) }}" class="btn-primary btn-sm rounded-lg">
                                 {{ __('View Course') }}
@@ -398,7 +398,7 @@
 
 
     {{-- ═══════════════════════════════════════════════════════════
-         SAMPLE VIDEOS SECTION — عينة من الشروحات
+         SAMPLE VIDEOS SECTION — {{ __('عينة من الشروحات') }}
          ═══════════════════════════════════════════════════════════ --}}
     @if($promoVideos->count() > 0)
     <section class="py-20 lg:py-28 relative overflow-hidden">
@@ -467,7 +467,7 @@
 
 
     {{-- ═══════════════════════════════════════════════════════════
-         TESTIMONIALS SECTION — ماذا قالوا عنا
+         TESTIMONIALS SECTION — {{ __('ماذا قالوا عنا') }}
          ═══════════════════════════════════════════════════════════ --}}
     @if($testimonials->count() > 0)
     <section class="py-20 lg:py-28 relative overflow-hidden">

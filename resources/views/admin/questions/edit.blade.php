@@ -22,7 +22,7 @@
                             @error('course_id')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                         </div>
                         <div>
-                            <label class="block text-sm font-bold mb-2" style="color: var(--color-text);">Lesson (Optional)</label>
+                            <label class="block text-sm font-bold mb-2" style="color: var(--color-text);">{{ __('Lesson (Optional)') }}</label>
                             <select name="lesson_id" id="lessonSelect" class="input-glass">
                                 <option value="">{{ __('No lesson') }}</option>
                                 @foreach($lessons as $lesson)<option value="{{ $lesson->id }}" data-course="{{ $lesson->course_id }}" {{ old('lesson_id', $question->lesson_id) == $lesson->id ? 'selected' : '' }}>{{ $lesson->title }}</option>@endforeach
@@ -69,7 +69,7 @@
                         <textarea name="explanation" rows="3" class="input-glass">{{ old('explanation', $question->explanation) }}</textarea>
                     </div>
                     <div>
-                        <label class="block text-sm font-bold mb-2" style="color: var(--color-text);">Points (Optional)</label>
+                        <label class="block text-sm font-bold mb-2" style="color: var(--color-text);">{{ __('Points (Optional)') }}</label>
                         <input type="number" name="points" class="input-glass" min="1" value="{{ old('points', $question->points) }}">
                     </div>
                     <div>

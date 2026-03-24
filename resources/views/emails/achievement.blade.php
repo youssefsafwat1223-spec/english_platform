@@ -22,42 +22,42 @@
     <div class="container">
         <div class="header">
             @if($achievementType === 'course_completed')
-                <h1>🎉 تم إكمال الكورس!</h1>
-                <p>وصلت لإنجاز رائع</p>
+                <h1>🎉 {{ __('{{ __('تم إكمال الكورس!') }}') }}</h1>
+                <p>{{ __('وصلت لإنجاز رائع') }}</p>
             @elseif($achievementType === 'high_score')
-                <h1>🌟 درجة ممتازة!</h1>
-                <p>مجهودك يؤتي ثماره</p>
+                <h1>🌟 {{ __('درجة ممتازة!') }}</h1>
+                <p>{{ __('مجهودك يؤتي ثماره') }}</p>
             @elseif($achievementType === 'certificate_earned')
-                <h1>🎓 حصلت على شهادة!</h1>
-                <p>إنجازك أصبح رسمياً الآن</p>
+                <h1>🎓 {{ __('حصلت على شهادة!') }}</h1>
+                <p>{{ __('إنجازك أصبح رسمياً الآن') }}</p>
             @else
-                <h1>🏆 مبروك!</h1>
-                <p>حققت إنجاز رائع</p>
+                <h1>🏆 {{ __('مبروك!') }}</h1>
+                <p>{{ __('حققت إنجاز رائع') }}</p>
             @endif
         </div>
         <div class="content">
-            <div class="greeting">أحسنت يا {{ $user->name }}!</div>
+            <div class="greeting">{{ __('أحسنت يا') }} {{ $user->name }}!</div>
 
             <div class="achievement-box">
                 @if($achievementType === 'course_completed')
                     <div class="achievement-icon">🎉</div>
-                    <div class="achievement-title">تم إكمال الكورس!</div>
+                    <div class="achievement-title">{{ __('تم إكمال الكورس!') }}</div>
                     <div class="achievement-detail">
                         <strong>{{ $achievementData['course_title'] ?? '' }}</strong>
                     </div>
                 @elseif($achievementType === 'high_score')
                     <div class="achievement-icon">🌟</div>
-                    <div class="achievement-title">الدرجة: {{ $achievementData['score'] ?? '' }}%</div>
+                    <div class="achievement-title">{{ __('الدرجة:') }} {{ $achievementData['score'] ?? '' }}%</div>
                     <div class="achievement-detail">
-                        الاختبار: <strong>{{ $achievementData['quiz_title'] ?? '' }}</strong><br>
-                        الكورس: {{ $achievementData['course_title'] ?? '' }}
+                        {{ __('الاختبار:') }} <strong>{{ $achievementData['quiz_title'] ?? '' }}</strong><br>
+                        {{ __('الكورس:') }} {{ $achievementData['course_title'] ?? '' }}
                     </div>
                 @elseif($achievementType === 'certificate_earned')
                     <div class="achievement-icon">🎓</div>
-                    <div class="achievement-title">الشهادة جاهزة!</div>
+                    <div class="achievement-title">{{ __('الشهادة جاهزة!') }}</div>
                     <div class="achievement-detail">
                         <strong>{{ $achievementData['course_title'] ?? '' }}</strong><br>
-                        الدرجة النهائية: {{ $achievementData['score'] ?? '' }}% &mdash; التقدير: {{ $achievementData['grade'] ?? '' }}
+                        {{ __('الدرجة النهائية:') }} {{ $achievementData['score'] ?? '' }}% &mdash; {{ __('التقدير:') }} {{ $achievementData['grade'] ?? '' }}
                     </div>
                 @endif
             </div>
@@ -65,19 +65,19 @@
             <p style="text-align: center;">
                 <a href="{{ $achievementData['action_url'] ?? route('student.dashboard') }}" class="button">
                     @if($achievementType === 'certificate_earned')
-                        عرض الشهادة ←
+                        {{ __('عرض الشهادة') }} &larr;
                     @else
-                        عرض لوحة التحكم ←
+                        {{ __('عرض لوحة التحكم') }} &larr;
                     @endif
                 </a>
             </p>
 
-            <p>استمر في التميز! كل خطوة تقربك أكتر من الطلاقة.</p>
+            <p>{{ __('استمر في التميز! كل خطوة تقربك أكثر من الطلاقة.') }}</p>
 
-            <p>بفخر،<br><strong>فريق Simple English</strong></p>
+            <p>{{ __('بفخر،') }}<br><strong>{{ __('فريق Simple English') }}</strong></p>
         </div>
         <div class="footer">
-            &copy; {{ date('Y') }} Simple English. جميع الحقوق محفوظة.
+            &copy; {{ date('Y') }} Simple English. {{ __('جميع الحقوق محفوظة.') }}
         </div>
     </div>
 </body>

@@ -47,7 +47,7 @@
         <div class="glass-card overflow-hidden mb-6" data-aos="fade-up"><div class="glass-card-body"><p class="text-red-500 font-bold text-sm">{{ $payment->error_message }}</p></div></div>
         @endif
         @if($payment->refunded_at)
-        <div class="glass-card overflow-hidden" data-aos="fade-up"><div class="glass-card-body"><p class="text-amber-500 font-bold text-sm">Payment was refunded on {{ $payment->refunded_at->format('M d, Y H:i') }}</p></div></div>
+        <div class="glass-card overflow-hidden" data-aos="fade-up"><div class="glass-card-body"><p class="text-amber-500 font-bold text-sm">{{ __('Payment was refunded on') }} {{ $payment->refunded_at->format('M d, Y H:i') }}</p></div></div>
         @endif
     </div>
 </div>

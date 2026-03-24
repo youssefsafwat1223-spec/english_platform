@@ -57,9 +57,9 @@
                 <table class="table-glass">
                     <thead>
                         <tr>
-                            <th>Activity</th>
-                            <th>Points</th>
-                            <th>Date</th>
+                            <th>{{ __('Activity') }}</th>
+                            <th>{{ __('Points') }}</th>
+                            <th>{{ __('Date') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -73,7 +73,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="3" class="text-center py-8" style="color: var(--color-text-muted);">No points history yet.</td>
+                                <td colspan="3" class="text-center py-8" style="color: var(--color-text-muted);">{{ __('No points history yet.') }}</td>
                             </tr>
                         @endforelse
                     </tbody>

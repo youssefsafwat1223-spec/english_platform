@@ -1,0 +1,801 @@
+{
+    "hardcoded": [
+        {
+            "file": "resources\/views\/admin\/course-levels\/index.blade.php",
+            "line": 50,
+            "text": "<form action=\"{{ route('admin.courses.levels.destroy', [$course, $level]) }}\" method=\"POST\" class=\"inline\" onsubmit=\"return confirm('هل أنت متأكد من حذف هذا العنوان وكل دروسه؟')\">"
+        },
+        {
+            "file": "resources\/views\/admin\/courses\/index.blade.php",
+            "line": 42,
+            "text": "<td class=\"font-bold\">{{ number_format($course->price, 2) }} ر.س<\/td>"
+        },
+        {
+            "file": "resources\/views\/admin\/courses\/show.blade.php",
+            "line": 44,
+            "text": "['label' => 'Price', 'value' => number_format($course->price, 2) . ' ر.س'],"
+        },
+        {
+            "file": "resources\/views\/admin\/courses\/show.blade.php",
+            "line": 123,
+            "text": "['l' => 'Revenue', 'v' => number_format($stats['revenue'], 2) . ' ر.س', 'color' => 'text-emerald-500'],"
+        },
+        {
+            "file": "resources\/views\/admin\/dashboard.blade.php",
+            "line": 55,
+            "text": "'value' => number_format($stats['total_revenue'], 2) . ' ر.س',"
+        },
+        {
+            "file": "resources\/views\/admin\/dashboard.blade.php",
+            "line": 56,
+            "text": "'sub' => '+' . number_format($stats['revenue_this_month'], 2) . ' ر.س this month',"
+        },
+        {
+            "file": "resources\/views\/admin\/dashboard.blade.php",
+            "line": 240,
+            "text": "<p class=\"text-sm font-bold text-emerald-400\">+{{ number_format($payment->final_amount, 2) }} ر.س<\/p>"
+        },
+        {
+            "file": "resources\/views\/admin\/dashboard.blade.php",
+            "line": 281,
+            "text": "<p class=\"text-xs mt-0.5\" style=\"color: var(--color-text-muted);\">{{ number_format($course->price, 2) }} ر.س per student<\/p>"
+        },
+        {
+            "file": "resources\/views\/admin\/dashboard.blade.php",
+            "line": 287,
+            "text": "<span class=\"font-bold text-emerald-400\">{{ number_format($course->total_students * $course->price, 2) }} ر.س<\/span>"
+        },
+        {
+            "file": "resources\/views\/admin\/dashboard.blade.php",
+            "line": 372,
+            "text": "callbacks: { label: ctx => ctx.parsed.y.toFixed(2) + ' ر.س' }"
+        },
+        {
+            "file": "resources\/views\/admin\/dashboard.blade.php",
+            "line": 376,
+            "text": "y: { beginAtZero: true, grid: { color: gridColor, drawBorder: false }, ticks: { callback: v => v + ' ر.س', color: tickColor, font: { size: 11 } } },"
+        },
+        {
+            "file": "resources\/views\/admin\/games\/create.blade.php",
+            "line": 325,
+            "text": "? ['المعلومات', 'الكورس', 'الفرق', 'الأسئلة']"
+        },
+        {
+            "file": "resources\/views\/admin\/games\/create.blade.php",
+            "line": 334,
+            "text": "{ name: locale === 'ar' ? 'الفريق الأحمر' : 'Red Team', color: '#ef4444' },"
+        },
+        {
+            "file": "resources\/views\/admin\/games\/create.blade.php",
+            "line": 335,
+            "text": "{ name: locale === 'ar' ? 'الفريق الأزرق' : 'Blue Team', color: '#3b82f6' },"
+        },
+        {
+            "file": "resources\/views\/admin\/games\/create.blade.php",
+            "line": 368,
+            "text": "const namesAr = ['الفريق الأحمر','الفريق الأزرق','الفريق الأخضر','الفريق الذهبي','الفريق البنفسجي','الفريق الوردي','الفريق التركواز','الفريق البرتقالي','الفريق النيلي','الفريق الليموني'];"
+        },
+        {
+            "file": "resources\/views\/admin\/lessons\/create.blade.php",
+            "line": 450,
+            "text": "const errors = data.errors ? Object.values(data.errors).flat().join('\\n') : (data.message || 'حدث خطأ');"
+        },
+        {
+            "file": "resources\/views\/admin\/lessons\/create.blade.php",
+            "line": 473,
+            "text": "this.errorMsg = 'حدث خطأ في الاتصال بالسيرفر';"
+        },
+        {
+            "file": "resources\/views\/admin\/lessons\/edit.blade.php",
+            "line": 481,
+            "text": "const errors = data.errors ? Object.values(data.errors).flat().join('\\n') : (data.message || 'حدث خطأ');"
+        },
+        {
+            "file": "resources\/views\/admin\/lessons\/edit.blade.php",
+            "line": 504,
+            "text": "this.errorMsg = 'حدث خطأ في الاتصال بالسيرفر';"
+        },
+        {
+            "file": "resources\/views\/admin\/payments\/index.blade.php",
+            "line": 16,
+            "text": "['v' => number_format($stats['total_revenue'], 2).' ر.س', 'l' => 'Total Revenue', 'c' => 'text-emerald-500'],"
+        },
+        {
+            "file": "resources\/views\/admin\/payments\/index.blade.php",
+            "line": 17,
+            "text": "['v' => number_format($stats['revenue_today'], 2).' ر.س', 'l' => 'Today', 'c' => 'text-primary-500'],"
+        },
+        {
+            "file": "resources\/views\/admin\/payments\/index.blade.php",
+            "line": 18,
+            "text": "['v' => number_format($stats['revenue_this_month'], 2).' ر.س', 'l' => 'This Month', 'c' => 'text-blue-500'],"
+        },
+        {
+            "file": "resources\/views\/admin\/payments\/reports.blade.php",
+            "line": 43,
+            "text": "<div class=\"text-3xl font-black text-emerald-400\">{{ number_format($stats['total_revenue'], 2) }} ر.س<\/div>"
+        },
+        {
+            "file": "resources\/views\/admin\/payments\/reports.blade.php",
+            "line": 51,
+            "text": "<div class=\"text-3xl font-black text-purple-400\">{{ number_format($stats['average_value'], 2) }} ر.س<\/div>"
+        },
+        {
+            "file": "resources\/views\/admin\/payments\/reports.blade.php",
+            "line": 87,
+            "text": "<td class=\"p-4 text-sm font-mono font-bold\" style=\"color: var(--color-text);\">{{ number_format($payment->final_amount, 2) }} ر.س<\/td>"
+        },
+        {
+            "file": "resources\/views\/admin\/promo-codes\/index.blade.php",
+            "line": 36,
+            "text": "{{ $code->discount_type === 'percentage' ? $code->discount_amount . '%' : $code->discount_amount . ' ر.س' }}"
+        },
+        {
+            "file": "resources\/views\/admin\/promo-videos\/index.blade.php",
+            "line": 58,
+            "text": "<form action=\"{{ route('admin.promo-videos.destroy', $video) }}\" method=\"POST\" class=\"inline\" onsubmit=\"return confirm('هل أنت متأكد من الحذف؟')\">"
+        },
+        {
+            "file": "resources\/views\/admin\/testimonials\/index.blade.php",
+            "line": 67,
+            "text": "<form action=\"{{ route('admin.testimonials.destroy', $testimonial) }}\" method=\"POST\" class=\"inline\" onsubmit=\"return confirm('هل أنت متأكد من الحذف؟')\">"
+        },
+        {
+            "file": "resources\/views\/emails\/achievement.blade.php",
+            "line": 25,
+            "text": "<h1>🎉 تم إكمال الكورس!<\/h1>"
+        },
+        {
+            "file": "resources\/views\/emails\/achievement.blade.php",
+            "line": 26,
+            "text": "<p>وصلت لإنجاز رائع<\/p>"
+        },
+        {
+            "file": "resources\/views\/emails\/achievement.blade.php",
+            "line": 28,
+            "text": "<h1>🌟 درجة ممتازة!<\/h1>"
+        },
+        {
+            "file": "resources\/views\/emails\/achievement.blade.php",
+            "line": 29,
+            "text": "<p>مجهودك يؤتي ثماره<\/p>"
+        },
+        {
+            "file": "resources\/views\/emails\/achievement.blade.php",
+            "line": 31,
+            "text": "<h1>🎓 حصلت على شهادة!<\/h1>"
+        },
+        {
+            "file": "resources\/views\/emails\/achievement.blade.php",
+            "line": 32,
+            "text": "<p>إنجازك أصبح رسمياً الآن<\/p>"
+        },
+        {
+            "file": "resources\/views\/emails\/achievement.blade.php",
+            "line": 34,
+            "text": "<h1>🏆 مبروك!<\/h1>"
+        },
+        {
+            "file": "resources\/views\/emails\/achievement.blade.php",
+            "line": 35,
+            "text": "<p>حققت إنجاز رائع<\/p>"
+        },
+        {
+            "file": "resources\/views\/emails\/achievement.blade.php",
+            "line": 39,
+            "text": "<div class=\"greeting\">أحسنت يا {{ $user->name }}!<\/div>"
+        },
+        {
+            "file": "resources\/views\/emails\/achievement.blade.php",
+            "line": 44,
+            "text": "<div class=\"achievement-title\">تم إكمال الكورس!<\/div>"
+        },
+        {
+            "file": "resources\/views\/emails\/achievement.blade.php",
+            "line": 50,
+            "text": "<div class=\"achievement-title\">الدرجة: {{ $achievementData['score'] ?? '' }}%<\/div>"
+        },
+        {
+            "file": "resources\/views\/emails\/achievement.blade.php",
+            "line": 52,
+            "text": "الاختبار: <strong>{{ $achievementData['quiz_title'] ?? '' }}<\/strong><br>"
+        },
+        {
+            "file": "resources\/views\/emails\/achievement.blade.php",
+            "line": 53,
+            "text": "الكورس: {{ $achievementData['course_title'] ?? '' }}"
+        },
+        {
+            "file": "resources\/views\/emails\/achievement.blade.php",
+            "line": 57,
+            "text": "<div class=\"achievement-title\">الشهادة جاهزة!<\/div>"
+        },
+        {
+            "file": "resources\/views\/emails\/achievement.blade.php",
+            "line": 60,
+            "text": "الدرجة النهائية: {{ $achievementData['score'] ?? '' }}% &mdash; التقدير: {{ $achievementData['grade'] ?? '' }}"
+        },
+        {
+            "file": "resources\/views\/emails\/achievement.blade.php",
+            "line": 68,
+            "text": "عرض الشهادة ←"
+        },
+        {
+            "file": "resources\/views\/emails\/achievement.blade.php",
+            "line": 70,
+            "text": "عرض لوحة التحكم ←"
+        },
+        {
+            "file": "resources\/views\/emails\/achievement.blade.php",
+            "line": 75,
+            "text": "<p>استمر في التميز! كل خطوة تقربك أكتر من الطلاقة.<\/p>"
+        },
+        {
+            "file": "resources\/views\/emails\/achievement.blade.php",
+            "line": 77,
+            "text": "<p>بفخر،<br><strong>فريق Simple English<\/strong><\/p>"
+        },
+        {
+            "file": "resources\/views\/emails\/achievement.blade.php",
+            "line": 80,
+            "text": "&copy; {{ date('Y') }} Simple English. جميع الحقوق محفوظة."
+        },
+        {
+            "file": "resources\/views\/emails\/certificate-issued.blade.php",
+            "line": 17,
+            "text": "<h1>🎓 مبروك!<\/h1>"
+        },
+        {
+            "file": "resources\/views\/emails\/certificate-issued.blade.php",
+            "line": 20,
+            "text": "<h2>مرحباً {{ $certificate->user->name }}!<\/h2>"
+        },
+        {
+            "file": "resources\/views\/emails\/certificate-issued.blade.php",
+            "line": 22,
+            "text": "<p>مبروك عليك إنهاء كورس <strong>{{ $certificate->course->title }}<\/strong>!<\/p>"
+        },
+        {
+            "file": "resources\/views\/emails\/certificate-issued.blade.php",
+            "line": 24,
+            "text": "<p>شهادتك جاهزة للتحميل الآن.<\/p>"
+        },
+        {
+            "file": "resources\/views\/emails\/certificate-issued.blade.php",
+            "line": 27,
+            "text": "<h3>نتائجك:<\/h3>"
+        },
+        {
+            "file": "resources\/views\/emails\/certificate-issued.blade.php",
+            "line": 29,
+            "text": "<li><strong>الدرجة النهائية:<\/strong> {{ $certificate->final_score }}%<\/li>"
+        },
+        {
+            "file": "resources\/views\/emails\/certificate-issued.blade.php",
+            "line": 30,
+            "text": "<li><strong>التقدير:<\/strong> {{ $certificate->grade }}<\/li>"
+        },
+        {
+            "file": "resources\/views\/emails\/certificate-issued.blade.php",
+            "line": 31,
+            "text": "<li><strong>مستوى الأداء:<\/strong> {{ $certificate->performance_level }}<\/li>"
+        },
+        {
+            "file": "resources\/views\/emails\/certificate-issued.blade.php",
+            "line": 32,
+            "text": "<li><strong>رقم الشهادة:<\/strong> {{ $certificate->certificate_id }}<\/li>"
+        },
+        {
+            "file": "resources\/views\/emails\/certificate-issued.blade.php",
+            "line": 38,
+            "text": "تحميل الشهادة"
+        },
+        {
+            "file": "resources\/views\/emails\/certificate-issued.blade.php",
+            "line": 42,
+            "text": "<p>يمكنك التحقق من شهادتك في أي وقت باستخدام رقم الشهادة.<\/p>"
+        },
+        {
+            "file": "resources\/views\/emails\/certificate-issued.blade.php",
+            "line": 44,
+            "text": "<p>استمر في التميز!<br><strong>فريق Simple English<\/strong><\/p>"
+        },
+        {
+            "file": "resources\/views\/emails\/inactivity-reminder.blade.php",
+            "line": 25,
+            "text": "<h1>👋 اشتقنالك!<\/h1>"
+        },
+        {
+            "file": "resources\/views\/emails\/inactivity-reminder.blade.php",
+            "line": 26,
+            "text": "<p>مر {{ $daysSinceActive }} يوم من آخر زيارة لك<\/p>"
+        },
+        {
+            "file": "resources\/views\/emails\/inactivity-reminder.blade.php",
+            "line": 29,
+            "text": "<div class=\"greeting\">مرحباً {{ $user->name }}!<\/div>"
+        },
+        {
+            "file": "resources\/views\/emails\/inactivity-reminder.blade.php",
+            "line": 31,
+            "text": "<p>لاحظنا إنك مش نشط من <strong>{{ $daysSinceActive }} يوم<\/strong>. رحلتك التعليمية في انتظارك!<\/p>"
+        },
+        {
+            "file": "resources\/views\/emails\/inactivity-reminder.blade.php",
+            "line": 34,
+            "text": "<p style=\"font-weight: bold; color: #1f2937;\">الكورسات بتاعتك لسه موجودة:<\/p>"
+        },
+        {
+            "file": "resources\/views\/emails\/inactivity-reminder.blade.php",
+            "line": 37,
+            "text": "<div class=\"course-name\">📚 {{ $enrollment->course->title ?? 'كورس' }}<\/div>"
+        },
+        {
+            "file": "resources\/views\/emails\/inactivity-reminder.blade.php",
+            "line": 38,
+            "text": "<div class=\"course-progress\">التقدم: {{ $enrollment->progress_percentage ?? 0 }}%<\/div>"
+        },
+        {
+            "file": "resources\/views\/emails\/inactivity-reminder.blade.php",
+            "line": 48,
+            "text": "استمر في التعلم ←"
+        },
+        {
+            "file": "resources\/views\/emails\/inactivity-reminder.blade.php",
+            "line": 52,
+            "text": "<p style=\"color: #6b7280; font-size: 14px;\">🔥 نصيحة: الممارسة اليومية المستمرة، حتى لو 30 دقيقة بس، هي المفتاح لإتقان الإنجليزية!<\/p>"
+        },
+        {
+            "file": "resources\/views\/emails\/inactivity-reminder.blade.php",
+            "line": 54,
+            "text": "<p>نشوفك قريب!<br><strong>فريق Simple English<\/strong><\/p>"
+        },
+        {
+            "file": "resources\/views\/emails\/inactivity-reminder.blade.php",
+            "line": 57,
+            "text": "&copy; {{ date('Y') }} Simple English. جميع الحقوق محفوظة."
+        },
+        {
+            "file": "resources\/views\/emails\/payment-invoice.blade.php",
+            "line": 37,
+            "text": "<h1>🧾 فاتورة الدفع<\/h1>"
+        },
+        {
+            "file": "resources\/views\/emails\/payment-invoice.blade.php",
+            "line": 38,
+            "text": "<p>شكراً لاشتراكك في Simple English<\/p>"
+        },
+        {
+            "file": "resources\/views\/emails\/payment-invoice.blade.php",
+            "line": 41,
+            "text": "<div class=\"greeting\">مرحباً {{ $payment->user->name }}!<\/div>"
+        },
+        {
+            "file": "resources\/views\/emails\/payment-invoice.blade.php",
+            "line": 43,
+            "text": "<p>تم اشتراكك بنجاح! إليك تفاصيل الفاتورة الخاصة بك:<\/p>"
+        },
+        {
+            "file": "resources\/views\/emails\/payment-invoice.blade.php",
+            "line": 46,
+            "text": "<div class=\"invoice-title\">تفاصيل الفاتورة<\/div>"
+        },
+        {
+            "file": "resources\/views\/emails\/payment-invoice.blade.php",
+            "line": 50,
+            "text": "<td class=\"label\">رقم المعاملة<\/td>"
+        },
+        {
+            "file": "resources\/views\/emails\/payment-invoice.blade.php",
+            "line": 54,
+            "text": "<td class=\"label\">تاريخ الدفع<\/td>"
+        },
+        {
+            "file": "resources\/views\/emails\/payment-invoice.blade.php",
+            "line": 58,
+            "text": "<td class=\"label\">الكورس<\/td>"
+        },
+        {
+            "file": "resources\/views\/emails\/payment-invoice.blade.php",
+            "line": 62,
+            "text": "<td class=\"label\">السعر الأصلي<\/td>"
+        },
+        {
+            "file": "resources\/views\/emails\/payment-invoice.blade.php",
+            "line": 67,
+            "text": "<td class=\"label\">الخصم<\/td>"
+        },
+        {
+            "file": "resources\/views\/emails\/payment-invoice.blade.php",
+            "line": 72,
+            "text": "<td class=\"label\">المبلغ المدفوع<\/td>"
+        },
+        {
+            "file": "resources\/views\/emails\/payment-invoice.blade.php",
+            "line": 79,
+            "text": "<span class=\"status-badge\">✅ تم الدفع بنجاح<\/span>"
+        },
+        {
+            "file": "resources\/views\/emails\/payment-invoice.blade.php",
+            "line": 84,
+            "text": "ابدأ التعلم الآن ←"
+        },
+        {
+            "file": "resources\/views\/emails\/payment-invoice.blade.php",
+            "line": 88,
+            "text": "<p class=\"info-text\">يمكنك الوصول لكورسك في أي وقت من خلال لوحة التحكم الخاصة بك. إذا كان لديك أي استفسار، تواصل معنا عبر واتساب.<\/p>"
+        },
+        {
+            "file": "resources\/views\/emails\/payment-invoice.blade.php",
+            "line": 90,
+            "text": "<p>تعلم ممتع!<br><strong>فريق Simple English<\/strong><\/p>"
+        },
+        {
+            "file": "resources\/views\/emails\/payment-invoice.blade.php",
+            "line": 93,
+            "text": "&copy; {{ date('Y') }} Simple English. جميع الحقوق محفوظة.<br>"
+        },
+        {
+            "file": "resources\/views\/emails\/payment-invoice.blade.php",
+            "line": 94,
+            "text": "<span style=\"font-size: 11px; color: #d1d5db;\">هذه الفاتورة تم إنشاؤها تلقائياً عبر بوابة StreamPay.<\/span>"
+        },
+        {
+            "file": "resources\/views\/emails\/welcome.blade.php",
+            "line": 25,
+            "text": "<h1>🎉 أهلاً بك في Simple English!<\/h1>"
+        },
+        {
+            "file": "resources\/views\/emails\/welcome.blade.php",
+            "line": 26,
+            "text": "<p>رحلتك في تعلم اللغة الإنجليزية تبدأ الآن<\/p>"
+        },
+        {
+            "file": "resources\/views\/emails\/welcome.blade.php",
+            "line": 29,
+            "text": "<div class=\"greeting\">مرحباً {{ $user->name }}!<\/div>"
+        },
+        {
+            "file": "resources\/views\/emails\/welcome.blade.php",
+            "line": 31,
+            "text": "<p>سعداء بانضمامك لمجتمعنا التعليمي! إليك كيف تبدأ:<\/p>"
+        },
+        {
+            "file": "resources\/views\/emails\/welcome.blade.php",
+            "line": 36,
+            "text": "<div class=\"step-title\">تصفح الكورس<\/div>"
+        },
+        {
+            "file": "resources\/views\/emails\/welcome.blade.php",
+            "line": 37,
+            "text": "<div class=\"step-desc\">استكشف كورس اللغة الإنجليزية الشامل المصمم لجميع المستويات.<\/div>"
+        },
+        {
+            "file": "resources\/views\/emails\/welcome.blade.php",
+            "line": 44,
+            "text": "<div class=\"step-title\">اشترك وتعلم<\/div>"
+        },
+        {
+            "file": "resources\/views\/emails\/welcome.blade.php",
+            "line": 45,
+            "text": "<div class=\"step-desc\">اشترك في الكورس وابدأ التعلم بالسرعة التي تناسبك.<\/div>"
+        },
+        {
+            "file": "resources\/views\/emails\/welcome.blade.php",
+            "line": 52,
+            "text": "<div class=\"step-title\">ربط بوت التليجرام<\/div>"
+        },
+        {
+            "file": "resources\/views\/emails\/welcome.blade.php",
+            "line": 54,
+            "text": "اربط حسابك ببوت التليجرام الخاص بنا لتلقي الإشعارات والأسئلة اليومية والشهادات مباشرة على هاتفك."
+        },
+        {
+            "file": "resources\/views\/emails\/welcome.blade.php",
+            "line": 58,
+            "text": "اضغط هنا للربط ←"
+        },
+        {
+            "file": "resources\/views\/emails\/welcome.blade.php",
+            "line": 68,
+            "text": "<div class=\"step-title\">حل الاختبارات واحصل على الشهادات<\/div>"
+        },
+        {
+            "file": "resources\/views\/emails\/welcome.blade.php",
+            "line": 69,
+            "text": "<div class=\"step-desc\">اختبر معلوماتك واحصل على شهادات لإثبات مهاراتك.<\/div>"
+        },
+        {
+            "file": "resources\/views\/emails\/welcome.blade.php",
+            "line": 75,
+            "text": "ابدأ التعلم الآن ←"
+        },
+        {
+            "file": "resources\/views\/emails\/welcome.blade.php",
+            "line": 79,
+            "text": "<p style=\"color: #6b7280; font-size: 14px;\">إذا كان لديك أي استفسارات، لا تتردد في التواصل معنا عبر واتساب.<\/p>"
+        },
+        {
+            "file": "resources\/views\/emails\/welcome.blade.php",
+            "line": 81,
+            "text": "<p>تعلم ممتع!<br><strong>فريق Simple English<\/strong><\/p>"
+        },
+        {
+            "file": "resources\/views\/emails\/welcome.blade.php",
+            "line": 84,
+            "text": "&copy; {{ date('Y') }} Simple English. جميع الحقوق محفوظة."
+        },
+        {
+            "file": "resources\/views\/home.blade.php",
+            "line": 3,
+            "text": "@section('title', 'إتقان الإنجليزية | منصة لتعليم اللغة الإنجليزية')"
+        },
+        {
+            "file": "resources\/views\/home.blade.php",
+            "line": 4,
+            "text": "@section('meta_description', 'أفضل منصة لتعليم اللغة الإنجليزية وتطوير مهارات التحدث، القواعد، والطلاقة. كورسات تفاعلية مع تقييم النطق باستخدام الذكاء الاصطناعي.')"
+        },
+        {
+            "file": "resources\/views\/home.blade.php",
+            "line": 5,
+            "text": "@section('meta_keywords', 'تعلم الانجليزية, دورات انجليزي, نطق اللغة الانجليزية, الذكاء الاصطناعي, English courses, learn English')"
+        },
+        {
+            "file": "resources\/views\/home.blade.php",
+            "line": 333,
+            "text": "{{ $course->price > 0 ? $course->price . ' ر.س' : __('Free') }}"
+        },
+        {
+            "file": "resources\/views\/home.blade.php",
+            "line": 401,
+            "text": "SAMPLE VIDEOS SECTION — عينة من الشروحات"
+        },
+        {
+            "file": "resources\/views\/home.blade.php",
+            "line": 470,
+            "text": "TESTIMONIALS SECTION — ماذا قالوا عنا"
+        },
+        {
+            "file": "resources\/views\/layouts\/app.blade.php",
+            "line": 9,
+            "text": "<title>@yield('title', config('app.name', 'إتقان الإنجليزية — Simple English'))<\/title>"
+        },
+        {
+            "file": "resources\/views\/layouts\/app.blade.php",
+            "line": 10,
+            "text": "<meta name=\"description\" content=\"@yield('meta_description', 'منصة تعليم اللغة الإنجليزية المدعومة بالذكاء الاصطناعي. كورسات شاملة، تمارين نطق، اختبارات تفاعلية وشهادات معتمدة.')\">"
+        },
+        {
+            "file": "resources\/views\/layouts\/app.blade.php",
+            "line": 11,
+            "text": "<meta name=\"keywords\" content=\"@yield('meta_keywords', 'تعلم الإنجليزية, كورسات إنجليزي, منصة تعليمية, نطق إنجليزي, AI English learning, English courses, learn English online')\">"
+        },
+        {
+            "file": "resources\/views\/layouts\/app.blade.php",
+            "line": 20,
+            "text": "<meta property=\"og:title\" content=\"@yield('title', config('app.name', 'إتقان الإنجليزية — Simple English'))\">"
+        },
+        {
+            "file": "resources\/views\/layouts\/app.blade.php",
+            "line": 21,
+            "text": "<meta property=\"og:description\" content=\"@yield('meta_description', 'منصة تعليم اللغة الإنجليزية المدعومة بالذكاء الاصطناعي. كورسات شاملة، تمارين نطق، اختبارات تفاعلية وشهادات معتمدة.')\">"
+        },
+        {
+            "file": "resources\/views\/layouts\/app.blade.php",
+            "line": 29,
+            "text": "<meta name=\"twitter:title\" content=\"@yield('title', config('app.name', 'إتقان الإنجليزية — Simple English'))\">"
+        },
+        {
+            "file": "resources\/views\/layouts\/app.blade.php",
+            "line": 30,
+            "text": "<meta name=\"twitter:description\" content=\"@yield('meta_description', 'منصة تعليم اللغة الإنجليزية المدعومة بالذكاء الاصطناعي.')\">"
+        },
+        {
+            "file": "resources\/views\/layouts\/app.blade.php",
+            "line": 41,
+            "text": "\"description\": \"منصة تعليم اللغة الإنجليزية المدعومة بالذكاء الاصطناعي\","
+        },
+        {
+            "file": "resources\/views\/student\/courses\/checkout.blade.php",
+            "line": 91,
+            "text": "<input type=\"text\" id=\"promo_code_input\" class=\"w-full bg-white dark:bg-black\/20 border border-slate-200 dark:border-white\/10 rounded-xl py-3 px-4 text-sm font-mono uppercase text-slate-900 dark:text-white focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors\" placeholder=\"مثال: SUMMER50\">"
+        },
+        {
+            "file": "resources\/views\/student\/courses\/checkout.blade.php",
+            "line": 123,
+            "text": "@php $steps = ['بتكمل عملية الدفع بأمان على بوابة الدفع.', 'بيتم تفعيل الكورس في حسابك تلقائياً.', 'تقدر تبدأ مذاكرة على طول من لوحة تحكمك.']; @endphp"
+        },
+        {
+            "file": "resources\/views\/student\/courses\/checkout.blade.php",
+            "line": 162,
+            "text": "<span class=\"font-bold text-slate-900 dark:text-white\">{{ number_format($course->price, 2) }} ر.س<\/span>"
+        },
+        {
+            "file": "resources\/views\/student\/courses\/checkout.blade.php",
+            "line": 175,
+            "text": "<span>-{{ number_format($discount, 2) }} ر.س<\/span>"
+        },
+        {
+            "file": "resources\/views\/student\/courses\/checkout.blade.php",
+            "line": 183,
+            "text": "<span class=\"text-4xl font-black text-primary-600 dark:text-primary-400 leading-none\">{{ number_format($finalAmount, 2) }} ر.س<\/span>"
+        },
+        {
+            "file": "resources\/views\/student\/courses\/index.blade.php",
+            "line": 74,
+            "text": "<span class=\"absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500 font-bold\">ر.س<\/span>"
+        },
+        {
+            "file": "resources\/views\/student\/courses\/index.blade.php",
+            "line": 81,
+            "text": "<span class=\"absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500 font-bold\">ر.س<\/span>"
+        },
+        {
+            "file": "resources\/views\/student\/courses\/index.blade.php",
+            "line": 162,
+            "text": "{{ number_format($course->price, 0) }} <span class=\"text-primary-500 text-lg\">ر.س<\/span>"
+        },
+        {
+            "file": "resources\/views\/student\/courses\/learn.blade.php",
+            "line": 202,
+            "text": "<span class=\"inline-flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.5 rounded bg-violet-50 text-violet-600 dark:bg-violet-500\/10 dark:text-violet-400 ml-1\">🧠 اختبار<\/span>"
+        },
+        {
+            "file": "resources\/views\/student\/courses\/learn.blade.php",
+            "line": 285,
+            "text": "<span class=\"inline-flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.5 rounded bg-violet-50 text-violet-600 dark:bg-violet-500\/10 dark:text-violet-400 ml-1\">🧠 اختبار<\/span>"
+        },
+        {
+            "file": "resources\/views\/student\/courses\/show.blade.php",
+            "line": 3,
+            "text": "@section('title', $course->title . ' | ' . config('app.name', 'إتقان الإنجليزية'))"
+        },
+        {
+            "file": "resources\/views\/student\/courses\/show.blade.php",
+            "line": 5,
+            "text": "@section('meta_keywords', 'كورس ' . $course->title . ', تعلم الإنجليزية, كورسات إنجليزي, ' . ($course->level ?? 'جميع المستويات'))"
+        },
+        {
+            "file": "resources\/views\/student\/courses\/show.blade.php",
+            "line": 199,
+            "text": "<span class=\"text-xl font-bold text-slate-500 dark:text-slate-400 mb-1\">ر.س<\/span>"
+        },
+        {
+            "file": "resources\/views\/student\/courses\/show.blade.php",
+            "line": 202,
+            "text": "<span class=\"text-sm line-through text-slate-400 dark:text-slate-500 font-bold decoration-2\">{{ number_format($course->price * 1.5, 0) }} ر.س<\/span>"
+        },
+        {
+            "file": "resources\/views\/student\/courses\/show.blade.php",
+            "line": 277,
+            "text": "<span class=\"font-black text-xl text-slate-900 dark:text-white leading-none drop-shadow-sm\">{{ number_format($course->price, 0) }}<span class=\"text-[10px] font-bold ml-1 text-slate-500\">ر.س<\/span><\/span>"
+        },
+        {
+            "file": "resources\/views\/student\/lessons\/show.blade.php",
+            "line": 136,
+            "text": "}, 300); \/\/ تأخير بسيط"
+        },
+        {
+            "file": "resources\/views\/student\/lessons\/show.blade.php",
+            "line": 391,
+            "text": "المحاضر"
+        },
+        {
+            "file": "resources\/views\/student\/lessons\/show.blade.php",
+            "line": 421,
+            "text": "<span class=\"inline-flex items-center px-1.5 py-0.5 rounded-md bg-primary-500\/10 text-primary-600 dark:text-primary-400 text-[9px] font-black uppercase tracking-wider border border-primary-500\/20\">المحاضر<\/span>"
+        },
+        {
+            "file": "resources\/views\/welcome.blade.php",
+            "line": 6,
+            "text": "<title>{{ config('app.name', 'إتقان الإنجليزية') }} - منصة تعليم لغة بطريقة سهلة ومبتكرة<\/title>"
+        }
+    ],
+    "egyptian_in_sa_json": {
+        "Share your code to earn a free subscription if 5 people sign up through you.": "شارك كودك عشان تكسب اشتراكاً مجانياً إذا سجّل 5 أشخاص عن طريقك.",
+        "Updates": "التحديثات",
+        "Mark All Read": "تحديد الكل كمقروء",
+        "You have no active notifications at the moment. We'll let you know when something new happens.": "ما في إشعارات حالياً. سنبلغك عند حدوث شيء جديد.",
+        "New Competition": "+ مسابقة جديدة",
+        "Create New Competition": "🎮 إنشاء مسابقة جديدة",
+        "Competition Name Placeholder": "مثل: تحدي القواعد - المستوى الأول",
+        "Minimum Lesson": "الحد الأدنى (الدرس اللي لازم يكون الطالب أنهاه)",
+        "Add New Question": "+ إضافة سؤال جديد",
+        "Your competitions": "المسابقات اللي أنت مشترك فيها",
+        "Invitation by email": "راح يوصلك دعوة على الإيميل لما يكون في مسابقة جديدة",
+        "Instruction 1": "🎯 راح تظهرلك أسئلة وفريقك لازم يجاوب عليها صح وبسرعة",
+        "Instruction 2": "👑 في كل سؤال، واحد من الفريق يكون \"الكابتن\" - هو بس اللي يقدر يختار الإجابة",
+        "Instruction 3": "🔄 الكابتن يتغير مع كل سؤال جديد بشكل عشوائي",
+        "Instruction 4": "💬 استخدم الشات عشان تتفق مع فريقك على الإجابة",
+        "Telegram Instructions": "عشان تستفيد من كل مميزات المنصة، اربط حسابك بالتيليجرام:",
+        "Telegram Step 1": "افتح تطبيق التيليجرام",
+        "Rule 3": "لديك 30 ثانية للإجابة على كل سؤال.",
+        "Not Enough Players Message": "آسفين، ما انضم عدد كافٍ من اللاعبين هذه المرة. حاول مرة أخرى!",
+        "Apply Filters": "تطبيق الفلتر",
+        "Admin Dashboard": "لوحة تحكم المدير",
+        "Administrator": "مدير",
+        "Mark all read": "تحديد الكل كمقروء",
+        "Sign in to continue": "سجّل دخولك عشان تكمل التعلم",
+        "New Password": "كلمة المرور الجديدة",
+        "Enter your new password below.": "أدخل كلمة المرور الجديدة.",
+        "Edit Profile": "تعديل الملف الشخصي",
+        "My Replies": "ردودي",
+        "Edit Course": "تعديل كورس",
+        "Edit Lesson": "تعديل درس",
+        "Edit Quiz": "تعديل اختبار",
+        "Edit Question": "تعديل سؤال",
+        "Receiving daily challenges.": "يستقبل تحديات يومية.",
+        "Share your code to earn free premium access.": "شارك كودك عشان تكسب اشتراكاً مجانياً.",
+        "You need to be enrolled in a course with enough questions to join a battle.": "لازم تكون مسجلاً في كورس فيه أسئلة كافية عشان تدخل معركة.",
+        "Update Profile": "تحديث الملف الشخصي",
+        "Updating...": "جاري التحديث...",
+        "Edit": "تعديل",
+        "Self-paced": "بالسرعة اللي تناسبك",
+        "high-quality video lessons": "دروس فيديو عالية الجودة",
+        "We help learners build real English confidence with structured courses, practical practice, and measurable progress. Our system combines lessons, quizzes, pronunciation practice, and community support so students can improve consistently and earn certificates they can share.": "نساعد المتعلمين على بناء ثقة حقيقية في الإنجليزية بكورسات منظمة وتمارين عملية وتقدم ملموس. نظامنا يجمع بين الدروس والاختبارات وتمارين النطق ودعم المجتمع عشان الطلاب يتطورون باستمرار ويحصلون على شهادات يقدرون يشاركونها.",
+        "What You Get": "اللي راح تحصل عليه",
+        "Choose a course that matches your level and goals, then follow the lesson path at your pace.": "اختر كورساً يناسب مستواك وأهدافك، وامشِ في مسار الدروس بالسرعة اللي تناسبك.",
+        "Complete lessons, answer quizzes, and practice pronunciation to lock in what you learn.": "أكمل الدروس، وجاوب على الاختبارات، وتمرّن على النطق عشان تثبّت اللي تعلمته.",
+        "Choose a plan that fits your learning goals. Every course comes with lifetime access, quizzes, certificates, and community support.": "اختر الخطة اللي تناسب أهدافك التعليمية. كل كورس يأتي مع وصول مدى الحياة واختبارات وشهادات ودعم مجتمع.",
+        "New courses are being prepared. Stay tuned!": "كورسات جديدة يتم تجهيزها. تابعونا!",
+        "No. Once you earn a certificate, it is yours forever and can be verified online at any time.": "لا. لما تحصل على شهادة، تبقى معاك للأبد وتقدر تتحقق منها أونلاين في أي وقت.",
+        "We measure success by the real-world impact we create for students.": "نقيس النجاح بالتأثير الحقيقي اللي نحدثه للطلاب.",
+        "Build and maintain features on our learning platform using Laravel, Blade, and modern JavaScript.": "بناء وصيانة خصائص على منصة التعلم باستخدام Laravel و Blade و JavaScript الحديث.",
+        "Community Manager": "مدير مجتمع",
+        "Last updated": "آخر تحديث",
+        "Like a Pro.": "كالمحترفين.",
+        "Adaptive assessments that adjust to your skill level, ensuring optimal challenge and retention.": "تقييمات تكيّفية تتناسب مع مستوى مهارتك لضمان التحدي الأمثل والاحتفاظ بالمعلومات.",
+        "Join thousands of students in our most popular English courses.": "انضم لآلاف الطلاب في أشهر دورات اللغة الإنجليزية لدينا.",
+        "certificate_id, true], ['Student', $certificate->user->name, false], ['Course', $certificate->course->title, false], ['Final Score', $certificate->final_score.'%', false], ['Grade', $certificate->grade, false], ['Issued', $certificate->issued_at->format('M d, Y'), false], ['Downloads', $certificate->download_count, false], ['Views', $certificate->view_count, false]] as [$label, $val, $mono])": "certificate_id, true], ['الطالب', $certificate->user->name, false], ['الدورة', $certificate->course->title, false], ['الدرجة النهائية', $certificate->final_score.'%', false], ['التقدير', $certificate->grade, false], ['تاريخ الإصدار', $certificate->issued_at->format('M d, Y'), false], ['التنزيلات', $certificate->download_count, false], ['المشاهدات', $certificate->view_count, false]] as [$label, $val, $mono])",
+        "Create New Course": "إنشاء دورة جديدة",
+        "Fill in the details to create a new course": "املأ التفاصيل لإنشاء دورة جديدة",
+        "Intro Video URL": "رابط فيديو المقدمة",
+        "Update course details": "تحديث تفاصيل الدورة",
+        "Update Thumbnail": "تحديث الصورة",
+        "Update Course": "تحديث الدورة",
+        "+ Create New Course": "+ إنشاء دورة جديدة",
+        "intro_video_url)": "رابط_فيديو_المقدمة)",
+        "Open Video": "فتح الفيديو",
+        "Answered": "المجاب عليها",
+        "New Enrollments": "التسجيلات الجديدة",
+        "Recent Enrollments": "التسجيلات الحديثة",
+        "No recent enrollments": "ما في تسجيلات حديثة",
+        "Recent Payments": "المدفوعات الحديثة",
+        "No recent payments": "ما في مدفوعات حديثة",
+        "✨ Plain text. Line breaks will be preserved.": "✨ نص عادي. سيتم الحفاظ على فواصل الأسطر.",
+        "Write your promotional message here...&#10;&#10;You can write about new courses, special offers, upcoming events, etc.": "اكتب رسالتك الترويجية هنا...&#10;&#10;تقدر تكتب عن دورات جديدة أو عروض خاصة أو فعاليات قادمة وغيرها.",
+        "+ New Campaign": "+ حملة جديدة",
+        "Recent Topics": "المواضيع الحديثة",
+        "Video URL": "رابط الفيديو",
+        "Update Lesson": "تحديث الدرس",
+        "?? Video": "?? فيديو",
+        "Payment Transactions": "معاملات الدفع",
+        "Transaction": "المعاملة",
+        "Search transaction ID...": "البحث عن رقم المعاملة...",
+        "Transactions": "المعاملات",
+        "Export CSV": "تصدير CSV",
+        "No transactions found for the selected criteria.": "ما تم العثور على معاملات بناءً على المعايير المحددة.",
+        "Choose a date range and status above to see revenue statistics and transaction details.": "اختر نطاقاً زمنياً وحالة من الأعلى لعرض إحصائيات الإيرادات وتفاصيل المعاملات.",
+        "Transaction ID": "رقم المعاملة",
+        "Create New Question": "إنشاء سؤال جديد",
+        "Upload New Audio": "رفع صوت جديد",
+        "Update Question": "تحديث السؤال",
+        "Create New Quiz": "إنشاء اختبار جديد",
+        "Update Quiz": "تحديث الاختبار",
+        "Recent Activity": "النشاط الحديث",
+        "+ Create Code": "+ كود جديد",
+        "Edit Promo Code": "تعديل كود الخصم",
+        "Update Promo Code": "تحديث الكود",
+        "Apply": "تطبيق",
+        "Promo Code Applied!": "تم تطبيق كود الخصم!",
+        "Learn how to use our Telegram bot to receive daily English challenges, track your progress, and earn points on the go!": "تعلم كيفية استخدام بوت التيليجرام لتلقّي تحديات الإنجليزية اليومية، ومتابعة تقدمك، وكسب النقاط أثناء التنقل!",
+        "Once linked, you will receive a new English question. Daily quizzes are typically sent out automatically.": "بمجرد الربط، ستتلقى سؤالاً إنجليزياً جديداً. يتم إرسال الأسئلة اليومية تلقائياً.",
+        "Fetches today's daily question immediately if you haven't answered it yet.": "يجلب سؤال اليوم فوراً إذا لم تكن قد أجبت عليه بعد.",
+        "You will be notified by email when a new event is scheduled by your instructor.": "ستتلقى إشعاراً على بريدك الإلكتروني عند جدولة حدث جديد من قِبَل معلمك.",
+        "No recent topics found.": "ما تم العثور على مواضيع حديثة.",
+        "Records Found": "سجلات تم العثور عليها",
+        "Date Taken": "تاريخ التقديم",
+        "Friend": "الصديق",
+        "Discount is applied automatically at checkout when using a valid code.": "يتم تطبيق الخصم تلقائياً عند الدفع باستخدام كود صالح."
+    }
+}

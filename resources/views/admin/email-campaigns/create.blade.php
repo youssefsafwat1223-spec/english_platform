@@ -52,12 +52,12 @@
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-white/5">
                             <div>
-                                <label class="block text-sm font-semibold text-gray-300 mb-2">Button Text (Optional)</label>
+                                <label class="block text-sm font-semibold text-gray-300 mb-2">{{ __('Button Text (Optional)') }}</label>
                                 <input type="text" name="cta_text" value="{{ old('cta_text') }}" placeholder="{{ __('e.g. View Courses') }}" 
                                     class="w-full bg-gray-800/50 border border-gray-700 text-white rounded-xl px-4 py-3 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all placeholder-gray-600">
                             </div>
                             <div>
-                                <label class="block text-sm font-semibold text-gray-300 mb-2">Button URL (Optional)</label>
+                                <label class="block text-sm font-semibold text-gray-300 mb-2">{{ __('Button URL (Optional)') }}</label>
                                 <input type="url" name="cta_url" value="{{ old('cta_url') }}" placeholder="{{ __('https://...') }}" 
                                     class="w-full bg-gray-800/50 border border-gray-700 text-white rounded-xl px-4 py-3 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all placeholder-gray-600">
                             </div>
@@ -80,8 +80,8 @@
                                 <select name="target_audience" id="target_audience" onchange="toggleCourseSelect()"
                                     class="w-full bg-gray-800/50 border border-gray-700 text-white rounded-xl px-4 py-3 appearance-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all cursor-pointer">
                                     <option value="all" {{ old('target_audience') === 'all' ? 'selected' : '' }}>{{ __('🌍 All Students') }}</option>
-                                    <option value="active" {{ old('target_audience') === 'active' ? 'selected' : '' }}>✅ Active Students (last 7 days)</option>
-                                    <option value="inactive" {{ old('target_audience') === 'inactive' ? 'selected' : '' }}>⏸️ Inactive Students (7+ days)</option>
+                                    <option value="active" {{ old('target_audience') === 'active' ? 'selected' : '' }}>✅ {{ __('Active Students (last 7 days)') }}</option>
+                                    <option value="inactive" {{ old('target_audience') === 'inactive' ? 'selected' : '' }}>⏸️ {{ __('Inactive Students (7+ days)') }}</option>
                                     <option value="course_specific" {{ old('target_audience') === 'course_specific' ? 'selected' : '' }}>{{ __('📚 Specific Course Students') }}</option>
                                 </select>
                                 <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-400">

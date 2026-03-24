@@ -47,7 +47,7 @@
                     {{-- Actions --}}
                     <div class="flex items-center gap-2">
                         <a href="{{ route('admin.courses.levels.edit', [$course, $level]) }}" class="text-primary-500 text-sm font-bold hover:underline">{{ __('تعديل') }}</a>
-                        <form action="{{ route('admin.courses.levels.destroy', [$course, $level]) }}" method="POST" class="inline" onsubmit="return confirm('هل أنت متأكد من حذف هذا العنوان وكل دروسه؟')">
+                        <form action="{{ route('admin.courses.levels.destroy', [$course, $level]) }}" method="POST" class="inline" onsubmit="return confirm('{{ __('هل أنت متأكد من حذف هذا العنوان وكل دروسه؟') }}')">
                             @csrf @method('DELETE')
                             <button type="submit" class="text-red-500 text-sm font-bold hover:underline">{{ __('حذف') }}</button>
                         </form>

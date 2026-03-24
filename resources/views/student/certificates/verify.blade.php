@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Certificate Verification</title>
+    <title>{{ __('Certificate Verification') }}</title>
     @vite(['resources/css/app.css'])
 </head>
 <body class="dark" style="background: var(--color-bg); color: var(--color-text);">
@@ -12,7 +12,7 @@
             <div class="glass-card overflow-hidden gradient-border text-center">
                 <div class="glass-card-body py-12">
                     <div class="text-8xl mb-6">✅</div>
-                    <h1 class="text-3xl font-extrabold text-emerald-500 mb-4">Certificate Verified!</h1>
+                    <h1 class="text-3xl font-extrabold text-emerald-500 mb-4">{{ __('Certificate Verified!') }}</h1>
 
                     <div class="rounded-xl p-6 mb-6 text-left" style="background: var(--color-surface-hover);">
                         <div class="grid grid-cols-2 gap-4">
@@ -36,7 +36,7 @@
                     </div>
 
                     <p class="mb-6" style="color: var(--color-text-muted);">This certificate was issued by {{ config('app.name') }} and is valid.</p>
-                    <a href="{{ route('home') }}" class="btn-primary ripple-btn">Visit Platform</a>
+                    <a href="{{ route('home') }}" class="btn-primary ripple-btn">{{ __('Visit Platform') }}</a>
                 </div>
             </div>
         </div>

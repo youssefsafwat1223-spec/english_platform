@@ -322,7 +322,7 @@ function gameCreator() {
     return {
         currentStep: 1,
         stepLabels: locale === 'ar'
-            ? ['المعلومات', 'الكورس', 'الفرق', 'الأسئلة']
+            ? [__('المعلومات'), __('الكورس'), __('الفرق'), __('الأسئلة')]
             : ['Info', 'Course', 'Teams', 'Questions'],
         courseId: '',
         lessonId: '',
@@ -331,8 +331,8 @@ function gameCreator() {
         submitting: false,
         teamCount: 2,
         teams: [
-            { name: locale === 'ar' ? 'الفريق الأحمر' : 'Red Team', color: '#ef4444' },
-            { name: locale === 'ar' ? 'الفريق الأزرق' : 'Blue Team', color: '#3b82f6' },
+            { name: locale === 'ar' ? __('الفريق الأحمر') : 'Red Team', color: '#ef4444' },
+            { name: locale === 'ar' ? __('الفريق الأزرق') : 'Blue Team', color: '#3b82f6' },
         ],
         questions: [
             { text: '', options: ['', '', '', ''], correct: '', time_limit: 30, points: 100 },
@@ -365,7 +365,7 @@ function gameCreator() {
 
         generateTeams() {
             const colors = ['#ef4444','#3b82f6','#10b981','#f59e0b','#8b5cf6','#ec4899','#14b8a6','#f97316','#6366f1','#84cc16'];
-            const namesAr = ['الفريق الأحمر','الفريق الأزرق','الفريق الأخضر','الفريق الذهبي','الفريق البنفسجي','الفريق الوردي','الفريق التركواز','الفريق البرتقالي','الفريق النيلي','الفريق الليموني'];
+            const namesAr = [__('الفريق الأحمر'),__('الفريق الأزرق'),'الفريق الأخضر','الفريق الذهبي','الفريق البنفسجي','الفريق الوردي','الفريق التركواز','الفريق البرتقالي','الفريق النيلي','الفريق الليموني'];
             const namesEn = ['Red Team','Blue Team','Green Team','Gold Team','Purple Team','Pink Team','Teal Team','Orange Team','Indigo Team','Lime Team'];
             const names = locale === 'ar' ? namesAr : namesEn;
             this.teams = [];

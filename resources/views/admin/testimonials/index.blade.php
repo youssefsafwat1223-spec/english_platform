@@ -64,7 +64,7 @@
                             <td>
                                 <div class="flex items-center space-x-3">
                                     <a href="{{ route('admin.testimonials.edit', $testimonial) }}" class="text-primary-500 text-sm font-bold hover:underline" style="color: var(--color-text-muted);">{{ __('تعديل') }}</a>
-                                    <form action="{{ route('admin.testimonials.destroy', $testimonial) }}" method="POST" class="inline" onsubmit="return confirm('هل أنت متأكد من الحذف؟')">
+                                    <form action="{{ route('admin.testimonials.destroy', $testimonial) }}" method="POST" class="inline" onsubmit="return confirm('{{ __('هل أنت متأكد من الحذف؟') }}')">
                                         @csrf @method('DELETE')
                                         <button type="submit" class="text-red-500 text-sm font-bold hover:underline">{{ __('حذف') }}</button>
                                     </form>

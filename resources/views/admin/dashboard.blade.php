@@ -52,7 +52,7 @@
                     ],
                     [
                         'label' => 'Total Revenue',
-                        'value' => number_format($stats['total_revenue'], 2) . ' ر.س',
+                        'value' => number_format($stats['total_revenue'], 2) . ' ' . __('ر.س'),
                         'sub' => '+' . number_format($stats['revenue_this_month'], 2) . ' ر.س this month',
                         'subPositive' => true,
                         'icon' => '💰',
@@ -237,7 +237,7 @@
                                 </div>
                             </div>
                             <div class="text-right shrink-0 ml-2">
-                                <p class="text-sm font-bold text-emerald-400">+{{ number_format($payment->final_amount, 2) }} ر.س</p>
+                                <p class="text-sm font-bold text-emerald-400">+{{ number_format($payment->final_amount, 2) }} {{ __('ر.س') }}</p>
                                 <p class="text-[10px]" style="color: var(--color-text-muted);">{{ $payment->paid_at->diffForHumans() }}</p>
                             </div>
                         </div>
@@ -284,7 +284,7 @@
                                     <span class="font-bold" style="color: var(--color-text);">{{ number_format($course->total_students) }}</span>
                                 </td>
                                 <td class="px-6 py-4 text-center">
-                                    <span class="font-bold text-emerald-400">{{ number_format($course->total_students * $course->price, 2) }} ر.س</span>
+                                    <span class="font-bold text-emerald-400">{{ number_format($course->total_students * $course->price, 2) }} {{ __('ر.س') }}</span>
                                 </td>
                                 <td class="px-6 py-4 text-center">
                                     @if($course->average_rating)
@@ -369,11 +369,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 plugins: {
                     legend: { display: false },
                     tooltip: { backgroundColor: 'rgba(15, 23, 42, 0.95)', titleColor: '#94a3b8', bodyColor: '#fff', padding: 12, cornerRadius: 10, borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1,
-                        callbacks: { label: ctx => ctx.parsed.y.toFixed(2) + ' ر.س' }
+                        callbacks: { label: ctx => ctx.parsed.y.toFixed(2) + ' ' + __('ر.س') }
                     }
                 },
                 scales: {
-                    y: { beginAtZero: true, grid: { color: gridColor, drawBorder: false }, ticks: { callback: v => v + ' ر.س', color: tickColor, font: { size: 11 } } },
+                    y: { beginAtZero: true, grid: { color: gridColor, drawBorder: false }, ticks: { callback: v => v + ' ' + __('ر.س'), color: tickColor, font: { size: 11 } } },
                     x: { grid: { display: false }, ticks: { color: tickColor, font: { size: 10 }, maxRotation: 0, maxTicksLimit: 8 } }
                 },
                 interaction: { intersect: false, mode: 'index' },

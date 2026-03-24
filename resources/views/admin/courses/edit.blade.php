@@ -50,7 +50,7 @@
                         @error('intro_video_url')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                     </div>
                     <div>
-                        <label for="estimated_duration_weeks" class="block text-sm font-semibold mb-2" style="color: var(--color-text);">Estimated Duration (weeks)</label>
+                        <label for="estimated_duration_weeks" class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('Estimated Duration (weeks)') }}</label>
                         <input type="number" id="estimated_duration_weeks" name="estimated_duration_weeks" min="1" class="input-glass @error('estimated_duration_weeks') border-red-500 @enderror" value="{{ old('estimated_duration_weeks', $course->estimated_duration_weeks) }}">
                         @error('estimated_duration_weeks')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                     </div>

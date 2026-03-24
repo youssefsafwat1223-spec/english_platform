@@ -22,7 +22,7 @@
                             @error('course_id')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                         </div>
                         <div>
-                            <label class="block text-sm font-bold mb-2" style="color: var(--color-text);">Lesson (Optional)</label>
+                            <label class="block text-sm font-bold mb-2" style="color: var(--color-text);">{{ __('Lesson (Optional)') }}</label>
                             <select name="lesson_id" id="lessonSelect" class="input-glass">
                                 <option value="">{{ __('No lesson') }}</option>
                                 @foreach($lessons as $lesson)<option value="{{ $lesson->id }}" data-course="{{ $lesson->course_id }}" {{ old('lesson_id') == $lesson->id ? 'selected' : '' }}>{{ $lesson->title }}</option>@endforeach
@@ -74,11 +74,11 @@
                         <textarea name="explanation" rows="3" class="input-glass">{{ old('explanation') }}</textarea>
                     </div>
                     <div>
-                        <label class="block text-sm font-bold mb-2" style="color: var(--color-text);">Points (Optional)</label>
+                        <label class="block text-sm font-bold mb-2" style="color: var(--color-text);">{{ __('Points (Optional)') }}</label>
                         <input type="number" name="points" class="input-glass" min="1" value="{{ old('points') }}">
                     </div>
                     <div>
-                        <label class="block text-sm font-bold mb-2" style="color: var(--color-text);">Upload Custom Audio (MP3/WAV)</label>
+                        <label class="block text-sm font-bold mb-2" style="color: var(--color-text);">{{ __('Upload Custom Audio (MP3/WAV)') }}</label>
                         <input type="file" name="audio_file" accept="audio/*" class="input-glass">
                         <p class="text-xs mt-1" style="color: var(--color-text-muted);">{{ __('Leave empty to generate TTS audio.') }}</p>
                         @error('audio_file')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
