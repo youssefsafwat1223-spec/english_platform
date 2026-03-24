@@ -23,13 +23,13 @@
                                     ['Final Score', $certificate->final_score . '%'],
                                     ['Grade', $certificate->grade],
                                     ['Issue Date', $certificate->issued_at->format('F d, Y')],
-                                    ['Certificate ID', $certificate->certificate_id],
+                                    [__('Certificate ID'), $certificate->certificate_id],
                                 ];
                             @endphp
                             @foreach($fields as $f)
                                 <div>
                                     <div class="text-xs font-medium mb-1" style="color: var(--color-text-muted);">{{ $f[0] }}</div>
-                                    <div class="font-bold {{ $f[0] === 'Certificate ID' ? 'font-mono text-primary-500' : '' }}" style="{{ $f[0] !== 'Certificate ID' ? 'color: var(--color-text);' : '' }}">{{ $f[1] }}</div>
+                                    <div class="font-bold {{ $f[0] === __('Certificate ID') ? 'font-mono text-primary-500' : '' }}" style="{{ $f[0] !== __('Certificate ID') ? 'color: var(--color-text);' : '' }}">{{ $f[1] }}</div>
                                 </div>
                             @endforeach
                         </div>

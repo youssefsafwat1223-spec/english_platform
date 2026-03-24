@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>500 - Server Error</title>
+    <title>500 - {{ __('Server Error') }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-gray-50 dark:bg-dark-bg text-gray-900 dark:text-gray-100 min-h-screen flex items-center justify-center p-4 overflow-hidden relative selection:bg-primary-500 selection:text-white">
@@ -16,7 +16,7 @@
     <div class="glass-card max-w-lg w-full p-8 md:p-12 text-center relative z-10 border-red-500/20" data-aos="zoom-in">
         <div class="text-9xl mb-4 transform hover:rotate-12 transition-transform duration-300">🔥</div>
         <h1 class="text-6xl font-extrabold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-red-500 to-pink-600">500</h1>
-        <h2 class="text-2xl font-bold mb-4 text-gray-800 dark:text-white">Server Error</h2>
+        <h2 class="text-2xl font-bold mb-4 text-gray-800 dark:text-white">{{ __('Server Error') }}</h2>
         <p class="text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
             Oops! Something went wrong on our end. We're working to fix it. Please try again later.
         </p>

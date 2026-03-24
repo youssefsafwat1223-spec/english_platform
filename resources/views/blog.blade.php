@@ -44,7 +44,7 @@
         {{-- Notify Me --}}
         <div class="glass-card p-8 max-w-md mx-auto" data-aos="fade-up" data-aos-delay="300">
             <h3 class="font-bold mb-4" style="color: var(--color-text);">{{ __('Get Notified When We Launch') }}</h3>
-            <form class="flex gap-2" onsubmit="event.preventDefault(); showNotification('{{ __('You will be notified when the blog launches!') }}', 'success');">
+            <form class="flex gap-2" onsubmit="event.preventDefault(); showNotification(__('You will be notified when the blog launches!'), 'success');">
                 <input type="email" placeholder="{{ __('your@email.com') }}" required class="input-glass flex-1 text-sm py-2.5 px-3">
                 <button type="submit" class="btn-primary btn-sm ripple-btn whitespace-nowrap">{{ __('Notify Me') }}</button>
             </form>

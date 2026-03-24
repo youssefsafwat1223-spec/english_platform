@@ -19,7 +19,7 @@
         {{-- Browser Support Warning --}}
         <div x-show="!isSupported" x-cloak class="mb-8 p-5 rounded-2xl text-center" style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.2);">
             <div class="text-3xl mb-2">⚠️</div>
-            <h3 class="font-bold text-base mb-1 text-amber-400">Browser Not Supported</h3>
+            <h3 class="font-bold text-base mb-1 text-amber-400">{{ __('Browser Not Supported') }}</h3>
             <p class="text-sm text-amber-300/70">
                 Speech recognition requires <strong>Google Chrome</strong> or <strong>Microsoft Edge</strong>.
             </p>
@@ -80,8 +80,8 @@
 
                         <p class="text-sm font-medium"
                            :style="isRecording && activeSentence === {{ $num }} ? 'color: #ef4444' : 'color: var(--color-text-muted)'">
-                            <span x-show="!(isRecording && activeSentence === {{ $num }})">Tap to start speaking</span>
-                            <span x-show="isRecording && activeSentence === {{ $num }}" x-cloak>🎙️ Listening... Tap to stop</span>
+                            <span x-show="!(isRecording && activeSentence === {{ $num }})">{{ __('Tap to start speaking') }}</span>
+                            <span x-show="isRecording && activeSentence === {{ $num }}" x-cloak>🎙️ Listening... {{ __('Tap to stop') }}</span>
                         </p>
 
                         {{-- Live Transcript --}}
@@ -94,7 +94,7 @@
                         {{-- Loading --}}
                         <div x-show="isEvaluating && activeSentence === {{ $num }}" x-cloak class="flex items-center gap-2">
                             <div class="w-4 h-4 border-2 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
-                            <span class="text-sm" style="color: var(--color-text-muted);">Evaluating...</span>
+                            <span class="text-sm" style="color: var(--color-text-muted);">{{ __('Evaluating') }}')...</span>
                         </div>
                     </div>
 
@@ -154,7 +154,7 @@
                                 <span class="text-xl">🔊</span>
                             </div>
                             <div class="flex-1">
-                                <h4 class="font-bold text-sm mb-1 text-amber-400">Listen to the correct pronunciation</h4>
+                                <h4 class="font-bold text-sm mb-1 text-amber-400">{{ __('Listen to the correct pronunciation') }}</h4>
                                 <p class="text-xs mb-3 text-amber-300/60">
                                     You've had 2 attempts. Listen carefully and try again!
                                 </p>

@@ -10,7 +10,7 @@
         <div class="flex items-center justify-between mb-8" data-aos="fade-down">
             <div>
                 <h1 class="text-3xl font-extrabold"><span class="text-gradient">{{ __('Pronunciation Practice') }}</span></h1>
-                <p class="mt-2" style="color: var(--color-text-muted);">Track your speaking progress and improve your accent.</p>
+                <p class="mt-2" style="color: var(--color-text-muted);">{{ __('Track your speaking progress and improve your accent') }}').</p>
             </div>
         </div>
 

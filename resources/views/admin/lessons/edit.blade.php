@@ -478,7 +478,7 @@
                     });
                     const data = await res.json();
                     if (!res.ok) {
-                        const errors = data.errors ? Object.values(data.errors).flat().join('\n') : (data.message || '{{ __('حدث خطأ') }}');
+                        const errors = data.errors ? Object.values(data.errors).flat().join('\n') : (data.message || __('حدث خطأ'));
                         this.errorMsg = errors;
                         this.saving = false;
                         return;
@@ -501,7 +501,7 @@
                         this.showModal = false;
                     }
                 } catch(e) {
-                    this.errorMsg = '{{ __('حدث خطأ في الاتصال بالسيرفر') }}';
+                    this.errorMsg = __('حدث خطأ في الاتصال بالسيرفر');
                 }
                 this.saving = false;
             }

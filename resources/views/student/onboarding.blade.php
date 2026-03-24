@@ -373,7 +373,7 @@
                         }
                     }
                 } catch (e) {
-                    console.error('Polling error', e);
+                    console.error(__('Polling error'), e);
                 }
             }
         }

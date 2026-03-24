@@ -539,7 +539,7 @@
 <script>
 function markAsComplete() {
     // Replace native confirm with a potential custom modal in the future, native for now
-    if (!confirm('{{ __('تقدم ممتاز! هل تريد إنهاء الدرس والانتقال للخطوة التالية؟') }}')) return;
+    if (!confirm(__('تقدم ممتاز! هل تريد إنهاء الدرس والانتقال للخطوة التالية؟'))) return;
     
     // Add loading state to button
     const btn = event.currentTarget;
@@ -549,7 +549,7 @@ function markAsComplete() {
 
     axios.post('{{ route('student.lessons.complete', [$course, $lesson]) }}')
         .then(response => {
-            if (window.showNotification) showNotification(response.data.message || '{{ __('تم إنهاء الدرس بنجاح! 🎉') }}', 'success');
+            if (window.showNotification) showNotification(response.data.message || __('تم إنهاء الدرس بنجاح! 🎉'), 'success');
             
             // Success animation
             btn.innerHTML = '<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> {{ __('تم!') }}';
@@ -566,7 +566,7 @@ function markAsComplete() {
         .catch(() => { 
             btn.innerHTML = originalContent;
             btn.disabled = false;
-            if (window.showNotification) showNotification('{{ __('حصل خطأ! حاول تاني.') }}', 'error'); 
+            if (window.showNotification) showNotification(__('حصل خطأ! حاول تاني.'), 'error'); 
         });
 }
 
@@ -598,7 +598,7 @@ function notesManager() {
             })
             .catch(() => { 
                 this.saving = false; 
-                if (window.showNotification) showNotification('{{ __('فشل حفظ الملاحظات. تأكد من الاتصال.') }}', 'error');
+                if (window.showNotification) showNotification(__('فشل حفظ الملاحظات. تأكد من الاتصال.'), 'error');
             });
         }
     };
@@ -659,7 +659,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     position: Math.floor(video.currentTime), 
                     time_spent: 15, // Approx time since last update
                     duration: video.duration
-                }).catch(e => console.log('Silently ignoring progress update fail'));
+                }).catch(e => console.log(__('Silently ignoring progress update fail')));
             }
         });
         
@@ -670,7 +670,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 time_spent: Math.floor(video.currentTime - lastReportedTime),
                 duration: video.duration,
                 is_completed: true
-            }).catch(e => console.log('Silently ignoring progress update fail'));
+            }).catch(e => console.log(__('Silently ignoring progress update fail')));
         });
     }
 });

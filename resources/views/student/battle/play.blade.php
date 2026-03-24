@@ -231,7 +231,7 @@
             if (data.success) {
                 // Server confirmed — show result
                 showAnswerResult(selectedKey, data.is_correct, data.points_awarded);
-            } else if (data.error && data.error.includes('Already answered')) {
+            } else if (data.error && data.error.includes(__('Already answered'))) {
                 // Race condition: answer was saved but UI didn't update
                 // Keep hasAnswered = true, poll will sync the UI
                 console.warn('Already answered — waiting for poll sync.');

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404 - Page Not Found</title>
+    <title>404 - {{ __('Page Not Found') }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-gray-50 dark:bg-dark-bg text-gray-900 dark:text-gray-100 min-h-screen flex items-center justify-center p-4 overflow-hidden relative selection:bg-primary-500 selection:text-white">
@@ -17,7 +17,7 @@
     <div class="glass-card max-w-lg w-full p-8 md:p-12 text-center relative z-10 border-primary-500/20" data-aos="zoom-in">
         <div class="text-9xl mb-4 transform hover:scale-110 transition-transform duration-300">😵</div>
         <h1 class="text-6xl font-extrabold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-primary-500 to-accent-500">404</h1>
-        <h2 class="text-2xl font-bold mb-4 text-gray-800 dark:text-white">Page Not Found</h2>
+        <h2 class="text-2xl font-bold mb-4 text-gray-800 dark:text-white">{{ __('Page Not Found') }}</h2>
         <p class="text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
             Sorry, we couldn't find the page you're looking for. It might have been removed, renamed, or didn't exist in the first place.
         </p>

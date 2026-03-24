@@ -283,7 +283,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Revert optimistic UI on failure
                 this.classList.remove('opacity-50', 'pointer-events-none');
                 icon.classList.remove('fill-rose-500', 'text-rose-500');
-                if (window.showNotification) window.showNotification('{{ __('Failed to like reply.') }}', 'error'); 
+                if (window.showNotification) window.showNotification(__('Failed to like reply.'), 'error'); 
             });
         });
     });

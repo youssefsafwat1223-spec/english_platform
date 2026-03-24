@@ -158,7 +158,7 @@
                                 <div class="w-full">
                                     <button class="w-full py-3 rounded-xl text-sm lg:text-base font-black flex items-center justify-center transition-all border"
                                             :class="openLevel ? 'bg-slate-100 border-slate-200 text-slate-600 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300' : '{{ $isCompleted ? 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50 dark:bg-transparent dark:border-white/10 dark:text-slate-300 dark:hover:bg-white/5' : ($isLevelUnlocked ? 'bg-primary-600 border-primary-500 text-white shadow-md shadow-primary-500/20' : 'bg-slate-100 border-slate-200 text-slate-400 dark:bg-slate-800/50 dark:border-white/5 dark:text-slate-500') }}'">
-                                        <span x-text="openLevel ? '{{ __('إخفاء الدروس') }}' : '{{ $isCompleted ? __('مراجعة') : ($isLevelUnlocked ? __('ابدأ / استعراض') : __('مغلق')) }}'"></span>
+                                        <span x-text="openLevel ? __('إخفاء الدروس') : '{{ $isCompleted ? __('مراجعة') : ($isLevelUnlocked ? __('ابدأ / استعراض') : __('مغلق')) }}'"></span>
                                         <svg x-show="!openLevel && {{ $isLevelUnlocked ? 'true' : 'false' }}" class="w-4 h-4 rtl:mr-2 rtl:rotate-180 ltr:ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
                                     </button>
                                 </div>
@@ -249,7 +249,7 @@
                                 <div class="w-full">
                                     <button class="w-full py-3 rounded-xl text-sm lg:text-base font-black flex items-center justify-center transition-all border"
                                             :class="openOrphan ? 'bg-slate-100 border-slate-200 text-slate-600 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300' : 'bg-primary-600 border-primary-500 text-white shadow-md shadow-primary-500/20'">
-                                        <span x-text="openOrphan ? '{{ __('إخفاء الدروس') }}' : '{{ __('ابدأ / استعراض') }}'"></span>
+                                        <span x-text="openOrphan ? __('إخفاء الدروس') : __('ابدأ / استعراض')"></span>
                                         <svg x-show="!openOrphan" class="w-4 h-4 rtl:mr-2 rtl:rotate-180 ltr:ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
                                     </button>
                                 </div>

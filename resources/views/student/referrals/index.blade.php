@@ -241,12 +241,12 @@ function copyReferralLink() {
     const link = '{{ route('referral.track', $user->referral_code) }}';
     if (navigator.clipboard) {
         navigator.clipboard.writeText(link).then(() => {
-            if (window.showNotification) window.showNotification('{{ __('Referral link copied to clipboard! 🚀') }}', 'success');
+            if (window.showNotification) window.showNotification(__('Referral link copied to clipboard! 🚀'), 'success');
         }).catch(err => {
-            prompt('{{ __('Copy this link:') }}', link);
+            prompt(__('Copy this link:'), link);
         });
     } else {
-        prompt('{{ __('Copy this link:') }}', link);
+        prompt(__('Copy this link:'), link);
     }
 }
 </script>

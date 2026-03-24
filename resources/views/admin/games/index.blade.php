@@ -58,7 +58,7 @@
                             <td>
                                 <div class="flex space-x-3">
                                     <a href="{{ route('admin.games.show', $session) }}" class="text-primary-500 text-sm font-bold hover:underline">{{ __('Control') }}</a>
-                                    <form action="{{ route('admin.games.destroy', $session) }}" method="POST" onsubmit="return confirm('{{ __('Confirm Delete Game') }}')">
+                                    <form action="{{ route('admin.games.destroy', $session) }}" method="POST" onsubmit="return confirm(__('Confirm Delete Game'))">
                                         @csrf @method('DELETE')
                                         <button class="text-red-500 text-sm font-bold hover:underline">{{ __('Delete') }}</button>
                                     </form>

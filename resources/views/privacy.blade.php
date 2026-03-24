@@ -20,23 +20,23 @@
             <div class="space-y-8" style="color: var(--color-text-muted);">
 
                 <div>
-                    <h2 class="text-lg font-bold mb-3" style="color: var(--color-text);">1. Information We Collect</h2>
+                    <h2 class="text-lg font-bold mb-3" style="color: var(--color-text);">1. {{ __('Information We Collect') }}</h2>
                     <p class="leading-relaxed">We collect information you provide directly, including your name, email address, and profile data when you register. We also collect usage data such as courses accessed, quiz results, and learning progress to personalize your experience.</p>
                 </div>
 
                 <div>
-                    <h2 class="text-lg font-bold mb-3" style="color: var(--color-text);">2. How We Use Your Information</h2>
+                    <h2 class="text-lg font-bold mb-3" style="color: var(--color-text);">2. {{ __('How We Use Your Information') }}</h2>
                     <ul class="list-disc list-inside space-y-2">
-                        <li>Provide, maintain, and improve our platform and services</li>
-                        <li>Track your learning progress and generate certificates</li>
-                        <li>Send you notifications about achievements, course updates, and promotions</li>
-                        <li>Personalize your learning experience and recommendations</li>
-                        <li>Provide customer support and respond to inquiries</li>
+                        <li>Provide, maintain, {{ __('and improve our platform and services') }}</li>
+                        <li>{{ __('Track your learning progress and generate certificates') }}</li>
+                        <li>Send you notifications about achievements, course updates, {{ __('and promotions') }}</li>
+                        <li>{{ __('Personalize your learning experience and recommendations') }}</li>
+                        <li>{{ __('Provide customer support and respond to inquiries') }}</li>
                     </ul>
                 </div>
 
                 <div>
-                    <h2 class="text-lg font-bold mb-3" style="color: var(--color-text);">3. Data Security</h2>
+                    <h2 class="text-lg font-bold mb-3" style="color: var(--color-text);">3. {{ __('Data Security') }}</h2>
                     <p class="leading-relaxed">We implement industry-standard security measures to protect your personal information. Passwords are hashed and encrypted. We use HTTPS for all communications and regularly audit our security practices.</p>
                 </div>
 
@@ -51,17 +51,17 @@
                 </div>
 
                 <div>
-                    <h2 class="text-lg font-bold mb-3" style="color: var(--color-text);">6. Your Rights</h2>
+                    <h2 class="text-lg font-bold mb-3" style="color: var(--color-text);">6. {{ __('Your Rights') }}</h2>
                     <ul class="list-disc list-inside space-y-2">
-                        <li>Access and download your personal data</li>
-                        <li>Request correction of inaccurate information</li>
-                        <li>Request deletion of your account and data</li>
-                        <li>Opt out of promotional communications</li>
+                        <li>{{ __('Access and download your personal data') }}</li>
+                        <li>{{ __('Request correction of inaccurate information') }}</li>
+                        <li>{{ __('Request deletion of your account and data') }}</li>
+                        <li>{{ __('Opt out of promotional communications') }}</li>
                     </ul>
                 </div>
 
                 <div>
-                    <h2 class="text-lg font-bold mb-3" style="color: var(--color-text);">7. Contact Us</h2>
+                    <h2 class="text-lg font-bold mb-3" style="color: var(--color-text);">7. {{ __('Contact Us') }}</h2>
                     <p class="leading-relaxed">If you have any questions about this Privacy Policy, please <a href="{{ route('contact') }}" class="text-primary-500 hover:text-primary-400 underline">contact us</a>.</p>
                 </div>
             </div>

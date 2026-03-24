@@ -99,7 +99,7 @@
                             <div class="flex items-center">
                                 <a href="{{ route('switch-lang', app()->getLocale() == 'sa' ? 'en' : 'sa') }}"
                                    class="flex items-center justify-center w-8 h-6 rounded-sm shadow-sm border border-slate-300 dark:border-slate-600 overflow-hidden shrink-0 hover:opacity-80 transition-opacity"
-                                   title="Switch Language">
+                                   title="{{ __('Switch Language') }}">
                                     <img src="{{ app()->getLocale() == 'sa' ? asset('images/flags/sa.png') : asset('images/flags/us.png') }}"
                                          alt="{{ app()->getLocale() == 'sa' ? 'Saudi Arabia' : 'United States' }}"
                                          class="w-full h-full object-cover">
@@ -146,7 +146,7 @@
                 <button type="button"
                         onclick="toggleTheme()"
                         class="relative w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-xl flex items-center justify-center transition-all duration-300 hover:bg-gray-100 dark:hover:bg-white/5 border border-transparent hover:border-gray-200 dark:hover:border-white/10"
-                        aria-label="Toggle dark mode">
+                        aria-label="{{ __('Toggle dark mode') }}">
                     {{-- Moon (show in dark mode) --}}
                     <svg id="theme-toggle-dark-icon" class="hidden w-4 h-4 sm:w-5 sm:h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
@@ -262,7 +262,7 @@
                 {{-- Language Toggle --}}
                 <a href="{{ route('switch-lang', app()->getLocale() == 'sa' ? 'en' : 'sa') }}"
                    class="relative flex items-center justify-center w-8 h-6 rounded-sm shadow-sm border border-slate-300 dark:border-slate-600 overflow-hidden shrink-0 hover:opacity-80 transition-opacity"
-                   title="Switch Language">
+                   title="{{ __('Switch Language') }}">
                     <img src="{{ app()->getLocale() == 'sa' ? asset('images/flags/sa.png') : asset('images/flags/us.png') }}"
                          alt="{{ app()->getLocale() == 'sa' ? 'Saudi Arabia' : 'United States' }}"
                          class="w-full h-full object-cover">
@@ -375,7 +375,7 @@
                 {{-- Mobile Menu Toggle --}}
                 <button @click="open = !open"
                         class="lg:hidden inline-flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-xl transition-colors hover:bg-gray-100 dark:hover:bg-white/5"
-                        aria-label="Toggle navigation">
+                        aria-label="{{ __('Toggle navigation') }}">
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24" style="color: var(--color-text);">
                         <path :class="{'hidden': open, 'inline-flex': !open}" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
                         <path :class="{'hidden': !open, 'inline-flex': open}" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>

@@ -20,17 +20,17 @@
             <div class="space-y-8" style="color: var(--color-text-muted);">
 
                 <div>
-                    <h2 class="text-lg font-bold mb-3" style="color: var(--color-text);">1. Acceptance of Terms</h2>
+                    <h2 class="text-lg font-bold mb-3" style="color: var(--color-text);">1. {{ __('Acceptance of Terms') }}</h2>
                     <p class="leading-relaxed">By creating an account or using {{ config('app.name') }}, you agree to be bound by these Terms of Service. If you do not agree with any part of these terms, you may not use our services.</p>
                 </div>
 
                 <div>
-                    <h2 class="text-lg font-bold mb-3" style="color: var(--color-text);">2. User Accounts</h2>
+                    <h2 class="text-lg font-bold mb-3" style="color: var(--color-text);">2. {{ __('User Accounts') }}</h2>
                     <ul class="list-disc list-inside space-y-2">
-                        <li>You must provide accurate and complete information when creating an account</li>
-                        <li>You are responsible for maintaining the security of your account credentials</li>
-                        <li>You must be at least 13 years old to use this platform</li>
-                        <li>One person may not maintain more than one account</li>
+                        <li>{{ __('You must provide accurate and complete information when creating an account') }}</li>
+                        <li>{{ __('You are responsible for maintaining the security of your account credentials') }}</li>
+                        <li>You must be at least 13 {{ __('years old to use this platform') }}</li>
+                        <li>{{ __('One person may not maintain more than one account') }}</li>
                     </ul>
                 </div>
 
@@ -45,27 +45,27 @@
                 </div>
 
                 <div>
-                    <h2 class="text-lg font-bold mb-3" style="color: var(--color-text);">5. Community Guidelines</h2>
+                    <h2 class="text-lg font-bold mb-3" style="color: var(--color-text);">5. {{ __('Community Guidelines') }}</h2>
                     <ul class="list-disc list-inside space-y-2">
-                        <li>Be respectful and constructive in forum discussions</li>
-                        <li>Do not share answers or quiz solutions</li>
-                        <li>Do not post spam, offensive, or inappropriate content</li>
-                        <li>Do not impersonate other users or staff members</li>
+                        <li>Be {{ __('respectful and constructive in forum discussions') }}</li>
+                        <li>Do {{ __('not share answers or quiz solutions') }}</li>
+                        <li>Do not post spam, offensive, or {{ __('inappropriate content') }}</li>
+                        <li>Do {{ __('not impersonate other users or staff members') }}</li>
                     </ul>
                 </div>
 
                 <div>
-                    <h2 class="text-lg font-bold mb-3" style="color: var(--color-text);">6. Intellectual Property</h2>
+                    <h2 class="text-lg font-bold mb-3" style="color: var(--color-text);">6. {{ __('Intellectual Property') }}</h2>
                     <p class="leading-relaxed">All course content, including text, videos, images, and quizzes, is the property of {{ config('app.name') }} and its content creators. You may not reproduce, distribute, or share course materials without explicit permission.</p>
                 </div>
 
                 <div>
-                    <h2 class="text-lg font-bold mb-3" style="color: var(--color-text);">7. Account Termination</h2>
+                    <h2 class="text-lg font-bold mb-3" style="color: var(--color-text);">7. {{ __('Account Termination') }}</h2>
                     <p class="leading-relaxed">We reserve the right to suspend or terminate accounts that violate these terms, engage in fraudulent activity, or abuse the platform. You may delete your account at any time through your profile settings.</p>
                 </div>
 
                 <div>
-                    <h2 class="text-lg font-bold mb-3" style="color: var(--color-text);">8. Changes to Terms</h2>
+                    <h2 class="text-lg font-bold mb-3" style="color: var(--color-text);">8. {{ __('Changes to Terms') }}</h2>
                     <p class="leading-relaxed">We may update these terms from time to time. Continued use of the platform after changes constitutes acceptance of the updated terms. We will notify users of significant changes via email or in-app notification.</p>
                 </div>
 

@@ -38,9 +38,9 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
             @php
                 $quizStats = [
-                    ['icon' => '📝', 'value' => $stats['total_attempts'] ?? 0, 'label' => 'Total Attempts', 'color' => 'primary', 'desc' => 'Quizzes taken so far'],
-                    ['icon' => '🎯', 'value' => round($stats['average_score'] ?? 0) . '%', 'label' => 'Average Score', 'color' => 'blue', 'desc' => 'Your overall accuracy'],
-                    ['icon' => '🎓', 'value' => $stats['passed'] ?? 0, 'label' => 'Quizzes Passed', 'color' => 'emerald', 'desc' => 'Successfully completed'],
+                    ['icon' => '📝', 'value' => $stats['total_attempts'] ?? 0, 'label' => 'Total Attempts', 'color' => 'primary', 'desc' => __('Quizzes taken so far')],
+                    ['icon' => '🎯', 'value' => round($stats['average_score'] ?? 0) . '%', 'label' => 'Average Score', 'color' => 'blue', 'desc' => __('Your overall accuracy')],
+                    ['icon' => '🎓', 'value' => $stats['passed'] ?? 0, 'label' => 'Quizzes Passed', 'color' => 'emerald', 'desc' => __('Successfully completed')],
                 ];
             @endphp
             

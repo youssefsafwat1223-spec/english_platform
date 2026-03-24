@@ -102,7 +102,7 @@
 
         {{-- Leave Button --}}
         <div class="text-center" data-aos="fade-up">
-            <form action="{{ route('student.battle.leave', $room) }}" method="POST" onsubmit="return confirm('{{ __('Leave Lobby Confirm') }}')">
+            <form action="{{ route('student.battle.leave', $room) }}" method="POST" onsubmit="return confirm(__('Leave Lobby Confirm'))">
                 @csrf
                 <button type="submit" class="btn-secondary">
                     {{ __('Leave Lobby') }}

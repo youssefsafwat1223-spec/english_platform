@@ -1,0 +1,285 @@
+Unique phrases: 284
+Acceptance of Terms
+Access Denied
+Access and download your personal data
+Account Termination
+Active Students
+Admin Panel
+Align text with lines
+All rights reserved
+Already answered
+Animated Gradient with Glassmorphism
+Animated counters
+Approx time since last update
+Are you sure you want to send this campaign immediately
+Attempt
+Attempts
+Average Rating
+BOOK SPLASH SCREEN
+Back
+Back to Lesson
+Background Texture
+Blade
+Browser Not Supported
+Certificate
+Certificate ID
+Certificates
+Certificates represent course completion and are not accredited academic degrees
+Changes to Terms
+Chat error
+Clear current grid
+Code
+Community Guidelines
+Completed
+Confirm
+Contact
+Contact Us
+Cookies
+Copy Verification Link
+Corner Ornaments
+Correct
+Course
+Courses
+Custom Scrollbar for chat area
+Custom audio player styling
+Custom scrollbar for notes area
+Dashboard
+Data Security
+Decrement abstractly
+Default
+Divider
+Download PDF
+Emails
+English
+Enrolled
+Enrollments
+Error loading video securely
+Evaluating
+Exercise
+Exported from  on
+FEATURED COURSES SECTION
+Failed to load questions
+Footer
+Forum
+From
+Frosted Glass Navbar with Glassmorphism
+Gained
+Gold Border Frame
+Google
+Gradient Text
+Hello
+Hide scrollbar for the horizontal stats on webkit
+Home
+Hours of Content
+How We Use Your Information
+Information We Collect
+Intellectual Property
+Interactive Courses
+John Doe
+Joined
+Just sign up and start learning
+Keep practicing
+LIVE
+Lesson
+Listen carefully and try again
+Listen to Example
+Listen to the correct pronunciation
+Logo
+Maintenance Mode
+Master the rules that matter most
+Message
+Microsoft
+Need immediate assistance
+Network error submitting answer
+New Contact Form Message
+Not set
+Notes
+Notifications
+One person may not maintain more than one account
+Opt out of promotional communications
+Order
+Organization
+Our platform is fully responsive and works perfectly on all devices
+PREVIEW
+Page Not Found
+Party Services
+Payment
+Payments
+Personalize your learning experience and recommendations
+Please try again later
+Poll error
+Polling error
+Prevent sidebar from scrolling with page on large screens
+Previous best
+Pronunciation Practice
+Proven strategies to learn English faster
+Provide customer support and respond to inquiries
+Question
+Questions
+Quizzes
+Quizzes Taken
+Quizzes taken so far
+Rank
+Recipient
+Referred by
+Reported by
+Request correction of inaccurate information
+Request deletion of your account and data
+Reset Password
+Reset Your Password
+Revenue
+Right Back
+Rule
+SAMPLE VIDEOS SECTION
+SSL Encrypted
+Say it aloud
+Scheduled Maintenance
+Score
+Score Badge
+Seal
+Sentence
+Server Error
+Short format
+Silently ignoring progress update fail
+Simple English
+Speech Exercise
+Speech recognition requires  Google Chrome  or  Microsoft Edge
+Steps
+Students
+Subject
+Submit error
+Subtle pulse for matching UI
+Successfully completed
+Switch Language
+System
+TESTIMONIALS SECTION
+TOKEN
+Tap to start speaking
+Tap to stop
+Team
+Thank you for your patience
+Thanks
+The  Team
+These services have their own privacy policies and handle data in accordance with their terms
+This certificate was issued by  and is valid
+This password reset link will expire in  minutes
+Tilt Glass Cards
+Time
+Title
+Toggle dark mode
+Toggle navigation
+Top Teams
+Total Revenue
+Total Students
+Track your learning progress and generate certificates
+Track your speaking progress and improve your accent
+Updating
+User Accounts
+WAVE DIVIDER
+Waiting
+You are responsible for maintaining the security of your account credentials
+You can control cookie settings through your browser
+You may delete your account at any time through your profile settings
+You must provide accurate and complete information when creating an account
+You said
+Your Rights
+Your browser does not support the audio element
+Your overall accuracy
+agree to the
+all border
+all duration
+all group
+and create engagement campaigns
+and improve our platform and services
+and learning progress to personalize your experience
+and multimedia content for our platform
+and promotions
+app notification
+are not allowed and will be voided
+async poll
+await fetch
+await this
+bold text
+btn shadow
+button type
+center gap
+center opacity
+center shrink
+clicks during fetch
+colors duration
+colors flex
+colors shadow
+const btn
+const colors
+const els
+const gradient
+const lessons
+const link
+const locale
+const pairs
+const recognition
+const sec
+const span
+const trans
+contact form
+copy and paste the URL below into your web browser
+course first to load questions
+customer service
+days if left unused
+days of purchase if you are not satisfied with the course
+delete payload
+ease infinite
+else if
+exist in the first place
+floating orbs
+full absolute inset
+full block
+function poll
+further action is required
+glass pl
+img src
+inappropriate content
+input instance
+lesson with pronunciation exercises
+let html
+like appearance
+new Chart
+new Date
+not impersonate other users or staff members
+not share answers or quiz solutions
+off  your first course
+only peer
+out duration
+out infinite
+password reset request for your account
+people successfully
+per student
+please  contact us
+please contact support
+primary btn
+question loaded yet
+questions found for this course
+real transformations
+required autofocus
+required placeholder
+respectful and constructive in forum discussions
+return false
+return null
+return recognition
+return true
+select name
+share course materials without explicit permission
+slight delay to ensure render
+solid rgba
+start group
+the course
+this month
+transform mb
+transform transform
+use HTTPS for all communications and regularly audit our security practices
+used once per user purchase
+valid code
+waiting for poll sync
+years old to use this platform
+you may not use our services
+yours forever and can be verified online at any time

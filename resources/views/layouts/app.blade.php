@@ -42,7 +42,7 @@
             "sameAs": [],
             "contactPoint": {
                 "@type": "ContactPoint",
-                "contactType": "customer service",
+                "contactType": __('customer service'),
                 "availableLanguage": ["Arabic", "English"]
             }
         }')

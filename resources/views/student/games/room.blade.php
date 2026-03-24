@@ -240,7 +240,7 @@
                             <h3 class="font-bold text-slate-900 dark:text-white flex items-center gap-2">
                                 <span class="text-xl">📊</span> {{ __('Live Ranking') }}
                             </h3>
-                            <span class="px-2 py-1 rounded bg-primary-500/10 text-primary-600 dark:text-primary-400 text-[10px] font-bold uppercase tracking-wider">Top Teams</span>
+                            <span class="px-2 py-1 rounded bg-primary-500/10 text-primary-600 dark:text-primary-400 text-[10px] font-bold uppercase tracking-wider">{{ __('Top Teams') }}</span>
                         </div>
                         <div class="p-5 flex flex-col gap-2 max-h-[250px] overflow-y-auto">
                             <template x-for="(t, idx) in leaderboard" :key="idx">
@@ -285,7 +285,7 @@
                             <template x-for="msg in chats" :key="msg.id">
                                 <div class="flex flex-col max-w-[90%]" :class="msg.is_mine ? 'ml-auto items-end' : 'mr-auto items-start'">
                                     <div class="flex items-baseline gap-2 mb-1 px-1">
-                                        <span class="text-[11px] font-bold" :class="msg.is_mine ? 'text-primary-500' : 'text-slate-600 dark:text-slate-400'" x-text="msg.is_mine ? '{{ __('You') }}' : msg.user_name"></span>
+                                        <span class="text-[11px] font-bold" :class="msg.is_mine ? 'text-primary-500' : 'text-slate-600 dark:text-slate-400'" x-text="msg.is_mine ? __('You') : msg.user_name"></span>
                                         <span class="text-[9px] font-medium text-slate-400 uppercase tracking-wider" x-text="msg.created_at"></span>
                                     </div>
                                     <div class="px-4 py-2.5 rounded-2xl text-[14px] font-medium leading-snug shadow-sm border"

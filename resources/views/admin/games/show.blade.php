@@ -41,7 +41,7 @@
                         @csrf
                         <button class="btn-secondary">{{ __('Send Invitations') }}</button>
                     </form>
-                    <form action="{{ route('admin.games.start', $game) }}" method="POST" class="inline" onsubmit="return confirm('{{ __('Confirm Start') }}')">
+                    <form action="{{ route('admin.games.start', $game) }}" method="POST" class="inline" onsubmit="return confirm(__('Confirm Start'))">
                         @csrf
                         <button class="btn-primary ripple-btn">{{ __('Start Game') }}</button>
                     </form>
@@ -50,7 +50,7 @@
                         @csrf
                         <button class="btn-primary ripple-btn">{{ __('Next Question + Change Captain') }}</button>
                     </form>
-                    <form action="{{ route('admin.games.end', $game) }}" method="POST" class="inline" onsubmit="return confirm('{{ __('Confirm End') }}')">
+                    <form action="{{ route('admin.games.end', $game) }}" method="POST" class="inline" onsubmit="return confirm(__('Confirm End'))">
                         @csrf
                         <button class="px-4 py-2 rounded-xl text-red-500 border border-red-500/30 hover:bg-red-500/10 transition font-bold text-sm">{{ __('End Game') }}</button>
                     </form>
@@ -185,9 +185,9 @@ function adminGameMonitor() {
         timerInterval: null,
 
         get statusLabel() {
-            if (this.gameStatus === 'scheduled') return '{{ __('Scheduled') }}';
-            if (this.gameStatus === 'active') return '{{ __('Active Now') }}';
-            return '{{ __('Completed') }}';
+            if (this.gameStatus === 'scheduled') return __('Scheduled');
+            if (this.gameStatus === 'active') return __('Active Now');
+            return __('Completed');
         },
 
         startPolling() {
@@ -228,7 +228,7 @@ function adminGameMonitor() {
                 }
 
             } catch (e) {
-                console.error('Poll error', e);
+                console.error(__('Poll error'), e);
             }
         }
     }
