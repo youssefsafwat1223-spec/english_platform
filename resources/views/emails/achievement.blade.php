@@ -22,7 +22,7 @@
     <div class="container">
         <div class="header">
             @if($achievementType === 'course_completed')
-                <h1>🎉 {{ __('{{ __('تم إكمال الكورس!') }}') }}</h1>
+                <h1>🎉 {{ __('تم إكمال الكورس!') }}</h1>
                 <p>{{ __('وصلت لإنجاز رائع') }}</p>
             @elseif($achievementType === 'high_score')
                 <h1>🌟 {{ __('درجة ممتازة!') }}</h1>

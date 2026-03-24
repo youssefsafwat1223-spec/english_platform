@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
-@section('title', '{{ __('إتقان الإنجليزية | منصة لتعليم اللغة الإنجليزية') }}')
-@section('meta_description', '{{ __('أفضل منصة لتعليم اللغة الإنجليزية وتطوير مهارات التحدث، القواعد، والطلاقة. كورسات تفاعلية مع تقييم النطق باستخدام الذكاء الاصطناعي.') }}')
-@section('meta_keywords', '{{ __('تعلم الانجليزية, دورات انجليزي, نطق اللغة الانجليزية, الذكاء الاصطناعي, English courses, learn English') }}')
+@section('title', __('إتقان الإنجليزية | منصة لتعليم اللغة الإنجليزية'))
+@section('meta_description', __('أفضل منصة لتعليم اللغة الإنجليزية وتطوير مهارات التحدث، القواعد، والطلاقة. كورسات تفاعلية مع تقييم النطق باستخدام الذكاء الاصطناعي.'))
+@section('meta_keywords', __('تعلم الانجليزية, دورات انجليزي, نطق اللغة الانجليزية, الذكاء الاصطناعي, English courses, learn English'))
 
 @section('content')
 
@@ -48,7 +48,7 @@
                                 ->count();
                         });
                     @endphp
-                    <div class="inline-flex items-center gap-2 glass-card px-4 py-2 !rounded-full shadow-lg border-white/10 bg-white/5 backdrop-blur-md" title="{{ __('Active students right now') }}">
+                    <div class="inline-flex items-center gap-2 glass-card px-4 py-2 !rounded-full shadow-lg border-white/10 bg-white/5 backdrop-blur-md" title=__('Active students right now')>
                         <span class="relative flex h-3 w-3 shrink-0">
                             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
                             <span class="relative inline-flex rounded-full h-3 w-3 bg-blue-500"></span>

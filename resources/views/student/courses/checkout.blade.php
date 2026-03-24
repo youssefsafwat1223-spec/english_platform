@@ -72,7 +72,7 @@
                                             <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
                                                 <svg class="w-5 h-5 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
                                             </div>
-                                            <input id="referral_code" name="referral_code" type="text" class="w-full bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-white/10 rounded-xl py-4 pr-12 pl-4 text-slate-900 dark:text-white font-semibold focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors shadow-inner" placeholder="{{ __('حط كود الدعوة (اختياري)') }}" value="{{ old('referral_code', session('referral_code')) }}">
+                                            <input id="referral_code" name="referral_code" type="text" class="w-full bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-white/10 rounded-xl py-4 pr-12 pl-4 text-slate-900 dark:text-white font-semibold focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors shadow-inner" placeholder=__('حط كود الدعوة (اختياري)') value="{{ old('referral_code', session('referral_code')) }}">
                                         </div>
                                     </div>
                                     @error('referral_code')
@@ -120,7 +120,7 @@
                     <div class="p-6 sm:p-8">
                         <h3 class="font-bold text-lg mb-6 text-slate-900 dark:text-white">{{ __('وش بيصير بعدين؟') }}</h3>
                         <div class="space-y-6">
-                            @php $steps = ['{{ __('تكتمل عملية الدفع بأمان على بوابة الدفع.') }}', '{{ __('يتم تفعيل الكورس في حسابك تلقائياً.') }}', '{{ __('تقدر تبدأ المذاكرة على طول من لوحة تحكمك.') }}']; @endphp
+                            @php $steps = [__('تكتمل عملية الدفع بأمان على بوابة الدفع.'), __('يتم تفعيل الكورس في حسابك تلقائياً.'), __('تقدر تبدأ المذاكرة على طول من لوحة تحكمك.')]; @endphp
                             @foreach($steps as $step)
                                 <div class="flex items-start gap-4">
                                     <div class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-300 dark:border-white/10 flex items-center justify-center text-sm font-bold shrink-0 shadow-inner mt-0.5">{{ $loop->iteration }}</div>

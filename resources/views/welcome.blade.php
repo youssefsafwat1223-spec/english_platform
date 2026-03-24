@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ config('app.name', '{{ __('إتقان الإنجليزية') }}') }} - {{ __('منصة تعليم لغة بطريقة سهلة ومبتكرة') }}</title>
+    <title>{{ config('app.name', '{{ __('إتقان الإنجليزية') }} - {{ __('منصة تعليم لغة بطريقة سهلة ومبتكرة') }}</title>
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -50,7 +50,7 @@
                                             ->count();
                                     });
                                 @endphp
-                                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-sm font-bold shadow-sm backdrop-blur-md" title="{{ __('Active students right now') }}">
+                                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-sm font-bold shadow-sm backdrop-blur-md" title=__('Active students right now')>
                                     <span class="relative flex h-3 w-3 shrink-0">
                                       <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                                       <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
