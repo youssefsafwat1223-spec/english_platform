@@ -179,6 +179,11 @@ try {
     $quiz->questions()->detach();
 
     foreach ($questionsData as $idx => $qData) {
+        if (!is_array($qData) || !isset($qData['text'])) {
+            echo "⚠️ Warning: Skipping malformed question at index $idx: " . json_encode($qData) . "\n";
+            continue;
+        }
+
         $attrs = [
             'course_id' => $courseId,
             'lesson_id' => $lessonId,
