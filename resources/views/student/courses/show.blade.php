@@ -2,7 +2,7 @@
 
 @section('title', $course->title . ' | ' . config('app.name', __('إتقان الإنجليزية')))
 @section('meta_description', Str::limit(strip_tags($course->short_description ?: $course->description), 160))
-@section('meta_keywords', __('كورس') }} ' . $course->title . ', {{ __('تعلم الإنجليزية') }}, {{ __('كورسات إنجليزي') }}, ' . ($course->level ?? '{{ __('جميع المستويات')))
+@section('meta_keywords', __('كورس') . ' ' . $course->title . ', ' . __('تعلم الإنجليزية') . ', ' . __('كورسات إنجليزي') . ', ' . ($course->level ?? __('جميع المستويات')))
 @section('og_title', $course->title)
 @section('og_image', $course->thumbnail ? asset(Storage::url($course->thumbnail)) : asset('logo.jpg'))
 @section('og_type', 'article')

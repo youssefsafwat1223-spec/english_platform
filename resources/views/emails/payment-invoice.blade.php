@@ -40,7 +40,7 @@
         <div class="content">
             <div class="greeting">{{ __('مرحباً') }} {{ $payment->user->name }}!</div>
             
-            <p>{{ __('تم اشتراكك بنجاح! إليك {{ __('تفاصيل الفاتورة') }} الخاصة بك:') }}</p>
+            <p>{{ __('تم اشتراكك بنجاح! إليك تفاصيل الفاتورة الخاصة بك:') }}</p>
 
             <div class="invoice-box">
                 <div class="invoice-title">{{ __('تفاصيل الفاتورة') }}</div>
