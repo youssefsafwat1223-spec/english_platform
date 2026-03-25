@@ -49,7 +49,7 @@ try {
         ['text' => 'ما معنى By the time؟', 'options' => ['في ذاك الوقت', 'في الوقت الذي فيه', 'بعد ذلك', 'قبل ذلك'], 'correct' => 1],
         ['text' => 'بماذا نختصر الضمير مع Had؟ مثلاً I had:', 'options' => ['I’h', 'I’d', 'I’v', 'I’s'], 'correct' => 1],
         ['text' => 'بماذا نختصر الضمير مع would؟ مثلاً I would:', 'options' => ['I’w', 'I’d', 'I’v', 'I’l'], 'correct' => 1], // Same abbreviation 'd
-        ['text' => 'كيف نفرق بـ 'd المختصرة بين Had و Would؟', 'options' => ['بعد had يأتي v3 وبعد would يأتي v1', 'كلاهما واحد', 'بالمعنى فقط', 'لا شيء'], 'correct' => 0],
+        ['text' => "كيف نفرق بـ 'd المختصرة بين Had و Would؟", 'options' => ['بعد had يأتي v3 وبعد would يأتي v1', 'كلاهما واحد', 'بالمعنى فقط', 'لا شيء'], 'correct' => 0],
         ['text' => 'أكمل: (They’d __ already ____ of the project)', 'options' => ['Heard', 'Hear', 'Hearing', 'Hears'], 'correct' => 0],
         ['text' => 'كلمة (بالفعل) في الإنجليزية:', 'options' => ['Ready', 'Already', 'Yet', 'Just'], 'correct' => 1],
         ['text' => 'كلمة (للتو) في الإنجليزية:', 'options' => ['Already', 'Just', 'Yet', 'Since'], 'correct' => 1],
