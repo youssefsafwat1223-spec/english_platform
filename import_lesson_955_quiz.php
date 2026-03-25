@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Script to import questions for Lesson ID 955
+ * Script to import questions for Lesson ID 955 (Updated: This/That)
  * Place this inside your Laravel root directory and run: 
  * php import_lesson_955_quiz.php
  */
@@ -31,154 +31,129 @@ try {
     // 2. Questions Array Definitions
     $questionsData = [
         [
-            'text' => 'Help yourself ---------- coffee, tea and juice to drink.',
-            'options' => ['There is', 'There are', 'There aren’t', 'There isn’t'],
-            'correct' => 0, // There is (coffee is uncountable/singular)
+            'text' => 'What’s this? ------ is a book.',
+            'options' => ['This', 'Those', 'These', 'The'],
+            'correct' => 0, // This
         ],
         [
-            'text' => '------ many people standing outside the stage,',
-            'options' => ['There is', 'There are', 'There', 'There was'],
-            'correct' => 1, // There are
+            'text' => 'What are these? ------- are dumbbells.',
+            'options' => ['This', 'That', 'These', 'The'],
+            'correct' => 2, // These
         ],
         [
-            'text' => 'There ----- a small cat playing with some toys.',
-            'options' => ['Are', 'Have', 'Is', 'Were'],
-            'correct' => 2, // Is
+            'text' => '-------- cake is delicious. When I finish it, could I please have another slide?',
+            'options' => ['This', 'That', 'These', 'Those'],
+            'correct' => 0, // This
         ],
         [
-            'text' => 'How many cups -----? There are two cups.',
-            'options' => ['Are there', 'There are', 'There have', 'There has'],
-            'correct' => 0, // Are there
+            'text' => 'Do you think ------ sixteenth grammar questions are easy or difficult?',
+            'options' => ['That', 'Them', 'These', 'This'],
+            'correct' => 2, // These
         ],
         [
-            'text' => 'Are there two birds in the tree? Yes, -------',
-            'options' => ['There is', 'Are there', 'There are', 'Is there'],
-            'correct' => 2, // There are
+            'text' => 'How many of ----- cookies would you like? Two?',
+            'options' => ['This', 'That', 'Those', 'These'],
+            'correct' => 3, // These
         ],
         [
-            'text' => '------ a taxi waiting for us? Yes, ------.',
-            'options' => ['Is there/is there', 'Is there/there is', 'There is/there is', 'Are there/there is'],
-            'correct' => 1, // Is there/there is
+            'text' => '------- was a difficult test we had last week.',
+            'options' => ['This', 'That', 'These', 'The'],
+            'correct' => 1, // That
         ],
         [
-            'text' => '------- four chairs and one table in the dining room.',
-            'options' => ['There is', 'There are', 'Are there', 'There were'],
-            'correct' => 1, // There are
+            'text' => 'Maybe we can ask ------ policeman for directions.',
+            'options' => ['That', 'Those', 'These', 'This'],
+            'correct' => 0, // That
         ],
         [
-            'text' => 'Is there anything I can do to help? Yes, ------',
-            'options' => ['There are', 'Is there', 'There is', 'Are there'],
-            'correct' => 2, // There is
+            'text' => 'Hello, Dr Ahmed. Could you please look at ----- cut on my finger?',
+            'options' => ['This', 'That', 'Those', 'These'],
+            'correct' => 0, // This
         ],
         [
-            'text' => 'Why ------- so many cars parked near the library?',
-            'options' => ['Are there', 'There', 'Is there', 'There is'],
-            'correct' => 0, // Are there
+            'text' => 'Can you see ----- fishing boats on the lake?',
+            'options' => ['That', 'Those', 'These', 'The'],
+            'correct' => 1, // Those
         ],
         [
-            'text' => '-------- a great action movie playing at the theater. Do you want to see it?',
-            'options' => ['Is there', 'There is', 'There are', 'Are there'],
-            'correct' => 1, // There is
+            'text' => 'Who was ----- man you talked to yesterday?',
+            'options' => ['This', 'That', 'Those', 'These'],
+            'correct' => 1, // That
         ],
         [
-            'text' => 'I don’t see any buses. Why ------ any buses?',
-            'options' => ['Aren’t there', 'Are there', 'There aren’t', 'Is there'],
-            'correct' => 0, // Aren’t there
+            'text' => '-------- are my siblings.',
+            'options' => ['This', 'These', 'That', 'The'],
+            'correct' => 1, // These
         ],
         [
-            'text' => '------- a good reason why he is late? Yes, ------',
-            'options' => ['Is there/there is', 'There are/there is', 'Is there/there are', 'There are/there are'],
-            'correct' => 0, // Is there/there is
+            'text' => '------- is a tall building over there.',
+            'options' => ['These', 'Them', 'That', 'Those'],
+            'correct' => 2, // That
         ],
         [
-            'text' => 'Please wait here for a moment ------- something I have to get in my car.',
-            'options' => ['Are there', 'There is', 'There are', 'Is there'],
-            'correct' => 1, // There is
+            'text' => 'Hello ----- is Ahmed. Can I speak to Ghalib, please?',
+            'options' => ['That', 'This', 'These', 'Those'],
+            'correct' => 1, // This
         ],
         [
-            'text' => 'There is -------- on the desk.',
-            'options' => ['A computer', 'Some computers', 'Any computers', 'Computers'],
-            'correct' => 0, // A computer
+            'text' => 'I am going to Makkah again ------ weekend. Do you want to come?',
+            'options' => ['This', 'That', 'Those', 'These'],
+            'correct' => 0, // This
         ],
         [
-            'text' => 'There are ------- on the table.',
-            'options' => ['Some apples', 'Any apples', 'An apple', 'Apple'],
-            'correct' => 0, // Some apples
+            'text' => 'What’s the name of ----- film that we watched last night?',
+            'options' => ['This', 'That', 'Those', 'These'],
+            'correct' => 1, // That
         ],
         [
-            'text' => 'There aren’t ------ on the table.',
-            'options' => ['Some pens', 'Any pens', 'A pen', 'Pens'],
-            'correct' => 1, // Any pens
+            'text' => 'Here we are. ------ is Where I live.',
+            'options' => ['This', 'That', 'Those', 'These'],
+            'correct' => 0, // This
         ],
         [
-            'text' => 'There ----- a dog in my garden.',
-            'options' => ['Is', 'Are', 'Were', 'Has'],
-            'correct' => 0, // Is
+            'text' => 'I am leaving ------ Tuesday.',
+            'options' => ['This', 'That', 'These', 'Those'],
+            'correct' => 0, // This
         ],
         [
-            'text' => 'There ------ a goldfish in our class.',
-            'options' => ['Is', 'Are', 'Have', 'Were'],
-            'correct' => 0, // Is
+            'text' => 'Can you see what ----- car’s license plate? It is too far away.',
+            'options' => ['This', 'That', 'These', 'Those'],
+            'correct' => 1, // That
         ],
         [
-            'text' => 'There ----- some sandwiches in my bag.',
-            'options' => ['Is', 'Are', 'Aren’t', 'Isn’t'],
-            'correct' => 1, // Are
+            'text' => 'The flat we looked at today was better than ------ two we saw last weekend.',
+            'options' => ['This', 'That', 'These', 'Those'],
+            'correct' => 3, // those
         ],
         [
-            'text' => 'Is there a carpet in your bedroom?',
-            'options' => ['Yes, there is', 'Yes, there are', 'No, there aren’t', 'No there isn’t'],
-            'correct' => 0, // Yes, there is
+            'text' => 'Look at ---- birds up there in the tree.',
+            'options' => ['This', 'That', 'These', 'Those'],
+            'correct' => 3, // those
         ],
         [
-            'text' => '------- a kitchen (positive).',
-            'options' => ['There is', 'There are', 'There aren’t', 'There isn’t'],
-            'correct' => 0, // There is
+            'text' => 'Are ----- your books over there on the table?',
+            'options' => ['These', 'Those', 'This', 'That'],
+            'correct' => 1, // those
         ],
         [
-            'text' => '------- a dining room (negative).',
-            'options' => ['There is', 'There are', 'There isn’t', 'There aren’t'],
-            'correct' => 2, // There isn’t
+            'text' => 'Those apples are red, but ----- apples over here are green.',
+            'options' => ['That', 'This', 'These', 'Those'],
+            'correct' => 2, // these
         ],
         [
-            'text' => '------- a dishwasher (interrogative).',
-            'options' => ['Is there', 'There is', 'There are', 'There aren’t'],
-            'correct' => 0, // Is there
+            'text' => 'Did you and your family stay at ----- hotel in Paris?',
+            'options' => ['That', 'These', 'This', 'Those'],
+            'correct' => 0, // That
         ],
         [
-            'text' => '------ big windows (negative).',
-            'options' => ['There is', 'There are', 'There isn’t', 'There aren’t'],
-            'correct' => 3, // There aren’t
+            'text' => '----- was such an interesting experience.',
+            'options' => ['That', 'These', 'Those', 'Such'],
+            'correct' => 0, // That
         ],
         [
-            'text' => '------- four bedrooms (interrogative).',
-            'options' => ['There is', 'Is there', 'Are there', 'There aren’t'],
-            'correct' => 2, // Are there
-        ],
-        [
-            'text' => 'There ------- a red car parked in our driveway.',
-            'options' => ['Is', 'Are', 'Aren’t', 'Has'],
-            'correct' => 0, // Is
-        ],
-        [
-            'text' => 'There ----- many options to pick from.',
-            'options' => ['Is', 'Are', 'Isn’t', 'Has'],
-            'correct' => 1, // Are
-        ],
-        [
-            'text' => 'There ------- lots of errors in this page.',
-            'options' => ['Is', 'Was', 'Are', 'Has'],
-            'correct' => 2, // Are
-        ],
-        [
-            'text' => 'There ----- tomato paste in the kitchen.',
-            'options' => ['Is no', 'Are no', 'No is', 'No are'],
-            'correct' => 0, // Is no
-        ],
-        [
-            'text' => 'There ------- vases on show this week.',
-            'options' => ['Is no', 'Are no', 'No is', 'No are'],
-            'correct' => 1, // Are no
+            'text' => 'Are ----- your shoes?',
+            'options' => ['That', 'Them', 'Those', 'This'],
+            'correct' => 2, // Those
         ],
     ];
 
@@ -186,7 +161,7 @@ try {
     $quiz = Quiz::updateOrCreate(
         ['lesson_id' => $lessonId, 'course_id' => $courseId],
         [
-            'title' => 'اختبار ممارسة There is & There are',
+            'title' => 'اختبار ممارسة أسماء الإشارة (Demonstratives Practice)',
             'quiz_type' => 'lesson',
             'duration_minutes' => 30,
             'total_questions' => count($questionsData),
