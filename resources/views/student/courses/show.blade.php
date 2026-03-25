@@ -234,7 +234,7 @@
 
                         {{-- Features List --}}
                         <div class="pt-6 border-t border-slate-100 dark:border-white/5">
-                            <h4 class="font-black mb-5 text-slate-800 dark:text-white text-sm bg-slate-50 dark:bg-white/5 inline-block px-3 py-1 rounded-lg">{{ __('هذا ال{{ __('كورس') }} يتضمن:') }}</h4>
+                            <h4 class="font-black mb-5 text-slate-800 dark:text-white text-sm bg-slate-50 dark:bg-white/5 inline-block px-3 py-1 rounded-lg">{{ __('هذا الكورس يتضمن:') }}</h4>
                             <ul class="space-y-4 text-sm font-bold text-slate-600 dark:text-slate-400">
                                 <li class="flex items-center gap-3.5">
                                     <div class="w-8 h-8 rounded-lg bg-emerald-50 border border-emerald-100 dark:bg-emerald-500/10 dark:border-emerald-500/20 text-emerald-500 flex items-center justify-center shrink-0 shadow-sm"><svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg></div>
