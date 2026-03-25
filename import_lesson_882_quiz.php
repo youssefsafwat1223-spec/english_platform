@@ -28,23 +28,7 @@ try {
 
     $courseId = $lesson->course_id;
 
-    // 2. Create or find Quiz
-    $quiz = Quiz::firstOrCreate(
-        ['lesson_id' => $lessonId, 'course_id' => $courseId],
-        [
-            'title' => 'اختبار شامل للدرس',
-            'time_limit' => 30, // Default 30 minutes
-            'passing_score' => 50,
-            'is_active' => 1,
-        ]
-    );
-
-    echo "✅ Quiz Prepared (ID: {$quiz->id}).\n";
-
-    // Uncomment this line if you want to clear old questions first 
-    // $quiz->questions()->delete();
-
-    // 3. Questions Array
+    // 2. Questions Array Definitions
     $questionsData = [
         // 1
         [
@@ -383,6 +367,24 @@ try {
             'points' => 1,
         ],
     ];
+
+    // 3. Create or find Quiz
+    $quiz = Quiz::firstOrCreate(
+        ['lesson_id' => $lessonId, 'course_id' => $courseId],
+        [
+            'title' => 'اختبار شامل للدرس',
+            'quiz_type' => 'lesson',
+            'duration_minutes' => 30, // The actual column is duration_minutes, not time_limit
+            'total_questions' => count($questionsData), // Set total_questions field
+            'passing_score' => 50,
+            'is_active' => 1,
+        ]
+    );
+
+    echo "✅ Quiz Prepared (ID: {$quiz->id}).\n";
+
+    // Uncomment this line if you want to clear old questions first 
+    // $quiz->questions()->delete();
 
     $count = 0;
     foreach ($questionsData as $qData) {
