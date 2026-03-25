@@ -26,9 +26,11 @@ try {
 
     echo "✅ Found Lesson: " . $lesson->title . "\n";
 
+    $courseId = $lesson->course_id;
+
     // 2. Create or find Quiz
     $quiz = Quiz::firstOrCreate(
-        ['lesson_id' => $lessonId],
+        ['lesson_id' => $lessonId, 'course_id' => $courseId],
         [
             'title' => 'اختبار شامل للدرس',
             'time_limit' => 30, // Default 30 minutes
