@@ -21,46 +21,52 @@ try {
     $courseId = $lesson->course_id;
 
     $questionsData = [
-        ['text' => 'ما معنى زمن الماضي التام المستمر في اللغة الإنجليزية؟', 'options' => ['Past Perfect', 'Past Continuous', 'Past Perfect Continuous', 'Present Perfect Continuous'], 'correct' => 2],
-        ['text' => 'يعبر الماضي التام المستمر عن حدث استمر في الماضي لغاية نقطة معينة او حتى بدأ حدث اخر؟', 'type' => 'true_false', 'options' => ['صح', 'خطأ'], 'correct' => 0],
-        ['text' => 'اختر التكوين الصحيح للمثبت في الماضي التام المستمر:', 'options' => ['Subject + had + been + v+ing', 'Subject + have + been + v-ing', 'had + v3', 'was + been + v-ing'], 'correct' => 0],
-        ['text' => 'ما هو الفعل المساعد الأساسي في الماضي التام المستمر؟', 'options' => ['Was', 'Had', 'Have', 'Is'], 'correct' => 1],
-        ['text' => 'لماذا نستخدم Been في تكوين هذا الزمن؟', 'options' => ['لانه زمن مضارع', 'لانه زمن تام', 'لان الفعل فيه s', 'لا شيء'], 'correct' => 1],
-        ['text' => 'لماذا نضع ing للفعل في هذا الزمن؟', 'options' => ['بسبب وجود had', 'لانه زمن مستمر', 'بسبب وجود been', 'بسبب الفاعل'], 'correct' => 1],
-        ['text' => 'ضمائر الفاعل التي تأخذ Had been هي:', 'options' => ['I – he – she – it', 'They – we – you', 'جميع ضمائر الفاعل', 'لا شيء مما سبق'], 'correct' => 2],
-        ['text' => 'أكمل: (They __ __ __ all day) ', 'options' => ['had been working', 'have been working', 'had working', 'were working'], 'correct' => 0],
-        ['text' => 'ما الفرق بين الماضي التام والماضي التام المستمر؟', 'options' => ['الأول يركز على انتهاء الحدث والثاني على استمراريته لفترة', 'كلاهما واحد', 'الأول للجمع والثاني للمفرد', 'لا شيء'], 'correct' => 0],
-        ['text' => 'أكمل: (He __ __ __ English for ten years when he moved to London) ', 'options' => ['has been studying', 'had been studying', 'had studied', 'did study'], 'correct' => 1],
-        ['text' => 'كلمات الربط والدلالة غالباً ما تكون:', 'options' => ['Since \ for', 'When \ before', 'كلاهما', 'None'], 'correct' => 2],
-        ['text' => 'نستخدم الماضي التام المستمر لإظهار سبب لشيء ما في الماضي؟', 'type' => 'true_false', 'options' => ['صح', 'خطأ'], 'correct' => 0],
-        ['text' => 'اختر الجملة التي تعبر عن سبب:', 'options' => ['I was tired because I had been working all day.', 'I was working.', 'I had worked.', 'I’m tired.'], 'correct' => 0],
-        ['text' => 'أكمل: (She was out of breath because she __ __ __) ', 'options' => ['is running', 'has been running', 'had been running', 'ran'], 'correct' => 2],
-        ['text' => 'اختر التكوين الصحيح للنفي في الماضي التام المستمر:', 'options' => ['Subject + had + not + been + v+ing', 'had + been + not', 'not had been', 'was not been'], 'correct' => 0],
-        ['text' => 'ما هو النفي الصحيح لـ I had been waiting:', 'options' => ['I had not been waiting.', 'I haven’t been wait', 'I hadn’t wait', 'none'], 'correct' => 0],
-        ['text' => 'الاختصار الصحيح لـ Had not been هو:', 'options' => ['hadn’t been', 'had’nt been', 'hadnt’ been', 'none'], 'correct' => 0],
-        ['text' => 'أكمل النفي: (They __ __ __ long when the bus arrived)', 'options' => ['hadn’t been waiting', 'haven’t been wait', 'not had waiting', 'none'], 'correct' => 0],
-        ['text' => 'كيف نسأل في الماضي التام المستمر؟', 'options' => ['Had + subject + been + v-ing ?', 'Had been + subject', 'Have + been + subject', 'none'], 'correct' => 0],
-        ['text' => 'أكمل السؤال: (__ you __ __ for a long time?) ', 'options' => ['Had \ been \ waiting', 'Has \ been \ waiting', 'Did \ wait', 'none'], 'correct' => 0],
-        ['text' => 'ما معنى Had في أول السؤال في هذا الزمن؟', 'options' => ['هل كان قد', 'هل كان مستمر', 'هل قد كان', 'هل يملك'], 'correct' => 2],
-        ['text' => 'الإجابة على (Had they been playing?) بـ "نعم":', 'options' => ['Yes, they had.', 'Yes, they had been.', 'Yes, they were.', 'none'], 'correct' => 0],
-        ['text' => 'الإجابة بـ "لا":', 'options' => ['No, they hadn’t.', 'No, they haven’t.', 'No, they weren’t.', 'none'], 'correct' => 0],
-        ['text' => 'هل يمكن استخدام الأفعال التي لا تقبل الاستمرار (Stative verbs) في هذا الزمن؟', 'type' => 'true_false', 'options' => ['صح', 'خطأ'], 'correct' => 1], // Usually we use Past Perfect then
-        ['text' => 'مثل فعلي (Know \ Like) نستخدم معهم:', 'options' => ['Past Perfect', 'Past Perfect Continuous', 'Present Simple', 'none'], 'correct' => 0],
-        ['text' => 'أكمل: (I __ __ him for years when we met) اختر الفعل Know:', 'options' => ['had known', 'had been knowing', 'have known', 'none'], 'correct' => 0],
-        ['text' => 'جملة (I had been knowing him) صحيحة؟', 'type' => 'true_false', 'options' => ['صح', 'خطأ'], 'correct' => 1],
-        ['text' => 'ترجمة: It had been raining:', 'options' => ['كانت تمطر لفترة والقصد الاستمرار.', 'انها امطرت', 'سوف تمطر', 'none'], 'correct' => 0],
-        ['text' => 'ترجمة: I had been working:', 'options' => ['أنا قد كنت أعمل.', 'أنا عملت', 'أنا سوف أعمل', 'none'], 'correct' => 0],
-        ['text' => '(She – been – studying – for – three – hours – had) اعد الترتيب:', 'options' => ['She had been studying for three hours.', 'Studying been she...', 'had she been studying', 'none'], 'correct' => 0],
-        ['text' => 'ما معنى For في هذا الزمن؟', 'options' => ['لـ', 'منذ', 'لمدة', 'عن'], 'correct' => 2],
-        ['text' => 'ما معنى Since في هذا الزمن؟', 'options' => ['لـ', 'منذ', 'لمدة', 'بسبب'], 'correct' => 1],
-        ['text' => 'نستخدم Since مع نقطة زمنية محددة؟', 'type' => 'true_false', 'options' => ['صح', 'خطأ'], 'correct' => 0],
-        ['text' => 'نستخدم For مع مدة زمنية؟', 'type' => 'true_false', 'options' => ['صح', 'خطأ'], 'correct' => 0],
-        ['text' => 'أكمل: (We had been playing __ 5 o’clock)', 'options' => ['Since', 'For', 'In', 'At'], 'correct' => 0],
-        ['text' => 'أكمل: (We had been playing __ two hours)', 'options' => ['Since', 'For', 'After', 'Before'], 'correct' => 1],
-        ['text' => 'أكمل: (____ you been waiting long?) ', 'options' => ['Had', 'Has', 'Were', 'Did'], 'correct' => 0],
-        ['text' => 'ترجمة: (هل كنت قد كنت نائماً؟):', 'options' => ['Had you been sleeping?', 'Have you been sleeping?', 'Were you sleeping?', 'none'], 'correct' => 0],
-        ['text' => 'الفرق الأساسي بين الماضي المستمر والماضي التام المستمر:', 'options' => ['التام المستمر يركز على حدث استمر لغاية وقت معين او حدث اخر', 'لا فرق', 'المستمر ابسط', 'none'], 'correct' => 0],
-        ['text' => 'ترجمة: (الأرض كانت رطبة لانها كانت تمطر):', 'options' => ['The ground was wet because it had been raining.', 'ground was wet raining', 'it rained ground wet', 'none'], 'correct' => 0],
+        [
+            'text' => 'صل ما بين كل اسم زمن ومعناه (باللغة الإنجليزية):',
+            'type' => 'drag_drop',
+            'matching_pairs' => [
+                ['left' => 'مضارع بسيط', 'right' => 'Present simple'],
+                ['left' => 'ماضي بسيط', 'right' => 'Past simple'],
+                ['left' => 'مضارع مستمر', 'right' => 'Present continuous'],
+                ['left' => 'ماضي مستمر', 'right' => 'Past continuous'],
+                ['left' => 'مضارع تام', 'right' => 'Present perfect'],
+                ['left' => 'ماضي تام', 'right' => 'Past perfect'],
+                ['left' => 'ماضي تام مستمر', 'right' => 'Past perfect continuous'],
+            ]
+        ],
+
+        ['text' => 'يعبر زمن الماضي التام المستمر عن:', 'options' => ['حدث بدا واستمر في الماضي ثم انتهى قبل بدء حدث اخر بعده', 'حدث بدا وانتهى في الماضي', 'حدث كان مستمر لفترة معينة في الماضي', 'ليس مما سبق'], 'correct' => 0],
+        ['text' => 'اختر التكوين الصحيح للمثبت في زمن الماضي التام المستمر:', 'options' => ['Subject + had + been +(v1+ing) + object \complement.', 'Subject + had + been + v3 + object \complement.', 'Subject + had +(v1+ing) + object \complement.', 'Subject + had + v3+ object \complement.'], 'correct' => 0],
+        ['text' => 'اختر الكلمة المناسبة للجملة: (I __ been working on my project for six hours when my computer crashed.)', 'options' => ['Has', 'Had', 'Have', 'Was'], 'correct' => 1],
+        ['text' => 'اختر الكلمة المناسبة للجملة: (They had been __ for weeks before they finally reached their destination.)', 'options' => ['Travel', 'Travelled', 'Travelling', 'Travels'], 'correct' => 2],
+        ['text' => 'اختر الكلمة المناسبة للجملة: (She had __ studying Spanish for years before she felt comfortable speaking it.)', 'options' => ['Be', 'Being', 'Been', 'Was'], 'correct' => 2],
+        ['text' => 'ليس جميع أسماء وضمائر الفاعل تأخذ الفعل المساعد (Had) في زمن الماضي التام المستمر.', 'type' => 'true_false', 'options' => ['صح', 'خطأ'], 'correct' => 1],
+        ['text' => 'نضع v1+ing في زمن الماضي التام المستمر لجميع الأسباب التالية (ما عدا)؟', 'options' => ['يجب ان تكون في جميع الأزمنة المستمرةV1+ingلان', '(Beenلأنها أتت بعد الكينونة(', 'V1+ingلان جميع الأزمنة تأخذ', 'لا شيء'], 'correct' => 2],
+        ['text' => 'اختر الترجمة الصحيحة لجملة : (We had been waiting for the bus for over an hour before it finally arrived.)', 'options' => ['نحن قد كنا ننتظر لأجل الباص لمدة اكثر من ساعة قبل ان وصل اخيرا.', 'نحن قد ننتظر لأجل الباص لمدة اكثر من ساعة قبل ان يوصل اخيرا.', 'نحن قد انتظرنا لأجل الباص لمدة اكثر من ساعة قبل ان وصل اخيرا.', 'نحن سننتظر لأجل الباص لمدة اكثر من ساعة قبل ان يوصل اخيرا.'], 'correct' => 0],
+        ['text' => 'اختر تكوين النفي الصحيح لزمن الماضي التام المستمر:', 'options' => ['Subject + had + been+ not +(v1+ing) + object \complement.', 'Subject + not + had + been + v3 + object \complement.', 'Subject + had + been+ not + v1 + object \complement.', 'Subject + had + not + been +(v1+ing) + object \complement.'], 'correct' => 3],
+        ['text' => 'اختر النفي الصحيح للجملة: (She had been playing video games all day before her mother told her to go outside.)', 'options' => ['She not had been playing video games all day before her mother told her to go outside.', 'She hadn’t been playing video games all day before her mother told her to go outside.', 'She had been not playing video games all day before her mother told her to go outside.', 'None'], 'correct' => 1],
+        ['text' => 'اختر الترجمة الصحيحة للجملة: (We had been taking care of our sick mother for weeks before she finally recovered.)', 'options' => ['نحن قد كنا نعتني بوالدتنا المريضة لعدة أسابيع قبل هي أخيرا تعافت.', 'نحن ما قد كنا نعتني بوالدتنا المريضة لعدة أسابيع قبل هي أخيرا تعافت.', 'نحن لم نعتني بوالدتنا المريضة لعدة أسابيع قبل هي أخيرا تعافت.', 'نحن اعتنينا بوالدتنا المريضة لعدة أسابيع قبل هي أخيرا تعافت.'], 'correct' => 0],
+        ['text' => 'اختر تكوين السؤال الصحيح لزمن الماضي التام المستمر:', 'options' => ['Had +Subject + been +(v1+ing) + object \complement.', 'Had +Subject + been +(v1+ing) + object \complement?', 'Had +Subject + been +v1 + object \complement?', 'Have\has+Subject + been +(v1+ing) + object \complement?'], 'correct' => 1],
+        ['text' => 'اختر تكوين السؤال الصحيح ل (She had been working at the company.)', 'options' => ['Had she been working at the company?', 'Had she been work at the company?', 'Had she been working at the company.', 'Had she working at the company?'], 'correct' => 0],
+        ['text' => 'ما معنى الفعل المساعد (Had) في سؤال زمن الماضي التام المستمر؟', 'options' => ['هل', 'هل قد', 'كان', 'امتلك'], 'correct' => 1],
+        ['text' => 'اختر الترجمة الصحيحة ل (Had he been studying for the exam?)', 'options' => ['هل قد كان يدرس لأجل الاختبار؟', 'هل يدرس لأجل الاختبار؟', 'هل درس لأجل الاختبار؟', 'هل كان يدرس لأجل الاختبار؟'], 'correct' => 0],
+        ['text' => 'ماذا نعني ب Been في الماضي التام المستمر؟', 'options' => ['قد', 'كان \ كانت \ كانوا ....', 'لا', 'يكون \ يكونوا \ تكون ......'], 'correct' => 1],
+        ['text' => 'يكون بديل زمن الماضي التام المستمر( في العامية فقط).', 'options' => ['زمن المضارع التام', 'زمن الماضي التام', 'زمن الماضي المستمر', 'لا شيء'], 'correct' => 2],
+        ['text' => 'متى نعرف ان اختصار I’d هو ( I + had )؟', 'options' => ['V3اذا اتى الفعل بعده', 'v1+ingاذا اتى بعده', 'V2اذا اتى الفعل بعده', 'None'], 'correct' => 1],
+        ['text' => 'رتب الجملة: (Hani had been treating his patient.\his patient died \ before)', 'options' => ['Hani had been treating his patient before his patient died.', 'Before Hani had been treating his patient, his patient died.', 'Hani had been treating his patient, his patient died before.', 'All of the above'], 'correct' => 0],
+        ['text' => 'اختر الإجابة الصحيحة لجملة (Ali __ carrying his bag __the bag fell off.)', 'options' => ['Has been , before', 'Had been , before', 'Had been, after', 'None'], 'correct' => 1],
+        ['text' => 'اختر الإجابة الصحيحة لجملة: (Hatem ___ been __ about his food __ the delivery guy arrived.)', 'options' => ['Had, asked , before', 'Had , ask , before', 'Had , asking , before', 'None'], 'correct' => 2],
+        ['text' => 'اختر الترجمة الصحيحة لجملة (He had been lifting weights before he broke his leg).', 'options' => ['هو قد كان يرفع الاثقال قبل ان كسر قدمه', 'هو يرفع الاثقال قبل ان يكسر قدمه', 'هو كان يرفع الاثقال قبل ان يكسر قدمه', 'None'], 'correct' => 0],
+        ['text' => 'اختر البديل للماضي التام المستمر (The dog had been barking before I opened the door.)', 'options' => ['The dog is barking before I opened the door.', 'The dog had barking before I opened the door.', 'The dog was barking before I opened the door.', 'None'], 'correct' => 2],
+        ['text' => 'اختر النفي للجملة: (I had been taking care of my teeth before I had cavity.)', 'options' => ['I hadn’t been taking care of my teeth before I had caving.', 'I not had been taking care of my teeth before I had caving.', 'I had been not taking care of my teeth before I had caving.', 'None'], 'correct' => 0],
+        ['text' => 'اختر الإجابة الصحيحة للجملة (My car had been __ well before I had the accident.)', 'options' => ['Working', 'Work', 'Worked', 'Works'], 'correct' => 0],
+        ['text' => 'في السؤال على الماضي التام المستمر اول الجملة يكون الفاعل ثم يأتي الفعل المساعد ثانيا.', 'type' => 'true_false', 'options' => ['صح', 'خطأ'], 'correct' => 1],
+        ['text' => 'الجواب على أي سؤال في الماضي التام المستمر يكون_______', 'options' => ['Yes\No + , + had + subject.', 'Yes\No + , + subject+ had.', 'Yes\No + had + subject.', 'Yes\No + , + subject + had\hadn’t.'], 'correct' => 3],
+        ['text' => 'إذا اتى الفاعل كإسم ( ليس ضمير فاعل) في سؤال على الماضي التام المستمر فاننا في الإجابة على السؤال نستخدم نفس اسم الفاعل ولا نحوله الى ضمير فاعل مثل: (Yes, Saleh had.)', 'type' => 'true_false', 'options' => ['صح', 'خطأ'], 'correct' => 0],
+        ['text' => 'كلمات الربط في الماضي التام المستمر نقدر نستخدمها في اول الجمل', 'type' => 'true_false', 'options' => ['صح', 'خطأ'], 'correct' => 0],
+        ['text' => 'اختر كلمة الربط المناسبة للجملتين: (Muna opened her bakery __ she had been baking for years.)', 'options' => ['Before', 'After', 'Now', 'While'], 'correct' => 1],
+        ['text' => 'اختر الترتيب الصحيح للسؤال (Nabil \ been\learning\had\photography\?)', 'options' => ['Had Nabil been learning photography?', 'Nabil had been learning photography?', 'Nabil been had learning photography?', 'Nabil been had learning photography?'], 'correct' => 0],
+        ['text' => 'بعد ترتيب السؤال (Nabil \ been\learning\had\photography\?) اختر الإجابة الصحيحة له:', 'options' => ['Yes, Nabil had.', 'Yes, she had.', 'No, he hadn’t.', 'None'], 'correct' => 2],
     ];
 
     $quiz = Quiz::updateOrCreate(
@@ -68,7 +74,7 @@ try {
         [
             'title' => 'قواعد الماضي التام المستمر (Past Perfect Continuous Grammar)',
             'quiz_type' => 'lesson',
-            'duration_minutes' => 30,
+            'duration_minutes' => 45,
             'total_questions' => count($questionsData),
             'passing_score' => 50,
             'is_active' => 1,
@@ -78,18 +84,25 @@ try {
     $quiz->questions()->detach();
     $letterMap = ['A', 'B', 'C', 'D'];
     foreach ($questionsData as $idx => $qData) {
-        $question = Question::create([
+        $props = [
             'course_id' => $courseId,
             'lesson_id' => $lessonId,
             'question_text' => $qData['text'],
             'question_type' => $qData['type'] ?? 'multiple_choice',
-            'option_a' => $qData['options'][0] ?? null,
-            'option_b' => $qData['options'][1] ?? null,
-            'option_c' => $qData['options'][2] ?? null,
-            'option_d' => $qData['options'][3] ?? null,
-            'correct_answer' => $letterMap[$qData['correct']] ?? 'A',
             'points' => 1,
-        ]);
+        ];
+
+        if ($props['question_type'] === 'drag_drop') {
+            $props['matching_pairs'] = $qData['matching_pairs'];
+        } else {
+            $props['option_a'] = $qData['options'][0] ?? null,
+            $props['option_b'] = $qData['options'][1] ?? null,
+            $props['option_c'] = $qData['options'][2] ?? null,
+            $props['option_d'] = $qData['options'][3] ?? null,
+            $props['correct_answer'] = $letterMap[$qData['correct']] ?? 'A',
+        }
+
+        $question = Question::create($props);
         $quiz->questions()->attach($question->id, ['order_index' => $idx]);
     }
     echo "🎉 Imported " . count($questionsData) . " questions for Lesson 1040.\n";

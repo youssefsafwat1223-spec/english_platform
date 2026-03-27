@@ -51,7 +51,7 @@ try {
     $quiz = Quiz::updateOrCreate(
         ['lesson_id' => $lessonId, 'course_id' => $courseId],
         [
-            'title' => 'ممارسة الماضي البسيط (Past Simple Practice)',
+            'title' => 'تمارين الماضي البسيط (Past Simple Practice)',
             'quiz_type' => 'lesson',
             'duration_minutes' => 30,
             'total_questions' => count($questionsData),
@@ -63,7 +63,7 @@ try {
     $quiz->questions()->detach();
     $letterMap = ['A', 'B', 'C', 'D'];
     foreach ($questionsData as $idx => $qData) {
-        $question = Question::create([
+        $props = [
             'course_id' => $courseId,
             'lesson_id' => $lessonId,
             'question_text' => $qData['text'],
@@ -74,7 +74,8 @@ try {
             'option_d' => $qData['options'][3] ?? null,
             'correct_answer' => $letterMap[$qData['correct']] ?? 'A',
             'points' => 1,
-        ]);
+        ];
+        $question = Question::create($props);
         $quiz->questions()->attach($question->id, ['order_index' => $idx]);
     }
     echo "🎉 Imported " . count($questionsData) . " questions for Lesson 1015.\n";

@@ -31,7 +31,7 @@ try {
         ['text' => 'Mrs. Adam was--------dinner at 6 o’clock yesterday morning.', 'options' => ['hasing', 'having', 'have', 'had'], 'correct' => 1],
         ['text' => 'Yesterday, at six my mother--------dinner.', 'options' => ['was making', 'was made', 'was make', 'Did make'], 'correct' => 0],
         ['text' => 'My baby brother-------so I couldn’t do my homework.', 'options' => ['was cried', 'was crying', 'cried', 'has cried'], 'correct' => 1],
-        ['text' => 'The school gardener------in the garden all yesterday evening.', 'options' => ['were digging', 'was digging', 'is digging', 'are digging'], 'correct' => 1],
+        ['text' => 'The school gardener------in the school garden all yesterday evening.', 'options' => ['were digging', 'was digging', 'is digging', 'are digging'], 'correct' => 1],
         ['text' => 'She was-------- when I entered the kitchen.', 'options' => ['cooks', 'cooked', 'cooking', 'cook'], 'correct' => 2],
         ['text' => 'Hafith didn’t go out yesterday because it-------all day.', 'options' => ['rained', 'is raining', 'rains', 'was raining'], 'correct' => 3],
         ['text' => 'Athletes -------very hard for the sports all last week.', 'options' => ['are practising', 'is practising', 'was practising', 'were practising'], 'correct' => 3],
@@ -43,15 +43,15 @@ try {
         ['text' => '------------going home?', 'options' => ['Was you', 'Were you', 'Was', 'Were'], 'correct' => 1],
         ['text' => 'We ----- for our lost friend.', 'options' => ['were looking', 'was looking', 'is looking', 'looking'], 'correct' => 0],
         ['text' => 'My grandfather-----reading a newspaper.', 'options' => ['are’t', 'wasn’t', 'have’t', 'Hasn’t'], 'correct' => 1],
-        ['text' => 'Sara------chess yesterday at 7 pm.', 'options' => ['was playing', 'played', 'was played', 'has played'], 'correct' => 0],
-        ['text' => 'The ducks were-------- .', 'options' => ['swimming', 'was swimming', 'were swims', 'was swim'], 'correct' => 0],
+        ['text' => 'Sara------chess yesterday at7 pm.', 'options' => ['was playing', 'played', 'was played', 'has played'], 'correct' => 0],
+        ['text' => 'The ducks were-------- .', 'options' => [' swimming', 'was swimming', 'were swims', 'was swim'], 'correct' => 0],
         ['text' => '---------my mother cooking fish?', 'options' => ['Was', 'Were', 'Has', 'Have'], 'correct' => 0],
     ];
 
     $quiz = Quiz::updateOrCreate(
         ['lesson_id' => $lessonId, 'course_id' => $courseId],
         [
-            'title' => 'ممارسة الماضي المستمر (Past Continuous Practice)',
+            'title' => 'تمارين الماضي المستمر (Past Continuous Practice)',
             'quiz_type' => 'lesson',
             'duration_minutes' => 30,
             'total_questions' => count($questionsData),
