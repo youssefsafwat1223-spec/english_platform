@@ -4,11 +4,10 @@
 <nav x-data="{ open: false, userOpen: false, scrolled: false, gtLoaded: false }"
      @scroll.window.throttle.50ms="scrolled = (window.pageYOffset > 20)"
      :class="scrolled ? 'shadow-2xl' : 'shadow-lg'"
-     class="fixed top-3 left-3 right-3 sm:top-4 sm:left-4 sm:right-4 lg:left-8 lg:right-8 z-50 transition-shadow duration-300 ease-out glass-card will-change-transform bg-white/95 dark:bg-[#020617]/95"
-     style="overflow: visible !important; transform: none !important;"
-     data-aos="fade-down" data-aos-duration="600">
-    <div class="px-3 sm:px-4 md:px-6 lg:px-8">
-        <div class="flex justify-between h-16 lg:h-20 items-center">
+     class="fixed top-3 left-3 right-3 sm:top-4 sm:left-4 sm:right-4 lg:left-8 lg:right-8 z-50 transition-shadow duration-300 ease-out glass-card bg-white/95 dark:bg-[#020617]/95"
+     style="overflow: visible !important; transform: none !important;">
+    <div class="px-3 sm:px-4 md:px-6 lg:px-8 overflow-visible">
+        <div class="flex justify-between h-16 lg:h-20 items-center overflow-visible">
 
             {{-- ─── Logo ─── --}}
             <div class="flex items-center gap-2 sm:gap-4 lg:gap-8 shrink-0">
@@ -160,7 +159,7 @@
                 {{-- 🔔 Notification Bell (visible on mobile + desktop) --}}
                 @auth
                     @if(auth()->user()->is_student)
-                        <div class="relative" 
+                        <div class="relative z-[70]" 
                              x-data="{
                                 notifOpen: false,
                                 unreadCount: {{ auth()->user()->unreadNotifications->count() }},
@@ -207,7 +206,7 @@
                                  x-transition:leave="transition ease-in duration-150"
                                  x-transition:leave-start="opacity-100 scale-100"
                                  x-transition:leave-end="opacity-0 scale-95 translate-y-1"
-                                 class="fixed sm:absolute left-2 right-2 sm:left-auto sm:right-0 top-16 sm:top-auto sm:mt-3 sm:w-96 glass-card overflow-hidden rounded-2xl sm:rounded-[1.5rem] shadow-2xl border border-white/20 dark:border-white/10 origin-top-right z-[100]">
+                                 class="fixed left-2 right-2 top-16 sm:absolute sm:top-full sm:mt-3 sm:w-96 sm:max-w-[calc(100vw-2rem)] ltr:sm:right-0 ltr:sm:left-auto rtl:sm:left-0 rtl:sm:right-auto glass-card overflow-hidden rounded-2xl sm:rounded-[1.5rem] shadow-2xl border border-white/20 dark:border-white/10 ltr:sm:origin-top-right rtl:sm:origin-top-left z-[120]">
                                 
                                 {{-- Header --}}
                                 <div class="flex items-center justify-between px-5 py-4 border-b border-slate-200 dark:border-white/10">
@@ -269,9 +268,9 @@
                 </a>
 
                 {{-- Desktop User Section --}}
-                <div class="hidden lg:flex items-center gap-3">
+                <div class="hidden lg:flex items-center gap-3 overflow-visible">
                     @auth
-                        <div class="relative" @click.outside="userOpen = false">
+                        <div class="relative z-[70]" @click.outside="userOpen = false">
                             <button type="button" @click="userOpen = !userOpen"
                                     class="flex items-center gap-3 px-3 py-2 rounded-xl border transition-all duration-300 hover:-translate-y-0.5"
                                     :class="scrolled
@@ -298,7 +297,7 @@
                                  x-transition:leave="transition ease-in duration-150"
                                  x-transition:leave-start="opacity-100 scale-100"
                                  x-transition:leave-end="opacity-0 scale-95 translate-y-1"
-                                 class="absolute right-0 mt-3 w-64 glass-card overflow-hidden rounded-[1.5rem] shadow-2xl border border-white/20 dark:border-white/10 origin-top-right">
+                                 class="absolute top-full mt-3 w-64 max-w-[calc(100vw-2rem)] max-h-[calc(100vh-7rem)] overflow-y-auto overflow-x-hidden hide-scrollbar glass-card rounded-[1.5rem] shadow-2xl border border-white/20 dark:border-white/10 ltr:right-0 ltr:left-auto rtl:left-0 rtl:right-auto ltr:origin-top-right rtl:origin-top-left z-[120]">
                                 <div class="p-3 space-y-1.5 relative">
                                     <div class="absolute inset-0 bg-gradient-to-br from-primary-500/5 to-transparent pointer-events-none"></div>
                                     @if(auth()->user()->is_student)
