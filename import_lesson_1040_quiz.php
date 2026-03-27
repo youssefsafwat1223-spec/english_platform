@@ -94,12 +94,13 @@ try {
 
         if ($props['question_type'] === 'drag_drop') {
             $props['matching_pairs'] = $qData['matching_pairs'];
+            $props['correct_answer'] = 'A'; // Default for matching
         } else {
-            $props['option_a'] = $qData['options'][0] ?? null,
-            $props['option_b'] = $qData['options'][1] ?? null,
-            $props['option_c'] = $qData['options'][2] ?? null,
-            $props['option_d'] = $qData['options'][3] ?? null,
-            $props['correct_answer'] = $letterMap[$qData['correct']] ?? 'A',
+            $props['option_a'] = $qData['options'][0] ?? null;
+            $props['option_b'] = $qData['options'][1] ?? null;
+            $props['option_c'] = $qData['options'][2] ?? null;
+            $props['option_d'] = $qData['options'][3] ?? null;
+            $props['correct_answer'] = $letterMap[$qData['correct']] ?? 'A';
         }
 
         $question = Question::create($props);
