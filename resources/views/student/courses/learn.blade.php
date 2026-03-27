@@ -135,12 +135,12 @@
                             $completionPercent = $level->getCompletionPercentageFor(auth()->user());
                             $isCompleted = $completionPercent === 100;
                         @endphp
-                        <div class="bg-white dark:bg-[#0f172a] border {{ $isLevelUnlocked ? 'border-slate-200 hover:border-primary-200 dark:border-white/5 dark:hover:border-primary-900/50' : 'border-slate-200/60 dark:border-white/5' }} rounded-[1.5rem] lg:rounded-[2rem] shadow-sm hover:shadow-md transition-all duration-300 relative overflow-hidden group">
+                        <div x-data="{ openLevel: false }" class="bg-white dark:bg-[#0f172a] border {{ $isLevelUnlocked ? 'border-slate-200 hover:border-primary-200 dark:border-white/5 dark:hover:border-primary-900/50' : 'border-slate-200/60 dark:border-white/5' }} rounded-[1.5rem] lg:rounded-[2rem] shadow-sm hover:shadow-md transition-all duration-300 relative overflow-hidden group">
                             
 
 
                             {{-- Level Header --}}
-                            <div class="w-full p-4 lg:p-6 flex flex-col gap-5 text-right relative z-20 bg-slate-50/50 dark:bg-white/[0.02]">
+                            <div role="button" tabindex="0" @click="openLevel = !openLevel" @keydown.enter.prevent="openLevel = !openLevel" @keydown.space.prevent="openLevel = !openLevel" class="w-full p-4 lg:p-6 flex flex-col gap-5 text-right relative z-20 bg-slate-50/50 dark:bg-white/[0.02] cursor-pointer">
                                 <div class="flex items-center justify-between gap-4">
                                     <h4 class="font-black text-lg lg:text-xl {{ $isLevelUnlocked ? 'text-slate-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400' : 'text-slate-500 dark:text-slate-400' }} break-words transition-colors leading-snug flex-1">
                                         {{ $level->title }}
@@ -177,7 +177,7 @@
                             @endif
 
                             {{-- Level Lessons List --}}
-                            <div class="border-t border-slate-100 dark:border-white/5 relative z-20 bg-slate-50/30 dark:bg-slate-900/20">
+                            <div x-show="openLevel" x-collapse x-cloak class="border-t border-slate-100 dark:border-white/5 relative z-20 bg-slate-50/30 dark:bg-slate-900/20">
                                 <div class="divide-y divide-slate-100 dark:divide-white/5 p-2 lg:p-4">
                                     @foreach($level->lessons as $lessonIndex => $lesson)
                                     @php
@@ -240,9 +240,9 @@
                             $orphanLessons = $course->lessons->whereNull('course_level_id');
                         @endphp
                         @if($orphanLessons->count() > 0)
-                        <div class="bg-white dark:bg-[#0f172a] border border-slate-200 hover:border-primary-200 dark:border-white/5 dark:hover:border-primary-900/50 rounded-[1.5rem] lg:rounded-[2rem] shadow-sm hover:shadow-md transition-all duration-300 relative overflow-hidden group">
+                        <div x-data="{ openOrphan: false }" class="bg-white dark:bg-[#0f172a] border border-slate-200 hover:border-primary-200 dark:border-white/5 dark:hover:border-primary-900/50 rounded-[1.5rem] lg:rounded-[2rem] shadow-sm hover:shadow-md transition-all duration-300 relative overflow-hidden group">
                             {{-- Header --}}
-                            <div class="w-full p-4 lg:p-6 flex flex-col gap-5 text-right relative z-20 bg-slate-50/50 dark:bg-white/[0.02]">
+                            <div role="button" tabindex="0" @click="openOrphan = !openOrphan" @keydown.enter.prevent="openOrphan = !openOrphan" @keydown.space.prevent="openOrphan = !openOrphan" class="w-full p-4 lg:p-6 flex flex-col gap-5 text-right relative z-20 bg-slate-50/50 dark:bg-white/[0.02] cursor-pointer">
                                 <div class="flex items-center justify-between gap-4">
                                     <h4 class="font-black text-lg lg:text-xl text-slate-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400 break-words transition-colors leading-snug flex-1">
                                         {{ __('دروس إضافية') }}
@@ -262,7 +262,7 @@
                             </div>
 
                             {{-- Orphan Lessons List --}}
-                            <div class="border-t border-slate-100 dark:border-white/5 relative z-20 bg-slate-50/30 dark:bg-slate-900/20">
+                            <div x-show="openOrphan" x-collapse x-cloak class="border-t border-slate-100 dark:border-white/5 relative z-20 bg-slate-50/30 dark:bg-slate-900/20">
                                 <div class="divide-y divide-slate-100 dark:divide-white/5 p-2 lg:p-4">
                                     @foreach($orphanLessons as $lesson)
                                     @php
