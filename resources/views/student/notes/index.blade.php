@@ -119,8 +119,11 @@
                 </div>
             @empty
                 <div class="col-span-1 md:col-span-2 lg:col-span-3 glass-card rounded-[2rem] text-center p-12 lg:p-16 relative overflow-hidden bg-white/50 dark:bg-slate-900/50" data-aos="fade-up">
-                    <div class="relative z-10 w-24 h-24 mx-auto rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-6 shadow-inner text-5xl border border-slate-200 dark:border-slate-700">
-                        �
+                    <div class="relative z-10 w-24 h-24 mx-auto rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-6 shadow-inner border border-slate-200 dark:border-slate-700">
+                        <svg class="w-10 h-10 text-slate-500 dark:text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M7 4.75A2.75 2.75 0 019.75 2h6.19L21 7.06V19.25A2.75 2.75 0 0118.25 22h-8.5A2.75 2.75 0 017 19.25V4.75z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 2.5V7h4.5M10 11h4m-4 3h6m-6 3h4"></path>
+                        </svg>
                     </div>
                     <h3 class="text-2xl font-black text-slate-900 dark:text-white mb-3 relative z-10">{{ __('No Notes Available') }}</h3>
                     <p class="text-slate-500 dark:text-slate-400 font-medium max-w-sm mx-auto relative z-10 mb-8">

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\RepairsMojibakeAttributes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -10,7 +11,13 @@ use App\Models\Quiz;
 
 class Lesson extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, RepairsMojibakeAttributes;
+
+    protected array $repairableTextAttributes = [
+        'title',
+        'description',
+        'text_content',
+    ];
 
     /**
      * Get the route key for the model.

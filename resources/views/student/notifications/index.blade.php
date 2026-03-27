@@ -113,8 +113,11 @@
             @empty
                 {{-- Empty State --}}
                 <div class="glass-card text-center py-20" data-aos="fade-up">
-                    <div class="w-24 h-24 rounded-full bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900 flex items-center justify-center mx-auto mb-6 text-5xl shadow-inner border border-white/50 dark:border-white/5">
-                        �
+                    <div class="w-24 h-24 rounded-full bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900 flex items-center justify-center mx-auto mb-6 shadow-inner border border-white/50 dark:border-white/5">
+                        <svg class="w-10 h-10 text-slate-500 dark:text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 17h5l-1.41-1.41A2 2 0 0118 14.17V11a6 6 0 10-12 0v3.17a2 2 0 01-.59 1.42L4 17h5"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M10 17a2 2 0 104 0"></path>
+                        </svg>
                     </div>
                     <h3 class="text-2xl font-black text-slate-900 dark:text-white mb-2">{{ __('All Caught Up!') }}</h3>
                     <p class="text-slate-500 dark:text-slate-400 mx-auto max-w-sm">{{ __('You have no active notifications at the moment. We\'ll let you know when something new happens.') }}</p>

@@ -2,12 +2,19 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\RepairsMojibakeAttributes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Testimonial extends Model
 {
-    use HasFactory;
+    use HasFactory, RepairsMojibakeAttributes;
+
+    protected array $repairableTextAttributes = [
+        'name',
+        'role',
+        'content',
+    ];
 
     protected $fillable = [
         'name',

@@ -245,18 +245,20 @@
                             <div role="button" tabindex="0" @click="openOrphan = !openOrphan" @keydown.enter.prevent="openOrphan = !openOrphan" @keydown.space.prevent="openOrphan = !openOrphan" class="w-full p-4 lg:p-6 flex flex-col gap-5 text-right relative z-20 bg-slate-50/50 dark:bg-white/[0.02] cursor-pointer">
                                 <div class="flex items-center justify-between gap-4">
                                     <h4 class="font-black text-lg lg:text-xl text-slate-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400 break-words transition-colors leading-snug flex-1">
-                                        {{ __('دروس إضافية') }}
+                                        {{ __("\u{062F}\u{0631}\u{0648}\u{0633} \u{0625}\u{0636}\u{0627}\u{0641}\u{064A}\u{0629}") }}
                                     </h4>
-                                    <div class="shrink-0 w-12 h-12 lg:w-14 lg:h-14 rounded-[1rem] bg-primary-50 text-primary-600 border border-primary-100 dark:bg-primary-500/10 dark:text-primary-400 dark:border-primary-500/20 flex items-center justify-center font-black text-xl transition-all duration-300 shadow-sm">
-                                        📚
+                                    <div class="shrink-0 w-12 h-12 lg:w-14 lg:h-14 rounded-[1rem] bg-primary-50 text-primary-600 border border-primary-100 dark:bg-primary-500/10 dark:text-primary-400 dark:border-primary-500/20 flex items-center justify-center transition-all duration-300 shadow-sm">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                                        </svg>
                                     </div>
                                 </div>
                                 <div class="flex flex-wrap items-center gap-2 text-xs lg:text-sm font-black">
                                     <span class="inline-flex items-center px-3 py-2 rounded-xl border border-primary-100 bg-primary-50 text-primary-600 dark:bg-primary-500/10 dark:border-primary-500/20 dark:text-primary-400">
-                                        {{ __('ظاهرة دائمًا') }}
+                                        {{ __("\u{0645}\u{062A}\u{0627}\u{062D}\u{0629} \u{062F}\u{0627}\u{0626}\u{0645}\u{064B}\u{0627}") }}
                                     </span>
                                     <span class="inline-flex items-center px-3 py-2 rounded-xl border border-slate-200 bg-white text-slate-600 dark:bg-slate-900/40 dark:border-white/5 dark:text-slate-300">
-                                        {{ __('الدروس') }}: {{ $orphanLessons->count() }}
+                                        {{ __("\u{0627}\u{0644}\u{062F}\u{0631}\u{0648}\u{0633}") }}: {{ $orphanLessons->count() }}
                                     </span>
                                 </div>
                             </div>
