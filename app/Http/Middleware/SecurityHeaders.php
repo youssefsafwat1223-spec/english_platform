@@ -46,7 +46,7 @@ class SecurityHeaders
             "form-action 'self'",
             "frame-ancestors 'self'",
             "object-src 'none'",
-            "script-src 'self' 'unsafe-inline' https:",
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https:",
             "script-src-elem 'self' 'nonce-{$nonce}' https:",
             "script-src-attr 'unsafe-inline'",
             "style-src 'self' 'unsafe-inline' https:",
