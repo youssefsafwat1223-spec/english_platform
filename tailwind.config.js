@@ -9,6 +9,13 @@ module.exports = {
         './resources/js/**/*.js',
     ],
 
+    safelist: [
+        {
+            pattern: /(bg|text|border|border-t|border-l|from|to)-(primary|accent|amber|blue|emerald|indigo|purple|violet)-(400|500|600)(\/(5|10|20|30|50|75))?/,
+            variants: ['hover', 'dark', 'group-hover', 'dark:group-hover'],
+        },
+    ],
+
     darkMode: 'class',
 
     theme: {

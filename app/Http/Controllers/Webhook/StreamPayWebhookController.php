@@ -64,7 +64,7 @@ class StreamPayWebhookController extends Controller
             if ($paymentId) {
                 $payment = Payment::find($paymentId);
                 
-                if ($payment && $payment->payment_status !== 'completed') {
+                if ($payment) {
                     // Check if it's a success event for a payment link or invoice
                     $status = strtolower($data['status'] ?? '');
                     $isSuccessEvent = in_array(strtolower($eventType), [
@@ -72,11 +72,15 @@ class StreamPayWebhookController extends Controller
                     ]) || in_array($status, ['paid', 'completed', 'success']);
 
                     if ($isSuccessEvent) {
-                        $payment->markAsCompleted($data['id'] ?? $data['payment_link_id'] ?? null, $data);
-                        
-                        // Handle referrals
-                        $this->paymentService->handleReferralDiscountUsage($payment);
-                    } elseif (in_array(strtolower($eventType), ['payment.failed', 'invoice.voided']) || $status === 'failed') {
+                        $this->paymentService->finalizeSuccessfulPayment(
+                            $payment,
+                            $data['id'] ?? $data['payment_link_id'] ?? null,
+                            $data
+                        );
+                    } elseif (
+                        $payment->payment_status !== 'completed'
+                        && (in_array(strtolower($eventType), ['payment.failed', 'invoice.voided']) || $status === 'failed')
+                    ) {
                         $payment->markAsFailed($data['failure_reason'] ?? 'Webhook reported payment failure');
                     }
                 }

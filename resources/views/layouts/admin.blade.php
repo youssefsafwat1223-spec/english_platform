@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ in_array(app()->getLocale(), ['ar', 'sa']) ? 'rtl' : 'ltr' }}" class="dark h-full">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}" class="dark h-full">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -209,11 +209,11 @@
                 </button>
 
                 <!-- Lang Switcher -->
-                <a href="{{ route('switch-lang', app()->getLocale() == 'sa' ? 'en' : 'sa') }}"
+                <a href="{{ route('switch-lang', app()->getLocale() == 'ar' ? 'en' : 'ar') }}"
                    class="flex items-center justify-center w-8 h-6 rounded-sm shadow-sm border border-slate-300 dark:border-slate-600 overflow-hidden shrink-0 hover:opacity-80 transition-opacity"
                    title="{{ __('Switch Language') }}">
-                    <img src="{{ app()->getLocale() == 'sa' ? asset('images/flags/sa.png') : asset('images/flags/us.png') }}"
-                         alt="{{ app()->getLocale() == 'sa' ? 'Saudi Arabia' : 'United States' }}"
+                    <img src="{{ app()->getLocale() == 'ar' ? asset('images/flags/sa.png') : asset('images/flags/us.png') }}"
+                         alt="{{ app()->getLocale() == 'ar' ? 'Arabic' : 'United States' }}"
                          class="w-full h-full object-cover">
                 </a>
             </div>

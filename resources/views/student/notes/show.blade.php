@@ -35,7 +35,7 @@
                 </div>
                 
                 <div class="flex items-center gap-3 shrink-0">
-                    <form action="{{ route('student.notes.destroy', $note) }}" method="POST" onsubmit="return confirm(__('Are you sure you want to delete this note? This action cannot be undone.'))">
+                    <form action="{{ route('student.notes.delete', $note) }}" method="POST" onsubmit="return confirm(__('Are you sure you want to delete this note? This action cannot be undone.'))">
                         @csrf @method('DELETE')
                         <button type="submit" class="btn-ghost flex items-center gap-2 px-4 py-2.5 rounded-xl border border-rose-500/20 text-rose-500 bg-rose-500/10 hover:bg-rose-500 text-sm font-bold hover:text-white transition-colors group">
                             <svg class="w-4 h-4 group-hover:animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>

@@ -8,6 +8,7 @@ use App\Models\Payment;
 use App\Models\PromoCode;
 use App\Models\Referral;
 use App\Services\TelegramService;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -28,21 +29,25 @@ class PaymentService
     /**
      * Create payment link using StreamPay
      */
-    public function createCharge(User $user, Course $course, $discountAmount = 0)
+    public function createCharge(User $user, Course $course, array $discountData, ?PromoCode $promoCode = null, ?string $discountCode = null)
     {
         try {
             // Calculate final amount
-            $amount = $course->price;
-            $finalAmount = max(1, $amount - $discountAmount); // StreamPay minimum is 1 SAR
+            $amount = (float) $course->price;
+            $discountAmount = (float) ($discountData['discount_amount'] ?? 0);
+            $finalAmount = max(1, (float) ($discountData['final_amount'] ?? ($amount - $discountAmount))); // StreamPay minimum is 1 SAR
 
             // Create payment record
             $payment = Payment::create([
                 'user_id' => $user->id,
                 'course_id' => $course->id,
+                'promo_code_id' => $promoCode?->id,
                 'transaction_id' => 'TXN-' . strtoupper(Str::random(16)),
                 'amount' => $amount,
                 'currency' => 'SAR', // StreamPay uses SAR primarily
                 'discount_amount' => $discountAmount,
+                'discount_type' => $discountData['discount_type'] ?? null,
+                'discount_code' => $discountCode ?? $promoCode?->code,
                 'final_amount' => $finalAmount,
                 'payment_status' => 'pending',
             ]);
@@ -187,8 +192,11 @@ class PaymentService
 
                     // If StreamPay reports the payment link as paid, complete it
                     if (in_array($status, ['paid', 'completed', 'success'])) {
-                        $payment->markAsCompleted($data['id'] ?? $payment->gateway_payment_id, $data);
-                        $this->handleReferralDiscountUsage($payment);
+                        $payment = $this->finalizeSuccessfulPayment(
+                            $payment,
+                            $data['id'] ?? $payment->gateway_payment_id,
+                            $data
+                        );
 
                         return [
                             'success' => true,
@@ -239,11 +247,11 @@ class PaymentService
             $discountType = 'referral_free';
         } elseif ($promoCode && $promoCode->isValid()) {
             $discountAmount = $promoCode->calculateDiscount($course->price);
-            $discountType = 'promo_' . $promoCode->id;
-        } elseif ($user->has_referral_discount) {
+            $discountType = 'promo';
+        } elseif ($referralDiscountType = $this->resolveReferralDiscountType($user)) {
             $discountPercentage = config('app.referral_discount_percentage', 10);
             $discountAmount = ($course->price * $discountPercentage) / 100;
-            $discountType = 'referral';
+            $discountType = $referralDiscountType;
         }
 
         $finalAmount = max(0, $course->price - $discountAmount);
@@ -255,6 +263,40 @@ class PaymentService
         ];
     }
 
+    public function finalizeSuccessfulPayment(Payment $payment, $gatewayPaymentId = null, $gatewayResponse = null): Payment
+    {
+        return DB::transaction(function () use ($payment, $gatewayPaymentId, $gatewayResponse) {
+            $payment = Payment::query()
+                ->with(['user', 'course', 'promoCode'])
+                ->lockForUpdate()
+                ->findOrFail($payment->id);
+
+            $payment->markAsCompleted($gatewayPaymentId, $gatewayResponse);
+            $this->applySuccessfulPaymentEffects($payment);
+
+            return $payment->fresh(['user', 'course', 'promoCode', 'enrollment']);
+        });
+    }
+
+    public function applySuccessfulPaymentEffects(Payment $payment): void
+    {
+        if ($payment->benefits_processed_at) {
+            return;
+        }
+
+        $payment->loadMissing(['user', 'promoCode']);
+
+        if ($payment->discount_type === 'promo' && $payment->promoCode) {
+            $payment->promoCode->increment('used_count');
+        }
+
+        $this->handleReferralDiscountUsage($payment);
+
+        $payment->forceFill([
+            'benefits_processed_at' => now(),
+        ])->save();
+    }
+
     /**
      * Handle referral discount usage
      */
@@ -262,11 +304,12 @@ class PaymentService
     {
         $user = $payment->user;
 
-        if ($user->has_free_enrollment && $payment->discount_type === 'referral_free') {
+        if ($payment->discount_type === 'referral_free' && $user->has_free_enrollment) {
             $user->update(['has_free_enrollment' => false]);
+            return;
         }
 
-        if ($user->referred_by && !$user->referral_discount_used) {
+        if ($payment->discount_type === 'referee_referral' && $user->referred_by && !$user->referral_discount_used) {
             $referral = Referral::where('referee_id', $user->id)->first();
 
             if ($referral) {
@@ -288,9 +331,39 @@ class PaymentService
             ->where('referrer_discount_used', false)
             ->first();
 
-        if ($referral && $payment->discount_type === 'referral') {
+        if ($referral && $payment->discount_type === 'referrer_referral') {
             $referral->markReferrerDiscountUsed();
         }
+    }
+
+    private function resolveReferralDiscountType(User $user): ?string
+    {
+        if (!$user->has_referral_discount) {
+            return null;
+        }
+
+        $hasUnusedRefereeDiscount = Referral::where('referee_id', $user->id)
+            ->where('referee_discount_used', false)
+            ->exists();
+
+        if ($hasUnusedRefereeDiscount) {
+            return 'referee_referral';
+        }
+
+        $hasUnusedReferrerDiscount = Referral::where('referrer_id', $user->id)
+            ->where('referrer_discount_earned', true)
+            ->where('referrer_discount_used', false)
+            ->exists();
+
+        if ($hasUnusedReferrerDiscount) {
+            return 'referrer_referral';
+        }
+
+        if ($user->referred_by) {
+            return 'referee_referral';
+        }
+
+        return null;
     }
 
     /**

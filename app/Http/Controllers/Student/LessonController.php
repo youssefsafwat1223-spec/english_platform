@@ -52,8 +52,13 @@ class LessonController extends Controller
             'enrollment_id' => $enrollment->id,
         ]);
 
-        // Get user's notes for this lesson
-        $notes = $user->notes()->where('lesson_id', $lesson->id)->get();
+        // Keep the latest note editable and treat older entries as history.
+        $notes = $user->notes()
+            ->where('lesson_id', $lesson->id)
+            ->latest('updated_at')
+            ->get();
+        $currentNote = $notes->first();
+        $noteHistory = $notes->skip($currentNote ? 1 : 0)->values();
 
         // Get previous and next lessons
         $previousLesson = $lesson->previous_lesson;
@@ -85,6 +90,8 @@ class LessonController extends Controller
             'lesson',
             'progress',
             'notes',
+            'currentNote',
+            'noteHistory',
             'previousLesson',
             'nextLesson',
             'vdoCipherOtp',
@@ -172,10 +179,23 @@ class LessonController extends Controller
 
     public function storeNote(StoreUserNoteRequest $request)
     {
-        $note = auth()->user()->notes()->create([
-            'lesson_id' => $request->lesson_id,
-            'note_text' => $request->note_text,
-        ]);
+        $notesQuery = auth()->user()->notes()->where('lesson_id', $request->lesson_id);
+        $noteId = $request->input('note_id');
+
+        $note = $noteId
+            ? $notesQuery->whereKey($noteId)->first()
+            : $notesQuery->latest('updated_at')->first();
+
+        if ($note) {
+            $note->update([
+                'note_text' => $request->note_text,
+            ]);
+        } else {
+            $note = auth()->user()->notes()->create([
+                'lesson_id' => $request->lesson_id,
+                'note_text' => $request->note_text,
+            ]);
+        }
 
         return response()->json([
             'success' => true,
@@ -186,7 +206,7 @@ class LessonController extends Controller
     public function updateNote($noteId)
     {
         $validated = request()->validate([
-            'note_text' => 'required|string|max:10000',
+            'note_text' => 'required|string|max:5000',
         ]);
 
         $note = auth()->user()->notes()->findOrFail($noteId);
@@ -206,7 +226,12 @@ class LessonController extends Controller
         $note = auth()->user()->notes()->findOrFail($noteId);
         $note->delete();
 
-        return response()->json(['success' => true]);
+        if (request()->expectsJson()) {
+            return response()->json(['success' => true]);
+        }
+
+        return redirect()->route('student.notes.index')
+            ->with('success', __('Note deleted successfully.'));
     }
 
 }

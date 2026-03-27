@@ -136,8 +136,13 @@ Route::get('/ref/{referralCode}', [ReferralController::class, 'track'])
 
 // Language Switcher
 Route::get('lang/{locale}', function ($locale) {
-    if (in_array($locale, ['en', 'sa'])) {
+    if ($locale === 'sa') {
+        $locale = 'ar';
+    }
+
+    if (in_array($locale, ['en', 'ar'], true)) {
         session(['locale' => $locale]);
+        return back()->withCookie(cookie('locale', $locale, 60 * 24 * 365));
     }
     return back();
 })->name('switch-lang');
@@ -236,7 +241,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin', 'active'])-
     
     
     // Promo Codes
-    Route::resource('promo-codes', App\Http\Controllers\Admin\PromoCodeController::class);
+    Route::resource('promo-codes', App\Http\Controllers\Admin\PromoCodeController::class)->except(['show']);
 
     // Payments
     Route::get('/payments', [AdminPaymentController::class, 'index'])->name('payments.index');

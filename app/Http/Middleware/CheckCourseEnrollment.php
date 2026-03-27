@@ -17,15 +17,13 @@ class CheckCourseEnrollment
     public function handle(Request $request, Closure $next): Response
     {
         $course = $request->route('course');
-
-        if ($course instanceof Course) {
-            $courseId = $course->id;
-        } else {
-            $courseId = $course;
-        }
+        $courseModel = $course instanceof Course
+            ? $course
+            : Course::query()->where('slug', $course)->orWhere('id', $course)->first();
+        $courseId = $courseModel?->id ?? $course;
 
         if (!auth()->user()->isEnrolledIn($courseId)) {
-            return redirect()->route('student.courses.show', $courseId)
+            return redirect()->route('student.courses.show', $courseModel ?? $course)
                 ->with('error', 'You must enroll in this course first.');
         }
 

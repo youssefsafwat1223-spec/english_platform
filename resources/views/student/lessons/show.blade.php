@@ -489,7 +489,7 @@
 
             {{-- ─── RIGHT SIDEBAR (NOTES) ─── --}}
             <div class="xl:col-span-1">
-                <div class="glass-card sticky top-28 overflow-hidden rounded-[2rem] border-t-4 border-t-accent-500 flex flex-col h-[calc(100vh-8rem)]" x-data="notesManager()" data-aos="fade-left">
+                <div class="glass-card sticky top-28 overflow-hidden rounded-[2rem] border-t-4 border-t-accent-500 flex flex-col h-[calc(100vh-8rem)]" x-data="notesManager({ id: @js($currentNote?->id), text: @js($currentNote?->note_text ?? '') })" data-aos="fade-left">
                     <div class="px-6 py-5 border-b border-slate-200/50 dark:border-white/5 bg-slate-50/50 dark:bg-slate-900/20 flex items-center justify-between shrink-0">
                         <div class="flex items-center gap-2">
                             <span class="text-xl">📝</span>
@@ -511,11 +511,11 @@
                             <textarea x-model="noteText" @input="autoSave()" class="w-full flex-1 bg-yellow-50/50 dark:bg-yellow-900/10 border border-yellow-200/50 dark:border-yellow-900/30 rounded-2xl py-4 px-5 text-slate-800 dark:text-slate-200 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all resize-none shadow-inner text-sm leading-relaxed" placeholder="{{ __('اكتب ملاحظاتك هنا... (بيتحفظ تلقائي)') }}" style="background-image: repeating-linear-gradient(transparent, transparent 31px, rgba(0,0,0,0.05) 31px, rgba(0,0,0,0.05) 32px); line-height: 32px; attachment: local;"></textarea>
                         </div>
 
-                        @if($notes->count() > 0)
+                        @if($noteHistory->count() > 0)
                             <div class="shrink-0 pt-4 border-t border-slate-200 dark:border-white/10 max-h-[40%] overflow-y-auto pr-2 custom-scrollbar">
                                 <h4 class="font-bold text-xs uppercase tracking-wider text-slate-500 mb-3">{{ __('ملاحظات سابقة') }}</h4>
                                 <div class="space-y-3">
-                                    @foreach($notes as $note)
+                                    @foreach($noteHistory as $note)
                                         <div class="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-3 border border-slate-200 dark:border-white/5 hover:border-accent-500/30 transition-colors group cursor-pointer">
                                             <div class="text-[10px] font-bold text-accent-500 mb-1 flex items-center gap-1">
                                                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -570,9 +570,12 @@ function markAsComplete() {
         });
 }
 
-function notesManager() {
+function notesManager(initialNote) {
+    initialNote = initialNote || {};
+
     return {
-        noteText: '', 
+        noteId: initialNote.id || null,
+        noteText: initialNote.text || '',
         saving: false, 
         saved: false, 
         saveTimeout: null,
@@ -588,10 +591,12 @@ function notesManager() {
                 return;
             }
             axios.post('{{ route('student.notes.store') }}', { 
+                note_id: this.noteId,
                 lesson_id: {{ $lesson->id }}, 
                 note_text: this.noteText 
             })
-            .then(() => { 
+            .then((response) => { 
+                this.noteId = response.data && response.data.note ? response.data.note.id : this.noteId;
                 this.saving = false; 
                 this.saved = true; 
                 setTimeout(() => { this.saved = false; }, 3000); 

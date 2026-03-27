@@ -89,10 +89,12 @@ class CourseController extends Controller
         $user = auth()->user();
         $isEnrolled = $user->isEnrolledIn($course->id);
         $enrollment = null;
+        $progress = 0;
 
         if ($isEnrolled) {
             $enrollment = $user->getEnrollment($course->id);
             $enrollment->load(['lessonProgress', 'quizAttempts']);
+            $progress = (float) ($enrollment->progress_percentage ?? 0);
         }
 
         // Calculate discount if applicable
@@ -102,7 +104,8 @@ class CourseController extends Controller
             'course',
             'isEnrolled',
             'enrollment',
-            'discount'
+            'discount',
+            'progress'
         ));
     }
 
@@ -178,12 +181,14 @@ class CourseController extends Controller
 
         $referralCode = $validated['referral_code'] ?? null;
         $promoCode = null;
+        $discountCode = null;
 
         if (!empty($validated['promo_code_id'])) {
             $promoCode = PromoCode::find($validated['promo_code_id']);
             if (!$promoCode || !$promoCode->isValid()) {
                 return back()->with('error', 'Invalid or expired promo code.');
             }
+            $discountCode = $promoCode->code;
         } 
         elseif (!empty($referralCode)) {
             $result = $this->referralService->applyReferralCode($user, $referralCode);
@@ -195,6 +200,7 @@ class CourseController extends Controller
             }
 
             session(['referral_code' => $referralCode]);
+            $discountCode = strtoupper(trim($referralCode));
         }
 
         // Calculate discount
@@ -207,10 +213,13 @@ class CourseController extends Controller
             $payment = Payment::create([
                 'user_id' => $user->id,
                 'course_id' => $course->id,
+                'promo_code_id' => $promoCode?->id,
                 'transaction_id' => 'FREE-' . strtoupper(\Illuminate\Support\Str::random(16)),
                 'amount' => $course->price,
                 'currency' => 'SAR',
                 'discount_amount' => $discountAmount,
+                'discount_type' => $discountData['discount_type'],
+                'discount_code' => $discountCode,
                 'final_amount' => 0,
                 'payment_status' => 'completed',
                 'paid_at' => now(),
@@ -218,28 +227,16 @@ class CourseController extends Controller
 
             // Create enrollment
             $payment->createEnrollment();
-
-            // Reset free enrollment flag if applicable
-            if ($user->has_free_enrollment && $discountData['discount_type'] === 'referral_free') {
-                $user->update(['has_free_enrollment' => false]);
-            }
-
-            if ($promoCode) {
-                $promoCode->increment('used_count');
-            }
+            $this->paymentService->applySuccessfulPaymentEffects($payment);
 
             return redirect()->route('student.courses.learn', $course)
                 ->with('success', __('تم تسجيلك في الكورس مجاناً! 🎉'));
         }
 
         // Create payment via StreamPay gateway
-        $result = $this->paymentService->createCharge($user, $course, $discountAmount);
+        $result = $this->paymentService->createCharge($user, $course, $discountData, $promoCode, $discountCode);
 
         if ($result['success']) {
-            // Store promo code ID in session so we can increment after payment confirmation
-            if ($promoCode) {
-                session(['pending_promo_code_id' => $promoCode->id]);
-            }
             return redirect()->away($result['redirect_url']);
         }
 

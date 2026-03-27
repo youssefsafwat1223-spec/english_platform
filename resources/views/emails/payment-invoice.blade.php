@@ -80,7 +80,7 @@
             </p>
 
             <p style="text-align: center;">
-                <a href="{{ route('student.courses.learn', $payment->course_id) }}" class="button">
+                <a href="{{ route('student.courses.learn', $payment->course) }}" class="button">
                     {{ __('ابدأ التعلم الآن') }} &larr;
                 </a>
             </p>

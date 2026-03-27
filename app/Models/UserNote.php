@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 class UserNote extends Model
 {
@@ -43,6 +44,25 @@ class UserNote extends Model
      */
     public function getExcerptAttribute()
     {
-        return \Illuminate\Support\Str::limit($this->note_text, 100);
+        return Str::limit($this->note_text, 100);
+    }
+
+    public function getContentAttribute()
+    {
+        return $this->note_text ?? '';
+    }
+
+    public function getTitleAttribute()
+    {
+        $firstLine = Str::of($this->note_text ?? '')
+            ->replace("\r", '')
+            ->explode("\n")
+            ->first();
+
+        $firstLine = trim((string) $firstLine);
+
+        return $firstLine !== ''
+            ? Str::limit($firstLine, 60)
+            : 'Untitled Note';
     }
 }

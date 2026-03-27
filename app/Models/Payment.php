@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\PaymentInvoiceMail;
+use App\Models\PromoCode;
 
 class Payment extends Model
 {
@@ -14,10 +15,13 @@ class Payment extends Model
     protected $fillable = [
         'user_id',
         'course_id',
+        'promo_code_id',
         'transaction_id',
         'amount',
         'currency',
         'discount_amount',
+        'discount_type',
+        'discount_code',
         'final_amount',
         'payment_method',
         'payment_status',
@@ -25,6 +29,7 @@ class Payment extends Model
         'gateway_response',
         'error_message',
         'paid_at',
+        'benefits_processed_at',
         'refunded_at',
     ];
 
@@ -36,6 +41,7 @@ class Payment extends Model
             'final_amount' => 'decimal:2',
             'gateway_response' => 'array',
             'paid_at' => 'datetime',
+            'benefits_processed_at' => 'datetime',
             'refunded_at' => 'datetime',
         ];
     }
@@ -50,6 +56,11 @@ class Payment extends Model
     public function course()
     {
         return $this->belongsTo(Course::class);
+    }
+
+    public function promoCode()
+    {
+        return $this->belongsTo(PromoCode::class);
     }
 
     public function enrollment()
@@ -140,11 +151,33 @@ class Payment extends Model
      */
     public function markAsCompleted($gatewayPaymentId = null, $gatewayResponse = null)
     {
+        if ($this->payment_status === 'completed') {
+            $updates = [];
+
+            if ($gatewayPaymentId && $this->gateway_payment_id !== $gatewayPaymentId) {
+                $updates['gateway_payment_id'] = $gatewayPaymentId;
+            }
+
+            if ($gatewayResponse) {
+                $updates['gateway_response'] = $gatewayResponse;
+            }
+
+            if (!$this->paid_at) {
+                $updates['paid_at'] = now();
+            }
+
+            if (!empty($updates)) {
+                $this->update($updates);
+            }
+
+            return $this->refresh();
+        }
+
         $this->update([
             'payment_status' => 'completed',
             'paid_at' => now(),
-            'gateway_payment_id' => $gatewayPaymentId,
-            'gateway_response' => $gatewayResponse,
+            'gateway_payment_id' => $gatewayPaymentId ?? $this->gateway_payment_id,
+            'gateway_response' => $gatewayResponse ?? $this->gateway_response,
         ]);
 
         // Create enrollment
@@ -159,6 +192,8 @@ class Payment extends Model
                 'error' => $e->getMessage(),
             ]);
         }
+
+        return $this->refresh();
     }
 
     /**
@@ -193,6 +228,10 @@ class Payment extends Model
      */
     public function createEnrollment()
     {
+        if ($this->enrollment) {
+            return $this->enrollment;
+        }
+
         $totalLessons = $this->course->lessons()->count();
 
         $enrollment = Enrollment::create([
@@ -201,7 +240,8 @@ class Payment extends Model
             'payment_id' => $this->id,
             'price_paid' => $this->final_amount,
             'discount_amount' => $this->discount_amount,
-            'discount_type' => $this->getDiscountType(),
+            'discount_type' => $this->getEnrollmentDiscountType(),
+            'discount_code' => $this->discount_code ?? $this->promoCode?->code,
             'total_lessons' => $totalLessons,
         ]);
 
@@ -223,13 +263,24 @@ class Payment extends Model
     /**
      * Determine discount type from transaction
      */
-    private function getDiscountType()
+    private function getEnrollmentDiscountType()
     {
+        if ($this->discount_type) {
+            return match ($this->discount_type) {
+                'promo' => 'coupon',
+                'referee_referral', 'referrer_referral', 'referral_free' => 'referral',
+                default => 'promotion',
+            };
+        }
+
         if ($this->discount_amount <= 0) {
             return null;
         }
 
-        // Check if user used referral discount
+        if ($this->promo_code_id) {
+            return 'coupon';
+        }
+
         if ($this->user->referred_by && !$this->user->referral_discount_used) {
             return 'referral';
         }

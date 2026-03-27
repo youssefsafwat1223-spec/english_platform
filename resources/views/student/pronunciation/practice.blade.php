@@ -94,7 +94,7 @@
                         {{-- Loading --}}
                         <div x-show="isEvaluating && activeSentence === {{ $num }}" x-cloak class="flex items-center gap-2">
                             <div class="w-4 h-4 border-2 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
-                            <span class="text-sm" style="color: var(--color-text-muted);">{{ __('Evaluating') }}')...</span>
+                                    <span class="text-sm" style="color: var(--color-text-muted);">{{ __('Evaluating') }}...</span>
                         </div>
                     </div>
 

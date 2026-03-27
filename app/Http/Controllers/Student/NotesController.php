@@ -26,7 +26,7 @@ class NotesController extends Controller
             $query->where('note_text', 'like', "%{$request->search}%");
         }
 
-        $notes = $query->orderBy('created_at', 'desc')
+        $notes = $query->orderBy('updated_at', 'desc')
             ->paginate(20);
 
         $courses = auth()->user()->enrollments()
@@ -60,7 +60,7 @@ class NotesController extends Controller
     {
         $notes = auth()->user()->notes()
             ->with('lesson.course')
-            ->orderBy('created_at', 'desc')
+            ->orderBy('updated_at', 'desc')
             ->get();
 
         $user = auth()->user();
