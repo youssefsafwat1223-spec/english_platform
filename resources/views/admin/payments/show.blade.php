@@ -38,6 +38,25 @@
             <div class="glass-card-body">
                 <form action="{{ route('admin.payments.refund', $payment) }}" method="POST" onsubmit="return confirm('Are you sure you want to refund this payment?')">@csrf
                     <p class="text-sm mb-4" style="color: var(--color-text-muted);">{{ __('Refunding will return the money to the customer and revoke their access to the course.') }}</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label for="refund_reason" class="block text-xs mb-2" style="color: var(--color-text-muted);">{{ __('Refund Reason') }}</label>
+                            <select id="refund_reason" name="refund_reason" class="input-glass" required>
+                                <option value="REQUESTED_BY_CUSTOMER">{{ __('Requested By Customer') }}</option>
+                                <option value="DUPLICATE">{{ __('Duplicate Payment') }}</option>
+                                <option value="FRAUDULENT">{{ __('Fraudulent') }}</option>
+                                <option value="OTHER">{{ __('Other') }}</option>
+                            </select>
+                        </div>
+                        <label class="flex items-center gap-2 text-sm mt-6 md:mt-0" style="color: var(--color-text-muted);">
+                            <input type="checkbox" name="allow_refund_multiple_related_payments" value="1" class="rounded border-white/10 bg-white/5">
+                            <span>{{ __('Refund related payments in the same transaction if Stream requires it') }}</span>
+                        </label>
+                    </div>
+                    <div class="mb-4">
+                        <label for="refund_note" class="block text-xs mb-2" style="color: var(--color-text-muted);">{{ __('Refund Note') }}</label>
+                        <textarea id="refund_note" name="refund_note" rows="3" class="input-glass" placeholder="{{ __('Optional note shown in the refund record') }}"></textarea>
+                    </div>
                     <button type="submit" class="inline-flex items-center px-4 py-2 rounded-xl bg-red-500/10 text-red-500 text-sm font-bold hover:bg-red-500/20 transition-colors">{{ __('Process Refund') }}</button>
                 </form>
             </div>
@@ -47,7 +66,17 @@
         <div class="glass-card overflow-hidden mb-6" data-aos="fade-up"><div class="glass-card-body"><p class="text-red-500 font-bold text-sm">{{ $payment->error_message }}</p></div></div>
         @endif
         @if($payment->refunded_at)
-        <div class="glass-card overflow-hidden" data-aos="fade-up"><div class="glass-card-body"><p class="text-amber-500 font-bold text-sm">{{ __('Payment was refunded on') }} {{ $payment->refunded_at->format('M d, Y H:i') }}</p></div></div>
+        <div class="glass-card overflow-hidden" data-aos="fade-up">
+            <div class="glass-card-body">
+                <p class="text-amber-500 font-bold text-sm">{{ __('Payment was refunded on') }} {{ $payment->refunded_at->format('M d, Y H:i') }}</p>
+                @if(data_get($payment->gateway_response, 'refund_reason'))
+                    <p class="text-sm mt-2" style="color: var(--color-text-muted);">{{ __('Reason') }}: {{ data_get($payment->gateway_response, 'refund_reason') }}</p>
+                @endif
+                @if(data_get($payment->gateway_response, 'refund_note'))
+                    <p class="text-sm mt-1" style="color: var(--color-text-muted);">{{ __('Note') }}: {{ data_get($payment->gateway_response, 'refund_note') }}</p>
+                @endif
+            </div>
+        </div>
         @endif
     </div>
 </div>

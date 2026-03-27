@@ -10,85 +10,178 @@ use Illuminate\Support\Facades\Log;
 
 class StreamPayWebhookController extends Controller
 {
-    private $paymentService;
-
-    public function __construct(PaymentService $paymentService)
+    public function __construct(private readonly PaymentService $paymentService)
     {
-        $this->paymentService = $paymentService;
     }
 
     public function handle(Request $request)
     {
-        // ── Verify webhook signature ──
-        $signature = $request->header('X-Signature') 
-                  ?? $request->header('X-StreamPay-Signature')
-                  ?? $request->header('Signature');
         $payload = $request->getContent();
-        $secret = config('services.streampay.secret_key');
+        $secret = trim((string) config('services.streampay.secret_key'));
 
-        if ($secret && $signature) {
-            $expected = hash_hmac('sha256', $payload, $secret);
-            if (!hash_equals($expected, $signature)) {
-                Log::warning('StreamPay webhook: Invalid signature', [
-                    'ip' => $request->ip(),
-                ]);
-                return response()->json(['error' => 'Invalid signature'], 403);
-            }
+        if ($secret === '') {
+            Log::critical('StreamPay webhook rejected because the secret key is not configured.');
+
+            return response()->json(['error' => 'Webhook secret is not configured'], 503);
+        }
+
+        if (!$this->hasValidWebhookSignature($request, $payload, $secret)) {
+            Log::warning('StreamPay webhook rejected because the signature is invalid', [
+                'ip' => $request->ip(),
+                'headers' => [
+                    'X-Webhook-Signature' => $request->header('X-Webhook-Signature'),
+                    'X-Signature' => $request->header('X-Signature'),
+                    'X-StreamPay-Signature' => $request->header('X-StreamPay-Signature'),
+                ],
+            ]);
+
+            return response()->json(['error' => 'Invalid signature'], 403);
         }
 
         Log::info('StreamPay webhook received', $request->all());
 
         try {
-            $eventType = $request->input('event') ?? $request->input('type');
-            $data = $request->input('data') ?? $request->all();
-            
-            // Extract payment ID from metadata if passed by StreamPay
-            $paymentId = null;
-            if (isset($data['custom_metadata']['payment_id'])) {
-                $paymentId = $data['custom_metadata']['payment_id'];
-            } elseif (isset($data['metadata']['payment_id'])) {
-                $paymentId = $data['metadata']['payment_id'];
-            } elseif (isset($data['payment_link_id'])) {
-                // Find payment by gateway_payment_id if no metadata provided
-                $payment = Payment::where('gateway_payment_id', $data['payment_link_id'])->first();
-                if ($payment) {
-                    $paymentId = $payment->id;
-                }
-            } else {
-                $payment = Payment::where('gateway_payment_id', $data['id'] ?? null)->first();
-                if ($payment) {
-                    $paymentId = $payment->id;
-                }
+            $eventType = strtoupper((string) ($request->input('event_type') ?? $request->input('event') ?? $request->input('type')));
+            $data = (array) ($request->input('data') ?? []);
+            $payment = $this->resolvePaymentFromWebhookPayload($request->all(), $data);
+
+            if (!$payment) {
+                Log::warning('StreamPay webhook could not be matched to a payment record', [
+                    'event_type' => $eventType,
+                    'payload' => $request->all(),
+                ]);
+
+                return response()->json(['received' => true]);
             }
 
-            if ($paymentId) {
-                $payment = Payment::find($paymentId);
-                
-                if ($payment) {
-                    // Check if it's a success event for a payment link or invoice
-                    $status = strtolower($data['status'] ?? '');
-                    $isSuccessEvent = in_array(strtolower($eventType), [
-                        'payment_link.paid', 'payment.success', 'invoice.paid', 'payment.completed'
-                    ]) || in_array($status, ['paid', 'completed', 'success']);
+            $streamPaymentId = data_get($data, 'payment.id')
+                ?? ($request->input('entity_type') === 'PAYMENT' ? $request->input('entity_id') : null)
+                ?? $payment->getStreamPaymentId();
+            $paymentLinkId = data_get($data, 'payment_link.id')
+                ?? ($request->input('entity_type') === 'PAYMENT_LINK' ? $request->input('entity_id') : null)
+                ?? $payment->getPaymentLinkId();
+            $status = strtoupper((string) (
+                $request->input('status')
+                ?? data_get($data, 'payment.current_status')
+                ?? data_get($data, 'status')
+                ?? ''
+            ));
+            $gatewayPayload = array_replace_recursive($request->all(), array_filter([
+                'payment_id' => $streamPaymentId,
+                'payment_link_id' => $paymentLinkId,
+            ], static fn ($value) => filled($value)));
 
-                    if ($isSuccessEvent) {
-                        $this->paymentService->finalizeSuccessfulPayment(
-                            $payment,
-                            $data['id'] ?? $data['payment_link_id'] ?? null,
-                            $data
-                        );
-                    } elseif (
-                        $payment->payment_status !== 'completed'
-                        && (in_array(strtolower($eventType), ['payment.failed', 'invoice.voided']) || $status === 'failed')
-                    ) {
-                        $payment->markAsFailed($data['failure_reason'] ?? 'Webhook reported payment failure');
-                    }
+            if (
+                in_array($eventType, ['PAYMENT_SUCCEEDED', 'PAYMENT_MARKED_AS_PAID'], true)
+                || in_array($status, ['SUCCEEDED', 'SETTLED'], true)
+            ) {
+                $this->paymentService->finalizeSuccessfulPayment(
+                    $payment,
+                    $streamPaymentId,
+                    $gatewayPayload
+                );
+
+                return response()->json(['received' => true]);
+            }
+
+            if ($eventType === 'PAYMENT_REFUNDED' || $status === 'REFUNDED') {
+                $this->paymentService->syncRefundedPayment($payment, $gatewayPayload);
+
+                return response()->json(['received' => true]);
+            }
+
+            if (
+                in_array($eventType, ['PAYMENT_FAILED', 'PAYMENT_CANCELED', 'PAYMENT_LINK_PAY_ATTEMPT_FAILED'], true)
+                || in_array($status, ['FAILED', 'FAILED_INITIATION', 'CANCELED', 'EXPIRED'], true)
+            ) {
+                if (!in_array($payment->payment_status, ['completed', 'refunded'], true)) {
+                    $payment->markAsFailed(
+                        data_get($data, 'failure_reason')
+                            ?? data_get($request->all(), 'message')
+                            ?? ('Webhook reported payment ' . strtolower($status ?: $eventType))
+                    );
                 }
             }
-        } catch (\Exception $e) {
-            Log::error('StreamPay webhook error: ' . $e->getMessage());
+        } catch (\Throwable $e) {
+            Log::error('StreamPay webhook error', [
+                'message' => $e->getMessage(),
+                'payload' => $request->all(),
+            ]);
         }
 
         return response()->json(['received' => true]);
+    }
+
+    private function hasValidWebhookSignature(Request $request, string $payload, string $secret): bool
+    {
+        $signedHeader = $request->header('X-Webhook-Signature');
+
+        if ($signedHeader) {
+            $parts = [];
+
+            foreach (explode(',', $signedHeader) as $part) {
+                [$key, $value] = array_pad(explode('=', trim($part), 2), 2, null);
+
+                if ($key && $value) {
+                    $parts[$key] = $value;
+                }
+            }
+
+            $timestamp = $parts['t'] ?? $request->header('X-Webhook-Timestamp');
+            $signature = $parts['v1'] ?? null;
+
+            if (!$timestamp || !$signature) {
+                return false;
+            }
+
+            $expected = hash_hmac('sha256', "{$timestamp}.{$payload}", $secret);
+
+            return hash_equals($expected, $signature);
+        }
+
+        $legacySignature = $request->header('X-Signature')
+            ?? $request->header('X-StreamPay-Signature')
+            ?? $request->header('Signature');
+
+        if (!$legacySignature) {
+            return false;
+        }
+
+        $expected = hash_hmac('sha256', $payload, $secret);
+
+        return hash_equals($expected, $legacySignature);
+    }
+
+    private function resolvePaymentFromWebhookPayload(array $payload, array $data): ?Payment
+    {
+        $internalPaymentId = data_get($data, 'metadata.payment_id')
+            ?? data_get($data, 'custom_metadata.payment_id')
+            ?? data_get($payload, 'data.metadata.payment_id')
+            ?? data_get($payload, 'data.custom_metadata.payment_id');
+
+        if ($internalPaymentId) {
+            return Payment::find($internalPaymentId);
+        }
+
+        $entityType = strtoupper((string) ($payload['entity_type'] ?? ''));
+
+        $candidateGatewayIds = array_filter([
+            data_get($data, 'payment.id'),
+            data_get($data, 'payment_link.id'),
+            $entityType === 'PAYMENT' ? ($payload['entity_id'] ?? null) : null,
+            $entityType === 'PAYMENT_LINK' ? ($payload['entity_id'] ?? null) : null,
+            $data['payment_id'] ?? null,
+            $data['payment_link_id'] ?? null,
+        ]);
+
+        foreach ($candidateGatewayIds as $gatewayId) {
+            $payment = Payment::where('gateway_payment_id', $gatewayId)->first();
+
+            if ($payment) {
+                return $payment;
+            }
+        }
+
+        return null;
     }
 }

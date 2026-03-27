@@ -2,49 +2,48 @@
 
 namespace App\Services;
 
-use App\Models\User;
 use App\Models\Course;
 use App\Models\Payment;
 use App\Models\PromoCode;
 use App\Models\Referral;
-use App\Services\TelegramService;
+use App\Models\User;
+use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 
 class PaymentService
 {
-    private $apiKey;
-    private $secretKey;
-    private $apiUrl;
+    private string $apiKey;
+    private string $secretKey;
+    private string $apiUrl;
 
     public function __construct()
     {
-        $this->apiKey = config('services.streampay.api_key');
-        $this->secretKey = config('services.streampay.secret_key');
-        $this->apiUrl = config('services.streampay.api_url', 'https://stream-app-service.streampay.sa/api/v2');
+        $this->apiKey = trim((string) config('services.streampay.api_key'));
+        $this->secretKey = trim((string) config('services.streampay.secret_key'));
+        $this->apiUrl = rtrim((string) config('services.streampay.api_url', 'https://stream-app-service.streampay.sa/api/v2'), '/');
     }
 
     /**
-     * Create payment link using StreamPay
+     * Create payment link using StreamPay.
      */
-    public function createCharge(User $user, Course $course, array $discountData, ?PromoCode $promoCode = null, ?string $discountCode = null)
+    public function createCharge(User $user, Course $course, array $discountData, ?PromoCode $promoCode = null, ?string $discountCode = null): array
     {
         try {
-            // Calculate final amount
             $amount = (float) $course->price;
             $discountAmount = (float) ($discountData['discount_amount'] ?? 0);
-            $finalAmount = max(1, (float) ($discountData['final_amount'] ?? ($amount - $discountAmount))); // StreamPay minimum is 1 SAR
+            $finalAmount = max(1, (float) ($discountData['final_amount'] ?? ($amount - $discountAmount)));
 
-            // Create payment record
             $payment = Payment::create([
                 'user_id' => $user->id,
                 'course_id' => $course->id,
                 'promo_code_id' => $promoCode?->id,
                 'transaction_id' => 'TXN-' . strtoupper(Str::random(16)),
                 'amount' => $amount,
-                'currency' => 'SAR', // StreamPay uses SAR primarily
+                'currency' => 'SAR',
                 'discount_amount' => $discountAmount,
                 'discount_type' => $discountData['discount_type'] ?? null,
                 'discount_code' => $discountCode ?? $promoCode?->code,
@@ -52,33 +51,28 @@ class PaymentService
                 'payment_status' => 'pending',
             ]);
 
-            // Create a StreamPay Product on-the-fly
-            $productResponse = Http::withHeaders([
-                'X-Api-Key' => $this->apiKey,
-                'Content-Type' => 'application/json',
-            ])->post("{$this->apiUrl}/products", [
+            $productResponse = $this->streamPayRequest('post', '/products', [
                 'name' => "Enrollment in {$course->title}",
                 'description' => "Course access for {$user->name}",
                 'type' => 'ONE_OFF',
                 'active' => true,
-                'price' => (float) $finalAmount,
+                'price' => $finalAmount,
                 'currency' => 'SAR',
             ]);
 
             if (!$productResponse->successful()) {
                 Log::error('StreamPay product creation failed', [
-                    'response' => $productResponse->json()
+                    'payment_id' => $payment->id,
+                    'response' => $productResponse->json(),
                 ]);
-                throw new \Exception('Failed to create product for payment link');
+
+                throw new \RuntimeException('Failed to create StreamPay product.');
             }
 
             $productId = $productResponse->json('id');
+            $callbackUrl = $this->buildCallbackUrl($payment);
 
-            // Create Payment Link
-            $paymentLinkResponse = Http::withHeaders([
-                'X-Api-Key' => $this->apiKey,
-                'Content-Type' => 'application/json',
-            ])->post("{$this->apiUrl}/payment_links", [
+            $paymentLinkResponse = $this->streamPayRequest('post', '/payment_links', [
                 'name' => "Payment for {$course->title}",
                 'description' => "Course access payment for {$user->name}",
                 'currency' => 'SAR',
@@ -86,62 +80,62 @@ class PaymentService
                     [
                         'product_id' => $productId,
                         'quantity' => 1,
-                        'allow_custom_quantity' => false
-                    ]
+                        'allow_custom_quantity' => false,
+                    ],
                 ],
-                'success_redirect_url' => route('payment.callback', $payment->id),
-                'failure_redirect_url' => route('payment.callback', $payment->id),
+                'success_redirect_url' => $callbackUrl,
+                'failure_redirect_url' => $callbackUrl,
                 'max_number_of_payments' => 1,
                 'custom_metadata' => [
                     'user_id' => (string) $user->id,
                     'course_id' => (string) $course->id,
                     'payment_id' => (string) $payment->id,
                 ],
-                'contact_information_type' => 'EMAIL'
+                'contact_information_type' => 'EMAIL',
             ]);
 
-            if ($paymentLinkResponse->successful()) {
-                $data = $paymentLinkResponse->json();
-
-                Log::info('StreamPay payment link created', ['response' => $data]);
-
-                $payment->update([
-                    'gateway_payment_id' => $data['id'],
-                    'gateway_response' => $data,
+            if (!$paymentLinkResponse->successful()) {
+                Log::error('StreamPay payment link creation failed', [
+                    'payment_id' => $payment->id,
+                    'response' => $paymentLinkResponse->json(),
                 ]);
 
-                $redirectUrl = $data['url'] ?? $data['link'] ?? $data['checkout_url'] ?? $data['payment_url'] ?? $data['redirect_url'] ?? null;
-
-                Log::info('StreamPay redirect URL', ['url' => $redirectUrl]);
+                $payment->markAsFailed('Charge creation failed');
 
                 return [
-                    'success' => true,
-                    'payment' => $payment,
-                    'redirect_url' => $redirectUrl,
+                    'success' => false,
+                    'message' => 'Failed to create payment. Please try again.',
                 ];
             }
 
-            Log::error('StreamPay payment link creation failed', [
-                'user_id' => $user->id,
-                'course_id' => $course->id,
-                'response' => $paymentLinkResponse->json(),
+            $data = $paymentLinkResponse->json();
+            $paymentLinkId = $data['id'] ?? null;
+
+            $payment->update([
+                'gateway_payment_id' => $paymentLinkId,
+                'gateway_response' => array_merge([
+                    'payment_link_id' => $paymentLinkId,
+                ], $data),
             ]);
 
-            $payment->markAsFailed('Charge creation failed');
+            $redirectUrl = $data['url'] ?? $data['link'] ?? $data['checkout_url'] ?? $data['payment_url'] ?? $data['redirect_url'] ?? null;
+
+            Log::info('StreamPay payment link created', [
+                'payment_id' => $payment->id,
+                'payment_link_id' => $paymentLinkId,
+                'redirect_url' => $redirectUrl,
+            ]);
 
             return [
-                'success' => false,
-                'message' => 'Failed to create payment. Please try again.',
+                'success' => true,
+                'payment' => $payment->fresh(),
+                'redirect_url' => $redirectUrl,
             ];
-
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             Log::error('Payment creation exception', [
                 'user_id' => $user->id,
                 'course_id' => $course->id,
                 'error' => $e->getMessage(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
-                'trace' => $e->getTraceAsString(),
             ]);
 
             return [
@@ -152,10 +146,14 @@ class PaymentService
     }
 
     /**
-     * Handle payment callback
+     * Handle payment callback after Stream redirects back to the site.
      */
-    public function handleCallback($paymentId)
-    {
+    public function handleCallback(
+        int $paymentId,
+        ?string $streamPaymentId = null,
+        ?string $invoiceId = null,
+        ?string $paymentLinkId = null
+    ): array {
         try {
             $payment = Payment::find($paymentId);
 
@@ -165,8 +163,7 @@ class PaymentService
                     'message' => 'Payment record not found',
                 ];
             }
-            
-            // If already marked as completed by a webhook
+
             if ($payment->payment_status === 'completed') {
                 return [
                     'success' => true,
@@ -175,55 +172,105 @@ class PaymentService
                 ];
             }
 
-            // Check payment link status on StreamPay
-            if ($payment->gateway_payment_id) {
-                $response = Http::withHeaders([
-                    'X-Api-Key' => $this->apiKey,
-                ])->get("{$this->apiUrl}/payment_links/{$payment->gateway_payment_id}");
+            $streamPaymentId ??= $payment->getStreamPaymentId();
+            $paymentLinkId ??= $payment->getPaymentLinkId();
 
-                if ($response->successful()) {
-                    $data = $response->json();
-                    $status = strtolower($data['status'] ?? '');
-                    
-                    Log::info('StreamPay callback - payment link status', [
-                        'payment_id' => $paymentId,
+            if ($streamPaymentId) {
+                $paymentResponse = $this->streamPayRequest('get', "/payments/{$streamPaymentId}");
+
+                if ($paymentResponse->successful()) {
+                    $gatewayPayment = $paymentResponse->json();
+                    $status = $this->normalizeGatewayStatus($gatewayPayment);
+
+                    Log::info('StreamPay callback payment status received', [
+                        'payment_id' => $payment->id,
+                        'stream_payment_id' => $streamPaymentId,
                         'status' => $status,
                     ]);
 
-                    // If StreamPay reports the payment link as paid, complete it
-                    if (in_array($status, ['paid', 'completed', 'success'])) {
-                        $payment = $this->finalizeSuccessfulPayment(
-                            $payment,
-                            $data['id'] ?? $payment->gateway_payment_id,
-                            $data
-                        );
+                    if (!$this->paymentMatchesExpectedOrder($payment, $gatewayPayment)) {
+                        return [
+                            'success' => false,
+                            'message' => 'Payment verification failed',
+                        ];
+                    }
+
+                    $gatewayPayload = $this->enrichGatewayPayload($payment, $gatewayPayment, [
+                        'payment_id' => $streamPaymentId,
+                        'invoice_id' => $invoiceId,
+                        'payment_link_id' => $paymentLinkId,
+                    ]);
+
+                    if ($this->isSuccessfulGatewayStatus($status)) {
+                        $payment = $this->finalizeSuccessfulPayment($payment, $streamPaymentId, $gatewayPayload);
 
                         return [
                             'success' => true,
                             'payment' => $payment,
                             'message' => 'Payment successful',
                         ];
-                    } elseif (in_array($status, ['failed', 'expired', 'cancelled'])) {
-                        $payment->markAsFailed('Payment ' . $status);
+                    }
+
+                    if ($this->isRefundedGatewayStatus($status)) {
+                        $payment = $this->syncRefundedPayment($payment, $gatewayPayload);
 
                         return [
                             'success' => false,
-                            'message' => 'Payment ' . $status,
+                            'payment' => $payment,
+                            'message' => 'Payment refunded',
+                        ];
+                    }
+
+                    if ($this->isFailedGatewayStatus($status)) {
+                        $payment->markAsFailed('Payment ' . strtolower($status));
+
+                        return [
+                            'success' => false,
+                            'payment' => $payment->fresh(),
+                            'message' => 'Payment ' . strtolower($status),
+                        ];
+                    }
+                } else {
+                    Log::warning('StreamPay payment status lookup failed', [
+                        'payment_id' => $payment->id,
+                        'stream_payment_id' => $streamPaymentId,
+                        'response' => $paymentResponse->json(),
+                    ]);
+                }
+            }
+
+            if ($paymentLinkId) {
+                $paymentLinkResponse = $this->streamPayRequest('get', "/payment_links/{$paymentLinkId}");
+
+                if ($paymentLinkResponse->successful()) {
+                    $paymentLinkData = $paymentLinkResponse->json();
+                    $paymentLinkStatus = strtoupper((string) ($paymentLinkData['status'] ?? ''));
+
+                    Log::info('StreamPay callback payment link status received', [
+                        'payment_id' => $payment->id,
+                        'payment_link_id' => $paymentLinkId,
+                        'status' => $paymentLinkStatus,
+                    ]);
+
+                    if (in_array($paymentLinkStatus, ['INACTIVE', 'ACTIVE'], true)) {
+                        return [
+                            'success' => true,
+                            'payment' => $payment,
+                            'message' => 'Payment validation in progress. You will receive an email shortly.',
                         ];
                     }
                 }
             }
 
-            // Payment is still pending — webhook will handle it
             return [
                 'success' => true,
                 'payment' => $payment,
                 'message' => 'Payment validation in progress. You will receive an email shortly.',
             ];
-
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             Log::error('Payment callback exception', [
                 'payment_id' => $paymentId,
+                'stream_payment_id' => $streamPaymentId,
                 'error' => $e->getMessage(),
             ]);
 
@@ -235,9 +282,9 @@ class PaymentService
     }
 
     /**
-     * Calculate discount for user, considering referrals and promo codes
+     * Calculate discount for user, considering referrals and promo codes.
      */
-    public function calculateDiscount(User $user, Course $course, ?PromoCode $promoCode = null)
+    public function calculateDiscount(User $user, Course $course, ?PromoCode $promoCode = null): array
     {
         $discountAmount = 0;
         $discountType = null;
@@ -254,16 +301,14 @@ class PaymentService
             $discountType = $referralDiscountType;
         }
 
-        $finalAmount = max(0, $course->price - $discountAmount);
-
         return [
             'discount_amount' => $discountAmount,
             'discount_type' => $discountType,
-            'final_amount' => $finalAmount,
+            'final_amount' => max(0, $course->price - $discountAmount),
         ];
     }
 
-    public function finalizeSuccessfulPayment(Payment $payment, $gatewayPaymentId = null, $gatewayResponse = null): Payment
+    public function finalizeSuccessfulPayment(Payment $payment, ?string $gatewayPaymentId = null, ?array $gatewayResponse = null): Payment
     {
         return DB::transaction(function () use ($payment, $gatewayPaymentId, $gatewayResponse) {
             $payment = Payment::query()
@@ -275,6 +320,18 @@ class PaymentService
             $this->applySuccessfulPaymentEffects($payment);
 
             return $payment->fresh(['user', 'course', 'promoCode', 'enrollment']);
+        });
+    }
+
+    public function syncRefundedPayment(Payment $payment, ?array $gatewayResponse = null): Payment
+    {
+        return DB::transaction(function () use ($payment, $gatewayResponse) {
+            $payment = Payment::query()
+                ->with(['course', 'enrollment'])
+                ->lockForUpdate()
+                ->findOrFail($payment->id);
+
+            return $payment->refund($gatewayResponse);
         });
     }
 
@@ -297,15 +354,13 @@ class PaymentService
         ])->save();
     }
 
-    /**
-     * Handle referral discount usage
-     */
-    public function handleReferralDiscountUsage(Payment $payment)
+    public function handleReferralDiscountUsage(Payment $payment): void
     {
         $user = $payment->user;
 
         if ($payment->discount_type === 'referral_free' && $user->has_free_enrollment) {
             $user->update(['has_free_enrollment' => false]);
+
             return;
         }
 
@@ -334,6 +389,77 @@ class PaymentService
         if ($referral && $payment->discount_type === 'referrer_referral') {
             $referral->markReferrerDiscountUsed();
         }
+    }
+
+    public function refund(
+        Payment $payment,
+        string $reason = 'REQUESTED_BY_CUSTOMER',
+        ?string $note = null,
+        bool $allowRefundMultipleRelatedPayments = false
+    ): array {
+        if (!$payment->is_completed) {
+            return [
+                'success' => false,
+                'message' => 'Cannot refund incomplete payment',
+            ];
+        }
+
+        if ($payment->is_refunded) {
+            return [
+                'success' => false,
+                'message' => 'Payment is already refunded',
+            ];
+        }
+
+        $streamPaymentId = $payment->getStreamPaymentId();
+
+        if (!$streamPaymentId) {
+            return [
+                'success' => false,
+                'message' => 'Cannot refund this payment because the Stream payment ID is missing.',
+            ];
+        }
+
+        $response = $this->streamPayRequest('post', "/payments/{$streamPaymentId}/refund", [
+            'refund_reason' => $reason,
+            'refund_note' => $note,
+            'allow_refund_multiple_related_payments' => $allowRefundMultipleRelatedPayments,
+        ]);
+
+        if (!$response->successful()) {
+            Log::error('StreamPay refund failed', [
+                'payment_id' => $payment->id,
+                'stream_payment_id' => $streamPaymentId,
+                'status' => $response->status(),
+                'response' => $response->json(),
+            ]);
+
+            return [
+                'success' => false,
+                'message' => $this->extractGatewayErrorMessage($response),
+            ];
+        }
+
+        $gatewayResponse = $this->enrichGatewayPayload($payment, $response->json(), [
+            'payment_id' => $streamPaymentId,
+            'payment_link_id' => $payment->getPaymentLinkId(),
+        ]);
+
+        $this->syncRefundedPayment($payment, $gatewayResponse);
+
+        return [
+            'success' => true,
+            'message' => 'Refund processed successfully.',
+        ];
+    }
+
+    public function buildCallbackUrl(Payment $payment): string
+    {
+        return URL::temporarySignedRoute(
+            'payment.callback',
+            now()->addDays(30),
+            ['payment' => $payment->id]
+        );
     }
 
     private function resolveReferralDiscountType(User $user): ?string
@@ -366,40 +492,114 @@ class PaymentService
         return null;
     }
 
-    /**
-     * Process refund
-     */
-    public function refund(Payment $payment)
+    private function streamPayRequest(string $method, string $path, array $payload = []): Response
     {
-        try {
-            if (!$payment->is_completed) {
-                return [
-                    'success' => false,
-                    'message' => 'Cannot refund incomplete payment',
-                ];
-            }
+        $request = Http::withHeaders($this->streamPayHeaders());
 
-            // Call to StreamPay Refund API endpoint (assuming it exists or using payment id from gateway metadata)
-            // Wait, we need the Payment/Charge ID which StreamPay associates with the invoice.
-            // Let's assume refunding is done via their dashboard or we use the invoice's payment id.
-            // For now, updating local db.
-            $payment->refund();
+        return match (strtolower($method)) {
+            'get' => $request->get($this->apiUrl . $path),
+            'post' => $request->post($this->apiUrl . $path, $payload),
+            'patch' => $request->patch($this->apiUrl . $path, $payload),
+            default => throw new \InvalidArgumentException("Unsupported StreamPay method [{$method}]"),
+        };
+    }
 
-            return [
-                'success' => true,
-                'message' => 'Refund processed successfully locally. Please verify on StreamPay dashboard.',
-            ];
+    private function streamPayHeaders(): array
+    {
+        return [
+            'X-Api-Key' => $this->getStreamPayAuthToken(),
+            'Content-Type' => 'application/json',
+        ];
+    }
 
-        } catch (\Exception $e) {
-            Log::error('Refund exception', [
-                'payment_id' => $payment->id,
-                'error' => $e->getMessage(),
-            ]);
-
-            return [
-                'success' => false,
-                'message' => 'An error occurred processing refund',
-            ];
+    private function getStreamPayAuthToken(): string
+    {
+        if ($this->looksLikeEncodedApiToken($this->apiKey)) {
+            return $this->apiKey;
         }
+
+        if ($this->apiKey !== '' && $this->secretKey !== '') {
+            return base64_encode($this->apiKey . ':' . $this->secretKey);
+        }
+
+        return $this->apiKey;
+    }
+
+    private function looksLikeEncodedApiToken(string $value): bool
+    {
+        $decoded = base64_decode($value, true);
+
+        return $decoded !== false && str_contains($decoded, ':');
+    }
+
+    private function normalizeGatewayStatus(array $payload): string
+    {
+        return strtoupper((string) ($payload['current_status'] ?? $payload['status'] ?? ''));
+    }
+
+    private function isSuccessfulGatewayStatus(string $status): bool
+    {
+        return in_array($status, ['SUCCEEDED', 'SETTLED'], true);
+    }
+
+    private function isFailedGatewayStatus(string $status): bool
+    {
+        return in_array($status, ['FAILED', 'FAILED_INITIATION', 'CANCELED', 'EXPIRED'], true);
+    }
+
+    private function isRefundedGatewayStatus(string $status): bool
+    {
+        return $status === 'REFUNDED';
+    }
+
+    private function paymentMatchesExpectedOrder(Payment $payment, array $gatewayPayment): bool
+    {
+        $gatewayAmount = (float) ($gatewayPayment['amount'] ?? 0);
+        $gatewayCurrency = strtoupper((string) ($gatewayPayment['currency'] ?? ''));
+
+        $amountMatches = round($gatewayAmount, 2) === round((float) $payment->final_amount, 2);
+        $currencyMatches = $gatewayCurrency === '' || $gatewayCurrency === strtoupper($payment->currency);
+
+        if ($amountMatches && $currencyMatches) {
+            return true;
+        }
+
+        Log::warning('StreamPay payment verification mismatch', [
+            'payment_id' => $payment->id,
+            'expected_amount' => (float) $payment->final_amount,
+            'gateway_amount' => $gatewayAmount,
+            'expected_currency' => strtoupper($payment->currency),
+            'gateway_currency' => $gatewayCurrency,
+        ]);
+
+        return false;
+    }
+
+    private function enrichGatewayPayload(Payment $payment, array $gatewayPayload, array $extra = []): array
+    {
+        return array_replace_recursive(
+            is_array($payment->gateway_response) ? $payment->gateway_response : [],
+            $gatewayPayload,
+            array_filter($extra, static fn ($value) => filled($value))
+        );
+    }
+
+    private function extractGatewayErrorMessage(Response $response): string
+    {
+        $json = $response->json();
+
+        if (is_string($json['message'] ?? null) && $json['message'] !== '') {
+            return $json['message'];
+        }
+
+        if (is_string($json['detail'] ?? null) && $json['detail'] !== '') {
+            return $json['detail'];
+        }
+
+        if (is_array($json['detail'] ?? null) && !empty($json['detail'][0]['msg'])) {
+            return $json['detail'][0]['msg'];
+        }
+
+        return 'StreamPay rejected the refund request.';
     }
 }

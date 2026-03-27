@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\PaymentInvoiceMail;
 use App\Models\PromoCode;
@@ -151,6 +152,8 @@ class Payment extends Model
      */
     public function markAsCompleted($gatewayPaymentId = null, $gatewayResponse = null)
     {
+        $gatewayResponse = $this->mergeGatewayResponse($gatewayResponse, $gatewayPaymentId);
+
         if ($this->payment_status === 'completed') {
             $updates = [];
 
@@ -177,7 +180,7 @@ class Payment extends Model
             'payment_status' => 'completed',
             'paid_at' => now(),
             'gateway_payment_id' => $gatewayPaymentId ?? $this->gateway_payment_id,
-            'gateway_response' => $gatewayResponse ?? $this->gateway_response,
+            'gateway_response' => $gatewayResponse ?: $this->gateway_response,
         ]);
 
         // Create enrollment
@@ -210,17 +213,28 @@ class Payment extends Model
     /**
      * Process refund
      */
-    public function refund()
+    public function refund(?array $gatewayResponse = null)
     {
+        if ($this->payment_status === 'refunded') {
+            return $this->refresh();
+        }
+
+        $gatewayResponse = $this->mergeGatewayResponse($gatewayResponse, $this->gateway_payment_id);
+        $refundedAt = data_get($gatewayResponse, 'refunded_at');
+
         $this->update([
             'payment_status' => 'refunded',
-            'refunded_at' => now(),
+            'refunded_at' => $refundedAt ? Carbon::parse($refundedAt) : now(),
+            'gateway_response' => $gatewayResponse ?: $this->gateway_response,
         ]);
 
         // Cancel enrollment if exists
         if ($this->enrollment) {
             $this->enrollment->delete();
+            $this->course?->decrementStudents();
         }
+
+        return $this->refresh();
     }
 
     /**
@@ -288,5 +302,40 @@ class Payment extends Model
         }
 
         return 'promotion';
+    }
+
+    public function getStreamPaymentId(): ?string
+    {
+        return data_get($this->gateway_response, 'payment_id')
+            ?? data_get($this->gateway_response, 'payment.id')
+            ?? ($this->payment_status !== 'pending' ? $this->gateway_payment_id : null);
+    }
+
+    public function getPaymentLinkId(): ?string
+    {
+        return data_get($this->gateway_response, 'payment_link_id')
+            ?? data_get($this->gateway_response, 'payment_link.id')
+            ?? ($this->payment_status === 'pending' ? $this->gateway_payment_id : null);
+    }
+
+    private function mergeGatewayResponse(?array $gatewayResponse, ?string $gatewayPaymentId): ?array
+    {
+        $existing = is_array($this->gateway_response) ? $this->gateway_response : [];
+
+        if (!$gatewayResponse && !$existing) {
+            return null;
+        }
+
+        $merged = array_replace_recursive($existing, $gatewayResponse ?? []);
+
+        if ($gatewayPaymentId) {
+            $merged['payment_id'] ??= $gatewayPaymentId;
+        }
+
+        if (!isset($merged['payment_link_id']) && $this->payment_status === 'pending' && $this->gateway_payment_id) {
+            $merged['payment_link_id'] = $this->gateway_payment_id;
+        }
+
+        return $merged;
     }
 }

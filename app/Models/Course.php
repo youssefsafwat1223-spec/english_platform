@@ -213,6 +213,13 @@ class Course extends Model
         $this->increment('total_students');
     }
 
+    public function decrementStudents(): void
+    {
+        if ($this->total_students > 0) {
+            $this->decrement('total_students');
+        }
+    }
+
     /**
      * Update average rating
      */

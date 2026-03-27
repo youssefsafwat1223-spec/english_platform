@@ -68,13 +68,24 @@ class PaymentController extends Controller
         return view('admin.payments.show', compact('payment'));
     }
 
-    public function refund(Payment $payment)
+    public function refund(Request $request, Payment $payment)
     {
         if (!$payment->is_completed) {
             return back()->with('error', 'Can only refund completed payments.');
         }
 
-        $result = $this->paymentService->refund($payment);
+        $validated = $request->validate([
+            'refund_reason' => ['required', 'in:REQUESTED_BY_CUSTOMER,DUPLICATE,FRAUDULENT,OTHER'],
+            'refund_note' => ['nullable', 'string', 'max:500'],
+            'allow_refund_multiple_related_payments' => ['nullable', 'boolean'],
+        ]);
+
+        $result = $this->paymentService->refund(
+            $payment,
+            $validated['refund_reason'],
+            $validated['refund_note'] ?? null,
+            (bool) ($validated['allow_refund_multiple_related_payments'] ?? false)
+        );
 
         if ($result['success']) {
             return back()->with('success', $result['message']);

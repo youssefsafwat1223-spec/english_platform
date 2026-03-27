@@ -10,17 +10,25 @@ use Illuminate\Support\Facades\Log;
 
 class PaymentController extends Controller
 {
-    private $paymentService;
-
-    public function __construct(PaymentService $paymentService)
+    public function __construct(private readonly PaymentService $paymentService)
     {
-        $this->paymentService = $paymentService;
     }
 
     public function callback(Payment $payment, Request $request)
     {
-        // ── Verify payment ownership ──
         if (auth()->check() && auth()->id() !== $payment->user_id) {
+            abort(403, 'Unauthorized');
+        }
+
+        $ignoredQuery = array_values(array_diff(array_keys($request->query()), ['signature', 'expires']));
+
+        if (!auth()->check() && !$request->hasValidSignatureWhileIgnoring($ignoredQuery)) {
+            Log::warning('Rejected unsigned payment callback', [
+                'payment_id' => $payment->id,
+                'ip' => $request->ip(),
+                'query' => $request->query(),
+            ]);
+
             abort(403, 'Unauthorized');
         }
 
@@ -29,31 +37,29 @@ class PaymentController extends Controller
             'request' => $request->all(),
         ]);
 
-        // Check if StreamPay explicitly says the payment failed via redirect params
-        $redirectStatus = $request->input('status');
-
-        if ($redirectStatus === 'failed') {
-            $payment->markAsFailed($request->input('message', 'Payment failed'));
-
-            return redirect()->route('student.courses.show', $payment->course)
-                ->with('error', __('فشلت عملية الدفع. تأكد من صحة بيانات البطاقة وأن البطاقة مدعومة، ثم حاول مرة أخرى.'));
-        }
-
-        $result = $this->paymentService->handleCallback($payment->id);
+        $result = $this->paymentService->handleCallback(
+            $payment->id,
+            $request->string('payment_id')->toString() ?: null,
+            $request->string('invoice_id')->toString() ?: null,
+            $request->string('payment_link_id')->toString() ?: null
+        );
 
         if ($result['success']) {
-            if ($result['message'] === 'Payment successful') {
+            if (($result['message'] ?? null) === 'Payment successful') {
                 return redirect()->route('student.courses.learn', $payment->course)
-                    ->with('success', __('تم الدفع بنجاح! مرحباً بك في الكورس 🎉'));
-            } else {
-                return redirect()->route('student.courses.show', $payment->course)
-                    ->with('info', __('جاري التحقق من عملية الدفع. ستصلك رسالة بريد إلكتروني قريباً.'));
+                    ->with('success', __('تم الدفع بنجاح! مرحبًا بك في الكورس.'));
             }
+
+            return redirect()->route('student.courses.show', $payment->course)
+                ->with('info', __('جارٍ التحقق من عملية الدفع. سيصلك تحديث قريبًا.'));
+        }
+
+        if ($payment->fresh()->payment_status === 'failed') {
+            return redirect()->route('student.courses.show', $payment->course)
+                ->with('error', __('فشلت عملية الدفع. تأكد من بيانات البطاقة أو جرّب وسيلة أخرى.'));
         }
 
         return redirect()->route('student.courses.show', $payment->course)
-            ->with('error', __('حدث خطأ أثناء معالجة الدفع. حاول مرة أخرى أو استخدم بطاقة أخرى.'));
+            ->with('error', __('حدث خطأ أثناء معالجة الدفع. حاول مرة أخرى.'));
     }
-
-
 }
