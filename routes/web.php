@@ -22,6 +22,7 @@ use App\Http\Controllers\Admin\PaymentController as AdminPaymentController;
 use App\Http\Controllers\Admin\CertificateController as AdminCertificateController;
 use App\Http\Controllers\Admin\ForumController as AdminForumController;
 use App\Http\Controllers\Admin\SettingsController as AdminSettingsController;
+use App\Http\Controllers\Admin\TwoFactorController as AdminTwoFactorController;
 use App\Http\Controllers\Admin\EmailCampaignController as AdminEmailCampaignController;
 use App\Http\Controllers\Admin\GameSessionController as AdminGameSessionController;
 use App\Http\Controllers\Admin\TestimonialController as AdminTestimonialController;
@@ -52,7 +53,9 @@ use App\Http\Controllers\Student\OnboardingController;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/about', [HomeController::class, 'about'])->name('about');
 Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
-Route::post('/contact', [HomeController::class, 'sendContact'])->name('contact.send');
+Route::post('/contact', [HomeController::class, 'sendContact'])
+    ->middleware('throttle:contact-form')
+    ->name('contact.send');
 Route::get('/pricing', [HomeController::class, 'pricing'])->name('pricing');
 Route::get('/blog', [HomeController::class, 'blog'])->name('blog');
 Route::get('/careers', [HomeController::class, 'careers'])->name('careers');
@@ -152,7 +155,8 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [LoginController::class, 'login']);
     
     Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
-    Route::post('/register', [RegisterController::class, 'register']);
+    Route::post('/register', [RegisterController::class, 'register'])
+        ->middleware('throttle:registration');
 
     // Google Social Auth
     Route::get('auth/google', [\App\Http\Controllers\Auth\SocialController::class, 'redirectToGoogle'])->name('auth.google');
@@ -163,13 +167,20 @@ Route::post('/logout', [LoginController::class, 'logout'])
     ->name('logout')
     ->middleware('auth');
 
+Route::prefix('admin/two-factor')->name('admin.two-factor.')->middleware(['auth', 'admin', 'active'])->group(function () {
+    Route::get('/', [AdminTwoFactorController::class, 'showChallenge'])->name('challenge');
+    Route::post('/', [AdminTwoFactorController::class, 'verifyChallenge'])
+        ->middleware('throttle:admin-two-factor')
+        ->name('verify');
+});
+
 /*
 |--------------------------------------------------------------------------
 | Admin Routes
 |--------------------------------------------------------------------------
 */
 
-Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin', 'active'])->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin', 'active', 'admin.2fa'])->group(function () {
     
     // Dashboard
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
@@ -322,6 +333,17 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin', 'active'])-
         
         Route::get('/general', [AdminSettingsController::class, 'general'])->name('general');
         Route::post('/general', [AdminSettingsController::class, 'updateGeneral'])->name('general.update');
+
+        Route::get('/security', [AdminTwoFactorController::class, 'showSecurity'])->name('security');
+        Route::post('/security/two-factor/setup', [AdminTwoFactorController::class, 'beginSetup'])
+            ->name('security.two-factor.setup');
+        Route::post('/security/two-factor/confirm', [AdminTwoFactorController::class, 'confirmSetup'])
+            ->middleware('throttle:admin-two-factor')
+            ->name('security.two-factor.confirm');
+        Route::post('/security/two-factor/recovery-codes', [AdminTwoFactorController::class, 'regenerateRecoveryCodes'])
+            ->name('security.two-factor.recovery-codes');
+        Route::delete('/security/two-factor', [AdminTwoFactorController::class, 'disable'])
+            ->name('security.two-factor.disable');
         
         Route::get('/telegram', [AdminSettingsController::class, 'telegram'])->name('telegram');
         Route::post('/telegram', [AdminSettingsController::class, 'updateTelegram'])->name('telegram.update');
@@ -370,13 +392,14 @@ Route::prefix('student')->name('student.')->middleware(['auth', 'student', 'acti
     Route::get('/courses/{course}', [StudentCourseController::class, 'show'])->name('courses.show');
     Route::get('/courses/{course}/enroll', [StudentCourseController::class, 'enroll'])->name('courses.enroll');
     Route::post('/courses/{course}/payment', [StudentCourseController::class, 'processPayment'])
+        ->middleware('throttle:course-payment')
         ->name('courses.payment');
     Route::get('/courses/{course}/certificate', [StudentCourseController::class, 'certificateInfo'])
         ->name('courses.certificate.info')
         ->middleware('enrolled');
     Route::post('/courses/{course}/certificate', [StudentCourseController::class, 'sendCertificate'])
         ->name('courses.certificate')
-        ->middleware('enrolled');
+        ->middleware(['enrolled', 'throttle:certificate-email']);
     Route::get('/courses/{course}/learn', [StudentCourseController::class, 'learn'])
         ->name('courses.learn')
         ->middleware('enrolled');
@@ -428,10 +451,12 @@ Route::prefix('student')->name('student.')->middleware(['auth', 'student', 'acti
     Route::get('/pronunciation/{exercise}', [PronunciationController::class, 'show'])
         ->name('pronunciation.show');
     Route::post('/pronunciation/upload', [PronunciationController::class, 'upload'])
+        ->middleware('throttle:pronunciation')
         ->name('pronunciation.upload');
     Route::get('/my-pronunciation', [PronunciationController::class, 'myAttempts'])
         ->name('pronunciation.my-attempts');
     Route::post('/pronunciation/{exercise}/evaluate', [PronunciationController::class, 'evaluate'])
+        ->middleware('throttle:pronunciation')
         ->name('pronunciation.evaluate');
     
     // Certificates
@@ -443,6 +468,7 @@ Route::prefix('student')->name('student.')->middleware(['auth', 'student', 'acti
     Route::get('/certificates/{certificate}/share-linkedin', [StudentCertificateController::class, 'shareLinkedIn'])
         ->name('certificates.share-linkedin');
     Route::post('/certificates/{certificate}/send-email', [StudentCertificateController::class, 'sendEmail'])
+        ->middleware('throttle:certificate-email')
         ->name('certificates.send-email');
     
     // Forum
@@ -452,12 +478,17 @@ Route::prefix('student')->name('student.')->middleware(['auth', 'student', 'acti
         Route::get('/my-replies', [StudentForumController::class, 'myReplies'])->name('my-replies');
         Route::get('/{category:slug}', [StudentForumController::class, 'category'])->name('category');
         Route::get('/{category:slug}/create', [StudentForumController::class, 'createTopic'])->name('create-topic');
-        Route::post('/topics', [StudentForumController::class, 'storeTopic'])->name('store-topic');
+        Route::post('/topics', [StudentForumController::class, 'storeTopic'])
+            ->middleware('throttle:forum-topic')
+            ->name('store-topic');
         Route::get('/{category:slug}/{topic:slug}', [StudentForumController::class, 'showTopic'])->name('topic');
         Route::post('/{category:slug}/{topic:slug}/reply', [StudentForumController::class, 'storeReply'])
+            ->middleware('throttle:forum-reply')
             ->name('store-reply');
         Route::post('/replies/{reply}/like', [StudentForumController::class, 'toggleLike'])->name('toggle-like');
-        Route::post('/report', [StudentForumController::class, 'report'])->name('report');
+        Route::post('/report', [StudentForumController::class, 'report'])
+            ->middleware('throttle:forum-report')
+            ->name('report');
     });
     
     // Referrals
@@ -551,5 +582,5 @@ Route::get('reset-password/{token}', [App\Http\Controllers\Auth\ResetPasswordCon
     ->name('password.reset');
 
 Route::post('reset-password', [App\Http\Controllers\Auth\ResetPasswordController::class, 'reset'])
-    ->middleware('guest')
+    ->middleware(['guest', 'throttle:password-reset-submit'])
     ->name('password.update');

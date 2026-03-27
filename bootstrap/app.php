@@ -20,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'admin' => \App\Http\Middleware\IsAdmin::class,
+            'admin.2fa' => \App\Http\Middleware\RequireAdminTwoFactor::class,
             'student' => \App\Http\Middleware\IsStudent::class,
             'active' => \App\Http\Middleware\EnsureUserIsActive::class,
             'track.activity' => \App\Http\Middleware\TrackUserActivity::class,

@@ -11,6 +11,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @foreach([
                 ['General', 'Site name, URL, timezone, contact info', route('admin.settings.general'), '⚙️'],
+                ['Security', 'Two-factor authentication and admin protection', route('admin.settings.security'), '🛡️'],
                 ['Telegram Bot', 'Configure bot, webhook, and notifications', route('admin.settings.telegram'), '🤖'],
                 ['Payment', 'Gateway, currency, and tax settings', route('admin.settings.payment'), '💳'],
                 ['Points and Rewards', 'Configure points and referral rewards', route('admin.settings.points'), '🏆'],

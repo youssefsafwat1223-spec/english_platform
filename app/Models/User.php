@@ -47,6 +47,9 @@ class User extends Authenticatable implements MustVerifyEmail
         'google_id',
         'auth_type',
         'email_verified_at',
+        'two_factor_secret',
+        'two_factor_recovery_codes',
+        'two_factor_confirmed_at',
     ];
 
     /**
@@ -57,6 +60,8 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $hidden = [
         'password',
         'remember_token',
+        'two_factor_secret',
+        'two_factor_recovery_codes',
     ];
 
     /**
@@ -71,10 +76,13 @@ class User extends Authenticatable implements MustVerifyEmail
             'telegram_linked_at' => 'datetime',
             'last_activity_at' => 'datetime',
             'referral_discount_expires_at' => 'datetime',
+            'two_factor_confirmed_at' => 'datetime',
             'password' => 'hashed',
             'is_active' => 'boolean',
             'referral_discount_used' => 'boolean',
             'telegram_reminders' => 'boolean',
+            'two_factor_secret' => 'encrypted',
+            'two_factor_recovery_codes' => 'encrypted:array',
         ];
     }
 
@@ -314,6 +322,16 @@ class User extends Authenticatable implements MustVerifyEmail
         }
 
         return now()->lessThan($this->referral_discount_expires_at);
+    }
+
+    /**
+     * Check if two-factor authentication is enabled for this user.
+     */
+    public function hasTwoFactorEnabled(): bool
+    {
+        return $this->is_admin
+            && filled($this->two_factor_secret)
+            && !is_null($this->two_factor_confirmed_at);
     }
 
     // ==================== METHODS ====================

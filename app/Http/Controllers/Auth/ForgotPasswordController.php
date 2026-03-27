@@ -10,46 +10,43 @@ use Illuminate\Support\Str;
 
 class ForgotPasswordController extends Controller
 {
-    /**
-     * عرض صفحة Forgot Password
-     */
     public function showLinkRequestForm()
     {
         return view('auth.forgot-password');
     }
 
-    /**
-     * إرسال رابط إعادة التعيين
-     */
     public function sendResetLinkEmail(Request $request)
     {
         $request->validate([
-            'email' => ['required', 'email', 'exists:users,email'],
+            'email' => ['required', 'email'],
         ], [
-            'email.required' => 'البريد الإلكتروني مطلوب',
-            'email.email' => 'البريد الإلكتروني غير صحيح',
-            'email.exists' => 'البريد الإلكتروني غير مسجل',
+            'email.required' => __('Email address is required.'),
+            'email.email' => __('Please enter a valid email address.'),
         ]);
 
-        // Rate limiting - 3 محاولات كل 10 دقائق
-        $key = 'password-reset:' . $request->ip();
-        
+        $key = $this->throttleKey($request, $request->input('email', ''));
+
         if (RateLimiter::tooManyAttempts($key, 3)) {
             $seconds = RateLimiter::availableIn($key);
+
             return back()->withErrors([
-                'email' => "حاول مرة أخرى بعد " . ceil($seconds / 60) . " دقيقة"
+                'email' => __('Please try again in :minutes minute(s).', ['minutes' => (int) ceil($seconds / 60)]),
             ]);
         }
 
-        RateLimiter::hit($key, 600); // 10 minutes
+        RateLimiter::hit($key, 600);
 
-        // إرسال رابط إعادة التعيين
-        $status = Password::sendResetLink(
-            $request->only('email')
-        );
+        $status = Password::sendResetLink($request->only('email'));
 
-        return $status === Password::RESET_LINK_SENT
-            ? back()->with('status', __($status))
-            : back()->withErrors(['email' => __($status)]);
+        if (in_array($status, [Password::RESET_LINK_SENT, Password::INVALID_USER], true)) {
+            return back()->with('status', __('If the email address exists in our system, a reset link has been sent.'));
+        }
+
+        return back()->withErrors(['email' => __($status)]);
+    }
+
+    protected function throttleKey(Request $request, string $email): string
+    {
+        return 'password-reset:' . Str::lower(trim($email)) . '|' . $request->ip();
     }
 }
