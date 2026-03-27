@@ -108,8 +108,10 @@ class BattleController extends Controller
                     return [
                         'user_id' => $studentId,
                         'notification_type' => 'battle_started',
-                        'title' => '⚔️ Battle Started in ' . $course->title . '!',
-                        'message' => $user->name . ' started a battle. Join now before the lobby closes!',
+                        'title' => __('⚔️ Battle Started in :course!', ['course' => $course->title]),
+                        'message' => __(':user started a battle. Join now before the lobby closes!', [
+                            'user' => $user->name,
+                        ]),
                         'action_url' => route('student.battle.lobby', $room),
                         'is_read' => false,
                         'created_at' => now(),

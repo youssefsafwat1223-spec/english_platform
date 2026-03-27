@@ -75,8 +75,10 @@ class Achievement extends Model
             Notification::create([
                 'user_id' => $user->id,
                 'notification_type' => 'achievement_earned',
-                'title' => 'Achievement Unlocked!',
-                'message' => "You earned the '{$this->name}' achievement!",
+                'title' => __('Achievement Unlocked!'),
+                'message' => __("You earned the ':achievement' achievement!", [
+                    'achievement' => $this->name,
+                ]),
                 'action_url' => route('student.profile.achievements'),
             ]);
 

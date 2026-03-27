@@ -52,6 +52,10 @@ class LessonController extends Controller
             'enrollment_id' => $enrollment->id,
         ]);
 
+        $completionQuiz = $lesson->getCompletionQuiz();
+        $requiresQuizPass = $completionQuiz !== null;
+        $hasPassedCompletionQuiz = !$requiresQuizPass || $completionQuiz->hasUserPassed($user);
+
         // Keep the latest note editable and treat older entries as history.
         $notes = $user->notes()
             ->where('lesson_id', $lesson->id)
@@ -89,6 +93,9 @@ class LessonController extends Controller
             'course',
             'lesson',
             'progress',
+            'completionQuiz',
+            'requiresQuizPass',
+            'hasPassedCompletionQuiz',
             'notes',
             'currentNote',
             'noteHistory',
@@ -114,25 +121,19 @@ class LessonController extends Controller
             return response()->json(['error' => 'Progress not found'], 404);
         }
 
-        // Check if quiz is required and passed
-        if ($lesson->has_quiz) {
-            $quiz = $lesson->quiz;
-            
-            if ($quiz && !$quiz->hasUserPassed($user)) {
-                return response()->json([
-                    'error' => 'You must pass the quiz to complete this lesson',
-                ], 400);
-            }
+        if (!$lesson->canBeCompletedBy($user)) {
+            return response()->json([
+                'error' => __('You must pass the lesson quiz before marking this lesson as completed.'),
+            ], 400);
         }
 
-        $progress->markAsCompleted();
-
-        // Check for achievements
-        $this->achievementService->checkAchievements($user, 'lesson_completed');
+        if ($progress->markAsCompleted()) {
+            $this->achievementService->checkAchievements($user, 'lesson_completed');
+        }
 
         return response()->json([
             'success' => true,
-            'message' => 'Lesson completed successfully!',
+            'message' => __('Lesson completed successfully!'),
             'points_earned' => config('app.points_per_lesson', 10),
         ]);
     }
@@ -163,18 +164,15 @@ class LessonController extends Controller
         }
 
         if (request()->boolean('is_completed')) {
-            if ($lesson->has_quiz) {
-                $quiz = $lesson->quiz;
-
-                if ($quiz && !$quiz->hasUserPassed($user)) {
-                    return response()->json([
-                        'error' => 'You must pass the quiz to complete this lesson',
-                    ], 400);
-                }
+            if (!$lesson->canBeCompletedBy($user)) {
+                return response()->json([
+                    'error' => __('You must pass the lesson quiz before marking this lesson as completed.'),
+                ], 400);
             }
 
-            $progress->markAsCompleted();
-            $this->achievementService->checkAchievements($user, 'lesson_completed');
+            if ($progress->markAsCompleted()) {
+                $this->achievementService->checkAchievements($user, 'lesson_completed');
+            }
         }
 
         return response()->json(['success' => true]);

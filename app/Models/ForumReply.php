@@ -109,8 +109,10 @@ class ForumReply extends Model
         Notification::create([
             'user_id' => $this->user_id,
             'notification_type' => 'reply_marked_solution',
-            'title' => 'Your Reply Marked as Solution',
-            'message' => "Your reply was marked as the solution in: {$this->topic->title}",
+            'title' => __('Your Reply Marked as Solution'),
+            'message' => __('Your reply was marked as the solution in: :topic', [
+                'topic' => $this->topic->title,
+            ]),
             'action_url' => route('student.forum.topic', [
                 'category' => $this->topic->category->slug,
                 'topic' => $this->topic->slug,

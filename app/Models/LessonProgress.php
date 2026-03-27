@@ -51,25 +51,29 @@ class LessonProgress extends Model
     /**
      * Mark lesson as completed
      */
-    public function markAsCompleted()
+    public function markAsCompleted(): bool
     {
-        if (!$this->is_completed) {
-            $this->update([
-                'is_completed' => true,
-                'completed_at' => now(),
-            ]);
-
-            // Award points to user
-            $this->user->addPoints(
-                config('app.points_per_lesson', 10),
-                'lesson_complete',
-                $this->lesson_id,
-                "Completed: {$this->lesson->title}"
-            );
-
-            // Update enrollment progress
-            $this->enrollment->updateProgress();
+        if ($this->is_completed) {
+            return false;
         }
+
+        $this->update([
+            'is_completed' => true,
+            'completed_at' => now(),
+        ]);
+
+        // Award points to user
+        $this->user->addPoints(
+            config('app.points_per_lesson', 10),
+            'lesson_complete',
+            $this->lesson_id,
+            "Completed: {$this->lesson->title}"
+        );
+
+        // Update enrollment progress
+        $this->enrollment->updateProgress();
+
+        return true;
     }
 
     /**

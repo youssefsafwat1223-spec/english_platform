@@ -108,8 +108,10 @@ class LessonComment extends Model
             Notification::create([
                 'user_id' => $this->parent->user_id,
                 'notification_type' => 'comment_reply',
-                'title' => 'New Reply on Your Comment',
-                'message' => "Admin replied to your comment on {$this->lesson->title}",
+                'title' => __('New Reply on Your Comment'),
+                'message' => __('Admin replied to your comment on :lesson', [
+                    'lesson' => $this->lesson->title,
+                ]),
                 'action_url' => route('student.lessons.show', [
                     'course' => $this->lesson->course_id,
                     'lesson' => $this->lesson_id,

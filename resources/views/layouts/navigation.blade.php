@@ -413,12 +413,12 @@
                     <a href="{{ route('student.referrals.index') }}" class="block px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-primary-500/5" style="color: var(--color-text);">🎁 {{ __('Invite Friends') }}</a>
                     <a href="{{ route('student.telegram.guide') }}" class="block px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-primary-500/5" style="color: var(--color-text);">🤖 {{ __('Telegram Bot') }}</a>
                 @elseif(auth()->user()->is_admin)
-                    <a href="{{ route('admin.dashboard') }}" class="block px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-primary-500/5" style="color: var(--color-text);">Dashboard</a>
-                    <a href="{{ route('admin.courses.index') }}" class="block px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-primary-500/5" style="color: var(--color-text);">Courses</a>
-                    <a href="{{ route('admin.questions.index') }}" class="block px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-primary-500/5" style="color: var(--color-text);">Questions</a>
-                    <a href="{{ route('admin.quizzes.index') }}" class="block px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-primary-500/5" style="color: var(--color-text);">Quizzes</a>
-                    <a href="{{ route('admin.students.index') }}" class="block px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-primary-500/5" style="color: var(--color-text);">Students</a>
-                    <a href="{{ route('admin.email-campaigns.index') }}" class="block px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-primary-500/5" style="color: var(--color-text);">📧 Emails</a>
+                    <a href="{{ route('admin.dashboard') }}" class="block px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-primary-500/5" style="color: var(--color-text);">{{ __('Dashboard') }}</a>
+                    <a href="{{ route('admin.courses.index') }}" class="block px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-primary-500/5" style="color: var(--color-text);">{{ __('Courses') }}</a>
+                    <a href="{{ route('admin.questions.index') }}" class="block px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-primary-500/5" style="color: var(--color-text);">{{ __('Questions') }}</a>
+                    <a href="{{ route('admin.quizzes.index') }}" class="block px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-primary-500/5" style="color: var(--color-text);">{{ __('Quizzes') }}</a>
+                    <a href="{{ route('admin.students.index') }}" class="block px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-primary-500/5" style="color: var(--color-text);">{{ __('Students') }}</a>
+                    <a href="{{ route('admin.email-campaigns.index') }}" class="block px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-primary-500/5" style="color: var(--color-text);">📧 {{ __('Email Campaigns') }}</a>
                 @endif
             @endauth
         </div>

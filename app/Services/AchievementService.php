@@ -80,8 +80,11 @@ class AchievementService
             Notification::create([
                 'user_id' => $user->id,
                 'notification_type' => 'achievement_earned',
-                'title' => '🏆 Achievement Unlocked!',
-                'message' => "You earned '{$achievement->name}': {$achievement->description}",
+                'title' => __('Achievement Unlocked!'),
+                'message' => __("You earned ':achievement': :description", [
+                    'achievement' => $achievement->name,
+                    'description' => $achievement->description,
+                ]),
                 'action_url' => route('student.profile.achievements'),
             ]);
 

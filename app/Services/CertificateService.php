@@ -208,8 +208,10 @@ class CertificateService
         \App\Models\Notification::create([
             'user_id' => $user->id,
             'notification_type' => 'certificate_issued',
-            'title' => 'Certificate Issued!',
-            'message' => "Congratulations! Your certificate for {$course->title} is ready.",
+            'title' => __('Certificate Issued!'),
+            'message' => __('Congratulations! Your certificate for :course is ready.', [
+                'course' => $course->title,
+            ]),
             'action_url' => route('student.certificates.show', $certificate->id),
         ]);
 

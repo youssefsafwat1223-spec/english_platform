@@ -153,8 +153,10 @@ class Referral extends Model
         Notification::create([
             'user_id' => $this->referrer_id,
             'notification_type' => 'referral_success',
-            'title' => 'Referral Successful!',
-            'message' => "{$this->referee->name} purchased a course using your referral code. You earned a discount!",
+            'title' => __('Referral Successful!'),
+            'message' => __(':user purchased a course using your referral code. You earned a discount!', [
+                'user' => $this->referee->name,
+            ]),
             'action_url' => route('student.referrals.index'),
         ]);
     }

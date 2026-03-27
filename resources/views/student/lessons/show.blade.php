@@ -1,6 +1,6 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
-@section('title', $lesson->title . ' — ' . config('app.name'))
+@section('title', $lesson->title . ' â€” ' . config('app.name'))
 
 @section('content')
 <div class="py-6 lg:py-10 relative min-h-screen z-10">
@@ -8,13 +8,13 @@
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
-        {{-- ─── BREADCRUMB ─── --}}
+        {{-- â”€â”€â”€ BREADCRUMB â”€â”€â”€ --}}
         <nav class="mb-8 text-sm font-medium" data-aos="fade-down">
             <ol class="flex items-center gap-2 text-slate-500 dark:text-slate-400">
                 <li>
                     <a href="{{ route('student.courses.my-courses') }}" class="hover:text-primary-500 transition-colors flex items-center gap-1">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-                        {{ __('كورساتي') }}
+                        {{ __('ظƒظˆط±ط³ط§طھظٹ') }}
                     </a>
                 </li>
                 <li class="opacity-50">/</li>
@@ -31,7 +31,7 @@
         </nav>
 
         <div class="grid grid-cols-1 xl:grid-cols-4 gap-8">
-            {{-- ─── MAIN CONTENT COLUMN ─── --}}
+            {{-- â”€â”€â”€ MAIN CONTENT COLUMN â”€â”€â”€ --}}
             <div class="xl:col-span-3 space-y-8">
                 
                 {{-- Title & Video Section --}}
@@ -43,18 +43,18 @@
                     </div>
                     
                     @if($lesson->isVdoCipherVideo() && $vdoCipherOtp && $vdoCipherPlaybackInfo)
-                        {{-- ═══ VdoCipher DRM Protected Player — Works on ALL devices & browsers ═══ --}}
+                        {{-- â•گâ•گâ•گ VdoCipher DRM Protected Player â€” Works on ALL devices & browsers â•گâ•گâ•گ --}}
                         {{-- iOS Safari = FairPlay DRM | Android Chrome = Widevine DRM | Desktop = Widevine/FairPlay --}}
                         <div class="p-2 sm:p-4 bg-slate-900">
                             <div class="aspect-video bg-black rounded-[1.5rem] overflow-hidden shadow-2xl relative" id="vdo-player-container">
-                                {{-- Loading spinner — shown until iframe loads --}}
+                                {{-- Loading spinner â€” shown until iframe loads --}}
                                 <div id="vdo-loading" class="absolute inset-0 flex items-center justify-center bg-black z-10">
                                     <div class="flex flex-col items-center gap-3">
                                         <svg class="w-10 h-10 text-primary-500 animate-spin" fill="none" viewBox="0 0 24 24">
                                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                         </svg>
-                                        <span class="text-white font-bold text-sm tracking-wider">{{ __('جاري تحميل الفيديو...') }}</span>
+                                        <span class="text-white font-bold text-sm tracking-wider">{{ __('ط¬ط§ط±ظٹ طھط­ظ…ظٹظ„ ط§ظ„ظپظٹط¯ظٹظˆ...') }}</span>
                                     </div>
                                 </div>
                                 <iframe
@@ -94,7 +94,7 @@
                                         }
 
                                         // Track video ended
-                                        if (data.event === 'ended' || data.ended) {
+                                        if ((data.event === 'ended' || data.ended) && (!lessonCompletionRules.requiresQuizPass || lessonCompletionRules.hasPassedQuiz)) {
                                             axios.post(progressUrl, {
                                                 position: Math.floor(data.duration || data.currentTime || 0),
                                                 time_spent: Math.floor((data.currentTime || 0) - lastReportedTime),
@@ -109,31 +109,31 @@
                             });
                         </script>
                     @elseif($lesson->video_url || $lesson->video_embed_url)
-                        {{-- ═══ Legacy Video Player (YouTube / Vimeo / Drive / Direct) ═══ --}}
+                        {{-- â•گâ•گâ•گ Legacy Video Player (YouTube / Vimeo / Drive / Direct) â•گâ•گâ•گ --}}
                         <div class="p-2 sm:p-4 bg-slate-900">
                             <div class="aspect-video bg-black rounded-[1.5rem] overflow-hidden shadow-2xl relative group">
                                 @if($lesson->video_embed_url)
                                     @php
-                                        // تشفيه الرابط باستخدام Base64 عشان ما يبقاش واضح في السورس كود
+                                        // طھط´ظپظٹظ‡ ط§ظ„ط±ط§ط¨ط· ط¨ط§ط³طھط®ط¯ط§ظ… Base64 ط¹ط´ط§ظ† ظ…ط§ ظٹط¨ظ‚ط§ط´ ظˆط§ط¶ط­ ظپظٹ ط§ظ„ط³ظˆط±ط³ ظƒظˆط¯
                                         $encodedUrl = base64_encode($lesson->video_embed_url);
                                     @endphp
                                     <div class="relative w-full h-full rounded-[1.5rem] overflow-hidden">
-                                        {{-- تم إزالة ال src واستخدام data-esrc للرابط المشفر --}}
+                                        {{-- طھظ… ط¥ط²ط§ظ„ط© ط§ظ„ src ظˆط§ط³طھط®ط¯ط§ظ… data-esrc ظ„ظ„ط±ط§ط¨ط· ط§ظ„ظ…ط´ظپط± --}}
                                         <iframe id="protected-iframe" class="w-full h-full absolute inset-0 bg-slate-900" title="{{ $lesson->title }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen data-esrc="{{ $encodedUrl }}"></iframe>
                                         
-                                        {{-- سكريبت لفك التشفير وإضافة الرابط بعد ثانية لمنع برامج النسخ المباشر من أخذ الرابط بسهولة --}}
+                                        {{-- ط³ظƒط±ظٹط¨طھ ظ„ظپظƒ ط§ظ„طھط´ظپظٹط± ظˆط¥ط¶ط§ظپط© ط§ظ„ط±ط§ط¨ط· ط¨ط¹ط¯ ط«ط§ظ†ظٹط© ظ„ظ…ظ†ط¹ ط¨ط±ط§ظ…ط¬ ط§ظ„ظ†ط³ط® ط§ظ„ظ…ط¨ط§ط´ط± ظ…ظ† ط£ط®ط° ط§ظ„ط±ط§ط¨ط· ط¨ط³ظ‡ظˆظ„ط© --}}
                                         <script>
                                             document.addEventListener('DOMContentLoaded', function() {
                                                 setTimeout(function() {
                                                     var iframe = document.getElementById('protected-iframe');
                                                     if(iframe) {
-                                                        // فك تشفير الرابط ووضعه في ال src
+                                                        // ظپظƒ طھط´ظپظٹط± ط§ظ„ط±ط§ط¨ط· ظˆظˆط¶ط¹ظ‡ ظپظٹ ط§ظ„ src
                                                         iframe.src = atob(iframe.getAttribute('data-esrc'));
                                                         
-                                                        // منع الضغط كليك يمين على ال iframe نفسه قدر الإمكان (رغم صعوبته في الدومين المختلف)
+                                                        // ظ…ظ†ط¹ ط§ظ„ط¶ط؛ط· ظƒظ„ظٹظƒ ظٹظ…ظٹظ† ط¹ظ„ظ‰ ط§ظ„ iframe ظ†ظپط³ظ‡ ظ‚ط¯ط± ط§ظ„ط¥ظ…ظƒط§ظ† (ط±ط؛ظ… طµط¹ظˆط¨طھظ‡ ظپظٹ ط§ظ„ط¯ظˆظ…ظٹظ† ط§ظ„ظ…ط®طھظ„ظپ)
                                                         iframe.addEventListener('contextmenu', e => e.preventDefault());
                                                     }
-                                                }, 300); // تأخير بسيط
+                                                }, 300); // طھط£ط®ظٹط± ط¨ط³ظٹط·
                                             });
                                         </script>
 
@@ -146,7 +146,7 @@
                                         <div id="dynamic-watermark" class="absolute z-20 pointer-events-none opacity-40 mix-blend-overlay text-white/50 text-sm md:text-base font-bold tracking-widest uppercase transition-all duration-[6000ms] ease-in-out" style="top: 10%; left: 10%; user-select: none; text-shadow: 0 0 4px rgba(0,0,0,0.8);">
                                             {{ auth()->user()->name }} 
                                             @if(auth()->user()->phone)
-                                                • {{ auth()->user()->phone }}
+                                                â€¢ {{ auth()->user()->phone }}
                                             @endif
                                             <br>
                                             <span class="text-xs opacity-50">{{ request()->ip() }}</span>
@@ -174,14 +174,14 @@
                                            controls playsinline preload="metadata" 
                                            controlsList="nodownload" oncontextmenu="return false;"
                                            data-src="{{ $lesson->video_url }}">
-                                        {{ __('المتصفح لا يدعم تشغيل الفيديو.') }}
+                                        {{ __('ط§ظ„ظ…طھطµظپط­ ظ„ط§ ظٹط¯ط¹ظ… طھط´ط؛ظٹظ„ ط§ظ„ظپظٹط¯ظٹظˆ.') }}
                                     </video>
                                     
                                     {{-- Loading overlay while fetching Blob --}}
                                     <div id="videoLoaderOverlay" class="absolute inset-0 flex items-center justify-center bg-black/80 z-20">
                                         <div class="flex flex-col items-center gap-3">
                                             <svg class="w-10 h-10 text-primary-500 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                                            <span class="text-white font-bold text-sm tracking-wider">{{ __('جاري تجهيز الفيديو...') }}</span>
+                                            <span class="text-white font-bold text-sm tracking-wider">{{ __('ط¬ط§ط±ظٹ طھط¬ظ‡ظٹط² ط§ظ„ظپظٹط¯ظٹظˆ...') }}</span>
                                         </div>
                                     </div>
                                 @endif
@@ -209,9 +209,9 @@
                             
                             <div class="flex items-center gap-4 shrink-0">
                                 <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary-500 to-accent-500 text-white flex items-center justify-center text-2xl shadow-lg shadow-primary-500/30">
-                                    🎧
+                                    ًںژ§
                                 </div>
-                                <div class="md:hidden text-lg font-bold text-slate-900 dark:text-white">{{ __('ملخص صوتي') }}</div>
+                                <div class="md:hidden text-lg font-bold text-slate-900 dark:text-white">{{ __('ظ…ظ„ط®طµ طµظˆطھظٹ') }}</div>
                             </div>
                             
                             <div class="flex-1 w-full space-y-2">
@@ -255,8 +255,8 @@
                     @if($lesson->attachments->count() > 0)
                         <div class="glass-card overflow-hidden rounded-[1.5rem]" data-aos="fade-up">
                             <div class="px-6 py-5 border-b border-slate-200/50 dark:border-white/5 flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center text-xl shrink-0">📎</div>
-                                <h3 class="font-bold text-lg text-slate-900 dark:text-white">{{ __('المرفقات') }}</h3>
+                                <div class="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center text-xl shrink-0">ًں“ژ</div>
+                                <h3 class="font-bold text-lg text-slate-900 dark:text-white">{{ __('ط§ظ„ظ…ط±ظپظ‚ط§طھ') }}</h3>
                             </div>
                             <div class="p-4 space-y-3">
                                 @foreach($lesson->attachments as $attachment)
@@ -285,39 +285,39 @@
                             <div class="glass-card overflow-hidden rounded-[1.5rem] relative group" data-aos="fade-up">
                                 <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-transparent pointer-events-none"></div>
                                 <div class="px-6 py-5 border-b border-slate-200/50 dark:border-white/5 flex items-center gap-3 relative z-10">
-                                    <div class="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center text-xl shrink-0">🎤</div>
-                                    <h3 class="font-bold text-lg text-slate-900 dark:text-white">{{ __('تمرين النطق') }}</h3>
+                                    <div class="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center text-xl shrink-0">ًںژ¤</div>
+                                    <h3 class="font-bold text-lg text-slate-900 dark:text-white">{{ __('طھظ…ط±ظٹظ† ط§ظ„ظ†ط·ظ‚') }}</h3>
                                 </div>
                                 <div class="p-6 relative z-10">
-                                    <p class="text-sm mb-5 text-slate-600 dark:text-slate-400 font-medium">{{ __('حسّن مهاراتك في النطق مع تقييم فوري بالذكاء الاصطناعي.') }}</p>
+                                    <p class="text-sm mb-5 text-slate-600 dark:text-slate-400 font-medium">{{ __('ط­ط³ظ‘ظ† ظ…ظ‡ط§ط±ط§طھظƒ ظپظٹ ط§ظ„ظ†ط·ظ‚ ظ…ط¹ طھظ‚ظٹظٹظ… ظپظˆط±ظٹ ط¨ط§ظ„ط°ظƒط§ط، ط§ظ„ط§طµط·ظ†ط§ط¹ظٹ.') }}</p>
                                     <a href="{{ route('student.pronunciation.show', $lesson->pronunciationExercise) }}" class="btn-primary ripple-btn w-full justify-center shadow-lg shadow-indigo-500/25 bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 border-0 flex items-center gap-2">
-                                        {{ __('ابدأ التمرين') }}
+                                        {{ __('ط§ط¨ط¯ط£ ط§ظ„طھظ…ط±ظٹظ†') }}
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
                                     </a>
                                 </div>
                             </div>
                         @endif
 
-                        @if($lesson->quiz)
+                        @if($completionQuiz)
                             <div class="glass-card overflow-hidden rounded-[1.5rem] relative group" data-aos="fade-up">
                                 <div class="absolute inset-0 bg-gradient-to-br from-amber-500/10 to-transparent pointer-events-none"></div>
                                 <div class="px-6 py-5 border-b border-slate-200/50 dark:border-white/5 flex items-center gap-3 relative z-10">
-                                    <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center text-xl shrink-0">📝</div>
-                                    <h3 class="font-bold text-lg text-slate-900 dark:text-white">{{ __('اختبار') }}</h3>
+                                    <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center text-xl shrink-0">ًں“‌</div>
+                                    <h3 class="font-bold text-lg text-slate-900 dark:text-white">{{ __('ط§ط®طھط¨ط§ط±') }}</h3>
                                 </div>
                                 <div class="p-6 relative z-10">
-                                    <p class="text-sm mb-5 text-slate-600 dark:text-slate-400 font-medium">{{ __('خلّص الاختبار عشان تفتح الدرس الجاي وتاخد نقاط.') }}</p>
-                                    @if($lesson->quiz->hasUserPassed(auth()->user()))
+                                    <p class="text-sm mb-5 text-slate-600 dark:text-slate-400 font-medium">{{ __('ط§ط¬طھط² ط§ظ„ط§ط®طھط¨ط§ط± ط£ظˆظ„ظ‹ط§ ط­طھظ‰ ظٹطھظ… ط§ط­طھط³ط§ط¨ ط§ظ„ط¯ط±ط³ ظƒظ…ظƒطھظ…ظ„.') }}</p>
+                                    @if($hasPassedCompletionQuiz)
                                         <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
                                             <span class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold border border-emerald-500/20 w-full sm:w-auto justify-center">
                                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                                {{ __('ناجح ✓') }}
+                                                {{ __('ظ†ط§ط¬ط­ âœ“') }}
                                             </span>
-                                            <a href="{{ route('student.quizzes.start', $lesson->quiz) }}" class="btn-ghost font-bold text-slate-600 dark:text-slate-300 w-full sm:w-auto text-center hover:text-amber-500">{{ __('إعادة الاختبار') }}</a>
+                                            <a href="{{ route('student.quizzes.start', $completionQuiz) }}" class="btn-ghost font-bold text-slate-600 dark:text-slate-300 w-full sm:w-auto text-center hover:text-amber-500">{{ __('ط¥ط¹ط§ط¯ط© ط§ظ„ط§ط®طھط¨ط§ط±') }}</a>
                                         </div>
                                     @else
-                                        <a href="{{ route('student.quizzes.start', $lesson->quiz) }}" class="btn-primary ripple-btn w-full justify-center shadow-lg shadow-amber-500/25 bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 border-0 flex items-center gap-2">
-                                            {{ __('ابدأ الاختبار') }}
+                                        <a href="{{ route('student.quizzes.start', $completionQuiz) }}" class="btn-primary ripple-btn w-full justify-center shadow-lg shadow-amber-500/25 bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 border-0 flex items-center gap-2">
+                                            {{ __('ط§ط¨ط¯ط£ ط§ظ„ط§ط®طھط¨ط§ط±') }}
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                                         </a>
                                     @endif
@@ -332,11 +332,11 @@
                     <div class="px-8 py-6 border-b border-slate-200/50 dark:border-white/5 bg-slate-50/50 dark:bg-slate-900/20 flex flex-col sm:flex-row items-center justify-between gap-4">
                         <div class="flex items-center gap-3">
                             <div class="w-12 h-12 rounded-2xl bg-primary-500/10 text-primary-500 flex items-center justify-center text-xl shrink-0 shadow-inner">
-                                💬
+                                ًں’¬
                             </div>
                             <div>
-                                <h3 class="font-extrabold text-xl text-slate-900 dark:text-white">{{ __('المناقشة') }}</h3>
-                                <p class="text-xs font-medium text-slate-500 tracking-wide uppercase">{{ $lesson->comments()->count() }} {{ __('تعليق') }}</p>
+                                <h3 class="font-extrabold text-xl text-slate-900 dark:text-white">{{ __('ط§ظ„ظ…ظ†ط§ظ‚ط´ط©') }}</h3>
+                                <p class="text-xs font-medium text-slate-500 tracking-wide uppercase">{{ $lesson->comments()->count() }} {{ __('طھط¹ظ„ظٹظ‚') }}</p>
                             </div>
                         </div>
                     </div>
@@ -351,12 +351,12 @@
                                 <form action="{{ route('student.lessons.comments.store', [$course, $lesson]) }}" method="POST" x-data="{ loading: false, text: '' }" @submit="loading = true">
                                     @csrf
                                     <div class="relative group">
-                                        <textarea x-model="text" name="comment_text" rows="3" class="w-full bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-white/10 rounded-2xl py-3 px-4 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all resize-none shadow-inner" placeholder="{{ __('عندك سؤال؟ شاركه مع الطلاب...') }}" required></textarea>
+                                        <textarea x-model="text" name="comment_text" rows="3" class="w-full bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-white/10 rounded-2xl py-3 px-4 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all resize-none shadow-inner" placeholder="{{ __('ط¹ظ†ط¯ظƒ ط³ط¤ط§ظ„طں ط´ط§ط±ظƒظ‡ ظ…ط¹ ط§ظ„ط·ظ„ط§ط¨...') }}" required></textarea>
                                         <div class="absolute bottom-3 right-3 flex items-center gap-2 opacity-0 group-focus-within:opacity-100 transition-opacity">
-                                            <button type="button" @click="text = ''" x-show="text.length > 0" class="btn-ghost btn-sm text-slate-400 hover:text-rose-500 h-8 px-3 rounded-lg">{{ __('إلغاء') }}</button>
+                                            <button type="button" @click="text = ''" x-show="text.length > 0" class="btn-ghost btn-sm text-slate-400 hover:text-rose-500 h-8 px-3 rounded-lg">{{ __('ط¥ظ„ط؛ط§ط،') }}</button>
                                             <button type="submit" class="btn-primary ripple-btn h-8 px-4 py-0 rounded-lg shadow-md flex items-center gap-1.5" :disabled="loading || text.length === 0">
-                                                <span x-show="!loading" class="font-bold text-xs">{{ __('نشر') }}</span>
-                                                <span x-show="loading" x-cloak class="font-bold text-xs">{{ __('جاري النشر...') }}</span>
+                                                <span x-show="!loading" class="font-bold text-xs">{{ __('ظ†ط´ط±') }}</span>
+                                                <span x-show="loading" x-cloak class="font-bold text-xs">{{ __('ط¬ط§ط±ظٹ ط§ظ„ظ†ط´ط±...') }}</span>
                                                 <svg x-show="!loading" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
                                             </button>
                                         </div>
@@ -388,7 +388,7 @@
                                                         @if($comment->is_admin_reply)
                                                             <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-primary-500/10 text-primary-600 dark:text-primary-400 text-[10px] font-black uppercase tracking-wider border border-primary-500/20">
                                                                 <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-                                                                {{ __('المحاضر') }}
+                                                                {{ __('ط§ظ„ظ…ط­ط§ط¶ط±') }}
                                                             </span>
                                                         @endif
                                                     </div>
@@ -418,7 +418,7 @@
                                                                     <div class="flex items-center gap-2 mb-1">
                                                                         <span class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white">{{ $reply->user->name }}</span>
                                                                         @if($reply->is_admin_reply)
-                                                                            <span class="inline-flex items-center px-1.5 py-0.5 rounded-md bg-primary-500/10 text-primary-600 dark:text-primary-400 text-[9px] font-black uppercase tracking-wider border border-primary-500/20">{{ __('المحاضر') }}</span>
+                                                                            <span class="inline-flex items-center px-1.5 py-0.5 rounded-md bg-primary-500/10 text-primary-600 dark:text-primary-400 text-[9px] font-black uppercase tracking-wider border border-primary-500/20">{{ __('ط§ظ„ظ…ط­ط§ط¶ط±') }}</span>
                                                                         @endif
                                                                         <span class="text-[10px] sm:text-xs font-medium text-slate-500 ml-auto">{{ $reply->created_at->diffForHumans() }}</span>
                                                                     </div>
@@ -435,10 +435,10 @@
                             @empty
                                 <div class="text-center py-12 px-4 rounded-2xl border border-dashed border-slate-300 dark:border-slate-700/50 bg-slate-50 dark:bg-slate-800/20">
                                     <div class="w-16 h-16 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center mx-auto mb-4 text-2xl">
-                                        👋
+                                        ًں‘‹
                                     </div>
-                                    <p class="text-slate-900 dark:text-white font-bold mb-1">{{ __('لا يوجد تعليقات') }}</p>
-                                    <p class="text-sm text-slate-500 dark:text-slate-400">{{ __('كن أول من يسأل سؤال أو يشارك رأيه!') }}</p>
+                                    <p class="text-slate-900 dark:text-white font-bold mb-1">{{ __('ظ„ط§ ظٹظˆط¬ط¯ طھط¹ظ„ظٹظ‚ط§طھ') }}</p>
+                                    <p class="text-sm text-slate-500 dark:text-slate-400">{{ __('ظƒظ† ط£ظˆظ„ ظ…ظ† ظٹط³ط£ظ„ ط³ط¤ط§ظ„ ط£ظˆ ظٹط´ط§ط±ظƒ ط±ط£ظٹظ‡!') }}</p>
                                 </div>
                             @endforelse
                         </div>
@@ -452,7 +452,7 @@
                             <a href="{{ route('student.lessons.show', [$course, $previousLesson]) }}" class="btn-ghost flex items-center justify-center gap-2 px-6 py-3 font-bold text-slate-600 dark:text-slate-300 hover:text-primary-500 hover:bg-white dark:hover:bg-slate-800 rounded-xl transition-colors w-full sm:w-auto shadow-sm border border-slate-200 dark:border-white/5">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                                 <div>
-                                    <div class="text-[10px] uppercase tracking-wider text-slate-400 font-bold mb-0.5">{{ __('السابق') }}</div>
+                                    <div class="text-[10px] uppercase tracking-wider text-slate-400 font-bold mb-0.5">{{ __('ط§ظ„ط³ط§ط¨ظ‚') }}</div>
                                     <div class="text-sm line-clamp-1 max-w-[150px]">{{ $previousLesson->title }}</div>
                                 </div>
                             </a>
@@ -461,14 +461,27 @@
 
                     <div class="w-full sm:w-auto shrink-0 flex justify-center">
                         @if(!$progress->is_completed)
-                            <button type="button" onclick="markAsComplete(this)" class="btn-primary ripple-btn px-8 py-4 rounded-xl shadow-lg shadow-primary-500/25 font-bold flex items-center justify-center gap-2 w-full sm:w-auto bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 border-0">
-                                <span class="bg-black/20 rounded-full p-1"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg></span>
-                                {{ __('تم الانتهاء') }}
-                            </button>
+                            @if($requiresQuizPass && !$hasPassedCompletionQuiz)
+                                {{--
+                                {{ __('طھظ… ط§ظ„ط§ظ†طھظ‡ط§ط،') }}
+                                --}}
+                                <div class="flex flex-col items-stretch gap-2 w-full sm:w-auto">
+                                    <a href="{{ route('student.quizzes.start', $completionQuiz) }}" class="btn-primary ripple-btn px-8 py-4 rounded-xl shadow-lg shadow-amber-500/25 font-bold flex items-center justify-center gap-2 w-full sm:w-auto bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 border-0">
+                                        <span class="bg-black/20 rounded-full p-1"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg></span>
+                                        {{ __('اجتز الاختبار أولًا') }}
+                                    </a>
+                                    <p class="text-center text-xs font-bold text-amber-600 dark:text-amber-400">{{ __('لن يتم اعتبار الدرس مكتملًا قبل نجاحك في الاختبار.') }}</p>
+                                </div>
+                            @else
+                                <button type="button" onclick="markAsComplete(this)" class="btn-primary ripple-btn px-8 py-4 rounded-xl shadow-lg shadow-primary-500/25 font-bold flex items-center justify-center gap-2 w-full sm:w-auto bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 border-0">
+                                    <span class="bg-black/20 rounded-full p-1"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg></span>
+                                    {{ __('تم الانتهاء') }}
+                                </button>
+                            @endif
                         @else
                             <div class="px-8 py-4 rounded-xl font-bold flex items-center justify-center gap-2 w-full sm:w-auto bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
                                 <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                {{ __('مكتمل ✓') }}
+                                {{ __('ظ…ظƒطھظ…ظ„ âœ“') }}
                             </div>
                         @endif
                     </div>
@@ -477,7 +490,7 @@
                         @if($nextLesson)
                             <a href="{{ route('student.lessons.show', [$course, $nextLesson]) }}" class="btn-primary ripple-btn flex items-center justify-center gap-2 px-6 py-3 font-bold rounded-xl w-full sm:w-auto shadow-md">
                                 <div class="text-right">
-                                    <div class="text-[10px] uppercase tracking-wider text-white/70 font-bold mb-0.5">{{ __('التالي') }}</div>
+                                    <div class="text-[10px] uppercase tracking-wider text-white/70 font-bold mb-0.5">{{ __('ط§ظ„طھط§ظ„ظٹ') }}</div>
                                     <div class="text-sm line-clamp-1 max-w-[150px]">{{ $nextLesson->title }}</div>
                                 </div>
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
@@ -487,39 +500,39 @@
                 </div>
             </div>
 
-            {{-- ─── RIGHT SIDEBAR (NOTES) ─── --}}
+            {{-- â”€â”€â”€ RIGHT SIDEBAR (NOTES) â”€â”€â”€ --}}
             <div class="xl:col-span-1">
                 <div class="glass-card sticky top-28 overflow-hidden rounded-[2rem] border-t-4 border-t-accent-500 flex flex-col h-[calc(100vh-8rem)]" x-data="notesManager({ id: @js($currentNote?->id), text: @js($currentNote?->note_text ?? '') })" data-aos="fade-left">
                     <div class="px-6 py-5 border-b border-slate-200/50 dark:border-white/5 bg-slate-50/50 dark:bg-slate-900/20 flex items-center justify-between shrink-0">
                         <div class="flex items-center gap-2">
-                            <span class="text-xl">📝</span>
-                            <h3 class="font-bold text-slate-900 dark:text-white">{{ __('ملاحظاتي') }}</h3>
+                            <span class="text-xl">ًں“‌</span>
+                            <h3 class="font-bold text-slate-900 dark:text-white">{{ __('ظ…ظ„ط§ط­ط¸ط§طھظٹ') }}</h3>
                         </div>
                         
                         <div x-show="saving" x-cloak class="flex items-center gap-1.5 text-xs font-bold text-amber-500 bg-amber-500/10 px-2 py-1 rounded-md">
                             <svg class="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                            {{ __('جاري الحفظ') }}
+                            {{ __('ط¬ط§ط±ظٹ ط§ظ„ط­ظپط¸') }}
                         </div>
                         <div x-show="saved" x-cloak class="flex items-center gap-1 text-xs font-bold text-emerald-500 bg-emerald-500/10 px-2 py-1 rounded-md">
                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                            {{ __('تم الحفظ') }}
+                            {{ __('طھظ… ط§ظ„ط­ظپط¸') }}
                         </div>
                     </div>
                     
                     <div class="p-6 flex-1 flex flex-col min-h-0">
                         <div class="relative flex-1 flex flex-col mb-4">
-                            <textarea x-model="noteText" @input="autoSave()" class="w-full flex-1 bg-yellow-50/50 dark:bg-yellow-900/10 border border-yellow-200/50 dark:border-yellow-900/30 rounded-2xl py-4 px-5 text-slate-800 dark:text-slate-200 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all resize-none shadow-inner text-sm leading-relaxed" placeholder="{{ __('اكتب ملاحظاتك هنا... (بيتحفظ تلقائي)') }}" style="background-image: repeating-linear-gradient(transparent, transparent 31px, rgba(0,0,0,0.05) 31px, rgba(0,0,0,0.05) 32px); line-height: 32px; attachment: local;"></textarea>
+                            <textarea x-model="noteText" @input="autoSave()" class="w-full flex-1 bg-yellow-50/50 dark:bg-yellow-900/10 border border-yellow-200/50 dark:border-yellow-900/30 rounded-2xl py-4 px-5 text-slate-800 dark:text-slate-200 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all resize-none shadow-inner text-sm leading-relaxed" placeholder="{{ __('ط§ظƒطھط¨ ظ…ظ„ط§ط­ط¸ط§طھظƒ ظ‡ظ†ط§... (ط¨ظٹطھط­ظپط¸ طھظ„ظ‚ط§ط¦ظٹ)') }}" style="background-image: repeating-linear-gradient(transparent, transparent 31px, rgba(0,0,0,0.05) 31px, rgba(0,0,0,0.05) 32px); line-height: 32px; attachment: local;"></textarea>
                         </div>
 
                         @if($noteHistory->count() > 0)
                             <div class="shrink-0 pt-4 border-t border-slate-200 dark:border-white/10 max-h-[40%] overflow-y-auto pr-2 custom-scrollbar">
-                                <h4 class="font-bold text-xs uppercase tracking-wider text-slate-500 mb-3">{{ __('ملاحظات سابقة') }}</h4>
+                                <h4 class="font-bold text-xs uppercase tracking-wider text-slate-500 mb-3">{{ __('ظ…ظ„ط§ط­ط¸ط§طھ ط³ط§ط¨ظ‚ط©') }}</h4>
                                 <div class="space-y-3">
                                     @foreach($noteHistory as $note)
                                         <div class="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-3 border border-slate-200 dark:border-white/5 hover:border-accent-500/30 transition-colors group cursor-pointer">
                                             <div class="text-[10px] font-bold text-accent-500 mb-1 flex items-center gap-1">
                                                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                                {{ $note->created_at->format('M d, Y • h:ia') }}
+                                                {{ $note->created_at->format('M d, Y â€¢ h:ia') }}
                                             </div>
                                             <div class="text-xs text-slate-700 dark:text-slate-300 line-clamp-3 group-hover:line-clamp-none transition-all leading-relaxed">{{ $note->note_text }}</div>
                                         </div>
@@ -538,13 +551,18 @@
 @push('scripts')
 <script>
 const lessonUiText = {
-    confirmComplete: @json(__('تقدم ممتاز! هل تريد إنهاء الدرس والانتقال للخطوة التالية؟')),
-    completing: @json(__('جاري الإنهاء...')),
-    completed: @json(__('تم!')),
-    completedSuccess: @json(__('تم إنهاء الدرس بنجاح!')),
-    completeError: @json(__('حصل خطأ! حاول تاني.')),
-    notesSaveError: @json(__('فشل حفظ الملاحظات. تأكد من الاتصال.')),
+    confirmComplete: @json(__('طھظ‚ط¯ظ… ظ…ظ…طھط§ط²! ظ‡ظ„ طھط±ظٹط¯ ط¥ظ†ظ‡ط§ط، ط§ظ„ط¯ط±ط³ ظˆط§ظ„ط§ظ†طھظ‚ط§ظ„ ظ„ظ„ط®ط·ظˆط© ط§ظ„طھط§ظ„ظٹط©طں')),
+    completing: @json(__('ط¬ط§ط±ظٹ ط§ظ„ط¥ظ†ظ‡ط§ط،...')),
+    completed: @json(__('طھظ…!')),
+    completedSuccess: @json(__('طھظ… ط¥ظ†ظ‡ط§ط، ط§ظ„ط¯ط±ط³ ط¨ظ†ط¬ط§ط­!')),
+    completeError: @json(__('ط­طµظ„ ط®ط·ط£! ط­ط§ظˆظ„ طھط§ظ†ظٹ.')),
+    notesSaveError: @json(__('ظپط´ظ„ ط­ظپط¸ ط§ظ„ظ…ظ„ط§ط­ط¸ط§طھ. طھط£ظƒط¯ ظ…ظ† ط§ظ„ط§طھطµط§ظ„.')),
     progressUpdateIgnored: @json(__('Silently ignoring progress update fail')),
+};
+
+const lessonCompletionRules = {
+    requiresQuizPass: @json($requiresQuizPass),
+    hasPassedQuiz: @json($hasPassedCompletionQuiz),
 };
 
 function markAsComplete(btn) {
@@ -574,10 +592,11 @@ function markAsComplete(btn) {
                 @endif
             }, 1000);
         })
-        .catch(() => { 
+        .catch((error) => {
             btn.innerHTML = originalContent;
             btn.disabled = false;
-            if (window.showNotification) showNotification(lessonUiText.completeError, 'error'); 
+            const message = error?.response?.data?.error || lessonUiText.completeError;
+            if (window.showNotification) showNotification(message, 'error');
         });
 }
 
@@ -681,6 +700,9 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Ensure we record close to the end
         video.addEventListener('ended', function() {
+            if (lessonCompletionRules.requiresQuizPass && !lessonCompletionRules.hasPassedQuiz) {
+                return;
+            }
             axios.post('{{ route('student.lessons.update-progress', [$course, $lesson]) }}', { 
                 position: Math.floor(video.duration), 
                 time_spent: Math.floor(video.currentTime - lastReportedTime),

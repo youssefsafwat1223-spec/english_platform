@@ -8,6 +8,7 @@ use App\Models\QuizAttempt;
 use App\Http\Requests\SubmitQuizRequest;
 use App\Services\TelegramService;
 use App\Services\AchievementService;
+use App\Models\LessonProgress;
 
 class QuizController extends Controller
 {
@@ -111,7 +112,19 @@ class QuizController extends Controller
         // Award points if passed
         if ($attempt->passed) {
             $attempt->awardPoints();
-            
+
+            if ($quiz->lesson && $quiz->lesson->requiresQuizPass()) {
+                $progress = LessonProgress::firstOrCreate([
+                    'user_id' => $user->id,
+                    'lesson_id' => $quiz->lesson->id,
+                    'enrollment_id' => $enrollment->id,
+                ]);
+
+                if ($progress->markAsCompleted()) {
+                    $this->achievementService->checkAchievements($user, 'lesson_completed');
+                }
+            }
+
             // Check for achievements
             $this->achievementService->checkAchievements($user, 'quiz_completed');
         }
@@ -123,8 +136,11 @@ class QuizController extends Controller
         \App\Models\Notification::create([
             'user_id' => $user->id,
             'notification_type' => 'quiz_result',
-            'title' => 'Quiz Result',
-            'message' => "You scored {$score}% on {$quiz->title}.",
+            'title' => __('Quiz Result'),
+            'message' => __('You scored :score% on :quiz.', [
+                'score' => $score,
+                'quiz' => $quiz->title,
+            ]),
             'action_url' => route('student.quizzes.result', $attempt->id),
         ]);
 

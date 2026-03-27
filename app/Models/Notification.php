@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Notification extends Model
 {
@@ -59,6 +60,26 @@ class Notification extends Model
     public function scopeByType($query, $type)
     {
         return $query->where('notification_type', $type);
+    }
+
+    /**
+     * Localize stored notification titles on read.
+     */
+    protected function title(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value, array $attributes) => $this->localizeStoredNotificationTitle($value, $attributes)
+        );
+    }
+
+    /**
+     * Localize stored notification messages on read.
+     */
+    protected function message(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value, array $attributes) => $this->localizeStoredNotificationMessage($value, $attributes)
+        );
     }
 
     // ==================== METHODS ====================
@@ -123,5 +144,88 @@ class Notification extends Model
             'battle_started' => 'warning',
             default => 'secondary',
         };
+    }
+
+    private function localizeStoredNotificationTitle(?string $value, array $attributes): ?string
+    {
+        if (!$value || app()->getLocale() !== 'ar') {
+            return $value;
+        }
+
+        $type = $attributes['notification_type'] ?? null;
+
+        return match ($type) {
+            'quiz_result' => __('Quiz Result'),
+            'battle_started' => preg_match('/^(?:⚔️|âڑ”ï¸ڈ) Battle Started in (.+)!$/u', $value, $matches)
+                ? __('⚔️ Battle Started in :course!', ['course' => $matches[1]])
+                : $this->translateExactValue($value),
+            'achievement_earned' => __('Achievement Unlocked!'),
+            'course_purchased' => __('Course Purchased Successfully'),
+            'certificate_issued' => __('Certificate Issued!'),
+            'referral_success' => __('Referral Successful!'),
+            'reply_marked_solution' => __('Your Reply Marked as Solution'),
+            'comment_reply' => __('New Reply on Your Comment'),
+            default => $this->translateExactValue($value),
+        };
+    }
+
+    private function localizeStoredNotificationMessage(?string $value, array $attributes): ?string
+    {
+        if (!$value || app()->getLocale() !== 'ar') {
+            return $value;
+        }
+
+        $type = $attributes['notification_type'] ?? null;
+
+        return match ($type) {
+            'quiz_result' => preg_match('/^You scored (\d+)% on (.+)\.$/u', $value, $matches)
+                ? __('You scored :score% on :quiz.', ['score' => $matches[1], 'quiz' => $matches[2]])
+                : $this->translateExactValue($value),
+            'battle_started' => preg_match('/^(.+) started a battle\. Join now before the lobby closes!$/u', $value, $matches)
+                ? __(':user started a battle. Join now before the lobby closes!', ['user' => $matches[1]])
+                : $this->translateExactValue($value),
+            'achievement_earned' => $this->translateAchievementMessage($value),
+            'course_purchased' => preg_match('/^You have successfully enrolled in (.+)$/u', $value, $matches)
+                ? __('You have successfully enrolled in :course', ['course' => $matches[1]])
+                : $this->translateExactValue($value),
+            'certificate_issued' => preg_match('/^Congratulations! Your certificate for (.+) is ready\.$/u', $value, $matches)
+                ? __('Congratulations! Your certificate for :course is ready.', ['course' => $matches[1]])
+                : $this->translateExactValue($value),
+            'referral_success' => preg_match('/^(.+) purchased a course using your referral code\. You earned a discount!$/u', $value, $matches)
+                ? __(':user purchased a course using your referral code. You earned a discount!', ['user' => $matches[1]])
+                : $this->translateExactValue($value),
+            'reply_marked_solution' => preg_match('/^Your reply was marked as the solution in: (.+)$/u', $value, $matches)
+                ? __('Your reply was marked as the solution in: :topic', ['topic' => $matches[1]])
+                : $this->translateExactValue($value),
+            'comment_reply' => preg_match('/^Admin replied to your comment on (.+)$/u', $value, $matches)
+                ? __('Admin replied to your comment on :lesson', ['lesson' => $matches[1]])
+                : $this->translateExactValue($value),
+            default => $this->translateExactValue($value),
+        };
+    }
+
+    private function translateAchievementMessage(string $value): string
+    {
+        if (preg_match("/^You earned '(.+)': (.+)$/u", $value, $matches)) {
+            return __("You earned ':achievement': :description", [
+                'achievement' => $matches[1],
+                'description' => $matches[2],
+            ]);
+        }
+
+        if (preg_match("/^You earned the '(.+)' achievement!$/u", $value, $matches)) {
+            return __("You earned the ':achievement' achievement!", [
+                'achievement' => $matches[1],
+            ]);
+        }
+
+        return $this->translateExactValue($value);
+    }
+
+    private function translateExactValue(string $value): string
+    {
+        $translated = __($value);
+
+        return $translated !== $value ? $translated : $value;
     }
 }

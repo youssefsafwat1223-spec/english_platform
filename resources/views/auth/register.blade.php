@@ -90,8 +90,10 @@
                 <div class="mb-6 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 px-4 py-3 rounded-xl text-sm font-medium flex gap-3 text-emerald-800 dark:text-emerald-300">
                     <span class="text-xl shrink-0">🎁</span>
                     <div>
-                        Referred by <strong class="text-emerald-900 dark:text-emerald-100">{{ session('referral_info.referrer_name') }}</strong>.
-                        You get <strong class="text-emerald-600 dark:text-emerald-400">{{ session('referral_info.discount') }}% off</strong> your first course!
+                        {!! __('Referred by :name. You get :discount% off your first course!', [
+                            'name' => '<strong class="text-emerald-900 dark:text-emerald-100">' . e(session('referral_info.referrer_name')) . '</strong>',
+                            'discount' => '<strong class="text-emerald-600 dark:text-emerald-400">' . e(session('referral_info.discount')) . '</strong>',
+                        ]) !!}
                     </div>
                 </div>
             @endif
@@ -168,7 +170,7 @@
                     <label class="flex items-start gap-3 cursor-pointer group">
                         <input type="checkbox" name="terms" id="terms" required class="w-5 h-5 mt-0.5 rounded border-2 border-slate-300 dark:border-white/20 text-primary-500 bg-transparent focus:ring-primary-500 focus:ring-offset-0 transition-colors cursor-pointer">
                         <span class="text-sm font-medium text-slate-600 dark:text-slate-400 transition-colors leading-snug">
-                            I agree to the <a href="{{ route('terms') }}" class="text-primary-600 dark:text-primary-400 hover:underline">{{ __('Terms of Service') }}</a> {{ __('and') }} <a href="{{ route('privacy') }}" class="text-primary-600 dark:text-primary-400 hover:underline">{{ __('Privacy Policy') }}</a>.
+                            {{ __('I agree to the') }} <a href="{{ route('terms') }}" class="text-primary-600 dark:text-primary-400 hover:underline">{{ __('Terms of Service') }}</a> {{ __('and') }} <a href="{{ route('privacy') }}" class="text-primary-600 dark:text-primary-400 hover:underline">{{ __('Privacy Policy') }}</a>.
                         </span>
                     </label>
                 </div>

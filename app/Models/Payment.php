@@ -252,8 +252,10 @@ class Payment extends Model
         Notification::create([
             'user_id' => $this->user_id,
             'notification_type' => 'course_purchased',
-            'title' => 'Course Purchased Successfully',
-            'message' => "You have successfully enrolled in {$this->course->title}",
+            'title' => __('Course Purchased Successfully'),
+            'message' => __('You have successfully enrolled in :course', [
+                'course' => $this->course->title,
+            ]),
             'action_url' => route('student.courses.show', $this->course),
         ]);
 

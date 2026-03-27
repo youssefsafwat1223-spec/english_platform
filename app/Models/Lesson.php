@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
+use App\Models\Quiz;
 
 class Lesson extends Model
 {
@@ -245,6 +246,40 @@ class Lesson extends Model
     public function isVdoCipherVideo(): bool
     {
         return !empty($this->vdocipher_video_id);
+    }
+
+    /**
+     * Get the active quiz that must be passed before the lesson can be completed.
+     */
+    public function getCompletionQuiz(): ?Quiz
+    {
+        if ($this->relationLoaded('quiz')) {
+            $quiz = $this->getRelation('quiz');
+
+            return $quiz && $quiz->is_active ? $quiz : null;
+        }
+
+        return $this->quiz()
+            ->where('is_active', true)
+            ->first();
+    }
+
+    /**
+     * Determine whether the lesson requires passing a quiz first.
+     */
+    public function requiresQuizPass(): bool
+    {
+        return $this->getCompletionQuiz() !== null;
+    }
+
+    /**
+     * Determine whether the user may complete the lesson.
+     */
+    public function canBeCompletedBy(User $user): bool
+    {
+        $quiz = $this->getCompletionQuiz();
+
+        return !$quiz || $quiz->hasUserPassed($user);
     }
 
     /**

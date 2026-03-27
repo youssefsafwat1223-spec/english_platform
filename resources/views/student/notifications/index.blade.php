@@ -51,7 +51,7 @@
                         'achievement' => ['icon' => '⭐', 'color' => 'amber'],
                         'default' => ['icon' => '🔔', 'color' => 'violet'],
                     ];
-                    $typeData = $typeIcons[$notification->type ?? 'default'] ?? $typeIcons['default'];
+                    $typeData = $typeIcons[$notification->notification_type ?? 'default'] ?? $typeIcons['default'];
                     $icon = $typeData['icon'];
                     $color = $typeData['color'];
                 @endphp
@@ -74,7 +74,7 @@
                         <div class="flex-1 min-w-0">
                             <div class="flex items-center gap-3 mb-1">
                                 <h2 class="text-base font-bold truncate {{ $isUnread ? 'text-slate-900 dark:text-white' : 'text-slate-700 dark:text-slate-300' }}">
-                                    {{ $notification->title ?? 'System Notification' }}
+                                    {{ $notification->title ?? __('System Notification') }}
                                 </h2>
                                 @if($isUnread)
                                     <span class="shrink-0 flex h-2.5 w-2.5 relative">
@@ -102,7 +102,7 @@
                             @if($isUnread)
                                 <form action="{{ route('student.notifications.mark-as-read', $notification->id) }}" method="POST">
                                     @csrf
-                                    <button type="submit" class="p-2 rounded-xl bg-slate-100 dark:bg-white/5 text-slate-500 hover:bg-{{ $color }}-500 hover:text-white transition-colors" title="Mark as read">
+                                    <button type="submit" class="p-2 rounded-xl bg-slate-100 dark:bg-white/5 text-slate-500 hover:bg-{{ $color }}-500 hover:text-white transition-colors" title="{{ __('Mark as read') }}">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                                     </button>
                                 </form>
