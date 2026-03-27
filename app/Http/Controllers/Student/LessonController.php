@@ -162,6 +162,21 @@ class LessonController extends Controller
             $progress->addTimeSpent(request('time_spent'));
         }
 
+        if (request()->boolean('is_completed')) {
+            if ($lesson->has_quiz) {
+                $quiz = $lesson->quiz;
+
+                if ($quiz && !$quiz->hasUserPassed($user)) {
+                    return response()->json([
+                        'error' => 'You must pass the quiz to complete this lesson',
+                    ], 400);
+                }
+            }
+
+            $progress->markAsCompleted();
+            $this->achievementService->checkAchievements($user, 'lesson_completed');
+        }
+
         return response()->json(['success' => true]);
     }
 

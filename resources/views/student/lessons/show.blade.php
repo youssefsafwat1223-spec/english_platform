@@ -461,7 +461,7 @@
 
                     <div class="w-full sm:w-auto shrink-0 flex justify-center">
                         @if(!$progress->is_completed)
-                            <button onclick="markAsComplete()" class="btn-primary ripple-btn px-8 py-4 rounded-xl shadow-lg shadow-primary-500/25 font-bold flex items-center justify-center gap-2 w-full sm:w-auto bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 border-0">
+                            <button type="button" onclick="markAsComplete(this)" class="btn-primary ripple-btn px-8 py-4 rounded-xl shadow-lg shadow-primary-500/25 font-bold flex items-center justify-center gap-2 w-full sm:w-auto bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 border-0">
                                 <span class="bg-black/20 rounded-full p-1"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg></span>
                                 {{ __('تم الانتهاء') }}
                             </button>
@@ -537,22 +537,33 @@
 
 @push('scripts')
 <script>
-function markAsComplete() {
-    // Replace native confirm with a potential custom modal in the future, native for now
-    if (!confirm(__('تقدم ممتاز! هل تريد إنهاء الدرس والانتقال للخطوة التالية؟'))) return;
-    
-    // Add loading state to button
-    const btn = event.currentTarget;
+const lessonUiText = {
+    confirmComplete: @json(__('تقدم ممتاز! هل تريد إنهاء الدرس والانتقال للخطوة التالية؟')),
+    completing: @json(__('جاري الإنهاء...')),
+    completed: @json(__('تم!')),
+    completedSuccess: @json(__('تم إنهاء الدرس بنجاح!')),
+    completeError: @json(__('حصل خطأ! حاول تاني.')),
+    notesSaveError: @json(__('فشل حفظ الملاحظات. تأكد من الاتصال.')),
+    progressUpdateIgnored: @json(__('Silently ignoring progress update fail')),
+};
+
+function markAsComplete(btn) {
+    if (!btn) return;
+
+    if (!confirm(lessonUiText.confirmComplete)) return;
+
     const originalContent = btn.innerHTML;
-    btn.innerHTML = '<svg class="w-5 h-5 animate-spin mr-2" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> {{ __('جاري الإنهاء...') }}';
+    btn.innerHTML = `<svg class="w-5 h-5 animate-spin mr-2" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> ${lessonUiText.completing}`;
     btn.disabled = true;
 
     axios.post('{{ route('student.lessons.complete', [$course, $lesson]) }}')
         .then(response => {
-            if (window.showNotification) showNotification(response.data.message || __('تم إنهاء الدرس بنجاح! 🎉'), 'success');
+            if (window.showNotification) {
+                showNotification(response.data.message || lessonUiText.completedSuccess, 'success');
+            }
             
             // Success animation
-            btn.innerHTML = '<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> {{ __('تم!') }}';
+            btn.innerHTML = `<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> ${lessonUiText.completed}`;
             btn.classList.add('bg-emerald-500', 'from-emerald-500', 'to-emerald-400');
             
             setTimeout(() => {
@@ -566,7 +577,7 @@ function markAsComplete() {
         .catch(() => { 
             btn.innerHTML = originalContent;
             btn.disabled = false;
-            if (window.showNotification) showNotification(__('حصل خطأ! حاول تاني.'), 'error'); 
+            if (window.showNotification) showNotification(lessonUiText.completeError, 'error'); 
         });
 }
 
@@ -603,7 +614,7 @@ function notesManager(initialNote) {
             })
             .catch(() => { 
                 this.saving = false; 
-                if (window.showNotification) showNotification(__('فشل حفظ الملاحظات. تأكد من الاتصال.'), 'error');
+                if (window.showNotification) showNotification(lessonUiText.notesSaveError, 'error');
             });
         }
     };
@@ -664,7 +675,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     position: Math.floor(video.currentTime), 
                     time_spent: 15, // Approx time since last update
                     duration: video.duration
-                }).catch(e => console.log(__('Silently ignoring progress update fail')));
+                }).catch(() => console.log(lessonUiText.progressUpdateIgnored));
             }
         });
         
@@ -675,7 +686,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 time_spent: Math.floor(video.currentTime - lastReportedTime),
                 duration: video.duration,
                 is_completed: true
-            }).catch(e => console.log(__('Silently ignoring progress update fail')));
+            }).catch(() => console.log(lessonUiText.progressUpdateIgnored));
         });
     }
 });
