@@ -80,9 +80,9 @@
                         <div class="flex items-center gap-3 flex-1 sm:flex-none bg-white dark:bg-slate-800/50 min-w-[140px] px-5 py-4 rounded-[1.25rem] border border-slate-200 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow">
                             <div class="w-12 h-12 rounded-full bg-teal-50 dark:bg-teal-500/10 flex items-center justify-center text-teal-500 text-xl border border-teal-100 dark:border-teal-500/20 shrink-0">⏱️</div>
                             <div>
-                                <div class="text-slate-400 dark:text-slate-500 text-[10px] uppercase font-black tracking-wider mb-1">{{ __('المدة الزمنية') }}</div>
-                                <div class="font-black text-slate-900 dark:text-white">{{ __('حسب سرعتك') }}</div>
-                                <div class="text-[11px] font-bold text-slate-500 mt-0.5">{{ __('وصول مدى الحياة') }}</div>
+                                <div class="text-slate-400 dark:text-slate-500 text-[10px] uppercase font-black tracking-wider mb-1">{{ __('مدة الدراسة') }}</div>
+                                <div class="font-black text-slate-900 dark:text-white">{{ $course->estimated_duration_weeks ? $course->estimated_duration_weeks . ' ' . __('أسابيع تقريبًا') : __('حسب سرعتك') }}</div>
+                                <div class="text-[11px] font-bold text-slate-500 mt-0.5">{{ __('مدة مقترحة فقط - الوصول مدى الحياة') }}</div>
                             </div>
                         </div>
                     </div>

@@ -43,7 +43,7 @@
                             @php $details = [
                                 ['label' => 'Price', 'value' => number_format($course->price, 2) . ' ' . __('ر.س')],
                                 ['label' => 'Status', 'badge' => true],
-                                ['label' => 'Duration', 'value' => $course->estimated_duration_weeks ? $course->estimated_duration_weeks . ' weeks' : 'Not set'],
+                                ['label' => 'Suggested Pace', 'value' => $course->estimated_duration_weeks ? $course->estimated_duration_weeks . ' weeks (display only)' : 'Not set'],
                                 ['label' => 'Created By', 'value' => $course->creator?->name ?? 'System'],
                                 ['label' => 'Created At', 'value' => $course->created_at->format('M d, Y')],
                                 ['label' => 'Intro Video', 'link' => true],

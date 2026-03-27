@@ -36,7 +36,7 @@
 
                 <div>
                     <h2 class="text-lg font-bold mb-3" style="color: var(--color-text);">3. Course Access & Payments</h2>
-                    <p class="leading-relaxed">Paid courses grant you lifetime access to the content available at the time of purchase. We reserve the right to update course content. Refund requests may be submitted within 7 days of purchase if you have completed less than 25% of the course.</p>
+                    <p class="leading-relaxed">Paid courses grant you lifetime access to the content available at the time of purchase. Any duration displayed on a course page is a suggested study timeline only and does not limit access unless explicitly stated before purchase. We reserve the right to update course content. Refund requests may be submitted within 7 days of purchase if you have completed less than 25% of the course.</p>
                 </div>
 
                 <div>

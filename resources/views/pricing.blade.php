@@ -18,6 +18,9 @@
         <p class="text-lg max-w-2xl mx-auto mb-12" style="color: var(--color-text-muted);" data-aos="fade-up" data-aos-delay="200">
             {{ __('Choose a plan that fits your learning goals. Every course comes with lifetime access, quizzes, certificates, and community support.') }}
         </p>
+        <p class="text-sm max-w-2xl mx-auto" style="color: var(--color-text-muted);" data-aos="fade-up" data-aos-delay="250">
+            {{ __('Any course duration shown on the site is a suggested study pace, not an access expiry.') }}
+        </p>
     </div>
 </section>
 
@@ -118,6 +121,7 @@
                 $faqs = [
                     ['q' => __('Can I try courses before buying?'), 'a' => __('Yes! We offer free courses that you can explore without any commitment. Just sign up and start learning.')],
                     ['q' => __('Is there a refund policy?'), 'a' => __('We offer a refund within the first 7 days of purchase if you are not satisfied with the course.')],
+                    ['q' => __('Does a course close after a few weeks?'), 'a' => __('No. Any duration shown on a course is only a recommended study timeline. Paid courses remain available with lifetime access unless explicitly stated otherwise before purchase.')],
                     ['q' => __('Do certificates expire?'), 'a' => __('No. Once you earn a certificate, it is yours forever and can be verified online at any time.')],
                     ['q' => __('Can I access courses on mobile?'), 'a' => __('Absolutely! Our platform is fully responsive and works perfectly on all devices.')],
                 ];

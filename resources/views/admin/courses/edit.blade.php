@@ -50,9 +50,10 @@
                         @error('intro_video_url')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                     </div>
                     <div>
-                        <label for="estimated_duration_weeks" class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('Estimated Duration (weeks)') }}</label>
+                        <label for="estimated_duration_weeks" class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('Estimated Study Duration (weeks)') }}</label>
                         <input type="number" id="estimated_duration_weeks" name="estimated_duration_weeks" min="1" class="input-glass @error('estimated_duration_weeks') border-red-500 @enderror" value="{{ old('estimated_duration_weeks', $course->estimated_duration_weeks) }}">
                         @error('estimated_duration_weeks')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                        <p class="text-xs mt-1" style="color: var(--color-text-muted);">{{ __('Shown to students as a suggested pace only. It does not expire access.') }}</p>
                     </div>
                     <div class="flex items-center">
                         <input type="checkbox" id="is_active" name="is_active" value="1" {{ old('is_active', $course->is_active) ? 'checked' : '' }} class="w-4 h-4 text-primary-500 focus:ring-primary-500 rounded" style="border-color: var(--color-border);">
