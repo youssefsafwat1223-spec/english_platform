@@ -469,7 +469,7 @@
     {{-- ═══════════════════════════════════════════════════════════
          TESTIMONIALS SECTION — {{ __('ماذا قالوا عنا') }}
          ═══════════════════════════════════════════════════════════ --}}
-    @if($testimonials->count() > 0)
+    @if($testimonials->count() > 0 || $canSubmitTestimonial)
     <section class="py-20 lg:py-28 relative overflow-hidden">
         {{-- Background decoration --}}
         <div class="absolute inset-0 bg-gradient-to-tl from-accent-500/5 via-transparent to-primary-500/5 pointer-events-none"></div>
@@ -487,9 +487,28 @@
                     <span class="text-gradient">{{ __('عنا') }}</span>
                 </h2>
                 <p class="text-lg font-medium" style="color: var(--color-text-muted);">{{ __('شوف آراء الطلاب اللي بدأوا رحلتهم معانا') }}</p>
+                @if($canSubmitTestimonial)
+                    <div class="mt-6 flex flex-col items-center gap-3">
+                        <a href="{{ route('student.testimonial.edit') }}" class="btn-primary ripple-btn px-6 py-3 rounded-xl shadow-lg shadow-primary-500/25 inline-flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5h2m-1 0v14m7-7H5"></path>
+                            </svg>
+                            {{ $studentTestimonial ? __('عدّل رأيك') : __('اكتب رأيك') }}
+                        </a>
+                        @if($studentTestimonial && !$studentTestimonial->is_active)
+                            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 text-xs font-black">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                {{ __('رأيك الحالي قيد المراجعة') }}
+                            </div>
+                        @endif
+                    </div>
+                @endif
             </div>
 
             {{-- Testimonials Grid --}}
+            @if($testimonials->count() > 0)
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
                 @foreach($testimonials as $index => $testimonial)
                 <div class="glass-card p-6 lg:p-8 relative group hover:border-accent-500/30 transition-all duration-500 hover:-translate-y-1 hover:shadow-xl"
@@ -532,6 +551,23 @@
                 </div>
                 @endforeach
             </div>
+            @else
+            <div class="glass-card max-w-3xl mx-auto p-8 md:p-10 text-center" data-aos="fade-up">
+                <div class="w-16 h-16 mx-auto rounded-2xl bg-primary-500/10 text-primary-500 flex items-center justify-center mb-5">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-2xl font-black mb-3" style="color: var(--color-text);">{{ __('ابدأ بأول رأي حقيقي هنا') }}</h3>
+                <p class="text-base font-medium mb-6" style="color: var(--color-text-muted);">{{ __('لسه ما فيش آراء منشورة، لكن تقدر تكون أول طالب يشارك تجربته بعد المراجعة.') }}</p>
+                <a href="{{ route('student.testimonial.edit') }}" class="btn-primary ripple-btn px-6 py-3 rounded-xl shadow-lg shadow-primary-500/25 inline-flex items-center gap-2">
+                    {{ __('شارك تجربتك') }}
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </a>
+            </div>
+            @endif
         </div>
     </section>
     @endif

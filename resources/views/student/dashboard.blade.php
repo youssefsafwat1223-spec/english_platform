@@ -136,7 +136,7 @@
         @endif
 
         {{-- ─── QUICK ACTIONS ROW ─── --}}
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4" data-aos="fade-up" data-aos-delay="200">
+        <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-4" data-aos="fade-up" data-aos-delay="200">
             <a href="{{ route('student.forum.index') }}" class="glass-card p-4 flex items-center justify-center gap-3 hover:bg-primary-500 hover:text-white group transition-colors shadow-sm">
                 <span class="text-xl sm:text-2xl group-hover:scale-110 transition-transform">💬</span>
                 <span class="font-bold text-xs sm:text-sm text-slate-700 dark:text-slate-200 group-hover:text-white">{{ __('Community Forum') }}</span>
@@ -153,6 +153,16 @@
                 <span class="text-xl sm:text-2xl group-hover:scale-110 transition-transform">🤖</span>
                 <span class="font-bold text-xs sm:text-sm text-slate-700 dark:text-slate-200 group-hover:text-white">{{ __('Telegram Bot') }}</span>
             </a>
+            @if(auth()->user()->enrollments()->exists())
+                <a href="{{ route('student.testimonial.edit') }}" class="glass-card p-4 flex items-center justify-center gap-3 hover:bg-amber-500 hover:text-white group transition-colors shadow-sm">
+                    <span class="w-8 h-8 rounded-full bg-amber-500/10 group-hover:bg-white/15 text-amber-500 group-hover:text-white flex items-center justify-center transition-colors shrink-0">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.148 3.531a1 1 0 00.95.69h3.712c.969 0 1.371 1.24.588 1.81l-3.003 2.182a1 1 0 00-.364 1.118l1.147 3.531c.3.922-.755 1.688-1.539 1.118l-3.004-2.182a1 1 0 00-1.175 0l-3.004 2.182c-.784.57-1.838-.196-1.539-1.118l1.148-3.531a1 1 0 00-.364-1.118L2.65 8.958c-.783-.57-.38-1.81.588-1.81h3.712a1 1 0 00.95-.69l1.149-3.531z"></path>
+                        </svg>
+                    </span>
+                    <span class="font-bold text-xs sm:text-sm text-slate-700 dark:text-slate-200 group-hover:text-white">{{ __('شارك رأيك') }}</span>
+                </a>
+            @endif
         </div>
 
         {{-- ─── MAIN CONTENT SPLIT ─── --}}

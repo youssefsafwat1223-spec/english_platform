@@ -77,6 +77,10 @@ class AppServiceProvider extends ServiceProvider
         RateLimiter::for('admin-two-factor', fn (Request $request) => $this->withWebThrottleResponse(
             Limit::perMinutes(5, 5)->by($this->userThrottleKey($request, 'admin-two-factor'))
         ));
+
+        RateLimiter::for('testimonial-submit', fn (Request $request) => $this->withWebThrottleResponse(
+            Limit::perMinutes(30, 3)->by($this->userThrottleKey($request, 'testimonial-submit'))
+        ));
     }
 
     protected function withWebThrottleResponse(Limit $limit): Limit

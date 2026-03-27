@@ -215,6 +215,14 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * Testimonial submitted by the student.
+     */
+    public function testimonial()
+    {
+        return $this->hasOne(Testimonial::class);
+    }
+
+    /**
      * Notifications
      */
     public function notifications()

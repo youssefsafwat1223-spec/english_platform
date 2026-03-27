@@ -28,8 +28,22 @@ class HomeController extends Controller
 
         $testimonials = Testimonial::active()->ordered()->take(6)->get();
         $promoVideos = PromoVideo::active()->ordered()->take(4)->get();
+        $canSubmitTestimonial = false;
+        $studentTestimonial = null;
 
-        return view('home', compact('featuredCourses', 'stats', 'testimonials', 'promoVideos'));
+        if (auth()->check() && auth()->user()->is_student) {
+            $studentTestimonial = auth()->user()->testimonial;
+            $canSubmitTestimonial = auth()->user()->enrollments()->exists();
+        }
+
+        return view('home', compact(
+            'featuredCourses',
+            'stats',
+            'testimonials',
+            'promoVideos',
+            'canSubmitTestimonial',
+            'studentTestimonial'
+        ));
     }
 
     public function about()

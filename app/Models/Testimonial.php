@@ -17,6 +17,7 @@ class Testimonial extends Model
     ];
 
     protected $fillable = [
+        'user_id',
         'name',
         'role',
         'content',
@@ -40,5 +41,10 @@ class Testimonial extends Model
     public function scopeOrdered($query)
     {
         return $query->orderBy('sort_order')->orderBy('created_at', 'desc');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

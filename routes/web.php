@@ -43,6 +43,7 @@ use App\Http\Controllers\Student\NotificationController;
 use App\Http\Controllers\Student\LiveGameController;
 use App\Http\Controllers\Student\BattleController;
 use App\Http\Controllers\Student\OnboardingController;
+use App\Http\Controllers\Student\TestimonialController as StudentTestimonialController;
 
 /*
 |--------------------------------------------------------------------------
@@ -495,6 +496,12 @@ Route::prefix('student')->name('student.')->middleware(['auth', 'student', 'acti
     Route::get('/referrals', [StudentReferralController::class, 'index'])->name('referrals.index');
     Route::get('/referrals/how-it-works', [StudentReferralController::class, 'howItWorks'])
         ->name('referrals.how-it-works');
+
+    // Testimonial
+    Route::get('/testimonial', [StudentTestimonialController::class, 'edit'])->name('testimonial.edit');
+    Route::post('/testimonial', [StudentTestimonialController::class, 'store'])
+        ->middleware('throttle:testimonial-submit')
+        ->name('testimonial.store');
     
     // Profile
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
