@@ -1,168 +1,274 @@
 @extends('layouts.app')
 
-@section('title', __('About') . ' — ' . config('app.name'))
+@section('title', 'عن المنصة - ' . config('app.name'))
 
 @section('content')
-{{-- Hero Section --}}
-<section class="relative py-24 overflow-hidden">
-    <div class="absolute inset-0 bg-animated-gradient opacity-5"></div>
+@php
+    $publicPages = [
+        ['title' => 'الصفحة الرئيسية', 'description' => 'تعرض نبذة واضحة عن المنصة، المزايا الأساسية، الكورسات المميزة، الفيديوهات التعريفية وآراء الطلاب.', 'url' => route('home'), 'label' => 'فتح الصفحة'],
+        ['title' => 'الأسعار', 'description' => 'تشرح أسعار الكورسات وما الذي يحصل عليه الطالب بعد الاشتراك أو الشراء.', 'url' => route('pricing'), 'label' => 'عرض الأسعار'],
+        ['title' => 'تواصل معنا', 'description' => 'لإرسال استفسار، شكوى، أو طلب دعم مباشر لفريق المنصة.', 'url' => route('contact'), 'label' => 'فتح الصفحة'],
+        ['title' => 'تسجيل الدخول', 'description' => 'لدخول الطالب أو الأدمن إلى حسابه ومتابعة التعلّم أو الإدارة.', 'url' => route('login'), 'label' => 'فتح الصفحة'],
+        ['title' => 'إنشاء حساب', 'description' => 'لتسجيل طالب جديد وبدء الرحلة داخل المنصة.', 'url' => route('register'), 'label' => 'فتح الصفحة'],
+        ['title' => 'الخصوصية والشروط', 'description' => 'توضح السياسة القانونية وحقوق الاستخدام وحماية بيانات المستخدمين.', 'url' => route('privacy'), 'label' => 'فتح الصفحة'],
+    ];
+
+    $studentPages = [
+        ['title' => 'لوحة التحكم', 'description' => 'أول صفحة بعد الدخول، وفيها الوصول السريع للكورسات الحالية، المدفوعات المعلقة، الترتيب وروابط أهم الأقسام.'],
+        ['title' => 'كل الكورسات', 'description' => 'تعرض الكورسات المتاحة للطالب حتى يختار الكورس المناسب ويفتح صفحته.'],
+        ['title' => 'كورساتي', 'description' => 'صفحة تجمع كل الكورسات التي اشترك فيها الطالب مع تقدم كل كورس.'],
+        ['title' => 'صفحة الكورس', 'description' => 'تعرض تفاصيل الكورس، مستواه، محتواه، طريقة الدراسة، ومتطلبات الإكمال والشهادة.'],
+        ['title' => 'صفحة التعلم', 'description' => 'تعرض وحدات ومحتوى الكورس داخل Accordion منظم، ويختار الطالب منه الدرس الذي يريد فتحه.'],
+        ['title' => 'صفحة الدرس', 'description' => 'فيها الفيديو أو المحتوى، الملاحظات، التعليقات، التقدم، والتنقل بين الدروس.'],
+        ['title' => 'الاختبارات والمحاولات', 'description' => 'الطالب يبدأ الاختبار، يرسل الإجابات، ثم يراجع النتيجة وتاريخ كل المحاولات السابقة.'],
+        ['title' => 'التدريب على النطق', 'description' => 'لتقييم النطق ورفع التسجيلات أو إجراء التقييمات المتعلقة بمهارات التحدث.'],
+        ['title' => 'الشهادات', 'description' => 'تعرض شهادات الطالب مع التحميل، الإرسال، والمشاركة والتحقق من صحة الشهادة.'],
+        ['title' => 'الملاحظات', 'description' => 'تجمع ملاحظات الطالب من كل الدروس في مكان واحد مع العرض والتعديل والتصدير PDF.'],
+        ['title' => 'الإشعارات', 'description' => 'تعرض كل التنبيهات المهمة مثل التقدم، النتائج، التنبيهات الإدارية أو حالات الدفع.'],
+        ['title' => 'الملف الشخصي', 'description' => 'لتعديل البيانات، تغيير كلمة المرور، مراجعة الإنجازات وسجل النقاط.'],
+    ];
+
+    $communityPages = [
+        ['title' => 'المنتدى', 'description' => 'مكان للأسئلة والنقاشات بين الطلاب داخل أقسام وتصنيفات متعددة.'],
+        ['title' => 'لوحة الصدارة', 'description' => 'تعرض ترتيب الطلاب بالنقاط وتشجع على المنافسة والاستمرار.'],
+        ['title' => 'الألعاب', 'description' => 'جلسات تفاعلية تعليمية مباشرة لزيادة التركيز والمتعة أثناء التعلم.'],
+        ['title' => 'الباتل', 'description' => 'غرف منافسة بين الطلاب بأسئلة مرتبطة بالكورسات مع لوبي ونتائج نهائية.'],
+        ['title' => 'الإحالات', 'description' => 'لمتابعة دعوات الأصدقاء وآلية الاستفادة من نظام الإحالة.'],
+        ['title' => 'رأي الطالب', 'description' => 'صفحة يكتب منها الطالب تجربته أو تقييمه، ثم يراجع قبل ظهوره للجمهور.'],
+    ];
+
+    $adminFeatures = [
+        'إدارة الكورسات والمستويات والدروس وترتيب المحتوى.',
+        'إدارة الاختبارات والأسئلة والمراجعة وتتبع المحاولات.',
+        'إدارة الطلاب والاشتراكات والتقدم والمدفوعات والاسترجاعات.',
+        'إدارة الشهادات والمنتدى والبلاغات والألعاب والبوت والإعدادات العامة.',
+        'إعدادات الأمان، الدفع، تيليجرام، النقاط، والمنافسات.',
+    ];
+
+    $botCommands = [
+        ['/start', 'بدء المحادثة وربط حساب الطالب برقم الهاتف المسجل على المنصة.'],
+        ['/today', 'جلب سؤال أو كويز اليوم مباشرة إذا كان متاحًا.'],
+        ['/status', 'عرض الستريك، النقاط، وبعض بيانات التقدم.'],
+        ['/courses', 'عرض الكورسات المسجل فيها الطالب مع التقدم العام.'],
+        ['/leaderboard', 'عرض أفضل الطلاب وترتيب المستخدم الحالي.'],
+        ['/streak', 'عرض عدد أيام الاستمرار الحالية وأطول streak.'],
+        ['/certificate', 'عرض الشهادات المتاحة للطالب.'],
+        ['/remind', 'تشغيل أو إيقاف التذكيرات الخاصة بالبوت.'],
+        ['/unlink', 'فصل حساب تيليجرام من المنصة وإعادة ربطه لاحقًا عند الحاجة.'],
+        ['/help', 'عرض كل الأوامر المتاحة داخل البوت.'],
+    ];
+@endphp
+
+<section class="relative py-20 overflow-hidden">
     <div class="absolute inset-0 bg-grid-pattern opacity-20 dark:opacity-10"></div>
-    <div class="absolute top-20 left-10 w-72 h-72 rounded-full bg-primary-500/10 blur-3xl animate-float pointer-events-none"></div>
-    <div class="absolute bottom-10 right-10 w-56 h-56 rounded-full bg-accent-500/10 blur-3xl animate-float-slow pointer-events-none"></div>
+    <div class="absolute top-10 right-10 w-72 h-72 rounded-full bg-primary-500/10 blur-3xl pointer-events-none"></div>
+    <div class="absolute bottom-0 left-0 w-64 h-64 rounded-full bg-accent-500/10 blur-3xl pointer-events-none"></div>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {{-- Text --}}
-            <div data-aos="fade-right" data-aos-duration="800">
-                <span class="badge-primary mb-4">✨ {{ __('About Us') }}</span>
-                <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight mb-6" style="color: var(--color-text);">
-                    {{ __('Master English with') }}
-                    <span class="text-gradient"> {{ __('real confidence') }}</span>
-                </h1>
-                <p class="text-lg leading-relaxed mb-8" style="color: var(--color-text-muted);">
-                    {{ __('We help learners build real English confidence with structured courses, practical practice, and measurable progress. Our system combines lessons, quizzes, pronunciation practice, and community support so students can improve consistently and earn certificates they can share.') }}
-                </p>
-                <div class="flex flex-wrap gap-4">
-                    <a href="{{ route('register') }}" class="btn-primary btn-lg ripple-btn">
-                        {{ __('Get Started Free') }}
-                    </a>
-                    <a href="{{ route('student.courses.index') }}" class="btn-secondary btn-lg">
-                        {{ __('Browse Courses') }}
-                    </a>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-10">
+        <div class="glass-card rounded-[2rem] p-8 md:p-12" data-aos="fade-up">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-500/10 border border-primary-500/20 text-primary-500 font-bold text-sm mb-6">
+                <span>📘</span>
+                <span>عن المنصة</span>
+            </div>
+
+            <h1 class="text-3xl md:text-5xl font-extrabold text-slate-900 dark:text-white mb-6 leading-tight">
+                خريطة كاملة للمنصة
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-500 to-accent-500">وشرح كل صفحة ودور كل أداة</span>
+            </h1>
+
+            <p class="text-base md:text-lg leading-8 text-slate-600 dark:text-slate-300 max-w-4xl">
+                الصفحة دي معمولة كمرجع واضح لأي شخص يريد يفهم المنصة من أول نظرة: الطالب يبدأ منين، يشتري إزاي، يتعلم إزاي، الاختبارات والشهادات والملاحظات والإشعارات بتشتغل إزاي، والبوت على تيليجرام دوره إيه بالضبط.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+            <div class="xl:col-span-2 space-y-8">
+                <div class="glass-card p-8" data-aos="fade-up" data-aos-delay="100">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-12 h-12 rounded-2xl bg-primary-500/10 text-primary-500 flex items-center justify-center text-2xl">🧭</div>
+                        <div>
+                            <h2 class="text-2xl font-black text-slate-900 dark:text-white">رحلة الطالب داخل المنصة</h2>
+                            <p class="text-sm text-slate-500 dark:text-slate-400">من الحساب حتى الشهادة.</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="rounded-2xl border border-slate-200 dark:border-white/10 bg-white/60 dark:bg-white/5 p-5">
+                            <h3 class="font-bold text-slate-900 dark:text-white mb-2">1. إنشاء الحساب والدخول</h3>
+                            <p class="text-sm leading-7 text-slate-600 dark:text-slate-300">الطالب يسجل حسابًا جديدًا أو يدخل بحسابه الحالي، ثم ينتقل إلى لوحة التحكم أو الكورسات.</p>
+                        </div>
+                        <div class="rounded-2xl border border-slate-200 dark:border-white/10 bg-white/60 dark:bg-white/5 p-5">
+                            <h3 class="font-bold text-slate-900 dark:text-white mb-2">2. اختيار الكورس والدفع</h3>
+                            <p class="text-sm leading-7 text-slate-600 dark:text-slate-300">الطالب يراجع صفحة الكورس، ثم يدخل صفحة التسجيل والدفع، وبعد نجاح العملية يفتح له الكورس.</p>
+                        </div>
+                        <div class="rounded-2xl border border-slate-200 dark:border-white/10 bg-white/60 dark:bg-white/5 p-5">
+                            <h3 class="font-bold text-slate-900 dark:text-white mb-2">3. التعلم والاختبارات</h3>
+                            <p class="text-sm leading-7 text-slate-600 dark:text-slate-300">من صفحة التعلم يفتح الدرس، يشاهد المحتوى، يحفظ الملاحظات، ويؤدي الاختبار المطلوب قبل إتمام الدرس إذا كان عليه Quiz.</p>
+                        </div>
+                        <div class="rounded-2xl border border-slate-200 dark:border-white/10 bg-white/60 dark:bg-white/5 p-5">
+                            <h3 class="font-bold text-slate-900 dark:text-white mb-2">4. المتابعة والشهادة</h3>
+                            <p class="text-sm leading-7 text-slate-600 dark:text-slate-300">التقدم يتحدث تلقائيًا، والإشعارات تُرسل، وعند استيفاء المتطلبات تظهر الشهادة للتحميل والمشاركة.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card p-8" data-aos="fade-up" data-aos-delay="150">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-12 h-12 rounded-2xl bg-accent-500/10 text-accent-500 flex items-center justify-center text-2xl">🌐</div>
+                        <h2 class="text-2xl font-black text-slate-900 dark:text-white">الصفحات العامة</h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        @foreach($publicPages as $page)
+                            <div class="rounded-2xl border border-slate-200 dark:border-white/10 bg-white/60 dark:bg-white/5 p-5">
+                                <div class="flex items-start justify-between gap-4 mb-3">
+                                    <h3 class="font-bold text-slate-900 dark:text-white">{{ $page['title'] }}</h3>
+                                    <a href="{{ $page['url'] }}" class="text-sm font-bold text-primary-500 hover:text-primary-400 whitespace-nowrap">
+                                        {{ $page['label'] }}
+                                    </a>
+                                </div>
+                                <p class="text-sm leading-7 text-slate-600 dark:text-slate-300">{{ $page['description'] }}</p>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+
+                <div class="glass-card p-8" data-aos="fade-up" data-aos-delay="200">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center text-2xl">🎓</div>
+                        <h2 class="text-2xl font-black text-slate-900 dark:text-white">صفحات الطالب الأساسية</h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        @foreach($studentPages as $page)
+                            <div class="rounded-2xl border border-slate-200 dark:border-white/10 bg-white/60 dark:bg-white/5 p-5">
+                                <h3 class="font-bold text-slate-900 dark:text-white mb-2">{{ $page['title'] }}</h3>
+                                <p class="text-sm leading-7 text-slate-600 dark:text-slate-300">{{ $page['description'] }}</p>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+
+                <div class="glass-card p-8" data-aos="fade-up" data-aos-delay="250">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center text-2xl">⚔️</div>
+                        <h2 class="text-2xl font-black text-slate-900 dark:text-white">التفاعل والمجتمع والمنافسة</h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        @foreach($communityPages as $page)
+                            <div class="rounded-2xl border border-slate-200 dark:border-white/10 bg-white/60 dark:bg-white/5 p-5">
+                                <h3 class="font-bold text-slate-900 dark:text-white mb-2">{{ $page['title'] }}</h3>
+                                <p class="text-sm leading-7 text-slate-600 dark:text-slate-300">{{ $page['description'] }}</p>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+
+                <div class="glass-card p-8" data-aos="fade-up" data-aos-delay="300">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-12 h-12 rounded-2xl bg-violet-500/10 text-violet-500 flex items-center justify-center text-2xl">🤖</div>
+                        <div>
+                            <h2 class="text-2xl font-black text-slate-900 dark:text-white">البوت على تيليجرام</h2>
+                            <p class="text-sm text-slate-500 dark:text-slate-400">جزء مكمل للمنصة وليس خدمة منفصلة.</p>
+                        </div>
+                    </div>
+
+                    <div class="rounded-2xl border border-violet-500/20 bg-violet-500/5 p-5 mb-6">
+                        <p class="text-sm leading-8 text-slate-700 dark:text-slate-200">
+                            بعد ربط الحساب برقم الهاتف، البوت يقدر يساعد الطالب في المتابعة اليومية: يرسل سؤال اليوم، يعرض التقدم، الكورسات، الترتيب، الستريك، الشهادات، ويشغل التذكيرات أو يوقفها. اسم البوت الحالي:
+                            <span class="font-bold text-violet-500">@{{ config('services.telegram.bot_username', 'SimpleEnglishBot') }}</span>
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        @foreach($botCommands as [$command, $description])
+                            <div class="rounded-2xl border border-slate-200 dark:border-white/10 bg-white/60 dark:bg-white/5 p-5">
+                                <div class="inline-flex px-3 py-1 rounded-lg bg-violet-500/10 text-violet-500 font-mono font-bold text-sm mb-3">{{ $command }}</div>
+                                <p class="text-sm leading-7 text-slate-600 dark:text-slate-300">{{ $description }}</p>
+                            </div>
+                        @endforeach
+                    </div>
+
+                    <div class="mt-6">
+                        <a href="{{ route('student.telegram.guide') }}" class="inline-flex items-center gap-2 text-sm font-bold text-primary-500 hover:text-primary-400">
+                            <span>فتح دليل تيليجرام الكامل</span>
+                            <span>←</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="glass-card p-8" data-aos="fade-up" data-aos-delay="350">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-12 h-12 rounded-2xl bg-sky-500/10 text-sky-500 flex items-center justify-center text-2xl">🛠️</div>
+                        <h2 class="text-2xl font-black text-slate-900 dark:text-white">لوحة الإدارة</h2>
+                    </div>
+
+                    <div class="space-y-4">
+                        @foreach($adminFeatures as $feature)
+                            <div class="flex items-start gap-3 rounded-2xl border border-slate-200 dark:border-white/10 bg-white/60 dark:bg-white/5 p-4">
+                                <span class="mt-1 text-sky-500">•</span>
+                                <p class="text-sm leading-7 text-slate-600 dark:text-slate-300">{{ $feature }}</p>
+                            </div>
+                        @endforeach
+                    </div>
                 </div>
             </div>
 
-            {{-- Features Card --}}
-            <div class="glass-card p-8 tilt-card" data-aos="fade-left" data-aos-duration="800" data-aos-delay="200">
-                <h2 class="text-xl font-bold mb-6 flex items-center gap-3" style="color: var(--color-text);">
-                    <span class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center text-white text-lg">🎯</span>
-                    {{ __('What You Get') }}
-                </h2>
-                <ul class="space-y-4">
-                    <li class="flex items-start gap-4 group">
-                        <span class="mt-1 w-8 h-8 rounded-lg bg-primary-500/10 flex items-center justify-center text-primary-500 shrink-0 group-hover:scale-110 transition-transform">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                        </span>
-                        <div>
-                            <h4 class="font-semibold text-sm" style="color: var(--color-text);">{{ __('Structured Courses') }}</h4>
-                            <p class="text-sm" style="color: var(--color-text-muted);">{{ __('Step-by-step paths designed for real progress') }}</p>
-                        </div>
-                    </li>
-                    <li class="flex items-start gap-4 group">
-                        <span class="mt-1 w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-500 shrink-0 group-hover:scale-110 transition-transform">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                        </span>
-                        <div>
-                            <h4 class="font-semibold text-sm" style="color: var(--color-text);">{{ __('Interactive Practice') }}</h4>
-                            <p class="text-sm" style="color: var(--color-text-muted);">{{ __('Quizzes and pronunciation to reinforce lessons') }}</p>
-                        </div>
-                    </li>
-                    <li class="flex items-start gap-4 group">
-                        <span class="mt-1 w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-500 shrink-0 group-hover:scale-110 transition-transform">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                        </span>
-                        <div>
-                            <h4 class="font-semibold text-sm" style="color: var(--color-text);">{{ __('Verified Certificates') }}</h4>
-                            <p class="text-sm" style="color: var(--color-text-muted);">{{ __('Earn certificates with online verification') }}</p>
-                        </div>
-                    </li>
-                    <li class="flex items-start gap-4 group">
-                        <span class="mt-1 w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-500 shrink-0 group-hover:scale-110 transition-transform">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                        </span>
-                        <div>
-                            <h4 class="font-semibold text-sm" style="color: var(--color-text);">{{ __('Referral Rewards') }}</h4>
-                            <p class="text-sm" style="color: var(--color-text-muted);">{{ __('Invite friends and earn bonus points') }}</p>
-                        </div>
-                    </li>
-                </ul>
+            <div class="space-y-8">
+                <div class="glass-card p-8 sticky-sidebar" data-aos="fade-left" data-aos-delay="180">
+                    <h2 class="text-xl font-black text-slate-900 dark:text-white mb-5">روابط مهمة</h2>
+
+                    <div class="space-y-3">
+                        <a href="{{ route('pricing') }}" class="flex items-center justify-between rounded-2xl border border-slate-200 dark:border-white/10 bg-white/60 dark:bg-white/5 p-4 text-sm font-bold text-slate-800 dark:text-white hover:border-primary-500/40 transition-colors">
+                            <span>الأسعار</span>
+                            <span class="text-primary-500">↗</span>
+                        </a>
+                        <a href="{{ route('contact') }}" class="flex items-center justify-between rounded-2xl border border-slate-200 dark:border-white/10 bg-white/60 dark:bg-white/5 p-4 text-sm font-bold text-slate-800 dark:text-white hover:border-primary-500/40 transition-colors">
+                            <span>الدعم والتواصل</span>
+                            <span class="text-primary-500">↗</span>
+                        </a>
+                        <a href="{{ route('register') }}" class="flex items-center justify-between rounded-2xl border border-slate-200 dark:border-white/10 bg-white/60 dark:bg-white/5 p-4 text-sm font-bold text-slate-800 dark:text-white hover:border-primary-500/40 transition-colors">
+                            <span>إنشاء حساب</span>
+                            <span class="text-primary-500">↗</span>
+                        </a>
+                        <a href="{{ route('login') }}" class="flex items-center justify-between rounded-2xl border border-slate-200 dark:border-white/10 bg-white/60 dark:bg-white/5 p-4 text-sm font-bold text-slate-800 dark:text-white hover:border-primary-500/40 transition-colors">
+                            <span>تسجيل الدخول</span>
+                            <span class="text-primary-500">↗</span>
+                        </a>
+                        <a href="{{ route('student.courses.index') }}" class="flex items-center justify-between rounded-2xl border border-slate-200 dark:border-white/10 bg-white/60 dark:bg-white/5 p-4 text-sm font-bold text-slate-800 dark:text-white hover:border-primary-500/40 transition-colors">
+                            <span>الكورسات</span>
+                            <span class="text-primary-500">↗</span>
+                        </a>
+                        <a href="{{ route('student.dashboard') }}" class="flex items-center justify-between rounded-2xl border border-slate-200 dark:border-white/10 bg-white/60 dark:bg-white/5 p-4 text-sm font-bold text-slate-800 dark:text-white hover:border-primary-500/40 transition-colors">
+                            <span>لوحة التحكم</span>
+                            <span class="text-primary-500">↗</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="glass-card p-8" data-aos="fade-left" data-aos-delay="240">
+                    <h2 class="text-xl font-black text-slate-900 dark:text-white mb-5">ما الذي يميز المنصة؟</h2>
+                    <div class="space-y-4 text-sm leading-7 text-slate-600 dark:text-slate-300">
+                        <p>المنصة ليست مجرد فيديوهات؛ هي نظام تعلّم متكامل يربط بين المحتوى، الاختبارات، الشهادات، الإشعارات، والمجتمع.</p>
+                        <p>الطالب يقدر يتابع حالته من الموقع نفسه ومن تيليجرام، ويعرف أين وصل وماذا ينقصه بشكل واضح.</p>
+                        <p>وفي الخلفية توجد لوحة إدارة قوية لإدارة المحتوى والطلاب والمدفوعات والإعدادات والأنشطة التفاعلية.</p>
+                    </div>
+                </div>
+
+                <div class="glass-card p-8" data-aos="fade-left" data-aos-delay="300">
+                    <h2 class="text-xl font-black text-slate-900 dark:text-white mb-5">لو أنت طالب جديد</h2>
+                    <ol class="space-y-3 text-sm leading-7 text-slate-600 dark:text-slate-300 list-decimal pr-5">
+                        <li>أنشئ حسابًا أو سجل دخولك.</li>
+                        <li>راجع صفحة الأسعار أو افتح قائمة الكورسات.</li>
+                        <li>اختر الكورس المناسب ثم أكمل عملية الشراء.</li>
+                        <li>ابدأ من صفحة التعلم ثم افتح الدرس المطلوب.</li>
+                        <li>أكمل الاختبارات المطلوبة حتى يتحدث التقدم بشكل صحيح.</li>
+                        <li>اربط تيليجرام إذا كنت تريد متابعة يومية أسرع.</li>
+                    </ol>
+                </div>
             </div>
         </div>
-    </div>
-</section>
-
-{{-- How It Works --}}
-<section class="py-20 relative">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-16" data-aos="fade-up">
-            <span class="badge-accent mb-4">🚀 {{ __('Simple Process') }}</span>
-            <h2 class="text-3xl sm:text-4xl font-extrabold" style="color: var(--color-text);">
-                {{ __('How It Works') }}
-            </h2>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            @php
-                $steps = [
-                    ['num' => '01', 'icon' => '📖', 'title' => __('Pick a Course'), 'desc' => __('Choose a course that matches your level and goals, then follow the lesson path at your pace.'), 'color' => 'primary', 'delay' => 0],
-                    ['num' => '02', 'icon' => '🧠', 'title' => __('Practice & Test'), 'desc' => __('Complete lessons, answer quizzes, and practice pronunciation to lock in what you learn.'), 'color' => 'accent', 'delay' => 150],
-                    ['num' => '03', 'icon' => '🏆', 'title' => __('Earn Certificate'), 'desc' => __('Finish the course, pass the final assessment, and receive a verified certificate.'), 'color' => 'emerald', 'delay' => 300],
-                ];
-            @endphp
-
-            @foreach($steps as $step)
-                <div class="glass-card p-8 text-center tilt-card group relative overflow-hidden" data-aos="fade-up" data-aos-delay="{{ $step['delay'] }}">
-                    {{-- Step Number Background --}}
-                    <div class="absolute -top-4 -right-4 text-8xl font-black opacity-5 select-none" style="color: var(--color-text);">
-                        {{ $step['num'] }}
-                    </div>
-
-                    <div class="relative z-10">
-                        <div class="w-16 h-16 rounded-2xl bg-{{ $step['color'] }}-500/10 flex items-center justify-center text-3xl mx-auto mb-6 group-hover:scale-110 transition-transform">
-                            {{ $step['icon'] }}
-                        </div>
-                        <span class="text-xs font-bold uppercase tracking-widest mb-2 block" style="color: var(--color-primary);">
-                            {{ __('Step') }} {{ $step['num'] }}
-                        </span>
-                        <h3 class="text-xl font-bold mb-3" style="color: var(--color-text);">{{ $step['title'] }}</h3>
-                        <p class="text-sm leading-relaxed" style="color: var(--color-text-muted);">{{ $step['desc'] }}</p>
-                    </div>
-                </div>
-            @endforeach
-        </div>
-    </div>
-</section>
-
-{{-- Stats Bar --}}
-<section class="py-16 relative overflow-hidden">
-    <div class="absolute inset-0 bg-animated-gradient opacity-90"></div>
-    <div class="absolute inset-0 bg-dot-pattern opacity-10"></div>
-
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center text-white">
-            @php
-                $stats = [
-                    ['label' => __('Active Students'), 'value' => '2K+', 'icon' => '👥'],
-                    ['label' => __('Courses Available'), 'value' => '50+', 'icon' => '📚'],
-                    ['label' => __('Certificates Issued'), 'value' => '800+', 'icon' => '🎓'],
-                    ['label' => __('Satisfaction Rate'), 'value' => '98%', 'icon' => '⭐'],
-                ];
-            @endphp
-
-            @foreach($stats as $stat)
-                <div data-aos="zoom-in" data-aos-delay="{{ $loop->index * 100 }}">
-                    <div class="text-4xl mb-2">{{ $stat['icon'] }}</div>
-                    <div class="text-3xl font-extrabold">{{ $stat['value'] }}</div>
-                    <div class="text-sm opacity-80 mt-1">{{ $stat['label'] }}</div>
-                </div>
-            @endforeach
-        </div>
-    </div>
-</section>
-
-{{-- CTA Section --}}
-<section class="py-20">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center" data-aos="fade-up">
-        <h2 class="text-3xl sm:text-4xl font-extrabold mb-4" style="color: var(--color-text);">
-            {{ __('Ready to start your journey?') }}
-        </h2>
-        <p class="text-lg mb-8" style="color: var(--color-text-muted);">
-            {{ __('Create your account and begin learning in minutes.') }}
-        </p>
-        <a href="{{ route('register') }}" class="btn-primary btn-lg ripple-btn inline-flex items-center gap-2">
-            {{ __('Get Started Free') }}
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
-        </a>
     </div>
 </section>
 @endsection

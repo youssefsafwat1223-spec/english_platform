@@ -19,13 +19,6 @@ class HomeController extends Controller
             ->take(6)
             ->get();
 
-        $stats = [
-            'total_students' => \App\Models\User::students()->count(),
-            'total_courses' => Course::active()->count(),
-            'total_enrollments' => \App\Models\Enrollment::count(),
-            'certificates_issued' => \App\Models\Certificate::count(),
-        ];
-
         $testimonials = Testimonial::active()->ordered()->take(6)->get();
         $promoVideos = PromoVideo::active()->ordered()->take(4)->get();
         $canSubmitTestimonial = false;
@@ -38,7 +31,6 @@ class HomeController extends Controller
 
         return view('home', compact(
             'featuredCourses',
-            'stats',
             'testimonials',
             'promoVideos',
             'canSubmitTestimonial',

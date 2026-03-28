@@ -85,4 +85,15 @@ class StudentDashboardTest extends TestCase
             Carbon::setTestNow();
         }
     }
+
+    public function test_dashboard_hides_removed_catalog_and_activity_sections(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->get(route('student.dashboard'));
+
+        $response->assertOk();
+        $response->assertDontSeeText('Browse Catalog');
+        $response->assertDontSeeText('Learning Activity');
+    }
 }

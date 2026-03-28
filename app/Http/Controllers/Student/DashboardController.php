@@ -52,12 +52,6 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
-        // Get recent activity
-        $recentActivity = $user->pointsHistory()
-            ->latest()
-            ->take(10)
-            ->get();
-
         // Statistics
         $stats = [
             'total_enrollments' => $user->enrollments()->count(),
@@ -71,13 +65,6 @@ class DashboardController extends Controller
             'achievements_count' => $user->achievements()->count(),
         ];
 
-        // Daily question stats
-        $dailyQuestionStats = [
-            'total_answered' => $user->dailyQuestions()->answered()->count(),
-            'correct_answers' => $user->dailyQuestions()->correct()->count(),
-            'accuracy' => $this->calculateAccuracy($user),
-        ];
-
         // Upcoming quiz/lesson
         $nextLesson = $this->getNextLesson($user);
 
@@ -87,43 +74,14 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
-        // Available Courses (Not Enrolled)
-        $availableCourses = \App\Models\Course::whereDoesntHave('enrollments', function ($query) use ($user) {
-                $query->where('user_id', $user->id);
-            })
-            ->where('is_active', true)
-            ->inRandomOrder()
-            ->take(3)
-            ->get();
-
-        // 7-Day Activity Chart
-        $chartData = $this->getPointsChartData($user);
-
         return view('student.dashboard', compact(
             'user',
             'activeEnrollments',
-            'recentActivity',
             'stats',
-            'dailyQuestionStats',
             'nextLesson',
             'topLearners',
-            'chartData',
-            'availableCourses',
             'pendingPayments'
         ));
-    }
-
-    private function calculateAccuracy(User $user)
-    {
-        $total = $user->dailyQuestions()->answered()->count();
-        
-        if ($total === 0) {
-            return 0;
-        }
-
-        $correct = $user->dailyQuestions()->correct()->count();
-        
-        return round(($correct / $total) * 100);
     }
 
     private function getNextLesson(User $user)
@@ -138,27 +96,5 @@ class DashboardController extends Controller
         }
 
         return $activeEnrollment->next_lesson;
-    }
-
-    private function getPointsChartData(User $user)
-    {
-        $days = collect(range(6, 0))->map(function ($daysAgo) {
-            return now()->subDays($daysAgo)->format('Y-m-d');
-        });
-
-        $pointsPerDay = $user->pointsHistory()
-            ->where('created_at', '>=', now()->subDays(6)->startOfDay())
-            ->get()
-            ->groupBy(function ($record) {
-                return $record->created_at->format('Y-m-d');
-            })
-            ->map(function ($records) {
-                return $records->sum('points_earned');
-            });
-
-        return [
-            'labels' => $days->map(fn($date) => \Carbon\Carbon::parse($date)->format('D'))->toArray(),
-            'data' => $days->map(fn($date) => $pointsPerDay->get($date, 0))->toArray(),
-        ];
     }
 }

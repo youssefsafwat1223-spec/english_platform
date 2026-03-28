@@ -1,77 +1,41 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
-@section('title', __('إتقان الإنجليزية | منصة لتعليم اللغة الإنجليزية'))
-@section('meta_description', __('أفضل منصة لتعليم اللغة الإنجليزية وتطوير مهارات التحدث، القواعد، والطلاقة. كورسات تفاعلية مع تقييم النطق باستخدام الذكاء الاصطناعي.'))
-@section('meta_keywords', __('تعلم الانجليزية, دورات انجليزي, نطق اللغة الانجليزية, الذكاء الاصطناعي, English courses, learn English'))
+@section('title', __('ط¥طھظ‚ط§ظ† ط§ظ„ط¥ظ†ط¬ظ„ظٹط²ظٹط© | ظ…ظ†طµط© ظ„طھط¹ظ„ظٹظ… ط§ظ„ظ„ط؛ط© ط§ظ„ط¥ظ†ط¬ظ„ظٹط²ظٹط©'))
+@section('meta_description', __('ط£ظپط¶ظ„ ظ…ظ†طµط© ظ„طھط¹ظ„ظٹظ… ط§ظ„ظ„ط؛ط© ط§ظ„ط¥ظ†ط¬ظ„ظٹط²ظٹط© ظˆطھط·ظˆظٹط± ظ…ظ‡ط§ط±ط§طھ ط§ظ„طھط­ط¯ط«طŒ ط§ظ„ظ‚ظˆط§ط¹ط¯طŒ ظˆط§ظ„ط·ظ„ط§ظ‚ط©. ظƒظˆط±ط³ط§طھ طھظپط§ط¹ظ„ظٹط© ظ…ط¹ طھظ‚ظٹظٹظ… ط§ظ„ظ†ط·ظ‚ ط¨ط§ط³طھط®ط¯ط§ظ… ط§ظ„ط°ظƒط§ط، ط§ظ„ط§طµط·ظ†ط§ط¹ظٹ.'))
+@section('meta_keywords', __('طھط¹ظ„ظ… ط§ظ„ط§ظ†ط¬ظ„ظٹط²ظٹط©, ط¯ظˆط±ط§طھ ط§ظ†ط¬ظ„ظٹط²ظٹ, ظ†ط·ظ‚ ط§ظ„ظ„ط؛ط© ط§ظ„ط§ظ†ط¬ظ„ظٹط²ظٹط©, ط§ظ„ط°ظƒط§ط، ط§ظ„ط§طµط·ظ†ط§ط¹ظٹ, English courses, learn English'))
 
 @section('content')
 
-{{-- ═══════════════════════════════════════════════════════════
+{{-- â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ
      ADVANCED 3D BOOK SPLASH SCREEN
-     ═══════════════════════════════════════════════════════════ --}}
+     â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ --}}
 {{-- Removed 3D Splash Screen --}}
 
 <div class="relative overflow-hidden">
 
-    {{-- ═══════════════════════════════════════════════════════════
-         HERO SECTION — 3D Elements, Gradient text, floating orbs, CTA
-         ═══════════════════════════════════════════════════════════ --}}
+    {{-- Hero Section --}}
     <section class="relative min-h-screen flex items-center justify-center overflow-hidden -mt-20 lg:-mt-24 pt-20 lg:pt-24">
-        
-        {{-- Video Background --}}
         <div class="absolute inset-0 w-full h-full z-0 overflow-hidden bg-slate-900">
             <video autoplay loop muted playsinline preload="auto" class="absolute top-1/2 left-1/2 min-w-full min-h-full w-auto h-auto -translate-x-1/2 -translate-y-1/2 object-cover opacity-90">
                 <source src="{{ asset('videos/Futuristic_Alphabet_Sphere_Animation.webm') }}" type="video/webm">
             </video>
-            {{-- Dark/Gradient Overlay for readability --}}
             <div class="absolute inset-0 bg-slate-900/60 dark:bg-slate-900/80"></div>
             <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-slate-900/60"></div>
-            {{-- Mesh gradient overlay for extra texture --}}
             <div class="absolute inset-0 bg-primary-500/10 mix-blend-overlay"></div>
         </div>
 
         <div class="max-w-7xl mx-auto px-6 lg:px-8 py-32 relative z-10 w-full flex flex-col items-center text-center mt-10">
-            
             <div data-aos="fade-up" data-aos-duration="1000" class="relative z-20 max-w-4xl mx-auto flex flex-col items-center">
-                {{-- Status Badges --}}
-                <div class="flex flex-wrap justify-center items-center gap-3 mb-8">
-                    {{-- Live Students Counter --}}
-                    @php
-                        // Track activity for logged-in students visiting the home page
-                        if (auth()->check() && auth()->user()->is_student) {
-                            auth()->user()->updateActivity();
-                        }
-
-                        $activeStudentsCount = \Illuminate\Support\Facades\Cache::remember('active_students_count_home', 10, function () {
-                            return \App\Models\User::where('role', 'student')
-                                ->where('last_activity_at', '>=', now()->subMinutes(5))
-                                ->count();
-                        });
-                    @endphp
-                    <div class="inline-flex items-center gap-2 glass-card px-4 py-2 !rounded-full shadow-lg border-white/10 bg-white/5 backdrop-blur-md" title=__('Active students right now')>
-                        <span class="relative flex h-3 w-3 shrink-0">
-                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                            <span class="relative inline-flex rounded-full h-3 w-3 bg-blue-500"></span>
-                        </span>
-                        <span class="text-xs font-black uppercase tracking-widest text-white">
-                            {{ $activeStudentsCount ?? 0 }} {{ __('Students Online') }}
-                        </span>
-                    </div>
-                </div>
-
-                {{-- Heading --}}
                 <h1 class="text-5xl sm:text-6xl lg:text-8xl font-black tracking-tighter leading-[1.15] mb-8 text-white drop-shadow-md">
                     {{ __('Master English') }}
                     <br>
                     <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-accent-400 pb-2 mt-4 inline-block">{{ __('Like a Pro.') }}</span>
                 </h1>
 
-                {{-- Subtitle --}}
                 <p class="text-xl sm:text-2xl max-w-2xl mx-auto mb-10 leading-relaxed font-medium text-slate-200 drop-shadow-md">
                     {{ __('The premium AI-powered platform for immersive language learning. Elevate your fluency with interactive tools and real-time feedback.') }}
                 </p>
 
-                {{-- CTA Button --}}
                 <div class="flex items-center justify-center mb-10 w-full sm:w-auto">
                     <a href="{{ route('student.courses.index') }}"
                        class="btn-primary ripple-btn px-10 py-5 rounded-2xl shadow-[0_0_40px_-10px_rgba(99,102,241,0.6)] font-black text-lg flex items-center justify-center gap-2 group bg-gradient-to-r from-primary-600 to-accent-600 hover:from-primary-500 hover:to-accent-500 text-white border border-white/20 transition-all hover:scale-105 w-full sm:w-auto">
@@ -82,96 +46,14 @@
                     </a>
                 </div>
             </div>
-
-            {{-- Floating Stats Pill (Ultra-Minimalist Design) --}}
-            <div class="mt-20 relative z-20 w-full max-w-4xl mx-auto" data-aos="fade-up" data-aos-duration="1200" data-aos-delay="200">
-                <div class="relative p-1 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl shadow-2xl flex flex-col md:flex-row items-center justify-between overflow-hidden">
-                    {{-- Ambient Glow --}}
-                    <div class="absolute inset-0 bg-gradient-to-r from-primary-500/10 via-emerald-500/10 to-accent-500/10 opacity-50"></div>
-
-
-
-                    {{-- Stat 2: Active Courses --}}
-                    <div class="relative flex-1 flex items-center justify-center gap-4 p-6 group w-full md:w-auto">
-                        <div class="w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center ring-1 ring-emerald-500/50 group-hover:scale-110 group-hover:bg-emerald-500/40 transition-all duration-300 shadow-[0_0_20px_rgba(16,185,129,0.3)]">
-                            <span class="text-xl">🎓</span>
-                        </div>
-                        <div class="text-left">
-                            <div class="text-white font-black text-3xl leading-none mb-0.5">{{ collect($stats)->get('total_courses', 0) }}</div>
-                            <div class="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">{{ __('Courses') }}</div>
-                        </div>
-                    </div>
-
-                    {{-- Divider --}}
-                    <div class="hidden md:block w-px h-16 bg-white/10"></div>
-                    <div class="md:hidden w-3/4 h-px bg-white/10 my-2"></div>
-
-                    {{-- Stat 3: Total Students --}}
-                    <div class="relative flex-1 flex items-center justify-center gap-4 p-6 group w-full md:w-auto">
-                        <div class="w-12 h-12 rounded-full bg-accent-500/20 flex items-center justify-center ring-1 ring-accent-500/50 group-hover:scale-110 group-hover:bg-accent-500/40 transition-all duration-300 shadow-[0_0_20px_rgba(139,92,246,0.3)]">
-                            <span class="text-xl">👥</span>
-                        </div>
-                        <div class="text-left">
-                            <div class="text-white font-black text-3xl leading-none mb-0.5">{{ collect($stats)->get('total_students', 0) }}</div>
-                            <div class="text-[10px] font-bold text-accent-400 uppercase tracking-widest">{{ __('Learners') }}</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
         </div>
     </section>
 
-    {{-- ═══════════════════════════════════════════════════════════
-         WAVE DIVIDER
-         ═══════════════════════════════════════════════════════════ --}}
     <div class="wave-divider">
         <svg viewBox="0 0 1440 80" preserveAspectRatio="none">
             <path fill="var(--color-surface)" d="M0,40 C360,80 720,0 1080,40 C1260,60 1380,50 1440,40 L1440,80 L0,80 Z"/>
         </svg>
     </div>
-
-    {{-- ═══════════════════════════════════════════════════════════
-         STATS SECTION — Animated counters
-         ═══════════════════════════════════════════════════════════ --}}
-    <section class="py-16 relative" style="background: var(--color-surface);">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-8" data-aos="fade-up">
-                {{-- Stat 1 --}}
-                <div class="text-center group">
-                    <div class="text-3xl sm:text-4xl font-extrabold text-gradient mb-2">
-                        <span data-counter="{{ collect($stats)->get('total_courses', 0) }}">0</span>
-                    </div>
-                    <div class="text-xs font-semibold uppercase tracking-widest" style="color: var(--color-text-muted);">{{ __('Active Courses') }}</div>
-                </div>
-                {{-- Stat 2 --}}
-                <div class="text-center group">
-                    <div class="text-3xl sm:text-4xl font-extrabold text-gradient mb-2">
-                        <span data-counter="{{ collect($stats)->get('total_students', 0) }}">0</span>
-                    </div>
-                    <div class="text-xs font-semibold uppercase tracking-widest" style="color: var(--color-text-muted);">{{ __('Students') }}</div>
-                </div>
-                {{-- Stat 3 --}}
-                <div class="text-center group">
-                    <div class="text-3xl sm:text-4xl font-extrabold text-gradient mb-2">
-                        <span data-counter="{{ collect($stats)->get('total_enrollments', 0) }}">0</span>
-                    </div>
-                    <div class="text-xs font-semibold uppercase tracking-widest" style="color: var(--color-text-muted);">{{ __('Enrollments') }}</div>
-                </div>
-                {{-- Stat 4 --}}
-                <div class="text-center group">
-                    <div class="text-3xl sm:text-4xl font-extrabold text-gradient mb-2">
-                        <span data-counter="{{ collect($stats)->get('certificates_issued', 0) }}">0</span>
-                    </div>
-                    <div class="text-xs font-semibold uppercase tracking-widest" style="color: var(--color-text-muted);">{{ __('Certificates') }}</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    {{-- ═══════════════════════════════════════════════════════════
-         FEATURES SECTION — 3D Tilt Glass Cards
-         ═══════════════════════════════════════════════════════════ --}}
     <section class="py-24 relative overflow-hidden">
         {{-- Background decorations --}}
         <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
@@ -276,9 +158,9 @@
         </div>
     </section>
 
-    {{-- ═══════════════════════════════════════════════════════════
+    {{-- â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ
          FEATURED COURSES SECTION
-         ═══════════════════════════════════════════════════════════ --}}
+         â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ --}}
     <section class="py-24 relative overflow-hidden" style="background: var(--color-surface);">
         <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
             {{-- Section Header --}}
@@ -321,16 +203,12 @@
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                 {{ $course->estimated_duration_weeks ? __('Suggested') . ' ' . $course->estimated_duration_weeks . ' ' . __('Weeks') : __('Self-paced') }}
                             </div>
-                            <div class="flex items-center gap-1">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-                                {{ $course->total_students }} {{ __('Students') }}
-                            </div>
                         </div>
 
                         {{-- Footer --}}
                         <div class="flex items-center justify-between pt-4 border-t border-slate-200 dark:border-white/10">
                             <div class="text-lg font-bold text-primary-500">
-                                {{ $course->price > 0 ? $course->price . ' ' . __('ر.س') : __('Free') }}
+                                {{ $course->price > 0 ? $course->price . ' ' . __('ط±.ط³') : __('Free') }}
                             </div>
                             <a href="{{ route('student.courses.show', $course) }}" class="btn-primary btn-sm rounded-lg">
                                 {{ __('View Course') }}
@@ -339,20 +217,13 @@
                     </div>
                 </div>
                 @endforeach
-            </div>
-            
-            <div class="mt-12 text-center">
-                <a href="{{ route('student.courses.index') }}" class="btn-secondary btn-lg group">
-                    {{ __('View All Courses') }}
-                    <svg class="w-4 h-4 ml-2 rtl:mr-2 rtl:ml-0 group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-transform rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
-                </a>
-            </div>
+            </div>
         </div>
     </section>
 
-    {{-- ═══════════════════════════════════════════════════════════
-         HOW IT WORKS — Steps
-         ═══════════════════════════════════════════════════════════ --}}
+    {{-- â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ
+         HOW IT WORKS â€” Steps
+         â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ --}}
     <section class="py-24 relative" style="background: var(--color-surface);">
         <div class="max-w-7xl mx-auto px-6 lg:px-8">
             <div class="text-center max-w-2xl mx-auto mb-16" data-aos="fade-up">
@@ -397,9 +268,9 @@
     </section>
 
 
-    {{-- ═══════════════════════════════════════════════════════════
-         SAMPLE VIDEOS SECTION — {{ __('عينة من الشروحات') }}
-         ═══════════════════════════════════════════════════════════ --}}
+    {{-- â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ
+         SAMPLE VIDEOS SECTION â€” {{ __('ط¹ظٹظ†ط© ظ…ظ† ط§ظ„ط´ط±ظˆط­ط§طھ') }}
+         â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ --}}
     @if($promoVideos->count() > 0)
     <section class="py-20 lg:py-28 relative overflow-hidden">
         {{-- Background decoration --}}
@@ -411,13 +282,13 @@
             <div class="text-center max-w-3xl mx-auto mb-16" data-aos="fade-up">
                 <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-500/10 border border-primary-500/20 text-primary-600 dark:text-primary-400 text-sm font-bold mb-6">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    {{ __('شاهد قبل ما تشترك') }}
+                    {{ __('ط´ط§ظ‡ط¯ ظ‚ط¨ظ„ ظ…ط§ طھط´طھط±ظƒ') }}
                 </div>
                 <h2 class="text-4xl md:text-5xl font-black mb-4" style="color: var(--color-text);">
-                    {{ __('عينة من') }}
-                    <span class="text-gradient">{{ __('الشروحات') }}</span>
+                    {{ __('ط¹ظٹظ†ط© ظ…ظ†') }}
+                    <span class="text-gradient">{{ __('ط§ظ„ط´ط±ظˆط­ط§طھ') }}</span>
                 </h2>
-                <p class="text-lg font-medium" style="color: var(--color-text-muted);">{{ __('شوف بنفسك جودة المحتوى قبل ما تبدأ رحلتك معانا') }}</p>
+                <p class="text-lg font-medium" style="color: var(--color-text-muted);">{{ __('ط´ظˆظپ ط¨ظ†ظپط³ظƒ ط¬ظˆط¯ط© ط§ظ„ظ…ط­طھظˆظ‰ ظ‚ط¨ظ„ ظ…ط§ طھط¨ط¯ط£ ط±ط­ظ„طھظƒ ظ…ط¹ط§ظ†ط§') }}</p>
             </div>
 
             {{-- Video Grid --}}
@@ -466,9 +337,9 @@
     @endif
 
 
-    {{-- ═══════════════════════════════════════════════════════════
-         TESTIMONIALS SECTION — {{ __('ماذا قالوا عنا') }}
-         ═══════════════════════════════════════════════════════════ --}}
+    {{-- â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ
+         TESTIMONIALS SECTION â€” {{ __('ظ…ط§ط°ط§ ظ‚ط§ظ„ظˆط§ ط¹ظ†ط§') }}
+         â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ --}}
     @if($testimonials->count() > 0 || $canSubmitTestimonial)
     <section class="py-20 lg:py-28 relative overflow-hidden">
         {{-- Background decoration --}}
@@ -480,27 +351,27 @@
             <div class="text-center max-w-3xl mx-auto mb-16" data-aos="fade-up">
                 <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent-500/10 border border-accent-500/20 text-accent-600 dark:text-accent-400 text-sm font-bold mb-6">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
-                    {{ __('تقييمات حقيقية') }}
+                    {{ __('طھظ‚ظٹظٹظ…ط§طھ ط­ظ‚ظٹظ‚ظٹط©') }}
                 </div>
                 <h2 class="text-4xl md:text-5xl font-black mb-4" style="color: var(--color-text);">
-                    {{ __('ماذا قالوا') }}
-                    <span class="text-gradient">{{ __('عنا') }}</span>
+                    {{ __('ظ…ط§ط°ط§ ظ‚ط§ظ„ظˆط§') }}
+                    <span class="text-gradient">{{ __('ط¹ظ†ط§') }}</span>
                 </h2>
-                <p class="text-lg font-medium" style="color: var(--color-text-muted);">{{ __('شوف آراء الطلاب اللي بدأوا رحلتهم معانا') }}</p>
+                <p class="text-lg font-medium" style="color: var(--color-text-muted);">{{ __('ط´ظˆظپ ط¢ط±ط§ط، ط§ظ„ط·ظ„ط§ط¨ ط§ظ„ظ„ظٹ ط¨ط¯ط£ظˆط§ ط±ط­ظ„طھظ‡ظ… ظ…ط¹ط§ظ†ط§') }}</p>
                 @if($canSubmitTestimonial)
                     <div class="mt-6 flex flex-col items-center gap-3">
                         <a href="{{ route('student.testimonial.edit') }}" class="btn-primary ripple-btn px-6 py-3 rounded-xl shadow-lg shadow-primary-500/25 inline-flex items-center gap-2">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5h2m-1 0v14m7-7H5"></path>
                             </svg>
-                            {{ $studentTestimonial ? __('عدّل رأيك') : __('اكتب رأيك') }}
+                            {{ $studentTestimonial ? __('ط¹ط¯ظ‘ظ„ ط±ط£ظٹظƒ') : __('ط§ظƒطھط¨ ط±ط£ظٹظƒ') }}
                         </a>
                         @if($studentTestimonial && !$studentTestimonial->is_active)
                             <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 text-xs font-black">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                 </svg>
-                                {{ __('رأيك الحالي قيد المراجعة') }}
+                                {{ __('ط±ط£ظٹظƒ ط§ظ„ط­ط§ظ„ظٹ ظ‚ظٹط¯ ط§ظ„ظ…ط±ط§ط¬ط¹ط©') }}
                             </div>
                         @endif
                     </div>
@@ -558,10 +429,10 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
                     </svg>
                 </div>
-                <h3 class="text-2xl font-black mb-3" style="color: var(--color-text);">{{ __('ابدأ بأول رأي حقيقي هنا') }}</h3>
-                <p class="text-base font-medium mb-6" style="color: var(--color-text-muted);">{{ __('لسه ما فيش آراء منشورة، لكن تقدر تكون أول طالب يشارك تجربته بعد المراجعة.') }}</p>
+                <h3 class="text-2xl font-black mb-3" style="color: var(--color-text);">{{ __('ط§ط¨ط¯ط£ ط¨ط£ظˆظ„ ط±ط£ظٹ ط­ظ‚ظٹظ‚ظٹ ظ‡ظ†ط§') }}</h3>
+                <p class="text-base font-medium mb-6" style="color: var(--color-text-muted);">{{ __('ظ„ط³ظ‡ ظ…ط§ ظپظٹط´ ط¢ط±ط§ط، ظ…ظ†ط´ظˆط±ط©طŒ ظ„ظƒظ† طھظ‚ط¯ط± طھظƒظˆظ† ط£ظˆظ„ ط·ط§ظ„ط¨ ظٹط´ط§ط±ظƒ طھط¬ط±ط¨طھظ‡ ط¨ط¹ط¯ ط§ظ„ظ…ط±ط§ط¬ط¹ط©.') }}</p>
                 <a href="{{ route('student.testimonial.edit') }}" class="btn-primary ripple-btn px-6 py-3 rounded-xl shadow-lg shadow-primary-500/25 inline-flex items-center gap-2">
-                    {{ __('شارك تجربتك') }}
+                    {{ __('ط´ط§ط±ظƒ طھط¬ط±ط¨طھظƒ') }}
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                     </svg>
@@ -576,3 +447,4 @@
 
 </div>
 @endsection
+
