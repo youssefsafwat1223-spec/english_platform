@@ -124,6 +124,22 @@ class BattleRoomService
         });
     }
 
+    public function closeRoomBecausePlayerLeft(BattleRoom $room): bool
+    {
+        return DB::transaction(function () use ($room) {
+            /** @var BattleRoom|null $lockedRoom */
+            $lockedRoom = BattleRoom::lockForUpdate()->find($room->id);
+
+            if (!$lockedRoom || $lockedRoom->status !== 'playing') {
+                return false;
+            }
+
+            $this->finishRoom($lockedRoom, 'player_left');
+
+            return true;
+        });
+    }
+
     public function startBattle(BattleRoom $room): bool
     {
         /** @var BattleRoom $room */
@@ -325,6 +341,11 @@ class BattleRoomService
     {
         if ($room->status === 'finished' || $room->finished_at) {
             return;
+        }
+
+        $currentRound = $room->currentRound();
+        if ($currentRound && !$currentRound->finished_at) {
+            $currentRound->update(['finished_at' => now()]);
         }
 
         $room->update([

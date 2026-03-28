@@ -323,6 +323,34 @@ class BattleController extends Controller
     public function leave(BattleRoom $room): RedirectResponse
     {
         $user = auth()->user();
+        $room = $this->battleRoomService->syncRoomState($room);
+
+        $participant = $room->participants()->where('user_id', $user->id)->first();
+        if (!$participant) {
+            return redirect()->route('student.battle.index')
+                ->with('error', $this->text(
+                    'أنت لست ضمن هذه الغرفة.',
+                    'You are not a participant in this room.'
+                ));
+        }
+
+        if ($room->status === 'finished') {
+            return redirect()->route('student.battle.index')
+                ->with('info', $this->text(
+                    'هذه الغرفة انتهت بالفعل.',
+                    'This battle room has already finished.'
+                ));
+        }
+
+        if ($room->status === 'playing') {
+            $this->battleRoomService->closeRoomBecausePlayerLeft($room);
+
+            return redirect()->route('student.battle.index')
+                ->with('success', $this->text(
+                    'تم إنهاء الباتل لأنك غادرت الجولة.',
+                    'The battle was closed because you left the match.'
+                ));
+        }
 
         if ($room->status !== 'waiting') {
             return back()->with('error', $this->text(
@@ -405,7 +433,15 @@ class BattleController extends Controller
 
     private function getFinishedReason(BattleRoom $room): ?string
     {
-        if ($room->status !== 'finished' || $room->winner_team !== null) {
+        if ($room->status !== 'finished') {
+            return null;
+        }
+
+        if ($room->winner_team === 'player_left') {
+            return 'player_left';
+        }
+
+        if ($room->winner_team !== null) {
             return null;
         }
 

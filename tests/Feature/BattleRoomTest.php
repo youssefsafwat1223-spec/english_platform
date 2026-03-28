@@ -188,6 +188,70 @@ class BattleRoomTest extends TestCase
         $this->assertSame(5, $playerTwo->total_points);
     }
 
+    public function test_player_can_leave_active_battle_and_room_closes_cleanly(): void
+    {
+        $course = Course::factory()->create();
+        $playerOne = User::factory()->create(['total_points' => 0]);
+        $playerTwo = User::factory()->create(['total_points' => 0]);
+        $question = $this->createQuestion($course, 1);
+
+        $this->enroll($playerOne, $course);
+        $this->enroll($playerTwo, $course);
+
+        $room = BattleRoom::create([
+            'course_id' => $course->id,
+            'status' => 'playing',
+            'max_players' => 4,
+            'lobby_timer_seconds' => 120,
+            'lobby_ends_at' => now()->subMinute(),
+            'question_timer_seconds' => 30,
+            'question_count' => 1,
+            'current_question_index' => 0,
+            'current_question_started_at' => now(),
+            'team_a_score' => 10,
+            'started_at' => now()->subMinute(),
+        ]);
+
+        $participantOne = BattleParticipant::create([
+            'battle_room_id' => $room->id,
+            'user_id' => $playerOne->id,
+            'team' => 'a',
+            'individual_score' => 10,
+        ]);
+
+        BattleParticipant::create([
+            'battle_room_id' => $room->id,
+            'user_id' => $playerTwo->id,
+            'team' => 'b',
+            'individual_score' => 0,
+        ]);
+
+        BattleRound::create([
+            'battle_room_id' => $room->id,
+            'question_id' => $question->id,
+            'round_number' => 1,
+            'points' => 10,
+            'started_at' => now(),
+        ]);
+
+        $response = $this->actingAs($playerOne)->post(route('student.battle.leave', $room));
+
+        $response->assertRedirect(route('student.battle.index'));
+
+        $room->refresh();
+        $playerOne->refresh();
+
+        $this->assertSame('finished', $room->status);
+        $this->assertSame('player_left', $room->winner_team);
+        $this->assertNotNull($room->finished_at);
+        $this->assertSame(10, $playerOne->total_points);
+        $this->assertDatabaseHas('battle_participants', [
+            'id' => $participantOne->id,
+            'battle_room_id' => $room->id,
+            'user_id' => $playerOne->id,
+        ]);
+    }
+
     public function test_cleanup_command_closes_abandoned_playing_rooms(): void
     {
         SystemSetting::set('battle_inactivity_timeout', 60, 'integer', 'battle');

@@ -61,6 +61,15 @@
             </span>
         </div>
 
+        <div class="text-center mb-4">
+            <form action="{{ route('student.battle.leave', $room) }}" method="POST" onsubmit="return confirm(@js($isArabic ? 'هل تريد الخروج من الباتل الآن؟ سيتم إنهاء الجولة الحالية.' : 'Do you want to leave the battle now? The current match will be closed.'));">
+                @csrf
+                <button type="submit" class="inline-flex items-center justify-center px-4 py-2 rounded-full text-sm font-bold text-red-500 border border-red-500/30 bg-red-500/5 hover:bg-red-500/10 transition-colors">
+                    {{ $isArabic ? 'الخروج من الباتل' : 'Leave battle' }}
+                </button>
+            </form>
+        </div>
+
         <div id="question-card" class="glass-card p-8 mb-6 question-enter">
             <div class="flex items-center justify-between mb-6">
                 <div class="flex items-center gap-3">

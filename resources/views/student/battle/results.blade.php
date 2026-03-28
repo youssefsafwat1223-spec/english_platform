@@ -2,10 +2,11 @@
 
 @php
     $isArabic = app()->getLocale() === 'ar';
+    $isClosedByPlayerLeaving = $room->winner_team === 'player_left';
     $isCancelled = is_null($room->winner_team);
     $isDraw = $room->winner_team === 'draw';
     $isAbandoned = $isCancelled && !is_null($room->started_at);
-    $isWinner = !$isCancelled && !$isDraw && $participant->team === $room->winner_team;
+    $isWinner = !$isCancelled && !$isDraw && !$isClosedByPlayerLeaving && $participant->team === $room->winner_team;
 @endphp
 
 @section('title', $isArabic ? 'نتيجة الباتل' : 'Battle Results')
@@ -39,6 +40,15 @@
                     {{ $isArabic
                         ? 'توقفت المباراة لأن اللاعبين لم يكملوا اللعب داخل الوقت المحدد.'
                         : 'The match was closed because the players stopped answering in time.' }}
+                </p>
+            @elseif($isClosedByPlayerLeaving)
+                <h1 class="text-4xl md:text-5xl font-extrabold mb-3" style="color: var(--color-text);">
+                    {{ $isArabic ? 'تم إنهاء الباتل بخروج لاعب' : 'Battle closed because a player left' }}
+                </h1>
+                <p class="text-xl" style="color: var(--color-text-muted);">
+                    {{ $isArabic
+                        ? 'انتهت الجولة الحالية لأن أحد اللاعبين غادر الروم أثناء اللعب.'
+                        : 'The current match was closed because one of the players left the room during play.' }}
                 </p>
             @elseif($isDraw)
                 <h1 class="text-5xl font-extrabold mb-3" style="color: var(--color-text);">

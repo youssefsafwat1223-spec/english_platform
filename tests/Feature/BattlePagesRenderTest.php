@@ -75,7 +75,8 @@ class BattlePagesRenderTest extends TestCase
 
         $this->actingAs($student)
             ->get(route('student.battle.play', $playingRoom))
-            ->assertOk();
+            ->assertOk()
+            ->assertSee(route('student.battle.leave', $playingRoom), false);
 
         $finishedRoom = BattleRoom::create([
             'course_id' => $course->id,
