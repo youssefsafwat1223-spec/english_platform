@@ -2,9 +2,12 @@
 
 namespace App\Services;
 
+use App\Models\BattleRoom;
+use App\Models\Course;
 use App\Models\User;
 use App\Models\DailyQuestion;
 use App\Models\Notification;
+use App\Models\TelegramBotSetting;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -382,6 +385,71 @@ class TelegramService
     }
 
     /**
+     * Check whether automated Telegram notifications can be sent.
+     */
+    public function canSendAutomatedNotifications(): bool
+    {
+        return filled($this->botToken)
+            && (bool) TelegramBotSetting::get('enable_notifications', true);
+    }
+
+    /**
+     * Send battle invite to a student already enrolled in the course.
+     */
+    public function sendBattleInvite(User $user, Course $course, BattleRoom $room, string $creatorName): bool
+    {
+        if (!$user->is_telegram_linked || !$this->canSendAutomatedNotifications()) {
+            return false;
+        }
+
+        $courseTitle = $this->escapeHtml($course->title);
+        $creator = $this->escapeHtml($creatorName);
+
+        $text = "<b>⚔️ باتل جديدة في {$courseTitle}</b>\n\n";
+        $text .= "{$creator} فتح روم جديدة الآن.\n";
+        $text .= "أنت مشترك في الكورس، فادخل بسرعة قبل ما اللوبي يقفل.\n\n";
+        $text .= "اضغط الزر تحت وانضم مباشرة.";
+
+        $keyboard = [
+            'inline_keyboard' => [
+                [
+                    ['text' => 'انضم إلى الباتل الآن', 'url' => route('student.battle.lobby', $room)],
+                ],
+            ],
+        ];
+
+        return (bool) $this->sendMessage($user->telegram_chat_id, $text, $keyboard);
+    }
+
+    /**
+     * Send marketing message for a battle to a student not enrolled in the course.
+     */
+    public function sendBattleMarketing(User $user, Course $course, string $creatorName): bool
+    {
+        if (!$user->is_telegram_linked || !$this->canSendAutomatedNotifications()) {
+            return false;
+        }
+
+        $courseTitle = $this->escapeHtml($course->title);
+        $creator = $this->escapeHtml($creatorName);
+
+        $text = "<b>🔥 في باتل شغالة الآن داخل {$courseTitle}</b>\n\n";
+        $text .= "{$creator} بدأ تحدي جديد داخل الكورس.\n";
+        $text .= "إذا اشتركت في الكورس، ستقدر تدخل الباتلات القادمة وتنافس الطلاب مباشرة.\n\n";
+        $text .= "افتح صفحة الكورس الآن وشاهد التفاصيل.";
+
+        $keyboard = [
+            'inline_keyboard' => [
+                [
+                    ['text' => 'اشترك في الكورس', 'url' => route('student.courses.enroll', $course)],
+                ],
+            ],
+        ];
+
+        return (bool) $this->sendMessage($user->telegram_chat_id, $text, $keyboard);
+    }
+
+    /**
      * Link user account with telegram
      */
     public function linkUserAccount($chatId, $phone)
@@ -495,6 +563,11 @@ class TelegramService
         $empty = 10 - $filled;
 
         return str_repeat('#', $filled) . str_repeat('-', $empty);
+    }
+
+    private function escapeHtml(string $value): string
+    {
+        return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
     }
 
     /**

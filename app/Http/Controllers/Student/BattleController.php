@@ -10,16 +10,19 @@ use App\Models\Course;
 use App\Models\Notification;
 use App\Models\SystemSetting;
 use App\Services\BattleRoomService;
+use App\Services\TelegramService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
+use App\Models\User;
 
 class BattleController extends Controller
 {
     public function __construct(
-        private readonly BattleRoomService $battleRoomService
+        private readonly BattleRoomService $battleRoomService,
+        private readonly TelegramService $telegramService
     ) {
     }
 
@@ -84,7 +87,9 @@ class BattleController extends Controller
             }
         }
 
-        $room = DB::transaction(function () use ($course, $user) {
+        $roomWasCreated = false;
+
+        $room = DB::transaction(function () use ($course, $user, &$roomWasCreated) {
             $room = BattleRoom::waiting()
                 ->forCourse($course->id)
                 ->orderBy('created_at')
@@ -102,8 +107,7 @@ class BattleController extends Controller
                     'lobby_ends_at' => now()->addSeconds($lobbyTimer),
                     'question_timer_seconds' => (int) SystemSetting::get('battle_question_timer', 30),
                 ]);
-
-                $this->notifyCourseStudentsAboutBattle($course, $room, $user->id, $user->name);
+                $roomWasCreated = true;
             }
 
             BattleParticipant::firstOrCreate([
@@ -119,6 +123,11 @@ class BattleController extends Controller
 
             return $room;
         });
+
+        if ($roomWasCreated) {
+            $this->notifyCourseStudentsAboutBattle($course, $room, $user->id, $user->name);
+            $this->notifyTelegramStudentsAboutBattle($course, $room, $user->id, $user->name);
+        }
 
         $room = $this->battleRoomService->syncRoomState($room);
 
@@ -429,6 +438,45 @@ class BattleController extends Controller
         })->all();
 
         Notification::insert($notifications);
+    }
+
+    private function notifyTelegramStudentsAboutBattle(Course $course, BattleRoom $room, int $creatorId, string $creatorName): void
+    {
+        if (!$this->telegramService->canSendAutomatedNotifications()) {
+            return;
+        }
+
+        $telegramAudience = User::query()
+            ->students()
+            ->active()
+            ->telegramLinked()
+            ->where('id', '!=', $creatorId)
+            ->where(function ($query) {
+                $query->whereNull('telegram_reminders')
+                    ->orWhere('telegram_reminders', true);
+            });
+
+        (clone $telegramAudience)
+            ->whereHas('enrollments', function ($query) use ($course) {
+                $query->where('course_id', $course->id);
+            })
+            ->orderBy('id')
+            ->chunkById(100, function ($students) use ($course, $room, $creatorName) {
+                foreach ($students as $student) {
+                    $this->telegramService->sendBattleInvite($student, $course, $room, $creatorName);
+                }
+            });
+
+        (clone $telegramAudience)
+            ->whereDoesntHave('enrollments', function ($query) use ($course) {
+                $query->where('course_id', $course->id);
+            })
+            ->orderBy('id')
+            ->chunkById(100, function ($students) use ($course, $creatorName) {
+                foreach ($students as $student) {
+                    $this->telegramService->sendBattleMarketing($student, $course, $creatorName);
+                }
+            });
     }
 
     private function getFinishedReason(BattleRoom $room): ?string

@@ -9,10 +9,12 @@ use App\Models\Course;
 use App\Models\Enrollment;
 use App\Models\Question;
 use App\Models\SystemSetting;
+use App\Models\TelegramBotSetting;
 use App\Models\User;
 use App\Services\BattleRoomService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
 class BattleRoomTest extends TestCase
@@ -65,6 +67,67 @@ class BattleRoomTest extends TestCase
 
         $response->assertRedirect();
         $this->assertDatabaseCount('battle_rooms', 0);
+    }
+
+    public function test_creating_battle_sends_telegram_invites_to_enrolled_students_and_marketing_to_others(): void
+    {
+        config(['services.telegram.bot_token' => 'test-token']);
+        SystemSetting::set('battle_min_questions', 1, 'integer', 'battle');
+        TelegramBotSetting::set('enable_notifications', true, 'boolean');
+
+        Http::fake([
+            'https://api.telegram.org/*' => Http::response([
+                'ok' => true,
+                'result' => ['message_id' => 1001],
+            ], 200),
+        ]);
+
+        $course = Course::factory()->create([
+            'title' => 'English Battle Course',
+            'slug' => 'english-battle-course',
+        ]);
+
+        $creator = User::factory()->withTelegram()->create(['name' => 'Creator Student']);
+        $enrolledStudent = User::factory()->withTelegram()->create(['name' => 'Enrolled Student']);
+        $marketingStudent = User::factory()->withTelegram()->create(['name' => 'Marketing Student']);
+
+        $this->enroll($creator, $course);
+        $this->enroll($enrolledStudent, $course);
+        $this->createQuestion($course, 1);
+
+        $response = $this->actingAs($creator)->post(route('student.battle.join', $course));
+
+        $room = BattleRoom::firstOrFail();
+
+        $response->assertRedirect(route('student.battle.lobby', $room));
+
+        Http::assertSentCount(2);
+
+        Http::assertSent(function ($request) use ($course, $room) {
+            $replyMarkup = json_decode((string) $request['reply_markup'], true);
+            $buttonUrl = $replyMarkup['inline_keyboard'][0][0]['url'] ?? null;
+
+            return str_contains((string) $request['text'], $course->title)
+                && $buttonUrl === route('student.battle.lobby', $room);
+        });
+
+        Http::assertSent(function ($request) use ($course) {
+            $replyMarkup = json_decode((string) $request['reply_markup'], true);
+            $buttonUrl = $replyMarkup['inline_keyboard'][0][0]['url'] ?? null;
+
+            return str_contains((string) $request['text'], $course->title)
+                && $buttonUrl === route('student.courses.enroll', $course);
+        });
+
+        $this->assertDatabaseHas('notifications', [
+            'user_id' => $enrolledStudent->id,
+            'notification_type' => 'battle_started',
+        ]);
+
+        $this->assertDatabaseMissing('notifications', [
+            'user_id' => $marketingStudent->id,
+            'notification_type' => 'battle_started',
+        ]);
     }
 
     public function test_answer_rejects_future_rounds_that_have_not_started(): void
