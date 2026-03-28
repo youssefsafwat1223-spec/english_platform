@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\Controller;
+use App\Models\Payment;
 use App\Models\User;
 use App\Services\AchievementService;
 
 class DashboardController extends Controller
 {
+    private const PENDING_PAYMENT_VISIBILITY_MINUTES = 30;
+
     public function index(AchievementService $achievementService)
     {
         $user = auth()->user();
@@ -29,9 +32,21 @@ class DashboardController extends Controller
             ->orderBy('last_accessed_at', 'desc')
             ->get();
 
-        // Get pending payments
-        $pendingPayments = \App\Models\Payment::where('user_id', $user->id)
+        // Only show the latest recent pending checkout per course.
+        $pendingCutoff = now()->subMinutes(self::PENDING_PAYMENT_VISIBILITY_MINUTES);
+
+        $latestPendingPaymentIds = Payment::query()
+            ->selectRaw('MAX(id)')
+            ->where('user_id', $user->id)
             ->pending()
+            ->where('created_at', '>=', $pendingCutoff)
+            ->groupBy('course_id');
+
+        $pendingPayments = Payment::query()
+            ->where('user_id', $user->id)
+            ->pending()
+            ->where('created_at', '>=', $pendingCutoff)
+            ->whereIn('id', $latestPendingPaymentIds)
             ->with('course')
             ->orderBy('created_at', 'desc')
             ->take(5)
