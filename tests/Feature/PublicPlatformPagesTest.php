@@ -28,5 +28,7 @@ class PublicPlatformPagesTest extends TestCase
         $response->assertSeeText('البوت على تيليجرام');
         $response->assertSeeText('/status');
         $response->assertSeeText('لوحة الإدارة');
+        $response->assertDontSeeText('ط¹ظ† ط§ظ„ظ…ظ†طµط©');
+        $response->assertDontSeeText('ط®ط±ظٹط·ط© ظƒط§ظ…ظ„ط© ظ„ظ„ظ…ظ†طµط©');
     }
 }
