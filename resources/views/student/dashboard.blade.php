@@ -1,12 +1,12 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
-@section('title', __('Dashboard') . ' â€” ' . config('app.name'))
+@section('title', __('Dashboard') . ' - ' . config('app.name'))
 
 @section('content')
 <div class="pt-8 pb-12 sm:py-12 relative min-h-screen z-10 px-3 sm:px-0">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-4 sm:space-y-8">
 
-        {{-- â”€â”€â”€ HERO SECTION â”€â”€â”€ --}}
+        {{-- Hero Section --}}
         <div class="relative glass-card overflow-hidden rounded-2xl sm:rounded-[2rem] p-4 sm:p-8 md:p-12" data-aos="fade-down">
             {{-- Aesthetic Background Elements --}}
             <div class="absolute top-0 right-0 p-12 opacity-10 pointer-events-none transform translate-x-1/4 -translate-y-1/4">
@@ -22,7 +22,12 @@
                 {{-- Left: Welcome Text --}}
                 <div class="w-full md:w-3/5">
                     <div class="inline-flex items-center gap-2 px-3 py-1 sm:py-1.5 rounded-full bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/30 text-amber-500 text-xs sm:text-sm font-bold mb-3 sm:mb-6 hover:scale-105 transition-transform backdrop-blur-md shadow-lg shadow-amber-500/10">
-                        <span class="animate-pulse">ًں”¥</span> {{ $stats['current_streak'] ?? 0 }} {{ __('Day Streak') }}
+                        <span class="inline-flex h-5 w-5 items-center justify-center text-amber-500">
+                            <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                                <path d="M11.983 1.904a.75.75 0 0 0-1.35.001l-1.166 2.38a9.17 9.17 0 0 0-.951 4.035c0 .298.014.593.042.884A3.748 3.748 0 0 0 6 12.75c0 2.071 1.679 3.75 3.75 3.75h.5A3.75 3.75 0 0 0 14 12.75c0-1.016-.404-1.938-1.06-2.612.54-1.278.81-2.655.81-4.14 0-1.42-.255-2.801-.767-4.094Z" />
+                            </svg>
+                        </span>
+                        {{ $stats['current_streak'] ?? 0 }} {{ __('Day Streak') }}
                     </div>
                     
                     <h1 class="text-xl sm:text-3xl md:text-5xl font-extrabold mb-2 sm:mb-4 leading-tight tracking-tight text-slate-900 dark:text-white drop-shadow-sm">
@@ -42,7 +47,13 @@
                             <svg class="w-4 h-4 sm:w-5 sm:h-5 ml-1 sm:ml-2 hidden sm:inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
                         </a>
                         <a href="{{ route('student.battle.index') }}" class="btn-secondary px-3 sm:px-6 md:px-8 py-2.5 sm:py-3.5 rounded-xl border-2 border-accent-500/30 text-accent-600 dark:text-accent-400 hover:bg-accent-500/10 hover:border-accent-500 font-bold flex-1 md:flex-none text-center justify-center transition-all bg-white/5 backdrop-blur-md text-xs sm:text-sm md:text-base whitespace-nowrap">
-                            âڑ”ï¸ڈ {{ __('Enter Battle') }}
+                            <span class="inline-flex items-center gap-2">
+                                <svg class="h-4 w-4 sm:h-5 sm:w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0 0 10 9.868v4.264a1 1 0 0 0 1.555.832l3.197-2.132a1 1 0 0 0 0-1.664Z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7.5h4m8 0h4M6 7.5l1-3h10l1 3M7 10.5l1 9h8l1-9"/>
+                                </svg>
+                                {{ __('Enter Battle') }}
+                            </span>
                         </a>
                     </div>
                 </div>
@@ -71,10 +82,10 @@
             </div>
         </div>
 
-        {{-- â”€â”€â”€ STATS GRID â”€â”€â”€ --}}
+        {{-- Stats Grid Removed --}}
 
 
-        {{-- â”€â”€â”€ PENDING PAYMENTS ALERT â”€â”€â”€ --}}
+        {{-- Pending Payments Alert --}}
         @if(isset($pendingPayments) && $pendingPayments->count() > 0)
             <div class="space-y-4 mb-2" data-aos="fade-up" data-aos-delay="150">
                 @foreach($pendingPayments as $payment)
@@ -82,7 +93,9 @@
                         <div class="absolute inset-0 bg-gradient-to-r from-amber-500/10 to-transparent pointer-events-none"></div>
                         <div class="flex items-center gap-4 relative z-10 w-full sm:w-auto">
                             <div class="w-12 h-12 rounded-full bg-amber-100 dark:bg-amber-500/20 flex items-center justify-center text-2xl shrink-0 text-amber-600 dark:text-amber-500 shadow-inner">
-                                âڈ³
+                                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l2.5 2.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                </svg>
                             </div>
                             <div class="flex-1">
                                 <h4 class="font-bold text-slate-900 dark:text-white text-lg">{{ __('Pending Payment') }}</h4>
@@ -93,7 +106,10 @@
                         </div>
                         <div class="relative z-10 w-full sm:w-auto flex-shrink-0 mt-4 sm:mt-0">
                             <a href="{{ route('student.courses.enroll', $payment->course) }}" class="btn-primary w-full sm:w-auto px-6 py-2.5 bg-amber-500 hover:bg-amber-600 text-white border-0 shadow-lg shadow-amber-500/30 font-bold whitespace-nowrap inline-flex items-center justify-center gap-2">
-                                ًں’³ {{ __('Complete Purchase') }}
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10.5 12 5l9 5.5M4.5 9.75V18a1.5 1.5 0 0 0 1.5 1.5h12A1.5 1.5 0 0 0 19.5 18V9.75M9 13.5h6" />
+                                </svg>
+                                {{ __('Complete Purchase') }}
                             </a>
                         </div>
                     </div>
@@ -101,22 +117,38 @@
             </div>
         @endif
 
-        {{-- â”€â”€â”€ QUICK ACTIONS ROW â”€â”€â”€ --}}
+        {{-- Quick Actions Row --}}
         <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-4" data-aos="fade-up" data-aos-delay="200">
             <a href="{{ route('student.forum.index') }}" class="glass-card p-4 flex items-center justify-center gap-3 hover:bg-primary-500 hover:text-white group transition-colors shadow-sm">
-                <span class="text-xl sm:text-2xl group-hover:scale-110 transition-transform">ًں’¬</span>
+                <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary-500/10 text-primary-500 group-hover:bg-white/15 group-hover:text-white transition-colors">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h8M8 14h5m-9 6 1.4-4.2A8 8 0 1 1 20 12a8 8 0 0 1-8 8H4Z" />
+                    </svg>
+                </span>
                 <span class="font-bold text-xs sm:text-sm text-slate-700 dark:text-slate-200 group-hover:text-white">{{ __('Community Forum') }}</span>
             </a>
             <a href="{{ route('student.games.index') }}" class="glass-card p-4 flex items-center justify-center gap-3 hover:bg-accent-500 hover:text-white group transition-colors shadow-sm">
-                <span class="text-xl sm:text-2xl group-hover:scale-110 transition-transform">ًںژ®</span>
+                <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-accent-500/10 text-accent-500 group-hover:bg-white/15 group-hover:text-white transition-colors">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 9V5a3 3 0 1 0-6 0v4m9 0h1a2 2 0 0 1 2 2v1a2 2 0 0 1-2 2h-1m-10-5H6a2 2 0 0 0-2 2v1a2 2 0 0 0 2 2h1m2 0h6m-6 0v2a3 3 0 1 0 6 0v-2" />
+                    </svg>
+                </span>
                 <span class="font-bold text-xs sm:text-sm text-slate-700 dark:text-slate-200 group-hover:text-white">{{ __('Mini Games') }}</span>
             </a>
             <a href="{{ route('student.referrals.index') }}" class="glass-card p-4 flex items-center justify-center gap-3 hover:bg-emerald-500 hover:text-white group transition-colors shadow-sm">
-                <span class="text-xl sm:text-2xl group-hover:scale-110 transition-transform">ًںژپ</span>
+                <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-500 group-hover:bg-white/15 group-hover:text-white transition-colors">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 8a3 3 0 1 1 6 0 3 3 0 0 1-6 0ZM3 11a4 4 0 1 1 8 0 4 4 0 0 1-8 0Zm12 9v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1m16 0v-1a4 4 0 0 0-3-3.87" />
+                    </svg>
+                </span>
                 <span class="font-bold text-xs sm:text-sm text-slate-700 dark:text-slate-200 group-hover:text-white">{{ __('Invite Friends') }}</span>
             </a>
             <a href="{{ route('student.telegram.guide') }}" class="glass-card p-4 flex items-center justify-center gap-3 hover:bg-[#0088cc] hover:text-white group transition-colors shadow-sm">
-                <span class="text-xl sm:text-2xl group-hover:scale-110 transition-transform">ًں¤–</span>
+                <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#0088cc]/10 text-[#0088cc] group-hover:bg-white/15 group-hover:text-white transition-colors">
+                    <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="m21.6 4.8-3 14.15c-.23 1-.84 1.24-1.7.77l-4.7-3.46-2.27 2.19c-.25.25-.46.46-.95.46l.34-4.82 8.77-7.92c.38-.34-.08-.53-.59-.19L6.66 12.83 2 11.37c-1-.31-1.02-1 .23-1.49L20.4 2.87c.84-.31 1.58.19 1.2 1.93Z" />
+                    </svg>
+                </span>
                 <span class="font-bold text-xs sm:text-sm text-slate-700 dark:text-slate-200 group-hover:text-white">{{ __('Telegram Bot') }}</span>
             </a>
             @if(auth()->user()->enrollments()->exists())
@@ -126,12 +158,12 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.148 3.531a1 1 0 00.95.69h3.712c.969 0 1.371 1.24.588 1.81l-3.003 2.182a1 1 0 00-.364 1.118l1.147 3.531c.3.922-.755 1.688-1.539 1.118l-3.004-2.182a1 1 0 00-1.175 0l-3.004 2.182c-.784.57-1.838-.196-1.539-1.118l1.148-3.531a1 1 0 00-.364-1.118L2.65 8.958c-.783-.57-.38-1.81.588-1.81h3.712a1 1 0 00.95-.69l1.149-3.531z"></path>
                         </svg>
                     </span>
-                    <span class="font-bold text-xs sm:text-sm text-slate-700 dark:text-slate-200 group-hover:text-white">{{ __('ط´ط§ط±ظƒ ط±ط£ظٹظƒ') }}</span>
+                    <span class="font-bold text-xs sm:text-sm text-slate-700 dark:text-slate-200 group-hover:text-white">{{ app()->getLocale() === 'ar' ? 'شارك رأيك' : 'Share your feedback' }}</span>
                 </a>
             @endif
         </div>
 
-        {{-- â”€â”€â”€ MAIN CONTENT SPLIT â”€â”€â”€ --}}
+        {{-- Main Content Split --}}
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             
             {{-- Left Column (2/3) --}}
@@ -142,7 +174,13 @@
                     <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary-500 to-accent-500"></div>
                     <div class="p-6 md:p-8 flex items-center border-b border-slate-200 dark:border-white/5">
                         <h3 class="font-black text-2xl text-slate-900 dark:text-white flex items-center gap-3">
-                            <span>ًں“ڑ</span> {{ __('Continue Learning') }}
+                            <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary-500/10 text-primary-500">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0 0 10 9.868v4.264a1 1 0 0 0 1.555.832l3.197-2.132a1 1 0 0 0 0-1.664Z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5.75A1.75 1.75 0 0 1 6.75 4h10.5A1.75 1.75 0 0 1 19 5.75v12.5A1.75 1.75 0 0 1 17.25 20H6.75A1.75 1.75 0 0 1 5 18.25V5.75Z" />
+                                </svg>
+                            </span>
+                            {{ __('Continue Learning') }}
                         </h3>
                     </div>
                     
@@ -189,7 +227,11 @@
                             </div>
                         @empty
                             <div class="text-center py-16 border-2 border-dashed border-slate-300 dark:border-white/20 rounded-2xl bg-white/50 dark:bg-black/20 backdrop-blur-sm">
-                                <div class="w-20 h-20 rounded-full bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-800 flex items-center justify-center mx-auto mb-6 text-4xl shadow-inner">ًں§©</div>
+                                <div class="w-20 h-20 rounded-full bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-800 flex items-center justify-center mx-auto mb-6 shadow-inner text-slate-500 dark:text-slate-300">
+                                    <svg class="h-10 w-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6.75A2.75 2.75 0 0 1 6.75 4h10.5A2.75 2.75 0 0 1 20 6.75v10.5A2.75 2.75 0 0 1 17.25 20H6.75A2.75 2.75 0 0 1 4 17.25V6.75Zm4 2.75h8m-8 4h5" />
+                                    </svg>
+                                </div>
                                 <h3 class="text-2xl text-slate-900 dark:text-white font-extrabold mb-2">{{ __('No Active Courses') }}</h3>
                                 <p class="text-slate-500 dark:text-slate-400 mb-6 max-w-md mx-auto">{{ __('You haven\'t started any courses yet. Browse our catalog and start learning today!') }}</p>
                                 <a href="{{ route('student.courses.index') }}" class="btn-primary ripple-btn px-8 shadow-lg shadow-primary-500/30">
@@ -232,7 +274,13 @@
                 <div class="glass-card" data-aos="fade-left" data-aos-delay="600">
                     <div class="p-6 border-b border-slate-200 dark:border-white/5 flex justify-between items-center">
                         <h3 class="font-black text-xl text-slate-900 dark:text-white flex items-center gap-2">
-                            <span>ًںڈ†</span> {{ __('Top Rank') }}
+                            <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-amber-500/10 text-amber-500">
+                                <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                                    <path d="M10 2a1 1 0 0 1 .832.445l1.393 2.09 2.494.363a1 1 0 0 1 .554 1.706l-1.804 1.76.426 2.485a1 1 0 0 1-1.451 1.055L10 10.73 7.556 11.92a1 1 0 0 1-1.451-1.055l.426-2.485-1.804-1.76a1 1 0 0 1 .554-1.706l2.494-.363 1.393-2.09A1 1 0 0 1 10 2Z" />
+                                    <path d="M4 13.5a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4V12h-1.5v1.5A2.5 2.5 0 0 1 12 16H8a2.5 2.5 0 0 1-2.5-2.5V12H4v1.5Z" />
+                                </svg>
+                            </span>
+                            {{ __('Top Rank') }}
                         </h3>
                         <a href="{{ route('student.leaderboard') }}" class="btn-ghost btn-sm text-xs font-bold text-slate-500">{{ __('View All') }}</a>
                     </div>
@@ -248,7 +296,13 @@
                             <div class="w-6 font-black text-lg text-center {{ $numberColor }}">{{ $index + 1 }}</div>
                             <div class="relative w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-sm font-bold text-slate-700 dark:text-white shadow-inner">
                                 {{ substr($learner->name, 0, 1) }}
-                                @if($index == 0) <span class="absolute -top-2 -right-1 text-sm filter drop-shadow-sm">ًں‘‘</span> @endif
+                                @if($index == 0)
+                                    <span class="absolute -top-2 -right-1 inline-flex h-5 w-5 items-center justify-center rounded-full bg-amber-500 text-white shadow-sm">
+                                        <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                                            <path d="M10 2a1 1 0 0 1 .832.445l1.393 2.09 2.494.363a1 1 0 0 1 .554 1.706l-1.804 1.76.426 2.485a1 1 0 0 1-1.451 1.055L10 10.73 7.556 11.92a1 1 0 0 1-1.451-1.055l.426-2.485-1.804-1.76a1 1 0 0 1 .554-1.706l2.494-.363 1.393-2.09A1 1 0 0 1 10 2Z" />
+                                        </svg>
+                                    </span>
+                                @endif
                             </div>
                             <div class="flex-1 min-w-0">
                                 <div class="text-sm font-bold text-slate-800 dark:text-white truncate">{{ explode(' ', $learner->name)[0] }}</div>
@@ -277,7 +331,9 @@
                 <div class="glass-card overflow-hidden bg-gradient-to-br from-indigo-500/10 to-purple-500/10 border border-indigo-500/20 p-6" data-aos="fade-left" data-aos-delay="700">
                     <div class="flex gap-4">
                         <div class="w-12 h-12 rounded-full bg-indigo-500/20 flex items-center justify-center text-2xl shrink-0 text-indigo-500">
-                            ًں’،
+                            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M6 4h12a2 2 0 0 1 2 2v12l-4-3H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z" />
+                            </svg>
                         </div>
                         <div>
                             <h4 class="font-bold text-slate-900 dark:text-white text-lg mb-2">{{ __('Pro Tip') }}</h4>
@@ -305,6 +361,7 @@
     }
 </style>
 @endpush
-
+
+
 @endsection
 

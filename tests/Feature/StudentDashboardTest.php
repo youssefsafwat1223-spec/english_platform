@@ -95,5 +95,8 @@ class StudentDashboardTest extends TestCase
         $response->assertOk();
         $response->assertDontSeeText('Browse Catalog');
         $response->assertDontSeeText('Learning Activity');
+        $response->assertDontSeeText('ط´ط§ط±ظƒ ط±ط£ظٹظƒ');
+        $this->assertStringNotContainsString('â€”', $response->getContent());
+        $this->assertStringNotContainsString('ًں', $response->getContent());
     }
 }
