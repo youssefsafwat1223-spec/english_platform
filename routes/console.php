@@ -71,3 +71,7 @@ Schedule::command('email:send-inactivity-reminders --days=7')
     ->mondays()
     ->at('10:00')
     ->name('email-inactivity-reminders');
+
+Schedule::command('battle:cleanup-stale-rooms')
+    ->everyMinute()
+    ->name('battle-cleanup-stale-rooms');

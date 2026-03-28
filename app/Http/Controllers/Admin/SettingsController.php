@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 
 class SettingsController extends Controller
 {
-    private $telegramService;
+    private TelegramService $telegramService;
 
     public function __construct(TelegramService $telegramService)
     {
@@ -49,7 +49,7 @@ class SettingsController extends Controller
     public function telegram()
     {
         $botInfo = $this->telegramService->getBotInfo();
-        
+
         $settings = [
             'bot_token' => config('services.telegram.bot_token'),
             'webhook_url' => config('services.telegram.webhook_url'),
@@ -79,7 +79,7 @@ class SettingsController extends Controller
     public function setWebhook()
     {
         $url = config('services.telegram.webhook_url');
-        
+
         $success = $this->telegramService->setWebhook($url);
 
         if ($success) {
@@ -160,12 +160,13 @@ class SettingsController extends Controller
     public function battle()
     {
         $settings = [
-            'battle_lobby_timer'     => (int) SystemSetting::get('battle_lobby_timer', 120),
-            'battle_question_timer'  => (int) SystemSetting::get('battle_question_timer', 30),
-            'battle_min_questions'   => (int) SystemSetting::get('battle_min_questions', 5),
-            'battle_max_questions'   => (int) SystemSetting::get('battle_max_questions', 15),
-            'battle_min_players'     => (int) SystemSetting::get('battle_min_players', 2),
-            'battle_max_players'     => (int) SystemSetting::get('battle_max_players', 10),
+            'battle_lobby_timer' => (int) SystemSetting::get('battle_lobby_timer', 120),
+            'battle_question_timer' => (int) SystemSetting::get('battle_question_timer', 30),
+            'battle_inactivity_timeout' => (int) SystemSetting::get('battle_inactivity_timeout', 120),
+            'battle_min_questions' => (int) SystemSetting::get('battle_min_questions', 5),
+            'battle_max_questions' => (int) SystemSetting::get('battle_max_questions', 15),
+            'battle_min_players' => (int) SystemSetting::get('battle_min_players', 2),
+            'battle_max_players' => (int) SystemSetting::get('battle_max_players', 10),
         ];
 
         return view('admin.settings.battle', compact('settings'));
@@ -174,22 +175,23 @@ class SettingsController extends Controller
     public function updateBattle(Request $request)
     {
         $request->validate([
-            'battle_lobby_timer'    => 'required|integer|min:30|max:600',
+            'battle_lobby_timer' => 'required|integer|min:30|max:600',
             'battle_question_timer' => 'required|integer|min:10|max:120',
-            'battle_min_questions'  => 'required|integer|min:1|max:50',
-            'battle_max_questions'  => 'required|integer|min:1|max:50',
-            'battle_min_players'    => 'required|integer|min:2|max:10',
-            'battle_max_players'    => 'required|integer|min:2|max:10',
+            'battle_inactivity_timeout' => 'required|integer|min:30|max:900',
+            'battle_min_questions' => 'required|integer|min:1|max:50',
+            'battle_max_questions' => 'required|integer|min:1|max:50',
+            'battle_min_players' => 'required|integer|min:2|max:10',
+            'battle_max_players' => 'required|integer|min:2|max:10',
         ]);
 
-        SystemSetting::set('battle_lobby_timer',    $request->battle_lobby_timer,    'integer', 'battle');
+        SystemSetting::set('battle_lobby_timer', $request->battle_lobby_timer, 'integer', 'battle');
         SystemSetting::set('battle_question_timer', $request->battle_question_timer, 'integer', 'battle');
-        SystemSetting::set('battle_min_questions',  $request->battle_min_questions,  'integer', 'battle');
-        SystemSetting::set('battle_max_questions',  $request->battle_max_questions,  'integer', 'battle');
-        SystemSetting::set('battle_min_players',    $request->battle_min_players,    'integer', 'battle');
-        SystemSetting::set('battle_max_players',    $request->battle_max_players,    'integer', 'battle');
+        SystemSetting::set('battle_inactivity_timeout', $request->battle_inactivity_timeout, 'integer', 'battle');
+        SystemSetting::set('battle_min_questions', $request->battle_min_questions, 'integer', 'battle');
+        SystemSetting::set('battle_max_questions', $request->battle_max_questions, 'integer', 'battle');
+        SystemSetting::set('battle_min_players', $request->battle_min_players, 'integer', 'battle');
+        SystemSetting::set('battle_max_players', $request->battle_max_players, 'integer', 'battle');
 
-        return back()->with('success', '⚔️ Battle settings updated successfully!');
+        return back()->with('success', 'Battle settings updated successfully!');
     }
 }
-
