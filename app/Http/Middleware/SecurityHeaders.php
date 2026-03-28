@@ -43,7 +43,7 @@ class SecurityHeaders
         $directives = [
             "default-src 'self'",
             "base-uri 'self'",
-            "form-action 'self'",
+            "form-action 'self' https://streampay.sa https://*.streampay.sa",
             "frame-ancestors 'self'",
             "object-src 'none'",
             "script-src 'self' 'unsafe-inline' 'unsafe-eval' https:",

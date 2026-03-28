@@ -26,6 +26,7 @@ class SecurityHardeningTest extends TestCase
 
         $this->assertStringContainsString("default-src 'self'", $contentSecurityPolicy);
         $this->assertStringContainsString("object-src 'none'", $contentSecurityPolicy);
+        $this->assertStringContainsString("form-action 'self' https://streampay.sa https://*.streampay.sa", $contentSecurityPolicy);
         $this->assertStringContainsString('script-src-elem', $contentSecurityPolicy);
         $response->assertSee('nonce=', false);
     }
