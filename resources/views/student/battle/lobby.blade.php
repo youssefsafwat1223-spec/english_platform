@@ -2,6 +2,13 @@
 
 @php
     $isArabic = app()->getLocale() === 'ar';
+    $lobbyTranslations = [
+        'you' => $isArabic ? 'أنت' : 'You',
+        'waiting' => $isArabic ? 'بانتظار لاعب' : 'Waiting...',
+        'cancelled' => $isArabic
+            ? 'لم يكتمل الحد الأدنى من اللاعبين قبل انتهاء وقت اللوبي.'
+            : 'The minimum number of players was not reached before the lobby expired.',
+    ];
 @endphp
 
 @section('title', $isArabic ? 'لوبي الباتل' : 'Battle Lobby')
@@ -128,13 +135,7 @@
     const pollUrl = "{{ route('student.battle.poll', $room) }}";
     const playUrl = "{{ route('student.battle.play', $room) }}";
 
-    const translations = @json([
-        'you' => $isArabic ? 'أنت' : 'You',
-        'waiting' => $isArabic ? 'بانتظار لاعب' : 'Waiting...',
-        'cancelled' => $isArabic
-            ? 'لم يكتمل الحد الأدنى من اللاعبين قبل انتهاء وقت اللوبي.'
-            : 'The minimum number of players was not reached before the lobby expired.',
-    ]);
+    const translations = @json($lobbyTranslations);
 
     const timerMinEl = document.getElementById('timer-minutes');
     const timerSecEl = document.getElementById('timer-seconds');

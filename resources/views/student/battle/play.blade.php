@@ -2,6 +2,12 @@
 
 @php
     $isArabic = app()->getLocale() === 'ar';
+    $playTranslations = [
+        'correct' => $isArabic ? 'إجابة صحيحة' : 'Correct!',
+        'wrong' => $isArabic ? 'إجابة غير صحيحة' : 'Wrong answer!',
+        'pts' => $isArabic ? 'نقطة' : 'pts',
+        'you' => $isArabic ? '(أنت)' : '(You)',
+    ];
 @endphp
 
 @section('title', $isArabic ? 'الباتل' : 'Battle')
@@ -121,12 +127,7 @@
     const csrfToken = "{{ csrf_token() }}";
     const questionTimerTotal = {{ $room->question_timer_seconds }};
 
-    const trans = @json([
-        'correct' => $isArabic ? 'إجابة صحيحة' : 'Correct!',
-        'wrong' => $isArabic ? 'إجابة غير صحيحة' : 'Wrong answer!',
-        'pts' => $isArabic ? 'نقطة' : 'pts',
-        'you' => $isArabic ? '(أنت)' : '(You)',
-    ]);
+    const trans = @json($playTranslations);
 
     let currentRoundId = null;
     let hasAnswered = false;
