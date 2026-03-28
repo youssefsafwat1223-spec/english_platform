@@ -1,15 +1,18 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
-@section('title', __('ط¥طھظ‚ط§ظ† ط§ظ„ط¥ظ†ط¬ظ„ظٹط²ظٹط© | ظ…ظ†طµط© ظ„طھط¹ظ„ظٹظ… ط§ظ„ظ„ط؛ط© ط§ظ„ط¥ظ†ط¬ظ„ظٹط²ظٹط©'))
-@section('meta_description', __('ط£ظپط¶ظ„ ظ…ظ†طµط© ظ„طھط¹ظ„ظٹظ… ط§ظ„ظ„ط؛ط© ط§ظ„ط¥ظ†ط¬ظ„ظٹط²ظٹط© ظˆطھط·ظˆظٹط± ظ…ظ‡ط§ط±ط§طھ ط§ظ„طھط­ط¯ط«طŒ ط§ظ„ظ‚ظˆط§ط¹ط¯طŒ ظˆط§ظ„ط·ظ„ط§ظ‚ط©. ظƒظˆط±ط³ط§طھ طھظپط§ط¹ظ„ظٹط© ظ…ط¹ طھظ‚ظٹظٹظ… ط§ظ„ظ†ط·ظ‚ ط¨ط§ط³طھط®ط¯ط§ظ… ط§ظ„ط°ظƒط§ط، ط§ظ„ط§طµط·ظ†ط§ط¹ظٹ.'))
-@section('meta_keywords', __('طھط¹ظ„ظ… ط§ظ„ط§ظ†ط¬ظ„ظٹط²ظٹط©, ط¯ظˆط±ط§طھ ط§ظ†ط¬ظ„ظٹط²ظٹ, ظ†ط·ظ‚ ط§ظ„ظ„ط؛ط© ط§ظ„ط§ظ†ط¬ظ„ظٹط²ظٹط©, ط§ظ„ط°ظƒط§ط، ط§ظ„ط§طµط·ظ†ط§ط¹ظٹ, English courses, learn English'))
+@section('title', app()->getLocale() === 'ar' ? 'إتقان الإنجليزية | منصة لتعلّم اللغة الإنجليزية' : 'Master English | English Learning Platform')
+@section('meta_description', app()->getLocale() === 'ar'
+    ? 'منصة متقدمة لتعلّم اللغة الإنجليزية وتطوير مهارات التحدث والقواعد والطلاقة عبر كورسات تفاعلية واختبارات ومساعدات بالذكاء الاصطناعي.'
+    : 'A premium platform for learning English and improving speaking, grammar, and fluency through interactive courses, quizzes, and AI-powered support.')
+@section('meta_keywords', app()->getLocale() === 'ar'
+    ? 'تعلم الإنجليزية, دورات إنجليزي, نطق اللغة الإنجليزية, الذكاء الاصطناعي, كورسات إنجليزية'
+    : 'learn English, English courses, pronunciation, AI learning, fluency')
 
 @section('content')
 
-{{-- â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ
-     ADVANCED 3D BOOK SPLASH SCREEN
-     â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ --}}
-{{-- Removed 3D Splash Screen --}}
+@php($isArabic = app()->getLocale() === 'ar')
+
+{{-- Splash screen removed --}}
 
 <div class="relative overflow-hidden">
 
@@ -158,9 +161,7 @@
         </div>
     </section>
 
-    {{-- â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ
-         FEATURED COURSES SECTION
-         â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ --}}
+    {{-- Featured courses section --}}
     <section class="py-24 relative overflow-hidden" style="background: var(--color-surface);">
         <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
             {{-- Section Header --}}
@@ -208,7 +209,7 @@
                         {{-- Footer --}}
                         <div class="flex items-center justify-between pt-4 border-t border-slate-200 dark:border-white/10">
                             <div class="text-lg font-bold text-primary-500">
-                                {{ $course->price > 0 ? $course->price . ' ' . __('ط±.ط³') : __('Free') }}
+                                {{ $course->price > 0 ? $course->price . ' ' . ($isArabic ? 'ر.س' : 'SAR') : __('Free') }}
                             </div>
                             <a href="{{ route('student.courses.show', $course) }}" class="btn-primary btn-sm rounded-lg">
                                 {{ __('View Course') }}
@@ -217,13 +218,12 @@
                     </div>
                 </div>
                 @endforeach
-            </div>
+            </div>
+
         </div>
     </section>
 
-    {{-- â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ
-         HOW IT WORKS â€” Steps
-         â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ --}}
+    {{-- How it works --}}
     <section class="py-24 relative" style="background: var(--color-surface);">
         <div class="max-w-7xl mx-auto px-6 lg:px-8">
             <div class="text-center max-w-2xl mx-auto mb-16" data-aos="fade-up">
@@ -268,9 +268,7 @@
     </section>
 
 
-    {{-- â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ
-         SAMPLE VIDEOS SECTION â€” {{ __('ط¹ظٹظ†ط© ظ…ظ† ط§ظ„ط´ط±ظˆط­ط§طھ') }}
-         â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ --}}
+    {{-- Sample videos section --}}
     @if($promoVideos->count() > 0)
     <section class="py-20 lg:py-28 relative overflow-hidden">
         {{-- Background decoration --}}
@@ -282,13 +280,15 @@
             <div class="text-center max-w-3xl mx-auto mb-16" data-aos="fade-up">
                 <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-500/10 border border-primary-500/20 text-primary-600 dark:text-primary-400 text-sm font-bold mb-6">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    {{ __('ط´ط§ظ‡ط¯ ظ‚ط¨ظ„ ظ…ط§ طھط´طھط±ظƒ') }}
+                    {{ $isArabic ? 'شاهد قبل ما تشترك' : 'Watch Before You Subscribe' }}
                 </div>
                 <h2 class="text-4xl md:text-5xl font-black mb-4" style="color: var(--color-text);">
-                    {{ __('ط¹ظٹظ†ط© ظ…ظ†') }}
-                    <span class="text-gradient">{{ __('ط§ظ„ط´ط±ظˆط­ط§طھ') }}</span>
+                    {{ $isArabic ? 'عينة من' : 'A Sneak Peek Into' }}
+                    <span class="text-gradient">{{ $isArabic ? 'الشروحات' : 'The Lessons' }}</span>
                 </h2>
-                <p class="text-lg font-medium" style="color: var(--color-text-muted);">{{ __('ط´ظˆظپ ط¨ظ†ظپط³ظƒ ط¬ظˆط¯ط© ط§ظ„ظ…ط­طھظˆظ‰ ظ‚ط¨ظ„ ظ…ط§ طھط¨ط¯ط£ ط±ط­ظ„طھظƒ ظ…ط¹ط§ظ†ط§') }}</p>
+                <p class="text-lg font-medium" style="color: var(--color-text-muted);">
+                    {{ $isArabic ? 'شوف بنفسك جودة المحتوى قبل ما تبدأ رحلتك معنا.' : 'See the quality of the content for yourself before starting your journey with us.' }}
+                </p>
             </div>
 
             {{-- Video Grid --}}
@@ -337,9 +337,7 @@
     @endif
 
 
-    {{-- â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ
-         TESTIMONIALS SECTION â€” {{ __('ظ…ط§ط°ط§ ظ‚ط§ظ„ظˆط§ ط¹ظ†ط§') }}
-         â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ --}}
+    {{-- Testimonials section --}}
     @if($testimonials->count() > 0 || $canSubmitTestimonial)
     <section class="py-20 lg:py-28 relative overflow-hidden">
         {{-- Background decoration --}}
@@ -351,27 +349,29 @@
             <div class="text-center max-w-3xl mx-auto mb-16" data-aos="fade-up">
                 <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent-500/10 border border-accent-500/20 text-accent-600 dark:text-accent-400 text-sm font-bold mb-6">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
-                    {{ __('طھظ‚ظٹظٹظ…ط§طھ ط­ظ‚ظٹظ‚ظٹط©') }}
+                    {{ $isArabic ? 'تقييمات حقيقية' : 'Real Student Reviews' }}
                 </div>
                 <h2 class="text-4xl md:text-5xl font-black mb-4" style="color: var(--color-text);">
-                    {{ __('ظ…ط§ط°ط§ ظ‚ط§ظ„ظˆط§') }}
-                    <span class="text-gradient">{{ __('ط¹ظ†ط§') }}</span>
+                    {{ $isArabic ? 'ماذا قالوا' : 'What Students Say' }}
+                    <span class="text-gradient">{{ $isArabic ? 'عنا' : 'About Us' }}</span>
                 </h2>
-                <p class="text-lg font-medium" style="color: var(--color-text-muted);">{{ __('ط´ظˆظپ ط¢ط±ط§ط، ط§ظ„ط·ظ„ط§ط¨ ط§ظ„ظ„ظٹ ط¨ط¯ط£ظˆط§ ط±ط­ظ„طھظ‡ظ… ظ…ط¹ط§ظ†ط§') }}</p>
+                <p class="text-lg font-medium" style="color: var(--color-text-muted);">
+                    {{ $isArabic ? 'شوف آراء الطلاب اللي بدأوا رحلتهم معنا.' : 'See what students who started learning with us have to say.' }}
+                </p>
                 @if($canSubmitTestimonial)
                     <div class="mt-6 flex flex-col items-center gap-3">
                         <a href="{{ route('student.testimonial.edit') }}" class="btn-primary ripple-btn px-6 py-3 rounded-xl shadow-lg shadow-primary-500/25 inline-flex items-center gap-2">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5h2m-1 0v14m7-7H5"></path>
                             </svg>
-                            {{ $studentTestimonial ? __('ط¹ط¯ظ‘ظ„ ط±ط£ظٹظƒ') : __('ط§ظƒطھط¨ ط±ط£ظٹظƒ') }}
+                            {{ $studentTestimonial ? ($isArabic ? 'عدّل رأيك' : 'Edit Your Review') : ($isArabic ? 'اكتب رأيك' : 'Write Your Review') }}
                         </a>
                         @if($studentTestimonial && !$studentTestimonial->is_active)
                             <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 text-xs font-black">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                 </svg>
-                                {{ __('ط±ط£ظٹظƒ ط§ظ„ط­ط§ظ„ظٹ ظ‚ظٹط¯ ط§ظ„ظ…ط±ط§ط¬ط¹ط©') }}
+                                {{ $isArabic ? 'رأيك الحالي قيد المراجعة' : 'Your current review is pending approval' }}
                             </div>
                         @endif
                     </div>
@@ -429,10 +429,14 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
                     </svg>
                 </div>
-                <h3 class="text-2xl font-black mb-3" style="color: var(--color-text);">{{ __('ط§ط¨ط¯ط£ ط¨ط£ظˆظ„ ط±ط£ظٹ ط­ظ‚ظٹظ‚ظٹ ظ‡ظ†ط§') }}</h3>
-                <p class="text-base font-medium mb-6" style="color: var(--color-text-muted);">{{ __('ظ„ط³ظ‡ ظ…ط§ ظپظٹط´ ط¢ط±ط§ط، ظ…ظ†ط´ظˆط±ط©طŒ ظ„ظƒظ† طھظ‚ط¯ط± طھظƒظˆظ† ط£ظˆظ„ ط·ط§ظ„ط¨ ظٹط´ط§ط±ظƒ طھط¬ط±ط¨طھظ‡ ط¨ط¹ط¯ ط§ظ„ظ…ط±ط§ط¬ط¹ط©.') }}</p>
+                <h3 class="text-2xl font-black mb-3" style="color: var(--color-text);">
+                    {{ $isArabic ? 'ابدأ بأول رأي حقيقي هنا' : 'Be the first to share a real review here' }}
+                </h3>
+                <p class="text-base font-medium mb-6" style="color: var(--color-text-muted);">
+                    {{ $isArabic ? 'لسه ما فيش آراء منشورة، لكن تقدر تكون أول طالب يشارك تجربته بعد المراجعة.' : 'No reviews have been published yet, but you can be the first student to share your experience after review.' }}
+                </p>
                 <a href="{{ route('student.testimonial.edit') }}" class="btn-primary ripple-btn px-6 py-3 rounded-xl shadow-lg shadow-primary-500/25 inline-flex items-center gap-2">
-                    {{ __('ط´ط§ط±ظƒ طھط¬ط±ط¨طھظƒ') }}
+                    {{ $isArabic ? 'شارك تجربتك' : 'Share Your Experience' }}
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                     </svg>
