@@ -9,6 +9,7 @@ use App\Models\Referral;
 use App\Models\User;
 use App\Services\PaymentService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
 class PaymentServiceTest extends TestCase
@@ -121,5 +122,36 @@ class PaymentServiceTest extends TestCase
 
         $this->assertSame('referrer_referral', $discount['discount_type']);
         $this->assertSame(10.0, (float) $discount['discount_amount']);
+    }
+
+    public function test_create_charge_fails_when_gateway_does_not_return_checkout_url(): void
+    {
+        Http::fake([
+            '*products' => Http::response([
+                'id' => 'product-1',
+            ]),
+            '*payment_links' => Http::response([
+                'id' => 'payment-link-1',
+            ]),
+        ]);
+
+        $user = User::factory()->create();
+        $course = Course::factory()->create([
+            'price' => 100,
+        ]);
+
+        $result = app(PaymentService::class)->createCharge($user, $course, [
+            'discount_amount' => 0,
+            'discount_type' => null,
+            'final_amount' => 100,
+        ]);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame('Payment gateway did not return a checkout link. Please try again.', $result['message']);
+        $this->assertDatabaseHas('payments', [
+            'user_id' => $user->id,
+            'course_id' => $course->id,
+            'payment_status' => 'failed',
+        ]);
     }
 }

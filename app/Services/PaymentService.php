@@ -7,6 +7,7 @@ use App\Models\Payment;
 use App\Models\PromoCode;
 use App\Models\Referral;
 use App\Models\User;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -119,6 +120,21 @@ class PaymentService
             ]);
 
             $redirectUrl = $data['url'] ?? $data['link'] ?? $data['checkout_url'] ?? $data['payment_url'] ?? $data['redirect_url'] ?? null;
+
+            if (!$redirectUrl) {
+                Log::error('StreamPay payment link response did not include a redirect URL', [
+                    'payment_id' => $payment->id,
+                    'payment_link_id' => $paymentLinkId,
+                    'response' => $data,
+                ]);
+
+                $payment->markAsFailed('StreamPay did not return a checkout URL');
+
+                return [
+                    'success' => false,
+                    'message' => 'Payment gateway did not return a checkout link. Please try again.',
+                ];
+            }
 
             Log::info('StreamPay payment link created', [
                 'payment_id' => $payment->id,
@@ -494,7 +510,13 @@ class PaymentService
 
     private function streamPayRequest(string $method, string $path, array $payload = []): Response
     {
-        $request = Http::withHeaders($this->streamPayHeaders());
+        $request = Http::withHeaders($this->streamPayHeaders())
+            ->acceptJson()
+            ->connectTimeout(10)
+            ->timeout(25)
+            ->retry(2, 500, function (\Throwable $exception) {
+                return $exception instanceof ConnectionException;
+            }, throw: false);
 
         return match (strtolower($method)) {
             'get' => $request->get($this->apiUrl . $path),
