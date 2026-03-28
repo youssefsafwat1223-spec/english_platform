@@ -97,7 +97,11 @@ class Question extends Model
             return null;
         }
 
-        return Storage::url($this->audio_path);
+        if (!Storage::disk('public')->exists($this->audio_path)) {
+            return null;
+        }
+
+        return Storage::disk('public')->url($this->audio_path);
     }
 
     /**
@@ -165,18 +169,33 @@ class Question extends Model
      */
     public function getTTSText()
     {
-        $text = "Question. {$this->question_text}. ";
-        $text .= "Option A: {$this->option_a}. ";
-        $text .= "Option B: {$this->option_b}. ";
+        $questionText = trim(strip_tags((string) $this->question_text));
 
-        if ($this->option_c) {
-            $text .= "Option C: {$this->option_c}. ";
+        if ($this->question_type === 'drag_drop' && is_array($this->matching_pairs)) {
+            $segments = ["Question. {$questionText}."];
+
+            foreach ($this->matching_pairs as $index => $pair) {
+                $left = trim(strip_tags((string) ($pair['left'] ?? '')));
+                $right = trim(strip_tags((string) ($pair['right'] ?? '')));
+
+                if ($left !== '' && $right !== '') {
+                    $segments[] = 'Pair ' . ($index + 1) . ": {$left} matches {$right}.";
+                }
+            }
+
+            return trim(implode(' ', $segments));
         }
 
-        if ($this->option_d) {
-            $text .= "Option D: {$this->option_d}.";
+        $segments = ["Question. {$questionText}."];
+
+        foreach ($this->options as $label => $option) {
+            $value = trim(strip_tags((string) $option));
+
+            if ($value !== '') {
+                $segments[] = "Option {$label}: {$value}.";
+            }
         }
 
-        return $text;
+        return trim(implode(' ', $segments));
     }
 }

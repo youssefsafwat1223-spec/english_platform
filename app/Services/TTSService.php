@@ -18,9 +18,28 @@ class TTSService
     public function __construct()
     {
         try {
-            $this->client = new TextToSpeechClient([
-                'credentials' => config('services.google.credentials_path'),
-            ]);
+            $clientConfig = [];
+            $credentialsPath = config('services.google.credentials_path');
+            $projectId = config('services.google.project_id');
+
+            if ($credentialsPath) {
+                $resolvedPath = $this->resolveCredentialsPath($credentialsPath);
+
+                if (is_file($resolvedPath)) {
+                    $clientConfig['credentials'] = $resolvedPath;
+                } else {
+                    Log::warning('TTS credentials file was not found', [
+                        'path' => $credentialsPath,
+                        'resolved_path' => $resolvedPath,
+                    ]);
+                }
+            }
+
+            if ($projectId) {
+                $clientConfig['projectId'] = $projectId;
+            }
+
+            $this->client = new TextToSpeechClient($clientConfig);
         } catch (\Exception $e) {
             Log::error('TTS Client initialization failed', [
                 'error' => $e->getMessage(),
@@ -81,12 +100,12 @@ class TTSService
             $filename = 'tts-' . uniqid() . '.mp3';
             $path = "quiz-audio/tts-generated/{$filename}";
 
-            Storage::put($path, $audioContent);
+            Storage::disk('public')->put($path, $audioContent);
 
             return [
                 'success' => true,
                 'path' => $path,
-                'url' => Storage::url($path),
+                'url' => Storage::disk('public')->url($path),
                 'duration' => $this->estimateDuration($text, $speed),
             ];
 
@@ -186,8 +205,8 @@ class TTSService
      */
     public function deleteAudio($path)
     {
-        if (Storage::exists($path)) {
-            Storage::delete($path);
+        if (Storage::disk('public')->exists($path)) {
+            Storage::disk('public')->delete($path);
             return true;
         }
 
@@ -212,5 +231,14 @@ class TTSService
         }
 
         return $results;
+    }
+
+    private function resolveCredentialsPath(string $path): string
+    {
+        if (preg_match('/^[A-Za-z]:\\\\/', $path) || str_starts_with($path, '/') || str_starts_with($path, '\\')) {
+            return $path;
+        }
+
+        return base_path($path);
     }
 }

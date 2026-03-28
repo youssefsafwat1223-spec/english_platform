@@ -3,6 +3,11 @@
 @section('title', 'Take Quiz: ' . $quiz->title . ' — ' . config('app.name'))
 
 @section('content')
+@php
+    $audioEnabled = (bool) $quiz->enable_audio;
+    $audioAutoPlay = $audioEnabled && (bool) $quiz->audio_auto_play;
+    $questionSpeechTexts = $quiz->questions->map(fn ($question) => $question->getTTSText())->values();
+@endphp
 <div class="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white pb-24 md:pb-12" x-data="quizController()" x-init="initQuiz()">
     
     {{-- Top Sticky Navigation & Progress --}}
@@ -69,12 +74,29 @@
                     {{-- Question Card --}}
                     <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 md:p-10 shadow-sm border border-slate-200 dark:border-slate-800 mb-8">
                         
-                        @if($question->has_audio && $question->audio_url)
-                            <div class="mb-8 mx-auto max-w-sm rounded-[1.5rem] p-1.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 shadow-inner">
-                                <audio id="audio-{{ $qIndex }}" controls class="w-full h-12 focus:outline-none custom-audio-player">
-                                    <source src="{{ $question->audio_url }}" type="audio/mpeg">
-                                    Your browser does not support the audio element.
-                                </audio>
+                        @if($audioEnabled)
+                            <div class="mb-8 mx-auto max-w-xl space-y-3">
+                                @if($question->audio_url)
+                                    <div class="rounded-[1.5rem] p-1.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 shadow-inner">
+                                        <audio id="audio-{{ $qIndex }}" controls preload="none" class="w-full h-12 focus:outline-none custom-audio-player">
+                                            <source src="{{ $question->audio_url }}" type="audio/mpeg">
+                                            Your browser does not support the audio element.
+                                        </audio>
+                                    </div>
+                                @endif
+
+                                <div class="flex justify-center">
+                                    <button
+                                        type="button"
+                                        @click="playQuestionAudio({{ $qIndex }}, true)"
+                                        class="inline-flex items-center gap-2 rounded-full border border-primary-500/30 bg-primary-500/10 px-5 py-2.5 text-sm font-bold text-primary-600 transition hover:bg-primary-500/20 dark:text-primary-300"
+                                    >
+                                        <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                                            <path d="M6.5 5.5A1.5 1.5 0 0 1 9 6.7v6.6a1.5 1.5 0 0 1-2.5 1.2L3 11.4a1.5 1.5 0 0 1 0-2.8l3.5-3.1Zm6.22-.72a.75.75 0 0 1 1.06 0 7.25 7.25 0 0 1 0 10.25.75.75 0 1 1-1.06-1.06 5.75 5.75 0 0 0 0-8.13.75.75 0 0 1 0-1.06Zm-2.12 2.12a.75.75 0 0 1 1.06 0 4.25 4.25 0 0 1 0 6.01.75.75 0 1 1-1.06-1.06 2.75 2.75 0 0 0 0-3.89.75.75 0 0 1 0-1.06Z" />
+                                        </svg>
+                                        <span>{{ app()->getLocale() === 'ar' ? 'استمع للسؤال' : 'Listen to the question' }}</span>
+                                    </button>
+                                </div>
                             </div>
                         @endif
 
@@ -84,6 +106,8 @@
 
                         <div class="space-y-4 max-w-3xl mx-auto">
                             <input type="hidden" name="answers[{{ $qIndex }}][question_id]" value="{{ $question->id }}">
+                            <input type="hidden" name="answers[{{ $qIndex }}][audio_played]" :value="audioStats[{{ $qIndex }}]?.played ? 1 : 0">
+                            <input type="hidden" name="answers[{{ $qIndex }}][audio_replay_count]" :value="audioStats[{{ $qIndex }}]?.replays ?? 0">
                             
                             @if($question->question_type === 'drag_drop' && $question->matching_pairs)
                                 {{-- Drag & Drop Matching UI --}}
@@ -261,19 +285,37 @@ function quizController() {
     return {
         currentQuestion: 0,
         answers: {},
+        audioStats: {},
         loading: false,
         timeLeft: {{ ($quiz->time_limit ?? 0) * 60 }},
         timerInterval: null,
         startedAt: new Date().toISOString(),
         completedAt: '',
+        audioEnabled: @js($audioEnabled),
+        audioAutoPlay: @js($audioAutoPlay),
+        questionSpeechTexts: @json($questionSpeechTexts),
         
         initQuiz() {
             this.startTimer();
-            this.$watch('currentQuestion', (val) => this.playAudio(val));
-            // Play initial audio if allowed by browser
-            this.$nextTick(() => {
-                setTimeout(() => this.playAudio(0), 500); // slight delay to ensure render
+            this.registerAudioTracking();
+            this.$watch('currentQuestion', (val) => {
+                if (this.audioAutoPlay) {
+                    this.playQuestionAudio(val);
+                } else {
+                    this.stopAllAudio();
+                }
             });
+
+            this.$nextTick(() => {
+                if (this.audioAutoPlay) {
+                    setTimeout(() => this.playQuestionAudio(0), 500);
+                }
+            });
+
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.getVoices();
+                window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+            }
             
             // Listen for keyboard navigation
             window.addEventListener('keydown', (e) => {
@@ -296,21 +338,89 @@ function quizController() {
                 }
             });
         },
-        
-        playAudio(index) {
-            // Stop all playing audio
+
+        registerAudioTracking() {
+            if (!this.audioEnabled) {
+                return;
+            }
+
+            document.querySelectorAll('audio[id^="audio-"]').forEach((audio) => {
+                const index = Number(audio.id.replace('audio-', ''));
+                audio.addEventListener('play', () => this.markAudioPlayback(index));
+            });
+        },
+
+        stopAllAudio() {
             document.querySelectorAll('audio').forEach(audio => {
                 audio.pause();
                 audio.currentTime = 0;
             });
-            
-            // Play target audio
+
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+            }
+        },
+
+        markAudioPlayback(index) {
+            const current = this.audioStats[index] ?? { played: false, replays: 0 };
+
+            this.audioStats[index] = {
+                played: true,
+                replays: current.played ? current.replays + 1 : current.replays,
+            };
+        },
+
+        detectSpeechLanguage(text) {
+            return /[\u0600-\u06FF]/.test(text) ? 'ar-SA' : 'en-US';
+        },
+
+        speakQuestionText(index) {
+            if (!('speechSynthesis' in window)) {
+                return;
+            }
+
+            const text = this.questionSpeechTexts[index] ?? '';
+
+            if (!text.trim()) {
+                return;
+            }
+
+            this.markAudioPlayback(index);
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = this.detectSpeechLanguage(text);
+            utterance.rate = 0.95;
+
+            const voices = window.speechSynthesis.getVoices();
+            const preferredVoice = voices.find((voice) => voice.lang.toLowerCase().startsWith(utterance.lang.toLowerCase().slice(0, 2)));
+
+            if (preferredVoice) {
+                utterance.voice = preferredVoice;
+            }
+
+            window.speechSynthesis.cancel();
+            window.speechSynthesis.speak(utterance);
+        },
+
+        playQuestionAudio(index) {
+            if (!this.audioEnabled) {
+                return;
+            }
+
+            this.stopAllAudio();
+
             const audio = document.getElementById(`audio-${index}`);
+
             if (audio) {
                 audio.play().catch(error => {
-                    console.log("Audio play failed normal behavior:", error);
+                    console.log('Audio playback fallback triggered:', error);
+                    this.speakQuestionText(index);
                 });
+
+                return;
             }
+
+            this.speakQuestionText(index);
         },
         
         startTimer() {
