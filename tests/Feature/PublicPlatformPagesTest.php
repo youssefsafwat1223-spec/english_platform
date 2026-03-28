@@ -53,6 +53,9 @@ class PublicPlatformPagesTest extends TestCase
         $response = $this->withSession(['locale' => 'ar'])->get(route('home'));
 
         $response->assertOk();
+        $response->assertSeeText('اتقن الإنجليزية');
+        $response->assertSeeText('بطريقة عملية ممتعة');
+        $response->assertSeeText('ابدأ رحلتك الآن');
         $response->assertSeeText('شاهد قبل ما تشترك');
         $response->assertSeeText('عينة من');
         $response->assertSeeText('الشروحات');

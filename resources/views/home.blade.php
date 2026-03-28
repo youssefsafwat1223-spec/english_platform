@@ -10,7 +10,22 @@
 
 @section('content')
 
-@php($isArabic = app()->getLocale() === 'ar')
+@php
+    $isArabic = app()->getLocale() === 'ar';
+    $primaryCtaUrl = auth()->check() ? route('student.courses.index') : route('register');
+    $primaryCtaLabel = $isArabic ? 'ابدأ رحلتك الآن' : 'Start Learning Now';
+    $secondaryCtaUrl = route('about');
+    $secondaryCtaLabel = $isArabic ? 'اعرف كيف تعمل المنصة' : 'See How It Works';
+    $heroBadge = $isArabic ? 'منصة عملية لتعلّم الإنجليزية بثقة' : 'A practical platform for confident English';
+    $heroTitle = $isArabic ? 'اتقن الإنجليزية' : 'Master English';
+    $heroSubtitle = $isArabic ? 'بطريقة عملية ممتعة' : 'With Real Confidence';
+    $heroDescription = $isArabic
+        ? 'دروس واضحة، اختبارات ذكية، تدريب على النطق، مجتمع متفاعل، ومتابعة عبر تيليجرام في تجربة واحدة تساعدك تتقدم فعلًا.'
+        : 'Clear lessons, smart quizzes, pronunciation practice, an active community, and Telegram follow-ups in one learning experience.';
+    $heroHighlights = $isArabic
+        ? ['اختبارات تفاعلية', 'تدريب على النطق', 'بوت تيليجرام', 'شهادات قابلة للتحقق']
+        : ['Interactive Quizzes', 'Pronunciation Practice', 'Telegram Bot', 'Verifiable Certificates'];
+@endphp
 
 {{-- Splash screen removed --}}
 
@@ -29,24 +44,44 @@
 
         <div class="max-w-7xl mx-auto px-6 lg:px-8 py-32 relative z-10 w-full flex flex-col items-center text-center mt-10">
             <div data-aos="fade-up" data-aos-duration="1000" class="relative z-20 max-w-4xl mx-auto flex flex-col items-center">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur border border-white/15 text-sm font-bold text-white/90 mb-6 shadow-lg">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                    {{ $heroBadge }}
+                </div>
+
                 <h1 class="text-5xl sm:text-6xl lg:text-8xl font-black tracking-tighter leading-[1.15] mb-8 text-white drop-shadow-md">
-                    {{ __('Master English') }}
+                    {{ $heroTitle }}
                     <br>
-                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-accent-400 pb-2 mt-4 inline-block">{{ __('Like a Pro.') }}</span>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-accent-400 pb-2 mt-4 inline-block">{{ $heroSubtitle }}</span>
                 </h1>
 
                 <p class="text-xl sm:text-2xl max-w-2xl mx-auto mb-10 leading-relaxed font-medium text-slate-200 drop-shadow-md">
-                    {{ __('The premium AI-powered platform for immersive language learning. Elevate your fluency with interactive tools and real-time feedback.') }}
+                    {{ $heroDescription }}
                 </p>
 
-                <div class="flex items-center justify-center mb-10 w-full sm:w-auto">
-                    <a href="{{ route('student.courses.index') }}"
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8 w-full sm:w-auto">
+                    <a href="{{ $primaryCtaUrl }}"
                        class="btn-primary ripple-btn px-10 py-5 rounded-2xl shadow-[0_0_40px_-10px_rgba(99,102,241,0.6)] font-black text-lg flex items-center justify-center gap-2 group bg-gradient-to-r from-primary-600 to-accent-600 hover:from-primary-500 hover:to-accent-500 text-white border border-white/20 transition-all hover:scale-105 w-full sm:w-auto">
                         <svg class="w-5 h-5 text-white group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
-                        {{ __('Explore Course') }}
+                        {{ $primaryCtaLabel }}
                     </a>
+                    <a href="{{ $secondaryCtaUrl }}"
+                       class="px-8 py-5 rounded-2xl font-black text-lg flex items-center justify-center gap-2 text-white bg-white/5 border border-white/15 backdrop-blur hover:bg-white/10 transition-all hover:scale-[1.02] w-full sm:w-auto">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        {{ $secondaryCtaLabel }}
+                    </a>
+                </div>
+
+                <div class="flex flex-wrap items-center justify-center gap-3 max-w-3xl">
+                    @foreach($heroHighlights as $highlight)
+                        <div class="px-4 py-2 rounded-full border border-white/10 bg-black/20 backdrop-blur text-sm font-bold text-slate-200 shadow-sm">
+                            {{ $highlight }}
+                        </div>
+                    @endforeach
                 </div>
             </div>
         </div>
@@ -57,18 +92,18 @@
             <path fill="var(--color-surface)" d="M0,40 C360,80 720,0 1080,40 C1260,60 1380,50 1440,40 L1440,80 L0,80 Z"/>
         </svg>
     </div>
-    <section class="py-24 relative overflow-hidden">
+    <section id="features" class="py-24 relative overflow-hidden">
         {{-- Background decorations --}}
         <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
             {{-- Section Header --}}
             <div class="text-center max-w-2xl mx-auto mb-16" data-aos="fade-up">
-                <div class="badge-primary mb-4">{{ __('Features') }}</div>
+                <div class="badge-primary mb-4">{{ $isArabic ? 'تجربة متكاملة' : 'Complete Experience' }}</div>
                 <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight mb-6" style="color: var(--color-text);">
-                    {{ __('Everything You Need to') }}
-                    <span class="text-gradient">{{ __('Master English') }}</span>
+                    {{ $isArabic ? 'كل ما تحتاجه لتتعلم' : 'Everything You Need to Learn' }}
+                    <span class="text-gradient">{{ $isArabic ? 'الإنجليزية بذكاء' : 'English the Smart Way' }}</span>
                 </h2>
                 <p class="text-lg" style="color: var(--color-text-muted);">
-                    {{ __('A complete toolkit designed by language experts, powered by cutting-edge AI technology.') }}
+                    {{ $isArabic ? 'منصة واحدة تجمع الدروس، التدريب، التفاعل، والتحفيز اليومي بدل ما تشتت نفسك بين أدوات كثيرة.' : 'One platform that combines lessons, practice, community, and momentum without scattering your learning across tools.' }}
                 </p>
             </div>
 
@@ -81,9 +116,9 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
                         </svg>
                     </div>
-                    <h3 class="text-xl font-bold mb-3" style="color: var(--color-text);">{{ __('AI Pronunciation Coach') }}</h3>
+                    <h3 class="text-xl font-bold mb-3" style="color: var(--color-text);">{{ $isArabic ? 'مدرب نطق ذكي' : 'AI Pronunciation Coach' }}</h3>
                     <p class="text-sm leading-relaxed" style="color: var(--color-text-muted);">
-                        {{ __('Real-time feedback on your accent and intonation using advanced speech recognition models.') }}
+                        {{ $isArabic ? 'راجع نطقك بصوت واضح وفيدباك مباشر يساعدك تقرب من النطق الصحيح خطوة بخطوة.' : 'Get real-time feedback on pronunciation, stress, and clarity with AI-powered speech analysis.' }}
                     </p>
 
                 </div>
@@ -95,9 +130,9 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
                         </svg>
                     </div>
-                    <h3 class="text-xl font-bold mb-3" style="color: var(--color-text);">{{ __('Structured Learning Paths') }}</h3>
+                    <h3 class="text-xl font-bold mb-3" style="color: var(--color-text);">{{ $isArabic ? 'مسارات واضحة من البداية للنهاية' : 'Structured Learning Paths' }}</h3>
                     <p class="text-sm leading-relaxed" style="color: var(--color-text-muted);">
-                        {{ __('Expert-designed curriculum broken down into clear modules with progress tracking and achievements.') }}
+                        {{ $isArabic ? 'امشِ على خطة مرتبة من المستوى المناسب لك بدل التعلّم العشوائي والمحتوى المبعثر.' : 'Follow a clear curriculum with focused modules, progress tracking, and practical milestones.' }}
                     </p>
 
                 </div>
@@ -109,9 +144,9 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                         </svg>
                     </div>
-                    <h3 class="text-xl font-bold mb-3" style="color: var(--color-text);">{{ __('Gamified Learning') }}</h3>
+                    <h3 class="text-xl font-bold mb-3" style="color: var(--color-text);">{{ $isArabic ? 'تعلم يحفزك كل يوم' : 'Gamified Learning' }}</h3>
                     <p class="text-sm leading-relaxed" style="color: var(--color-text-muted);">
-                        {{ __('Earn XP, maintain streaks, and unlock badges. Compete on leaderboards and stay motivated daily.') }}
+                        {{ $isArabic ? 'نقاط، سلاسل إنجاز، وترتيب يساعدوك تكمّل وتفضل محافظ على تقدمك.' : 'Earn XP, build streaks, and stay engaged with a system that rewards consistency.' }}
                     </p>
 
                 </div>
@@ -123,9 +158,9 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
                         </svg>
                     </div>
-                    <h3 class="text-xl font-bold mb-3" style="color: var(--color-text);">{{ __('Smart Quizzes') }}</h3>
+                    <h3 class="text-xl font-bold mb-3" style="color: var(--color-text);">{{ $isArabic ? 'اختبارات ذكية بعد كل مرحلة' : 'Smart Quizzes' }}</h3>
                     <p class="text-sm leading-relaxed" style="color: var(--color-text-muted);">
-                        {{ __('Adaptive assessments that adjust to your skill level, ensuring optimal challenge and retention.') }}
+                        {{ $isArabic ? 'اختبر فهمك أولًا بأول وتأكد إنك بتبني أساس قوي قبل ما تنتقل للخطوة اللي بعدها.' : 'Use targeted quizzes to measure retention and reinforce each lesson before moving on.' }}
                     </p>
 
                 </div>
@@ -137,9 +172,9 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"/>
                         </svg>
                     </div>
-                    <h3 class="text-xl font-bold mb-3" style="color: var(--color-text);">{{ __('Community Forum') }}</h3>
+                    <h3 class="text-xl font-bold mb-3" style="color: var(--color-text);">{{ $isArabic ? 'مجتمع يساعدك تتقدم' : 'Community Forum' }}</h3>
                     <p class="text-sm leading-relaxed" style="color: var(--color-text-muted);">
-                        {{ __('Connect with fellow learners, ask questions, share tips, and practice conversational English.') }}
+                        {{ $isArabic ? 'اسأل، ناقش، وشارك تجاربك مع طلاب عندهم نفس هدفك بدل ما تتعلم لوحدك.' : 'Ask questions, share tips, and learn alongside other students with the same goal.' }}
                     </p>
 
                 </div>
@@ -151,9 +186,9 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
                         </svg>
                     </div>
-                    <h3 class="text-xl font-bold mb-3" style="color: var(--color-text);">{{ __('Verified Certificates') }}</h3>
+                    <h3 class="text-xl font-bold mb-3" style="color: var(--color-text);">{{ $isArabic ? 'شهادات قابلة للتحقق' : 'Verified Certificates' }}</h3>
                     <p class="text-sm leading-relaxed" style="color: var(--color-text-muted);">
-                        {{ __('Earn verifiable certificates upon course completion. Share them on LinkedIn and boost your career.') }}
+                        {{ $isArabic ? 'بعد إنهاء الكورس تقدر تحصل على شهادة محترمة تضيفها في ملفاتك المهنية وتشاركها بثقة.' : 'Earn verifiable certificates you can share professionally after completing your course.' }}
                     </p>
 
                 </div>
@@ -166,12 +201,12 @@
         <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
             {{-- Section Header --}}
             <div class="text-center max-w-2xl mx-auto mb-16" data-aos="fade-up">
-                <div class="badge-primary mb-4">{{ __('Trending') }}</div>
+                <div class="badge-primary mb-4">{{ $isArabic ? 'الأكثر طلبًا' : 'Most Popular' }}</div>
                 <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight mb-6" style="color: var(--color-text);">
-                    {{ __('Popular') }} <span class="text-gradient">{{ __('Courses') }}</span>
+                    {{ $isArabic ? 'اختر' : 'Choose a' }} <span class="text-gradient">{{ $isArabic ? 'الكورس المناسب لمستواك' : 'Course That Fits Your Level' }}</span>
                 </h2>
                 <p class="text-lg" style="color: var(--color-text-muted);">
-                    {{ __('Join thousands of students in our most popular English courses.') }}
+                    {{ $isArabic ? 'ابدأ من المستوى الأنسب لك وادخل في تجربة تعليمية واضحة من أول درس لآخر اختبار.' : 'Start from the right level and move through a focused learning experience from lesson one to completion.' }}
                 </p>
             </div>
 
@@ -189,7 +224,7 @@
                             </div>
                         @endif
                         <div class="absolute top-4 right-4 rtl:left-4 rtl:right-auto bg-white/90 dark:bg-black/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold shadow-lg">
-                            {{ $course->level ? __($course->level) : __('All Levels') }}
+                            {{ $course->level ? __($course->level) : ($isArabic ? 'كل المستويات' : 'All Levels') }}
                         </div>
                     </div>
                     
@@ -202,7 +237,7 @@
                         <div class="flex items-center justify-between text-xs font-medium mb-6" style="color: var(--color-text-muted);">
                             <div class="flex items-center gap-1">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                {{ $course->estimated_duration_weeks ? __('Suggested') . ' ' . $course->estimated_duration_weeks . ' ' . __('Weeks') : __('Self-paced') }}
+                                {{ $course->estimated_duration_weeks ? ($isArabic ? 'مدة مقترحة ' . $course->estimated_duration_weeks . ' أسابيع' : 'Suggested ' . $course->estimated_duration_weeks . ' Weeks') : ($isArabic ? 'تعلم بالسرعة المناسبة لك' : 'Self-paced') }}
                             </div>
                         </div>
 
@@ -212,7 +247,7 @@
                                 {{ $course->price > 0 ? $course->price . ' ' . ($isArabic ? 'ر.س' : 'SAR') : __('Free') }}
                             </div>
                             <a href="{{ route('student.courses.show', $course) }}" class="btn-primary btn-sm rounded-lg">
-                                {{ __('View Course') }}
+                                {{ $isArabic ? 'اكتشف الكورس' : 'View Course' }}
                             </a>
                         </div>
                     </div>
@@ -224,13 +259,16 @@
     </section>
 
     {{-- How it works --}}
-    <section class="py-24 relative" style="background: var(--color-surface);">
+    <section id="how-it-works" class="py-24 relative" style="background: var(--color-surface);">
         <div class="max-w-7xl mx-auto px-6 lg:px-8">
             <div class="text-center max-w-2xl mx-auto mb-16" data-aos="fade-up">
-                <div class="badge-accent mb-4">{{ __('How It Works') }}</div>
+                <div class="badge-accent mb-4">{{ $isArabic ? 'كيف تبدأ' : 'How It Works' }}</div>
                 <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight mb-6" style="color: var(--color-text);">
-                    {{ __('Start in') }} <span class="text-gradient">{{ __('3 Simple Steps') }}</span>
+                    {{ $isArabic ? 'ابدأ في' : 'Start in' }} <span class="text-gradient">{{ $isArabic ? '3 خطوات بسيطة' : '3 Simple Steps' }}</span>
                 </h2>
+                <p class="text-lg" style="color: var(--color-text-muted);">
+                    {{ $isArabic ? 'المنصة مصممة لتوصلك للنتيجة بأبسط مسار ممكن: سجل، اختر، وابدأ تتقدم.' : 'The path is intentionally simple: sign up, choose your course, and start making real progress.' }}
+                </p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -239,8 +277,8 @@
                     <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center text-white text-2xl font-extrabold mx-auto mb-6 shadow-neon-cyan">
                         1
                     </div>
-                    <h3 class="text-xl font-bold mb-3" style="color: var(--color-text);">{{ __('Create Account') }}</h3>
-                    <p class="text-sm" style="color: var(--color-text-muted);">{{ __('Register your account in seconds.') }}</p>
+                    <h3 class="text-xl font-bold mb-3" style="color: var(--color-text);">{{ $isArabic ? 'أنشئ حسابك' : 'Create Account' }}</h3>
+                    <p class="text-sm" style="color: var(--color-text-muted);">{{ $isArabic ? 'سجّل في دقائق وابدأ تجهيز رحلتك التعليمية.' : 'Create your account in seconds and get ready to start learning.' }}</p>
                     {{-- Connector line --}}
                     <div class="hidden md:block absolute top-10 left-[60%] w-[80%] h-px bg-gradient-to-r from-primary-500 to-transparent"></div>
                 </div>
@@ -250,8 +288,8 @@
                     <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-accent-500 to-accent-600 flex items-center justify-center text-white text-2xl font-extrabold mx-auto mb-6 shadow-neon-violet">
                         2
                     </div>
-                    <h3 class="text-xl font-bold mb-3" style="color: var(--color-text);">{{ __('Choose Your Course') }}</h3>
-                    <p class="text-sm" style="color: var(--color-text-muted);">{{ __('Subscribe to the comprehensive language course.') }}</p>
+                    <h3 class="text-xl font-bold mb-3" style="color: var(--color-text);">{{ $isArabic ? 'اختر الكورس المناسب' : 'Choose Your Course' }}</h3>
+                    <p class="text-sm" style="color: var(--color-text-muted);">{{ $isArabic ? 'اختَر المستوى المناسب لك وادخل مباشرة على المحتوى.' : 'Pick the right level for you and jump straight into the content.' }}</p>
                     <div class="hidden md:block absolute top-10 left-[60%] w-[80%] h-px bg-gradient-to-r from-accent-500 to-transparent"></div>
                 </div>
 
@@ -260,8 +298,8 @@
                     <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center text-white text-2xl font-extrabold mx-auto mb-6 shadow-lg">
                         3
                     </div>
-                    <h3 class="text-xl font-bold mb-3" style="color: var(--color-text);">{{ __('Start Learning') }}</h3>
-                    <p class="text-sm" style="color: var(--color-text-muted);">{{ __('Dive into lessons, take quizzes, practice pronunciation, and track your journey to fluency.') }}</p>
+                    <h3 class="text-xl font-bold mb-3" style="color: var(--color-text);">{{ $isArabic ? 'ابدأ التعلّم والتطبيق' : 'Start Learning' }}</h3>
+                    <p class="text-sm" style="color: var(--color-text-muted);">{{ $isArabic ? 'تابع الدروس، حل الاختبارات، وطور نطقك خطوة بخطوة.' : 'Take lessons, solve quizzes, and build your fluency step by step.' }}</p>
                 </div>
             </div>
         </div>
@@ -270,7 +308,7 @@
 
     {{-- Sample videos section --}}
     @if($promoVideos->count() > 0)
-    <section class="py-20 lg:py-28 relative overflow-hidden">
+    <section id="preview" class="py-20 lg:py-28 relative overflow-hidden">
         {{-- Background decoration --}}
         <div class="absolute inset-0 bg-gradient-to-br from-primary-500/5 via-transparent to-accent-500/5 pointer-events-none"></div>
         <div class="absolute top-0 right-0 w-96 h-96 bg-primary-500/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
@@ -339,7 +377,7 @@
 
     {{-- Testimonials section --}}
     @if($testimonials->count() > 0 || $canSubmitTestimonial)
-    <section class="py-20 lg:py-28 relative overflow-hidden">
+    <section id="reviews" class="py-20 lg:py-28 relative overflow-hidden">
         {{-- Background decoration --}}
         <div class="absolute inset-0 bg-gradient-to-tl from-accent-500/5 via-transparent to-primary-500/5 pointer-events-none"></div>
         <div class="absolute bottom-0 left-0 w-96 h-96 bg-accent-500/10 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/2 pointer-events-none"></div>
@@ -447,8 +485,33 @@
     </section>
     @endif
 
+    <section class="py-20 lg:py-28 relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-br from-primary-500/10 via-transparent to-accent-500/10 pointer-events-none"></div>
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="glass-card rounded-[2.5rem] p-8 md:p-12 text-center border border-white/10 shadow-2xl">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-500/10 border border-primary-500/20 text-primary-500 text-sm font-black mb-6">
+                    {{ $isArabic ? 'جاهز تبدأ؟' : 'Ready to Begin?' }}
+                </div>
+                <h2 class="text-3xl md:text-5xl font-black mb-5" style="color: var(--color-text);">
+                    {{ $isArabic ? 'ابدأ من اليوم وخلي مستواك في الإنجليزية' : 'Start Today and Build Your English' }}
+                    <span class="text-gradient">{{ $isArabic ? 'أوضح وأقوى' : 'With More Clarity and Confidence' }}</span>
+                </h2>
+                <p class="text-lg max-w-3xl mx-auto mb-8" style="color: var(--color-text-muted);">
+                    {{ $isArabic ? 'لو كنت تريد منصة مرتبة، محتوى واضح، وتقدّم ملموس بدل التشتت بين مصادر كثيرة، فدي أفضل نقطة تبدأ منها.' : 'If you want focused content, a structured path, and visible progress instead of scattered resources, this is the right place to start.' }}
+                </p>
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <a href="{{ $primaryCtaUrl }}" class="btn-primary ripple-btn px-8 py-4 rounded-2xl shadow-lg shadow-primary-500/25 inline-flex items-center gap-2 font-black">
+                        {{ $primaryCtaLabel }}
+                    </a>
+                    <a href="{{ route('about') }}" class="px-8 py-4 rounded-2xl border border-white/10 bg-white/5 hover:bg-white/10 transition-colors inline-flex items-center gap-2 font-black" style="color: var(--color-text);">
+                        {{ $isArabic ? 'اعرف أكثر عن المنصة' : 'Learn More About the Platform' }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
 
 
 </div>
 @endsection
-
