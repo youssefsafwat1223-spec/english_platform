@@ -240,7 +240,10 @@ class CourseController extends Controller
             return redirect()->away($result['redirect_url']);
         }
 
-        return back()->with('error', $result['message']);
+        return back()
+            ->withInput()
+            ->with('error', $result['message'])
+            ->withErrors(['payment' => $result['message']]);
     }
 
     public function learn(Course $course)

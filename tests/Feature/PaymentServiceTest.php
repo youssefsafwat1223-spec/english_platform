@@ -9,6 +9,7 @@ use App\Models\Referral;
 use App\Models\User;
 use App\Services\PaymentService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
@@ -153,5 +154,47 @@ class PaymentServiceTest extends TestCase
             'course_id' => $course->id,
             'payment_status' => 'failed',
         ]);
+    }
+
+    public function test_create_charge_marks_payment_failed_when_gateway_times_out(): void
+    {
+        Http::fake(function () {
+            throw new ConnectionException('cURL error 28: Operation timed out');
+        });
+
+        $user = User::factory()->create();
+        $course = Course::factory()->create([
+            'price' => 100,
+        ]);
+
+        $result = app(PaymentService::class)->createCharge($user, $course, [
+            'discount_amount' => 0,
+            'discount_type' => null,
+            'final_amount' => 100,
+        ]);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame('The payment gateway took too long to respond. Please try again in a moment.', $result['message']);
+        $this->assertDatabaseHas('payments', [
+            'user_id' => $user->id,
+            'course_id' => $course->id,
+            'payment_status' => 'failed',
+            'error_message' => 'The payment gateway took too long to respond. Please try again in a moment.',
+        ]);
+    }
+
+    public function test_checkout_page_displays_payment_error_inline(): void
+    {
+        $user = User::factory()->create();
+        $course = Course::factory()->create([
+            'slug' => 'english-basics',
+        ]);
+
+        $response = $this->actingAs($user)
+            ->withSession(['error' => 'The payment gateway took too long to respond. Please try again in a moment.'])
+            ->get(route('student.courses.enroll', $course));
+
+        $response->assertOk();
+        $response->assertSee('The payment gateway took too long to respond. Please try again in a moment.');
     }
 }

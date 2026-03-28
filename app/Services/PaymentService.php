@@ -33,6 +33,8 @@ class PaymentService
      */
     public function createCharge(User $user, Course $course, array $discountData, ?PromoCode $promoCode = null, ?string $discountCode = null): array
     {
+        $payment = null;
+
         try {
             $amount = (float) $course->price;
             $discountAmount = (float) ($discountData['discount_amount'] ?? 0);
@@ -62,12 +64,24 @@ class PaymentService
             ]);
 
             if (!$productResponse->successful()) {
+                $message = $this->extractGatewayErrorMessage(
+                    $productResponse,
+                    'Payment gateway rejected the course product request. Please try again.'
+                );
+
                 Log::error('StreamPay product creation failed', [
                     'payment_id' => $payment->id,
+                    'status' => $productResponse->status(),
                     'response' => $productResponse->json(),
+                    'body' => $productResponse->body(),
                 ]);
 
-                throw new \RuntimeException('Failed to create StreamPay product.');
+                $payment->markAsFailed($message);
+
+                return [
+                    'success' => false,
+                    'message' => $message,
+                ];
             }
 
             $productId = $productResponse->json('id');
@@ -96,16 +110,23 @@ class PaymentService
             ]);
 
             if (!$paymentLinkResponse->successful()) {
+                $message = $this->extractGatewayErrorMessage(
+                    $paymentLinkResponse,
+                    'Payment gateway rejected the checkout link request. Please try again.'
+                );
+
                 Log::error('StreamPay payment link creation failed', [
                     'payment_id' => $payment->id,
+                    'status' => $paymentLinkResponse->status(),
                     'response' => $paymentLinkResponse->json(),
+                    'body' => $paymentLinkResponse->body(),
                 ]);
 
-                $payment->markAsFailed('Charge creation failed');
+                $payment->markAsFailed($message);
 
                 return [
                     'success' => false,
-                    'message' => 'Failed to create payment. Please try again.',
+                    'message' => $message,
                 ];
             }
 
@@ -147,16 +168,41 @@ class PaymentService
                 'payment' => $payment->fresh(),
                 'redirect_url' => $redirectUrl,
             ];
-        } catch (\Throwable $e) {
-            Log::error('Payment creation exception', [
+        } catch (ConnectionException $e) {
+            $message = $this->paymentGatewayConnectionMessage($e);
+
+            if ($payment?->is_pending) {
+                $payment->markAsFailed($message);
+            }
+
+            Log::error('Payment gateway connection failed', [
                 'user_id' => $user->id,
                 'course_id' => $course->id,
+                'payment_id' => $payment?->id,
                 'error' => $e->getMessage(),
             ]);
 
             return [
                 'success' => false,
-                'message' => 'An error occurred. Please try again.',
+                'message' => $message,
+            ];
+        } catch (\Throwable $e) {
+            $message = 'An unexpected payment error occurred. Please try again.';
+
+            if ($payment?->is_pending) {
+                $payment->markAsFailed($message);
+            }
+
+            Log::error('Payment creation exception', [
+                'user_id' => $user->id,
+                'course_id' => $course->id,
+                'payment_id' => $payment?->id,
+                'error' => $e->getMessage(),
+            ]);
+
+            return [
+                'success' => false,
+                'message' => $message,
             ];
         }
     }
@@ -606,7 +652,7 @@ class PaymentService
         );
     }
 
-    private function extractGatewayErrorMessage(Response $response): string
+    private function extractGatewayErrorMessage(Response $response, string $fallback = 'StreamPay rejected the request.'): string
     {
         $json = $response->json();
 
@@ -622,6 +668,17 @@ class PaymentService
             return $json['detail'][0]['msg'];
         }
 
-        return 'StreamPay rejected the refund request.';
+        return $fallback;
+    }
+
+    private function paymentGatewayConnectionMessage(ConnectionException $exception): string
+    {
+        $message = strtolower($exception->getMessage());
+
+        if (str_contains($message, 'timed out') || str_contains($message, 'timeout')) {
+            return 'The payment gateway took too long to respond. Please try again in a moment.';
+        }
+
+        return 'Unable to reach the payment gateway right now. Please try again in a moment.';
     }
 }
