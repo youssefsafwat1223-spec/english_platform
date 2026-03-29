@@ -9,6 +9,7 @@ use App\Models\Course;
 use App\Models\Enrollment;
 use App\Models\Question;
 use App\Models\User;
+use App\Services\DeviceAccessService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -21,6 +22,7 @@ class BattlePagesRenderTest extends TestCase
         $student = User::factory()->create();
         $course = Course::factory()->create();
         $question = $this->createQuestion($course);
+        $deviceToken = str_repeat('7', 40);
 
         $this->enroll($student, $course);
 
@@ -39,10 +41,12 @@ class BattlePagesRenderTest extends TestCase
         ]);
 
         $this->actingAs($student)
+            ->withUnencryptedCookie(DeviceAccessService::COOKIE_NAME, $deviceToken)
             ->get(route('student.battle.index'))
             ->assertOk();
 
         $this->actingAs($student)
+            ->withUnencryptedCookie(DeviceAccessService::COOKIE_NAME, $deviceToken)
             ->get(route('student.battle.lobby', $waitingRoom))
             ->assertOk();
 
@@ -74,6 +78,7 @@ class BattlePagesRenderTest extends TestCase
         ]);
 
         $this->actingAs($student)
+            ->withUnencryptedCookie(DeviceAccessService::COOKIE_NAME, $deviceToken)
             ->get(route('student.battle.play', $playingRoom))
             ->assertOk()
             ->assertSee(route('student.battle.leave', $playingRoom), false);
@@ -112,6 +117,7 @@ class BattlePagesRenderTest extends TestCase
         ]);
 
         $this->actingAs($student)
+            ->withUnencryptedCookie(DeviceAccessService::COOKIE_NAME, $deviceToken)
             ->get(route('student.battle.results', $finishedRoom))
             ->assertOk();
     }

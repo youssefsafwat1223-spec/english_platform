@@ -71,6 +71,11 @@
                 <span class="font-medium text-sm">{{ __('Students') }}</span>
             </a>
 
+            <a href="{{ route('admin.device-requests.index') }}" class="admin-sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-all group {{ request()->routeIs('admin.device-requests.*') ? 'active' : '' }}">
+                <span class="text-xl group-hover:scale-110 transition-transform">🖥️</span>
+                <span class="font-medium text-sm">طلبات الأجهزة</span>
+            </a>
+
             <a href="{{ route('admin.payments.index') }}" class="admin-sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-all group {{ request()->routeIs('admin.payments.*') ? 'active' : '' }}">
                 <span class="text-xl group-hover:scale-110 transition-transform">💳</span>
                 <span class="font-medium text-sm">{{ __('Payments') }}</span>

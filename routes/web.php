@@ -27,6 +27,7 @@ use App\Http\Controllers\Admin\EmailCampaignController as AdminEmailCampaignCont
 use App\Http\Controllers\Admin\GameSessionController as AdminGameSessionController;
 use App\Http\Controllers\Admin\TestimonialController as AdminTestimonialController;
 use App\Http\Controllers\Admin\PromoVideoController as AdminPromoVideoController;
+use App\Http\Controllers\Admin\DeviceAccessRequestController as AdminDeviceAccessRequestController;
 
 // Student Controllers
 use App\Http\Controllers\Student\DashboardController as StudentDashboardController;
@@ -250,6 +251,15 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin', 'active', '
         ->name('students.enrollments');
     Route::get('/students/{student}/progress/{enrollment}', [AdminStudentController::class, 'progress'])
         ->name('students.progress');
+
+    Route::get('/device-requests', [AdminDeviceAccessRequestController::class, 'index'])
+        ->name('device-requests.index');
+    Route::get('/device-requests/{deviceReplacementRequest}', [AdminDeviceAccessRequestController::class, 'show'])
+        ->name('device-requests.show');
+    Route::post('/device-requests/{deviceReplacementRequest}/approve', [AdminDeviceAccessRequestController::class, 'approve'])
+        ->name('device-requests.approve');
+    Route::post('/device-requests/{deviceReplacementRequest}/reject', [AdminDeviceAccessRequestController::class, 'reject'])
+        ->name('device-requests.reject');
     
     
     // Promo Codes
@@ -376,7 +386,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin', 'active', '
 |--------------------------------------------------------------------------
 */
 
-Route::prefix('student')->name('student.')->middleware(['auth', 'student', 'active', 'track.activity'])->group(function () {
+Route::prefix('student')->name('student.')->middleware(['auth', 'student', 'active', 'approved.device', 'track.activity'])->group(function () {
     
     // Dashboard
     Route::get('/dashboard', [StudentDashboardController::class, 'index'])->name('dashboard');

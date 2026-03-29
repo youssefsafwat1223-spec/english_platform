@@ -7,6 +7,14 @@
         <div class="mb-8" data-aos="fade-down">
             <h1 class="text-3xl font-extrabold"><span class="text-gradient">{{ __('Manage Students') }}</span></h1>
             <p class="mt-2" style="color: var(--color-text-muted);">{{ __('View and manage all student accounts') }}</p>
+            <div class="mt-4">
+                <a href="{{ route('admin.device-requests.index') }}" class="inline-flex items-center gap-2 rounded-xl border border-primary-500/30 bg-primary-500/10 px-4 py-2 text-sm font-bold text-primary-300 hover:bg-primary-500/20">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a5 5 0 00-10 0v2m-2 0h14a1 1 0 011 1v9a1 1 0 01-1 1H5a1 1 0 01-1-1v-9a1 1 0 011-1zm7 5h.01" />
+                    </svg>
+                    مراجعة طلبات الأجهزة
+                </a>
+            </div>
         </div>
         <div class="glass-card mb-6" data-aos="fade-up">
             <div class="glass-card-body">

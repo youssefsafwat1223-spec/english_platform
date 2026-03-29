@@ -3,10 +3,15 @@
 namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\Controller;
+use App\Services\TelegramService;
 use Illuminate\Http\Request;
 
 class OnboardingController extends Controller
 {
+    public function __construct(private readonly TelegramService $telegramService)
+    {
+    }
+
     public function show()
     {
         $user = auth()->user();
@@ -29,13 +34,28 @@ class OnboardingController extends Controller
             'phone' => ['required', 'string', 'max:20', 'unique:users,phone,' . auth()->id()],
         ]);
 
+        $normalizedPhone = $this->telegramService->normalizePhoneNumber($validated['phone']);
+
+        if (!$normalizedPhone) {
+            $message = 'اكتب رقم هاتف صحيحًا مع كود الدولة، مثل +9665XXXXXXXX أو +2010XXXXXXX.';
+
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'message' => $message,
+                    'errors' => ['phone' => [$message]],
+                ], 422);
+            }
+
+            return back()->withErrors(['phone' => $message]);
+        }
+
         $user = auth()->user();
         $user->update([
             'name' => $validated['name'],
             'age' => $validated['age'],
             'address' => $validated['address'] ?? null,
             'secondary_email' => $validated['secondary_email'] ?? null,
-            'phone' => $validated['phone'],
+            'phone' => $normalizedPhone,
         ]);
 
         if ($request->wantsJson()) {

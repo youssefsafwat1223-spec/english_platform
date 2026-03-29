@@ -4,17 +4,17 @@ namespace App\Services;
 
 use App\Models\BattleRoom;
 use App\Models\Course;
-use App\Models\User;
 use App\Models\DailyQuestion;
 use App\Models\Notification;
 use App\Models\TelegramBotSetting;
+use App\Models\User;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class TelegramService
 {
-    private $botToken;
-    private $apiUrl;
+    private ?string $botToken;
+    private string $apiUrl;
 
     public function __construct()
     {
@@ -22,9 +22,6 @@ class TelegramService
         $this->apiUrl = "https://api.telegram.org/bot{$this->botToken}";
     }
 
-    /**
-     * Send message to user
-     */
     public function sendMessage($chatId, $text, $keyboard = null)
     {
         try {
@@ -52,17 +49,14 @@ class TelegramService
             return null;
         } catch (\Exception $e) {
             Log::error('Telegram send message exception', [
-                'message' => $e->getMessage(),
                 'chat_id' => $chatId,
+                'message' => $e->getMessage(),
             ]);
 
             return null;
         }
     }
 
-    /**
-     * Answer callback query (remove loading state)
-     */
     public function answerCallbackQuery($callbackId, $text = null)
     {
         try {
@@ -86,17 +80,14 @@ class TelegramService
             return null;
         } catch (\Exception $e) {
             Log::error('Telegram answer callback exception', [
-                'message' => $e->getMessage(),
                 'callback_id' => $callbackId,
+                'message' => $e->getMessage(),
             ]);
 
             return null;
         }
     }
 
-    /**
-     * Send document to user
-     */
     public function sendDocument($chatId, $filePath, $caption = null)
     {
         try {
@@ -106,12 +97,11 @@ class TelegramService
                     'error' => 'File not found',
                     'file_path' => $filePath,
                 ]);
+
                 return null;
             }
 
-            $params = [
-                'chat_id' => $chatId,
-            ];
+            $params = ['chat_id' => $chatId];
 
             if ($caption) {
                 $params['caption'] = $caption;
@@ -136,33 +126,30 @@ class TelegramService
             return null;
         } catch (\Exception $e) {
             Log::error('Telegram send document exception', [
-                'message' => $e->getMessage(),
                 'chat_id' => $chatId,
+                'message' => $e->getMessage(),
             ]);
 
             return null;
         }
     }
 
-    /**
-     * Send daily quiz prompt (Arabic)
-     */
-    public function sendDailyQuizPrompt($user, $course, $lesson, int $questionCount)
+    public function sendDailyQuizPrompt(User $user, Course $course, string $scopeTitle, int $questionCount): bool
     {
         if (!$user->is_telegram_linked) {
             return false;
         }
 
-        $text = "<b>🎯 كويز اليوم جاهز!</b>\n\n";
-        $text .= "📚 الكورس: {$course->title}\n";
-        $text .= "📖 الدرس: {$lesson->title}\n";
-        $text .= "❓ عدد الأسئلة: {$questionCount}\n\n";
-        $text .= "مستعد؟ اضغط على الزر وابدأ! 💪";
+        $text = "<b>تم تجهيز أسئلة اليوم</b>\n\n";
+        $text .= "الدورة: {$this->escapeHtml($course->title)}\n";
+        $text .= "النطاق الحالي: {$this->escapeHtml($scopeTitle)}\n";
+        $text .= "عدد الأسئلة: {$questionCount}\n\n";
+        $text .= "اضغط على الزر التالي لبدء الإجابة.";
 
         $keyboard = [
             'inline_keyboard' => [
                 [
-                    ['text' => 'ابدأ الكويز 🚀', 'callback_data' => 'daily_quiz_start'],
+                    ['text' => 'ابدأ أسئلة اليوم', 'callback_data' => 'daily_quiz_start'],
                 ],
             ],
         ];
@@ -170,10 +157,7 @@ class TelegramService
         return (bool) $this->sendMessage($user->telegram_chat_id, $text, $keyboard);
     }
 
-    /**
-     * Send daily question to user (inline keyboard)
-     */
-    public function sendDailyQuestionWithKeyboard(DailyQuestion $dailyQuestion)
+    public function sendDailyQuestionWithKeyboard(DailyQuestion $dailyQuestion): bool
     {
         $user = $dailyQuestion->user;
 
@@ -183,10 +167,10 @@ class TelegramService
 
         $question = $dailyQuestion->question;
 
-        $text = "<b>❓ سؤال الكويز</b>\n\n";
-        $text .= "{$question->question_text}\n\n";
-        $text .= "A) {$question->option_a}\n";
-        $text .= "B) {$question->option_b}\n";
+        $text = "<b>سؤال اليوم</b>\n\n";
+        $text .= $this->escapeHtml($question->question_text) . "\n\n";
+        $text .= "A) " . $this->escapeHtml((string) $question->option_a) . "\n";
+        $text .= "B) " . $this->escapeHtml((string) $question->option_b) . "\n";
 
         $buttons = [
             [
@@ -196,52 +180,48 @@ class TelegramService
         ];
 
         if ($question->option_c) {
-            $text .= "C) {$question->option_c}\n";
+            $text .= "C) " . $this->escapeHtml((string) $question->option_c) . "\n";
         }
 
         if ($question->option_d) {
-            $text .= "D) {$question->option_d}\n";
+            $text .= "D) " . $this->escapeHtml((string) $question->option_d) . "\n";
         }
 
         if ($question->option_c || $question->option_d) {
             $row = [];
+
             if ($question->option_c) {
                 $row[] = ['text' => 'C', 'callback_data' => "dq:{$dailyQuestion->id}:C"];
             }
+
             if ($question->option_d) {
                 $row[] = ['text' => 'D', 'callback_data' => "dq:{$dailyQuestion->id}:D"];
             }
+
             if ($row) {
                 $buttons[] = $row;
             }
         }
 
-        $text .= "\nاختار الإجابة الصحيحة 👇";
+        $text .= "\nاختر الإجابة الصحيحة من الأزرار التالية.";
 
-        $keyboard = ['inline_keyboard' => $buttons];
-
-        $result = $this->sendMessage($user->telegram_chat_id, $text, $keyboard);
+        $result = $this->sendMessage($user->telegram_chat_id, $text, ['inline_keyboard' => $buttons]);
 
         if ($result) {
             $dailyQuestion->markAsSent($result['result']['message_id'] ?? null);
+
             return true;
         }
 
         return false;
     }
 
-    /**
-     * Backward-compatible wrapper
-     */
-    public function sendDailyQuestion(DailyQuestion $dailyQuestion)
+    public function sendDailyQuestion(DailyQuestion $dailyQuestion): bool
     {
         return $this->sendDailyQuestionWithKeyboard($dailyQuestion);
     }
 
-    /**
-     * Send notification to user
-     */
-    public function sendNotification(Notification $notification)
+    public function sendNotification(Notification $notification): bool
     {
         $user = $notification->user;
 
@@ -249,106 +229,82 @@ class TelegramService
             return false;
         }
 
-        $text = "<b>{$notification->title}</b>
-
-";
-        $text .= "{$notification->message}
-";
+        $text = '<b>' . $this->escapeHtml($notification->title) . "</b>\n\n";
+        $text .= $this->escapeHtml($notification->message);
 
         if ($notification->action_url) {
-            $text .= "
-<a href='{$notification->action_url}'>شوف التفاصيل</a>";
+            $text .= "\n\n<a href='" . e($notification->action_url) . "'>عرض التفاصيل</a>";
         }
 
         $result = $this->sendMessage($user->telegram_chat_id, $text);
 
         if ($result) {
             $notification->markAsSentToTelegram($result['result']['message_id'] ?? null);
+
             return true;
         }
 
         return false;
     }
 
-    /**
-     * Send quiz result
-     */
     public function sendQuizResult($user, $quiz, $attempt)
     {
         if (!$user->is_telegram_linked) {
             return false;
         }
 
-        // status set below in the text block
+        $status = $attempt->passed ? 'ناجح' : 'غير ناجح';
 
-        $status = $attempt->passed ? 'نجحت ✅' : 'ما نجحت ❌';
-
-        $text = "<b>📝 نتيجة الكويز</b>\n\n";
-        $text .= "الكورس: {$quiz->course->title}\n";
-        $text .= "الكويز: {$quiz->title}\n";
-        $text .= "الدرجة: {$attempt->score}%\n";
-        $text .= "الصحيح: {$attempt->correct_answers}/{$attempt->total_questions}\n";
-        $text .= "الوقت: {$attempt->formatted_time}\n";
+        $text = "<b>نتيجة الاختبار</b>\n\n";
+        $text .= "الدورة: {$this->escapeHtml($quiz->course->title)}\n";
+        $text .= "الاختبار: {$this->escapeHtml($quiz->title)}\n";
+        $text .= "النتيجة: {$attempt->score}%\n";
+        $text .= "الإجابات الصحيحة: {$attempt->correct_answers}/{$attempt->total_questions}\n";
+        $text .= "الوقت المستغرق: {$attempt->formatted_time}\n";
         $text .= "الحالة: <b>{$status}</b>\n\n";
-
-        if ($attempt->passed) {
-            $text .= "ما شاء الله عليك! كمّل على كذا 🚀";
-        } else {
-            $text .= "حاول مرة ثانية عشان تحسن درجتك 💪";
-        }
+        $text .= $attempt->passed
+            ? 'أحسنت. استمر على هذا الأداء.'
+            : 'يمكنك إعادة المحاولة لتحسين نتيجتك.';
 
         return $this->sendMessage($user->telegram_chat_id, $text);
     }
 
-    /**
-     * Send course purchase confirmation
-     */
     public function sendCoursePurchaseConfirmation($user, $course, $enrollment)
     {
         if (!$user->is_telegram_linked) {
             return false;
         }
 
-        $text = "<b>🎉 تم الشراء بنجاح!</b>\n\n";
-        $text .= "سجلت في:\n";
-        $text .= "<b>{$course->title}</b>\n\n";
+        $text = "<b>تم تأكيد اشتراكك بنجاح</b>\n\n";
+        $text .= "الدورة: {$this->escapeHtml($course->title)}\n";
         $text .= "عدد الدروس: {$enrollment->total_lessons}\n";
-        $text .= "المبلغ المدفوع: \${$enrollment->price_paid}\n";
+        $text .= "المبلغ المدفوع: " . number_format((float) $enrollment->price_paid, 2) . " ر.س\n";
 
-        if ($enrollment->discount_amount > 0) {
-            $text .= "الخصم: \${$enrollment->discount_amount}\n";
+        if ((float) $enrollment->discount_amount > 0) {
+            $text .= "الخصم: " . number_format((float) $enrollment->discount_amount, 2) . " ر.س\n";
         }
 
-        $text .= "\nابدأ التعلم الحين! 🚀\n";
-        $text .= "بنرسلك أسئلة يومية عشان تتدرب.";
+        $text .= "\nسيصلك عبر تيليجرام أسئلة يومية مرتبطة بتقدمك داخل الدورة.";
 
         return $this->sendMessage($user->telegram_chat_id, $text);
     }
 
-    /**
-     * Send certificate notification
-     */
     public function sendCertificateNotification($user, $course, $certificate)
     {
         if (!$user->is_telegram_linked) {
             return false;
         }
 
-        $text = "<b>🎉 مبروك!</b>\n\n";
-        $text .= "خلّصت كورس:\n";
-        $text .= "<b>{$course->title}</b>\n\n";
+        $text = "<b>مبروك، لقد أتممت الدورة بنجاح</b>\n\n";
+        $text .= "الدورة: {$this->escapeHtml($course->title)}\n";
         $text .= "الدرجة النهائية: {$certificate->final_score}%\n";
-        $text .= "التقدير: {$certificate->grade}\n";
-        $text .= "رقم الشهادة: {$certificate->certificate_id}\n\n";
-        $text .= "شهادتك جاهزة! 🏅\n";
-        $text .= "<a href='{$certificate->verification_url}'>حمّل الشهادة</a>";
+        $text .= "التقدير: {$this->escapeHtml($certificate->grade)}\n";
+        $text .= "رقم الشهادة: {$this->escapeHtml($certificate->certificate_id)}\n\n";
+        $text .= "<a href='{$certificate->verification_url}'>عرض الشهادة</a>";
 
         return $this->sendMessage($user->telegram_chat_id, $text);
     }
 
-    /**
-     * Send referral success notification
-     */
     public function sendReferralSuccessNotification($referrer, $referee)
     {
         if (!$referrer->is_telegram_linked) {
@@ -357,63 +313,47 @@ class TelegramService
 
         $percentage = config('app.referral_discount_percentage', 10);
 
-        $text = "<b>🎁 تم استخدام كود الإحالة!</b>\n\n";
-        $text .= "{$referee->name} استخدم كود الإحالة حقك وحصل على الخصم.\n\n";
-        $text .= "حصلت على <b>خصم {$percentage}%</b> على كورسك الجاي.\n";
-        $text .= "صالح لمدة 30 يوم\n\n";
-        $text .= "استمر بالمشاركة عشان تحصل خصومات أكثر! 🚀";
+        $text = "<b>تم استخدام رابط الإحالة الخاص بك</b>\n\n";
+        $text .= $this->escapeHtml($referee->name) . " استخدم رابط الإحالة الخاص بك.\n";
+        $text .= "تمت إضافة خصم {$percentage}% إلى حسابك لاستخدامه في عملية شراء قادمة.";
 
         return $this->sendMessage($referrer->telegram_chat_id, $text);
     }
 
-    /**
-     * Send study reminder
-     */
     public function sendStudyReminder($user, $daysSinceLastActivity)
     {
         if (!$user->is_telegram_linked) {
             return false;
         }
 
-        $text = "<b>📢 تذكير بالدراسة</b>\n\n";
-        $text .= "هلا {$user->name}! 👋\n\n";
-        $text .= "صار لك {$daysSinceLastActivity} يوم ما دخلت.\n";
-        $text .= "لا تضيع سلسلتك! 🔥\n\n";
-        $text .= "كمّل رحلة التعلم اليوم! 💪";
+        $text = "<b>تذكير بالدراسة</b>\n\n";
+        $text .= "مرحبًا {$this->escapeHtml($user->name)}.\n";
+        $text .= "لم تسجل نشاطًا دراسيًا منذ {$daysSinceLastActivity} يومًا.\n";
+        $text .= "حافظ على استمراريتك وارجع لإكمال رحلتك التعليمية اليوم.";
 
         return $this->sendMessage($user->telegram_chat_id, $text);
     }
 
-    /**
-     * Check whether automated Telegram notifications can be sent.
-     */
     public function canSendAutomatedNotifications(): bool
     {
         return filled($this->botToken)
             && (bool) TelegramBotSetting::get('enable_notifications', true);
     }
 
-    /**
-     * Send battle invite to a student already enrolled in the course.
-     */
     public function sendBattleInvite(User $user, Course $course, BattleRoom $room, string $creatorName): bool
     {
         if (!$user->is_telegram_linked || !$this->canSendAutomatedNotifications()) {
             return false;
         }
 
-        $courseTitle = $this->escapeHtml($course->title);
-        $creator = $this->escapeHtml($creatorName);
-
-        $text = "<b>⚔️ باتل جديدة في {$courseTitle}</b>\n\n";
-        $text .= "{$creator} فتح روم جديدة الآن.\n";
-        $text .= "أنت مشترك في الكورس، فادخل بسرعة قبل ما اللوبي يقفل.\n\n";
-        $text .= "اضغط الزر تحت وانضم مباشرة.";
+        $text = "<b>دعوة إلى باتل جديدة</b>\n\n";
+        $text .= "تم فتح باتل جديدة داخل دورة {$this->escapeHtml($course->title)} بواسطة {$this->escapeHtml($creatorName)}.\n";
+        $text .= "بما أنك مشترك في هذه الدورة، يمكنك الانضمام مباشرة من الزر التالي.";
 
         $keyboard = [
             'inline_keyboard' => [
                 [
-                    ['text' => 'انضم إلى الباتل الآن', 'url' => route('student.battle.lobby', $room)],
+                    ['text' => 'انضم إلى الباتل', 'url' => route('student.battle.lobby', $room)],
                 ],
             ],
         ];
@@ -421,27 +361,20 @@ class TelegramService
         return (bool) $this->sendMessage($user->telegram_chat_id, $text, $keyboard);
     }
 
-    /**
-     * Send marketing message for a battle to a student not enrolled in the course.
-     */
     public function sendBattleMarketing(User $user, Course $course, string $creatorName): bool
     {
         if (!$user->is_telegram_linked || !$this->canSendAutomatedNotifications()) {
             return false;
         }
 
-        $courseTitle = $this->escapeHtml($course->title);
-        $creator = $this->escapeHtml($creatorName);
-
-        $text = "<b>🔥 في باتل شغالة الآن داخل {$courseTitle}</b>\n\n";
-        $text .= "{$creator} بدأ تحدي جديد داخل الكورس.\n";
-        $text .= "إذا اشتركت في الكورس، ستقدر تدخل الباتلات القادمة وتنافس الطلاب مباشرة.\n\n";
-        $text .= "افتح صفحة الكورس الآن وشاهد التفاصيل.";
+        $text = "<b>هناك باتل نشطة الآن</b>\n\n";
+        $text .= "{$this->escapeHtml($creatorName)} بدأ باتل جديدة داخل دورة {$this->escapeHtml($course->title)}.\n";
+        $text .= "اشترك في الدورة لتتمكن من دخول الباتلات القادمة والمنافسة مع الطلاب.";
 
         $keyboard = [
             'inline_keyboard' => [
                 [
-                    ['text' => 'اشترك في الكورس', 'url' => route('student.courses.enroll', $course)],
+                    ['text' => 'اشترك في الدورة', 'url' => route('student.courses.enroll', $course)],
                 ],
             ],
         ];
@@ -449,55 +382,69 @@ class TelegramService
         return (bool) $this->sendMessage($user->telegram_chat_id, $text, $keyboard);
     }
 
-    /**
-     * Link user account with telegram
-     */
-    public function linkUserAccount($chatId, $phone)
+    public function normalizePhoneNumber(?string $phone): ?string
     {
-        // Normalize: remove spaces, dashes, parentheses
-        $cleaned = preg_replace('/[^0-9+]/', '', $phone);
-
-        // Build possible formats to search
-        $possibleNumbers = [$cleaned, $phone];
-
-        // If starts with +20, also try without country code (e.g. 01203628493)
-        if (str_starts_with($cleaned, '+20')) {
-            $possibleNumbers[] = '0' . substr($cleaned, 3);
-            $possibleNumbers[] = substr($cleaned, 3); // without leading 0
-        }
-        // If starts with 20 (without +), also try with 0
-        elseif (str_starts_with($cleaned, '20') && strlen($cleaned) >= 12) {
-            $possibleNumbers[] = '0' . substr($cleaned, 2);
-            $possibleNumbers[] = '+' . $cleaned;
-        }
-        // If starts with 0 (local format), also try with +20
-        elseif (str_starts_with($cleaned, '0')) {
-            $possibleNumbers[] = '+2' . $cleaned;
-            $possibleNumbers[] = '2' . $cleaned;
-            $possibleNumbers[] = substr($cleaned, 1); // without leading 0
+        if (!is_string($phone) || trim($phone) === '') {
+            return null;
         }
 
-        $possibleNumbers = array_unique($possibleNumbers);
+        $cleaned = preg_replace('/[^\d+]/', '', $phone);
+
+        if (!$cleaned) {
+            return null;
+        }
+
+        if (str_starts_with($cleaned, '00')) {
+            $cleaned = '+' . substr($cleaned, 2);
+        } elseif (!str_starts_with($cleaned, '+')) {
+            $digits = preg_replace('/\D/', '', $cleaned);
+
+            if (str_starts_with($digits, '0') && strlen($digits) >= 10 && strlen($digits) <= 11) {
+                $cleaned = '+2' . $digits;
+            } else {
+                $cleaned = '+' . $digits;
+            }
+        }
+
+        $digits = preg_replace('/\D/', '', $cleaned);
+
+        if (strlen($digits) < 8 || strlen($digits) > 15) {
+            return null;
+        }
+
+        return '+' . $digits;
+    }
+
+    public function linkUserAccount($chatId, $phone): array
+    {
+        $normalized = $this->normalizePhoneNumber($phone);
+
+        if (!$normalized) {
+            return [
+                'success' => false,
+                'message' => 'تعذر التعرّف على رقم الهاتف. أعد الإرسال مع كود الدولة، مثل +9665XXXXXXXX أو +2010XXXXXXX.',
+            ];
+        }
+
+        $possibleNumbers = $this->buildPhoneLookupCandidates($normalized);
 
         $user = User::whereIn('phone', $possibleNumbers)->first();
 
         if (!$user) {
             return [
                 'success' => false,
-                'message' => 'ما لقينا حساب بهالرقم. تأكد من الرقم وحاول مرة ثانية 📱',
+                'message' => 'لم نعثر على حساب بهذا الرقم. تأكد من كتابة الرقم بنفس الصيغة المسجلة في المنصة مع كود الدولة.',
             ];
         }
 
-        // If this user is already linked to THIS chat, just confirm
         if ($user->telegram_chat_id == $chatId) {
             return [
                 'success' => true,
                 'user' => $user,
-                'message' => "حسابك مربوط بالفعل! ✅\nأهلاً فيك مرة ثانية يا {$user->name}! 👋",
+                'message' => "حسابك مرتبط بالفعل. أهلاً بك من جديد يا {$this->escapeHtml($user->name)}.",
             ];
         }
 
-        // Unlink any OTHER user that currently has this chat_id
         User::where('telegram_chat_id', $chatId)
             ->where('id', '!=', $user->id)
             ->update([
@@ -506,6 +453,7 @@ class TelegramService
             ]);
 
         $user->update([
+            'phone' => $normalized,
             'telegram_chat_id' => $chatId,
             'telegram_linked_at' => now(),
         ]);
@@ -513,14 +461,11 @@ class TelegramService
         return [
             'success' => true,
             'user' => $user,
-            'message' => "تم ربط الحساب بنجاح! ✅\nأهلاً فيك يا {$user->name}! 🎉",
+            'message' => "تم ربط حسابك بنجاح. أهلاً بك يا {$this->escapeHtml($user->name)}.",
         ];
     }
 
-    /**
-     * Get user progress
-     */
-    public function getUserProgress($chatId)
+    public function getUserProgress($chatId): ?string
     {
         $user = User::where('telegram_chat_id', $chatId)->first();
 
@@ -530,50 +475,31 @@ class TelegramService
 
         $enrollments = $user->enrollments()->with('course')->get();
 
-        $text = "<b>📊 تقدمك</b>\n\n";
+        $text = "<b>ملخص تقدمك</b>\n\n";
 
         if ($enrollments->isEmpty()) {
-            $text .= "ما سجلت بأي كورس لحد الآن.\n";
-            $text .= "زور الموقع عشان تشوف الكورسات المتاحة! 📚";
-        } else {
-            foreach ($enrollments as $enrollment) {
-                $progress = round($enrollment->progress_percentage);
-                $progressBar = $this->generateProgressBar($progress);
+            $text .= "لا توجد لديك دورات مسجلة حاليًا.\n";
+            $text .= "يمكنك تصفح الدورات من خلال الموقع والاشتراك في الدورة المناسبة لك.";
 
-                $text .= "<b>{$enrollment->course->title}</b>\n";
-                $text .= "{$progressBar} {$progress}%\n";
-                $text .= "{$enrollment->completed_lessons}/{$enrollment->total_lessons} دروس\n\n";
-            }
-
-            $text .= "النقاط: {$user->total_points}\n";
-            $text .= "الترتيب: #{$user->getRank()}\n";
-            $text .= "السلسلة: {$user->current_streak} يوم 🔥";
+            return $text;
         }
+
+        foreach ($enrollments as $enrollment) {
+            $progress = round($enrollment->progress_percentage);
+
+            $text .= "<b>{$this->escapeHtml($enrollment->course->title)}</b>\n";
+            $text .= $this->generateProgressBar($progress) . " {$progress}%\n";
+            $text .= "{$enrollment->completed_lessons}/{$enrollment->total_lessons} دروس مكتملة\n\n";
+        }
+
+        $text .= "إجمالي النقاط: {$user->total_points}\n";
+        $text .= "الترتيب الحالي: #{$user->getRank()}\n";
+        $text .= "سلسلة النشاط: {$user->current_streak} يوم";
 
         return $text;
     }
 
-    /**
-     * Generate progress bar
-     */
-    private function generateProgressBar($percentage)
-    {
-        $percentage = max(0, min(100, (int) round($percentage)));
-        $filled = (int) floor($percentage / 10);
-        $empty = 10 - $filled;
-
-        return str_repeat('#', $filled) . str_repeat('-', $empty);
-    }
-
-    private function escapeHtml(string $value): string
-    {
-        return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
-    }
-
-    /**
-     * Set webhook
-     */
-    public function setWebhook($url)
+    public function setWebhook($url): bool
     {
         try {
             $response = Http::post("{$this->apiUrl}/setWebhook", [
@@ -582,35 +508,25 @@ class TelegramService
 
             return $response->successful();
         } catch (\Exception $e) {
-            Log::error('Failed to set telegram webhook', [
-                'error' => $e->getMessage(),
-            ]);
+            Log::error('Failed to set telegram webhook', ['error' => $e->getMessage()]);
 
             return false;
         }
     }
 
-    /**
-     * Remove webhook
-     */
-    public function deleteWebhook()
+    public function deleteWebhook(): bool
     {
         try {
             $response = Http::post("{$this->apiUrl}/deleteWebhook");
 
             return $response->successful();
         } catch (\Exception $e) {
-            Log::error('Failed to delete telegram webhook', [
-                'error' => $e->getMessage(),
-            ]);
+            Log::error('Failed to delete telegram webhook', ['error' => $e->getMessage()]);
 
             return false;
         }
     }
 
-    /**
-     * Get bot info
-     */
     public function getBotInfo()
     {
         try {
@@ -622,11 +538,35 @@ class TelegramService
 
             return null;
         } catch (\Exception $e) {
-            Log::error('Failed to get bot info', [
-                'error' => $e->getMessage(),
-            ]);
+            Log::error('Failed to get bot info', ['error' => $e->getMessage()]);
 
             return null;
         }
+    }
+
+    private function buildPhoneLookupCandidates(string $normalized): array
+    {
+        $digits = ltrim($normalized, '+');
+        $candidates = [$normalized, $digits];
+
+        if (str_starts_with($digits, '20') && strlen($digits) >= 12) {
+            $candidates[] = '0' . substr($digits, 2);
+        }
+
+        return array_values(array_unique(array_filter($candidates)));
+    }
+
+    private function generateProgressBar($percentage): string
+    {
+        $percentage = max(0, min(100, (int) round($percentage)));
+        $filled = (int) floor($percentage / 10);
+        $empty = 10 - $filled;
+
+        return str_repeat('#', $filled) . str_repeat('-', $empty);
+    }
+
+    private function escapeHtml(string $value): string
+    {
+        return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
     }
 }

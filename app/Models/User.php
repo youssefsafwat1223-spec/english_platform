@@ -167,6 +167,22 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * Devices registered for this user.
+     */
+    public function devices()
+    {
+        return $this->hasMany(UserDevice::class);
+    }
+
+    /**
+     * Device replacement requests created by this user.
+     */
+    public function deviceReplacementRequests()
+    {
+        return $this->hasMany(DeviceReplacementRequest::class);
+    }
+
+    /**
      * Payments made by this user
      */
     public function payments()

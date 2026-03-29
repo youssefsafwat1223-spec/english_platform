@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Middleware\RequireAdminTwoFactor;
+use App\Services\DeviceAccessService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
@@ -11,6 +12,10 @@ use Illuminate\Support\Str;
 
 class LoginController extends Controller
 {
+    public function __construct(private readonly DeviceAccessService $deviceAccessService)
+    {
+    }
+
     public function showLoginForm()
     {
         return view('auth.login');
@@ -43,11 +48,29 @@ class LoginController extends Controller
                 ->onlyInput('email');
         }
 
+        $user = Auth::user();
+
         RateLimiter::clear($key);
+
+        if ($user && $user->is_student) {
+            $deviceResult = $this->deviceAccessService->authorizeDevice($user, $request);
+
+            if (!$deviceResult['allowed']) {
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+
+                return back()
+                    ->withErrors([
+                        'email' => 'تم الوصول إلى الحد الأقصى المسموح من الأجهزة لهذا الحساب. أرسلنا طلب استبدال الجهاز إلى الإدارة، وسيتم تفعيل هذا الجهاز بعد المراجعة.',
+                    ])
+                    ->onlyInput('email');
+            }
+        }
+
         $request->session()->regenerate();
         $request->session()->forget('url.intended');
 
-        $user = Auth::user();
         if ($user && $user->is_admin) {
             RequireAdminTwoFactor::forgetVerification($request->session());
 
