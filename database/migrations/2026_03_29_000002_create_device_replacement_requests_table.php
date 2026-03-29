@@ -24,8 +24,8 @@ return new class extends Migration
             $table->timestamp('reviewed_at')->nullable();
             $table->timestamps();
 
-            $table->index(['user_id', 'status']);
-            $table->index(['requested_device_token_hash', 'status']);
+            $table->index(['user_id', 'status'], 'dev_req_user_status_idx');
+            $table->index(['requested_device_token_hash', 'status'], 'dev_req_token_status_idx');
         });
     }
 
