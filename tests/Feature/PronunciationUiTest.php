@@ -95,11 +95,72 @@ class PronunciationUiTest extends TestCase
         $createResponse->assertOk();
         $createResponse->assertSee('Word *', false);
         $createResponse->assertSee('Passage', false);
+        $createResponse->assertSee('Lesson Vocabulary', false);
+        $createResponse->assertSee('Sentence Explanation', false);
+        $createResponse->assertSee('Reference Audio for Word', false);
         $createResponse->assertDontSee('Sentence 1', false);
 
         $editResponse->assertOk();
         $editResponse->assertSee('Word *', false);
         $editResponse->assertSee('Passage', false);
+        $editResponse->assertSee('Lesson Vocabulary', false);
+        $editResponse->assertSee('Sentence Explanation', false);
+        $editResponse->assertSee('Reference Audio for Word', false);
         $editResponse->assertDontSee('Sentence 1', false);
+    }
+
+    public function test_student_pronunciation_page_shows_vocabulary_explanations_and_iphone_mode_copy(): void
+    {
+        app()->setLocale('en');
+
+        $user = User::factory()->create();
+        $course = Course::factory()->create();
+
+        $lesson = Lesson::create([
+            'course_id' => $course->id,
+            'title' => 'Silent E Rule',
+            'slug' => 'silent-e-rule-two',
+            'order_index' => 1,
+            'has_pronunciation_exercise' => true,
+            'is_free' => false,
+        ]);
+
+        Enrollment::create([
+            'user_id' => $user->id,
+            'course_id' => $course->id,
+            'price_paid' => 10,
+            'discount_amount' => 0,
+            'progress_percentage' => 0,
+            'completed_lessons' => 0,
+            'total_lessons' => 1,
+        ]);
+
+        $exercise = PronunciationExercise::create([
+            'lesson_id' => $lesson->id,
+            'sentence_1' => 'cake',
+            'sentence_2' => 'The cake tastes sweet.',
+            'sentence_3' => 'In this case, the silent E makes the vowel before it long.',
+            'vocabulary_json' => [
+                ['word' => 'cake', 'pronunciation' => '/keik/', 'meaning_ar' => 'cake meaning'],
+                ['word' => 'pine', 'pronunciation' => '/pain/', 'meaning_ar' => 'pine meaning'],
+            ],
+            'sentence_explanation' => 'A sentence note for the learner.',
+            'passage_explanation' => 'A passage note for the learner.',
+            'passing_score' => 70,
+            'max_duration_seconds' => 10,
+            'allow_retake' => true,
+        ]);
+
+        $response = $this->actingAs($user)->get(route('student.pronunciation.show', $exercise));
+
+        $response->assertOk();
+        $response->assertSee('Lesson Vocabulary', false);
+        $response->assertSee('cake', false);
+        $response->assertSee('/keik/', false);
+        $response->assertSee('A sentence note for the learner.', false);
+        $response->assertSee('A passage note for the learner.', false);
+        $response->assertSee('iPhone Mode', false);
+        $response->assertSee('Listen first, then repeat aloud', false);
+        $response->assertSee('Automatic scoring works best on desktop or Android Chrome.', false);
     }
 }

@@ -19,6 +19,10 @@
         3 => 'text-left text-lg md:text-xl',
     ];
     $messages = [
+        'ios_title' => $isArabic ? 'وضع iPhone' : 'iPhone Mode',
+        'ios_body' => $isArabic ? 'في iPhone يعمل التمرين بوضع الاستماع والتكرار لأن التعرف الصوتي التلقائي غير مستقر في المتصفح.' : 'On iPhone, this exercise uses listen-and-repeat mode because browser speech recognition is not reliable there.',
+        'ios_cta' => $isArabic ? 'استمع أولًا ثم كرر بصوتك' : 'Listen first, then repeat aloud',
+        'ios_scoring' => $isArabic ? 'التقييم التلقائي يعمل بشكل أفضل على الكمبيوتر أو Android Chrome.' : 'Automatic scoring works best on desktop or Android Chrome.',
         'badge' => $isArabic ? 'تمرين النطق' : 'Speech Exercise',
         'subtitle' => $isArabic ? 'تمرّن على النطق داخل هذا الدرس' : 'Practice speaking inside this lesson',
         'browser_title' => $isArabic ? 'المتصفح غير مدعوم' : 'Browser Not Supported',
@@ -78,7 +82,16 @@
             <p class="text-base" style="color: var(--color-text-muted);">{{ $exercise->lesson->title ?? $messages['subtitle'] }}</p>
         </div>
 
-        <div x-show="!isSupported" x-cloak class="mb-8 p-5 rounded-2xl text-center" style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.2);">
+        <div x-show="listenOnlyMode" x-cloak class="mb-8 p-5 rounded-2xl text-center" style="background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.18);">
+            <div class="flex justify-center mb-3">
+                <svg class="w-8 h-8 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5L6 9H2v6h4l5 4V5zm8.5 7a6.5 6.5 0 01-3.5 5.76M16.5 8.24A6.5 6.5 0 0119.5 12"/></svg>
+            </div>
+            <h3 class="font-bold text-base mb-1 text-sky-400">{{ $messages['ios_title'] }}</h3>
+            <p class="text-sm text-sky-200/80">{{ $messages['ios_body'] }}</p>
+            <p class="text-xs mt-2 text-sky-200/60">{{ $messages['ios_scoring'] }}</p>
+        </div>
+
+        <div x-show="!listenOnlyMode && !recognitionSupported" x-cloak class="mb-8 p-5 rounded-2xl text-center" style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.2);">
             <div class="flex justify-center mb-3">
                 <svg class="w-8 h-8 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86l-7.38 12.8A2 2 0 004.62 20h14.76a2 2 0 001.71-3.34l-7.38-12.8a2 2 0 00-3.42 0z"/></svg>
             </div>
@@ -153,7 +166,7 @@
 
                     @if(isset($exercise->reference_audio_urls[$num]))
                         <div class="flex justify-center mb-4">
-                            <button type="button" x-on:click='playAudio(@json($exercise->reference_audio_urls[$num]))' class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all hover:scale-105" style="background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--color-text-muted);">
+                            <button type="button" x-on:click='playReferenceOrTts({{ $num }})' class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all hover:scale-105" style="background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--color-text-muted);">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5L6 9H2v6h4l5 4V5zm5.54 3.46a5 5 0 010 7.08m2.83-9.91a9 9 0 010 12.74"/></svg>
                                 {{ $messages['listen_example'] }}
                             </button>
@@ -163,15 +176,21 @@
 
                 <div class="px-6 pb-6">
                     <div class="flex flex-col items-center gap-4 py-6 rounded-xl" style="background: rgba(0,0,0,0.15);">
-                        <button type="button" @click="toggleRecording({{ $num }})" :disabled="!isSupported || (isRecording && activeSentence !== {{ $num }})" class="w-20 h-20 rounded-full flex items-center justify-center transition-all duration-300 disabled:opacity-40" :class="isRecording && activeSentence === {{ $num }} ? 'bg-red-500 scale-110 animate-pulse shadow-lg shadow-red-500/30' : 'bg-gradient-to-br from-primary-500 to-accent-500 hover:scale-105 shadow-lg shadow-primary-500/30'">
-                            <svg x-show="!(isRecording && activeSentence === {{ $num }})" class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
+                        <button type="button" @click="togglePractice({{ $num }})" :disabled="(!recognitionSupported && !listenOnlyMode) || (isRecording && activeSentence !== {{ $num }})" class="w-20 h-20 rounded-full flex items-center justify-center transition-all duration-300 disabled:opacity-40" :class="isRecording && activeSentence === {{ $num }} ? 'bg-red-500 scale-110 animate-pulse shadow-lg shadow-red-500/30' : 'bg-gradient-to-br from-primary-500 to-accent-500 hover:scale-105 shadow-lg shadow-primary-500/30'">
+                            <svg x-show="!listenOnlyMode && !(isRecording && activeSentence === {{ $num }})" class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
+                            <svg x-show="listenOnlyMode" x-cloak class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5L6 9H2v6h4l5 4V5zm8.5 7a6.5 6.5 0 01-3.5 5.76M16.5 8.24A6.5 6.5 0 0119.5 12"/></svg>
                             <svg x-show="isRecording && activeSentence === {{ $num }}" x-cloak class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"/></svg>
                         </button>
 
                         <p class="text-sm font-medium" :style="isRecording && activeSentence === {{ $num }} ? 'color: #ef4444' : 'color: var(--color-text-muted)'">
-                            <span x-show="!(isRecording && activeSentence === {{ $num }})">{{ $messages['tap_start'] }}</span>
+                            <span x-show="listenOnlyMode">{{ $messages['ios_cta'] }}</span>
+                            <span x-show="!listenOnlyMode && !(isRecording && activeSentence === {{ $num }})">{{ $messages['tap_start'] }}</span>
                             <span x-show="isRecording && activeSentence === {{ $num }}" x-cloak>{{ $messages['listening'] }} {{ $messages['tap_stop'] }}</span>
                         </p>
+
+                        <div x-show="listenOnlyMode" x-cloak class="mx-4 w-[calc(100%-2rem)] p-3 rounded-xl text-center text-xs" style="background: rgba(59, 130, 246, 0.08); color: var(--color-text-muted); border: 1px solid rgba(59, 130, 246, 0.14);">
+                            {{ $messages['ios_scoring'] }}
+                        </div>
 
                         <div x-show="activeSentence === {{ $num }} && liveTranscript" x-cloak dir="ltr" class="mx-4 w-[calc(100%-2rem)] p-3 rounded-xl text-left text-sm italic" style="background: rgba(0,0,0,0.2); color: var(--color-text-muted); border: 1px solid var(--glass-border);">
                             <span x-text="liveTranscript"></span>
@@ -280,8 +299,14 @@
 @push('scripts')
 <script>
 function pronunciationApp() {
+    const userAgent = navigator.userAgent || navigator.vendor || window.opera || '';
+    const recognitionSupported = 'webkitSpeechRecognition' in window || 'SpeechRecognition' in window;
+    const listenOnlyMode = /iPad|iPhone|iPod/.test(userAgent)
+        || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
     return {
-        isSupported: 'webkitSpeechRecognition' in window || 'SpeechRecognition' in window,
+        recognitionSupported,
+        listenOnlyMode,
         isRecording: false,
         isEvaluating: false,
         isSpeaking: false,
@@ -297,6 +322,11 @@ function pronunciationApp() {
         sentences: {
             @foreach($exercise->sentences as $num => $sentence)
                 {{ $num }}: @json($sentence),
+            @endforeach
+        },
+        referenceAudio: {
+            @foreach($exercise->sentences as $num => $sentence)
+                {{ $num }}: @json($exercise->reference_audio_urls[$num] ?? null),
             @endforeach
         },
 
@@ -363,6 +393,15 @@ function pronunciationApp() {
             return recognition;
         },
 
+        togglePractice(sentenceNumber) {
+            if (this.listenOnlyMode) {
+                this.playReferenceOrTts(sentenceNumber);
+                return;
+            }
+
+            this.toggleRecording(sentenceNumber);
+        },
+
         toggleRecording(sentenceNumber) {
             if (this.isRecording && this.activeSentence === sentenceNumber) {
                 this.stopRecording();
@@ -372,6 +411,11 @@ function pronunciationApp() {
         },
 
         startRecording(sentenceNumber) {
+            if (!this.recognitionSupported || this.listenOnlyMode) {
+                this.playReferenceOrTts(sentenceNumber);
+                return;
+            }
+
             if (this.isRecording) this.stopRecording();
             if (this.isSpeaking) window.speechSynthesis.cancel();
 
@@ -446,6 +490,18 @@ function pronunciationApp() {
             this.isEvaluating = false;
         },
 
+        playReferenceOrTts(sentenceNumber) {
+            const url = this.referenceAudio[sentenceNumber];
+            const text = this.sentences[sentenceNumber];
+
+            if (url) {
+                this.playAudio(url, text, sentenceNumber);
+                return;
+            }
+
+            this.speakCorrect(sentenceNumber, text);
+        },
+
         speakCorrect(sentenceNumber, text) {
             if (!('speechSynthesis' in window)) {
                 if (window.showNotification) window.showNotification(this.messages.tts_unsupported, 'error');
@@ -484,9 +540,19 @@ function pronunciationApp() {
             window.speechSynthesis.speak(utterance);
         },
 
-        playAudio(url) {
+        playAudio(url, fallbackText = null, sentenceNumber = null) {
+            if (this.isSpeaking && 'speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+            }
+
             const audio = new Audio(url);
-            audio.play().catch(() => {});
+            audio.preload = 'auto';
+            audio.playsInline = true;
+            audio.play().catch(() => {
+                if (fallbackText) {
+                    this.speakCorrect(sentenceNumber, fallbackText);
+                }
+            });
         }
     };
 }
