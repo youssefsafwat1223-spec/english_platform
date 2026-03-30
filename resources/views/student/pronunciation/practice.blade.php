@@ -25,7 +25,46 @@
             </p>
         </div>
 
+        {{-- Vocabulary Table --}}
+        @if($exercise->vocabulary && count($exercise->vocabulary) > 0)
+        <div class="mb-10 rounded-2xl overflow-hidden" data-aos="fade-up">
+            <div class="px-6 py-4 flex items-center gap-3" style="background: var(--glass-bg); border: 1px solid var(--glass-border); border-bottom: 1px solid var(--glass-border);">
+                <span class="text-xl">📚</span>
+                <span class="text-base font-bold" style="color: var(--color-text);">كلمات الدرس — Lesson Vocabulary</span>
+                <span class="ml-auto text-xs px-2 py-1 rounded-lg" style="background: rgba(var(--color-primary-rgb,139,92,246),0.1); color: var(--color-primary,#a78bfa);">{{ count($exercise->vocabulary) }} كلمات</span>
+            </div>
+            <div class="overflow-x-auto" style="background: var(--glass-bg); border: 1px solid var(--glass-border); border-top: none;">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr style="background: rgba(var(--color-primary-rgb,139,92,246),0.08); border-bottom: 1px solid var(--glass-border);">
+                            <th class="px-4 py-3 text-left font-semibold" style="color: var(--color-primary,#a78bfa);">#</th>
+                            <th class="px-4 py-3 text-left font-semibold" style="color: var(--color-primary,#a78bfa);">الكلمة</th>
+                            <th class="px-4 py-3 text-left font-semibold" style="color: var(--color-primary,#a78bfa);">النطق</th>
+                            <th class="px-4 py-3 text-left font-semibold" style="color: var(--color-primary,#a78bfa);">المعنى</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($exercise->vocabulary as $i => $vocab)
+                        <tr class="border-b" style="border-color: var(--glass-border);">
+                            <td class="px-4 py-3 text-xs font-bold" style="color: var(--color-text-muted);">{{ $i + 1 }}</td>
+                            <td class="px-4 py-3 font-bold text-base" style="color: var(--color-text);">{{ $vocab['word'] ?? '' }}</td>
+                            <td class="px-4 py-3" style="color: var(--color-primary,#a78bfa); font-family: monospace;">{{ $vocab['pronunciation'] ?? '' }}</td>
+                            <td class="px-4 py-3 font-semibold" style="color: var(--color-text-muted); direction: rtl;">{{ $vocab['meaning_ar'] ?? '' }}</td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        @endif
+
         {{-- Sentence Cards --}}
+        @php
+            $explanations = [
+                1 => $exercise->passage_explanation ?? null,
+                2 => $exercise->sentence_explanation ?? null,
+            ];
+        @endphp
         @foreach($exercise->sentences as $num => $sentence)
             <div class="mb-8 rounded-2xl overflow-hidden" data-aos="fade-up" data-aos-delay="{{ ($num - 1) * 100 }}"
                  style="background: var(--glass-bg); border: 1px solid var(--glass-border); backdrop-filter: blur(20px);">
@@ -145,6 +184,22 @@
                             </div>
                         </div>
                     </div>
+
+                    {{-- Explanation Card (shown after passing) --}}
+                    @if(isset($explanations[$num]) && $explanations[$num])
+                    <div x-show="results[{{ $num }}] && (results[{{ $num }}]?.score || 0) >= passingScore" x-cloak x-transition
+                         class="mt-4 p-5 rounded-xl" style="background: rgba(16,185,129,0.06); border: 1px solid rgba(16,185,129,0.2);">
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 text-xl" style="background: rgba(16,185,129,0.12);">💡</div>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-sm mb-2 text-emerald-400">شرح وتوضيح</h4>
+                                <p class="text-sm leading-relaxed" style="color: var(--color-text-muted); direction: rtl; text-align: right;">
+                                    {{ $explanations[$num] }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
 
                     {{-- Correct Pronunciation Card (after 2 failed attempts) --}}
                     <div x-show="failedAttempts[{{ $num }}] >= 2" x-cloak x-transition

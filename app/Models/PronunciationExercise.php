@@ -21,13 +21,25 @@ class PronunciationExercise extends Model
         'passing_score',
         'max_duration_seconds',
         'allow_retake',
+        'vocabulary_json',
+        'passage_explanation',
+        'sentence_explanation',
     ];
 
     protected function casts(): array
     {
         return [
-            'allow_retake' => 'boolean',
+            'allow_retake'    => 'boolean',
+            'vocabulary_json' => 'array',
         ];
+    }
+
+    /**
+     * Get vocabulary list (array of {word, pronunciation, meaning_ar})
+     */
+    public function getVocabularyAttribute(): array
+    {
+        return $this->vocabulary_json ?? [];
     }
 
     // ==================== RELATIONSHIPS ====================
