@@ -305,6 +305,33 @@
                                 <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ app()->getLocale() === 'ar' ? 'القطعة' : 'Passage' }}</label>
                                 <input type="text" name="pronunciation_sentence_3" class="input-glass" value="{{ old('pronunciation_sentence_3') }}" placeholder="{{ app()->getLocale() === 'ar' ? 'مثال: A short paragraph related to the lesson.' : 'Example: A short paragraph related to the lesson.' }}">
                             </div>
+                            <div>
+                                <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ app()->getLocale() === 'ar' ? 'كلمات الدرس' : 'Lesson Vocabulary' }}</label>
+                                <textarea name="pronunciation_vocabulary_lines" rows="6" class="input-glass" placeholder="{{ app()->getLocale() === 'ar' ? 'كل سطر بهذا الشكل: word | pronunciation | المعنى' : 'One item per line: word | pronunciation | Arabic meaning' }}">{{ old('pronunciation_vocabulary_lines') }}</textarea>
+                                <p class="text-xs mt-1" style="color: var(--color-text-muted);">{{ app()->getLocale() === 'ar' ? 'مثال: cake | /keik/ | كعكة' : 'Example: cake | /keik/ | كعكة' }}</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ app()->getLocale() === 'ar' ? 'شرح الجملة' : 'Sentence Explanation' }}</label>
+                                <textarea name="pronunciation_sentence_explanation" rows="3" class="input-glass">{{ old('pronunciation_sentence_explanation') }}</textarea>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ app()->getLocale() === 'ar' ? 'شرح القطعة' : 'Passage Explanation' }}</label>
+                                <textarea name="pronunciation_passage_explanation" rows="3" class="input-glass">{{ old('pronunciation_passage_explanation') }}</textarea>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div>
+                                    <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ app()->getLocale() === 'ar' ? 'صوت مرجعي للكلمة' : 'Reference Audio for Word' }}</label>
+                                    <input type="file" name="pronunciation_reference_audio_1" accept="audio/*" class="input-glass">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ app()->getLocale() === 'ar' ? 'صوت مرجعي للجملة' : 'Reference Audio for Sentence' }}</label>
+                                    <input type="file" name="pronunciation_reference_audio_2" accept="audio/*" class="input-glass">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ app()->getLocale() === 'ar' ? 'صوت مرجعي للقطعة' : 'Reference Audio for Passage' }}</label>
+                                    <input type="file" name="pronunciation_reference_audio_3" accept="audio/*" class="input-glass">
+                                </div>
+                            </div>
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div>
                                     <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('Passing Score (%)') }}</label>

@@ -284,6 +284,22 @@
 
                     <div id="pronunciationOptions" class="hidden">
                         <div class="rounded-xl p-4 space-y-4" style="background: var(--color-surface-hover);">
+                            @php
+                                $existingVocabularyLines = old(
+                                    'pronunciation_vocabulary_lines',
+                                    collect($pronunciationExercise?->vocabulary_json ?? [])
+                                        ->map(function ($item) {
+                                            $parts = [
+                                                $item['word'] ?? '',
+                                                $item['pronunciation'] ?? '',
+                                                $item['meaning_ar'] ?? '',
+                                            ];
+
+                                            return implode(' | ', array_filter($parts, fn ($value) => $value !== ''));
+                                        })
+                                        ->implode("\n")
+                                );
+                            @endphp
                             <p class="text-xs font-medium" style="color: var(--color-text-muted);">{{ app()->getLocale() === 'ar' ? 'استخدم الحقول بهذا الترتيب: كلمة، ثم جملة، ثم قطعة قصيرة.' : 'Use these fields in this order: word, then sentence, then a short passage.' }}</p>
                             <div>
                                 <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ app()->getLocale() === 'ar' ? 'الكلمة *' : 'Word *' }}</label>
@@ -297,6 +313,43 @@
                             <div>
                                 <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ app()->getLocale() === 'ar' ? 'القطعة' : 'Passage' }}</label>
                                 <input type="text" name="pronunciation_sentence_3" class="input-glass" value="{{ old('pronunciation_sentence_3', $pronunciationExercise?->sentence_3) }}" placeholder="{{ app()->getLocale() === 'ar' ? 'مثال: A short paragraph related to the lesson.' : 'Example: A short paragraph related to the lesson.' }}">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ app()->getLocale() === 'ar' ? 'كلمات الدرس' : 'Lesson Vocabulary' }}</label>
+                                <textarea name="pronunciation_vocabulary_lines" rows="6" class="input-glass" placeholder="{{ app()->getLocale() === 'ar' ? 'كل سطر بهذا الشكل: word | pronunciation | المعنى' : 'One item per line: word | pronunciation | Arabic meaning' }}">{{ $existingVocabularyLines }}</textarea>
+                                <p class="text-xs mt-1" style="color: var(--color-text-muted);">{{ app()->getLocale() === 'ar' ? 'مثال: cake | /keik/ | كعكة' : 'Example: cake | /keik/ | Cake' }}</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ app()->getLocale() === 'ar' ? 'شرح الجملة' : 'Sentence Explanation' }}</label>
+                                <textarea name="pronunciation_sentence_explanation" rows="3" class="input-glass">{{ old('pronunciation_sentence_explanation', $pronunciationExercise?->sentence_explanation) }}</textarea>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ app()->getLocale() === 'ar' ? 'شرح القطعة' : 'Passage Explanation' }}</label>
+                                <textarea name="pronunciation_passage_explanation" rows="3" class="input-glass">{{ old('pronunciation_passage_explanation', $pronunciationExercise?->passage_explanation) }}</textarea>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                @foreach ([1 => 'Word', 2 => 'Sentence', 3 => 'Passage'] as $audioIndex => $audioLabel)
+                                    @php
+                                        $audioColumn = "reference_audio_{$audioIndex}";
+                                        $audioTitle = app()->getLocale() === 'ar'
+                                            ? match ($audioIndex) {
+                                                1 => 'صوت مرجعي للكلمة',
+                                                2 => 'صوت مرجعي للجملة',
+                                                default => 'صوت مرجعي للقطعة',
+                                            }
+                                            : "Reference Audio for {$audioLabel}";
+                                    @endphp
+                                    <div>
+                                        <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ $audioTitle }}</label>
+                                        <input type="file" name="pronunciation_reference_audio_{{ $audioIndex }}" accept="audio/*" class="input-glass">
+                                        @if($pronunciationExercise?->{$audioColumn})
+                                            <a href="{{ \Illuminate\Support\Facades\Storage::url($pronunciationExercise->{$audioColumn}) }}" target="_blank" class="inline-flex items-center gap-2 mt-2 text-xs font-semibold text-primary-500 hover:underline">
+                                                <i class="fas fa-volume-up"></i>
+                                                {{ app()->getLocale() === 'ar' ? 'تشغيل الملف الحالي' : 'Play current audio' }}
+                                            </a>
+                                        @endif
+                                    </div>
+                                @endforeach
                             </div>
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div>

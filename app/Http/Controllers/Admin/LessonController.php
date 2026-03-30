@@ -312,6 +312,7 @@ class LessonController extends Controller
     {
         if (!$request->boolean('has_pronunciation_exercise')) {
             if ($lesson->pronunciationExercise) {
+                $this->deletePronunciationAudioFiles($lesson->pronunciationExercise);
                 $lesson->pronunciationExercise()->delete();
             }
 
@@ -322,6 +323,9 @@ class LessonController extends Controller
             'sentence_1' => $request->input('pronunciation_sentence_1'),
             'sentence_2' => $request->input('pronunciation_sentence_2'),
             'sentence_3' => $request->input('pronunciation_sentence_3'),
+            'vocabulary_json' => $this->parseVocabularyLines($request->input('pronunciation_vocabulary_lines')),
+            'sentence_explanation' => $request->input('pronunciation_sentence_explanation'),
+            'passage_explanation' => $request->input('pronunciation_passage_explanation'),
             'passing_score' => (int) $request->input('pronunciation_passing_score', 70),
             'max_duration_seconds' => (int) $request->input('pronunciation_max_duration', 10),
             'allow_retake' => $request->boolean('pronunciation_allow_retake'),
@@ -331,6 +335,73 @@ class LessonController extends Controller
             $lesson->pronunciationExercise->update($exerciseData);
         } else {
             $lesson->pronunciationExercise()->create($exerciseData);
+        }
+
+        $exercise = $lesson->pronunciationExercise()->first();
+
+        if (!$exercise) {
+            return;
+        }
+
+        $this->replacePronunciationAudioFiles($request, $lesson, $exercise);
+    }
+
+    private function parseVocabularyLines(?string $lines): ?array
+    {
+        if (!$lines) {
+            return null;
+        }
+
+        $items = collect(preg_split('/\r\n|\r|\n/', $lines))
+            ->map(fn ($line) => trim((string) $line))
+            ->filter()
+            ->map(function (string $line) {
+                $parts = array_map('trim', explode('|', $line));
+
+                return [
+                    'word' => $parts[0] ?? '',
+                    'pronunciation' => $parts[1] ?? '',
+                    'meaning_ar' => $parts[2] ?? '',
+                ];
+            })
+            ->filter(fn (array $item) => $item['word'] !== '')
+            ->values()
+            ->all();
+
+        return empty($items) ? null : $items;
+    }
+
+    private function replacePronunciationAudioFiles(StoreLessonRequest $request, Lesson $lesson, $exercise): void
+    {
+        foreach ([1, 2, 3] as $index) {
+            $field = "pronunciation_reference_audio_{$index}";
+            $column = "reference_audio_{$index}";
+
+            if (!$request->hasFile($field)) {
+                continue;
+            }
+
+            if ($exercise->{$column}) {
+                Storage::disk('public')->delete($exercise->{$column});
+            }
+
+            $path = $request->file($field)->store(
+                "courses/{$lesson->course_id}/lessons/{$lesson->id}/pronunciation",
+                'public'
+            );
+
+            $exercise->update([$column => $path]);
+        }
+    }
+
+    private function deletePronunciationAudioFiles($exercise): void
+    {
+        foreach ([1, 2, 3] as $index) {
+            $column = "reference_audio_{$index}";
+
+            if ($exercise->{$column}) {
+                Storage::disk('public')->delete($exercise->{$column});
+            }
         }
     }
 }

@@ -21,7 +21,7 @@
         ['title' => 'صفحة التعلم', 'description' => 'تعرض وحدات ومحتوى الكورس داخل Accordion منظم، ويختار الطالب منه الدرس الذي يريد فتحه.'],
         ['title' => 'صفحة الدرس', 'description' => 'فيها الفيديو أو المحتوى، الملاحظات، التعليقات، التقدم، والتنقل بين الدروس.'],
         ['title' => 'الاختبارات والمحاولات', 'description' => 'الطالب يبدأ الاختبار، يرسل الإجابات، ثم يراجع النتيجة وتاريخ كل المحاولات السابقة.'],
-        ['title' => 'التدريب على النطق', 'description' => 'لتقييم النطق ورفع التسجيلات أو إجراء التقييمات المتعلقة بمهارات التحدث.'],
+        ['title' => 'التدريب على النطق', 'description' => 'كل درس فيه تمرين نطق تفاعلي: جدول 10 كلمات مع النطق الصحيح ومعناها بالعربي، ثم 3 تمارين متدرجة (كلمة → جملة → قطعة) مع تقييم فوري بالذكاء الاصطناعي وشرح توضيحي بعد النجاح.'],
         ['title' => 'الشهادات', 'description' => 'تعرض شهادات الطالب مع التحميل، الإرسال، والمشاركة والتحقق من صحة الشهادة.'],
         ['title' => 'الملاحظات', 'description' => 'تجمع ملاحظات الطالب من كل الدروس في مكان واحد مع العرض والتعديل والتصدير PDF.'],
         ['title' => 'الإشعارات', 'description' => 'تعرض كل التنبيهات المهمة مثل التقدم، النتائج، التنبيهات الإدارية أو حالات الدفع.'],
@@ -32,7 +32,7 @@
         ['title' => 'المنتدى', 'description' => 'مكان للأسئلة والنقاشات بين الطلاب داخل أقسام وتصنيفات متعددة.'],
         ['title' => 'لوحة الصدارة', 'description' => 'تعرض ترتيب الطلاب بالنقاط وتشجع على المنافسة والاستمرار.'],
         ['title' => 'الألعاب', 'description' => 'جلسات تفاعلية تعليمية مباشرة لزيادة التركيز والمتعة أثناء التعلم.'],
-        ['title' => 'الباتل', 'description' => 'غرف منافسة بين الطلاب بأسئلة مرتبطة بالكورسات مع لوبي ونتائج نهائية.'],
+        ['title' => 'الباتل', 'description' => 'ساحة منافسة جماعية مباشرة — ادخل تحدي مع طلاب من نفس الكورس، جاوب بسرعة على أسئلة عشوائية بزمن محدود، واجمع نقاط لفريقك. نظام فرق + ترتيب فوري + نتائج نهائية.'],
         ['title' => 'الإحالات', 'description' => 'لمتابعة دعوات الأصدقاء وآلية الاستفادة من نظام الإحالة.'],
         ['title' => 'رأي الطالب', 'description' => 'صفحة يكتب منها الطالب تجربته أو تقييمه، ثم يراجع قبل ظهوره للجمهور.'],
     ];
@@ -162,6 +162,78 @@
                                 <p class="text-sm leading-7 text-slate-600 dark:text-slate-300">{{ $page['description'] }}</p>
                             </div>
                         @endforeach
+                    </div>
+                </div>
+
+                {{-- Pronunciation Practice Feature --}}
+                <div class="glass-card p-8" data-aos="fade-up" data-aos-delay="270">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center text-2xl">🎤</div>
+                        <div>
+                            <h2 class="text-2xl font-black text-slate-900 dark:text-white">تمرين النطق — Pronunciation Practice</h2>
+                            <p class="text-sm text-slate-500 dark:text-slate-400">نظام تدريب تفاعلي على النطق بالذكاء الاصطناعي.</p>
+                        </div>
+                    </div>
+
+                    <div class="rounded-2xl border border-indigo-500/20 bg-indigo-500/5 p-5 mb-6">
+                        <p class="text-sm leading-8 text-slate-700 dark:text-slate-200">
+                            هذا القسم مصمم عشان يطوّر نطقك بالإنجليزي بشكل تفاعلي وعملي! كل درس فيه تمرين نطق كامل يساعدك تتعلم الكلمات الجديدة وتنطقها صح، مش بس تقرأ قواعد.
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="rounded-2xl border border-slate-200 dark:border-white/10 bg-white/60 dark:bg-white/5 p-5">
+                            <div class="inline-flex px-3 py-1 rounded-lg bg-indigo-500/10 text-indigo-500 font-bold text-sm mb-3">📚 جدول كلمات الدرس</div>
+                            <p class="text-sm leading-7 text-slate-600 dark:text-slate-300">كل درس فيه 10 كلمات مع النطق الصحيح (IPA) ومعناها بالعربي في جدول واضح. ادرسها قبل ما تبدأ التمرين عشان تكون مستعد.</p>
+                        </div>
+                        <div class="rounded-2xl border border-slate-200 dark:border-white/10 bg-white/60 dark:bg-white/5 p-5">
+                            <div class="inline-flex px-3 py-1 rounded-lg bg-indigo-500/10 text-indigo-500 font-bold text-sm mb-3">🗣️ ثلاث تمارين متدرجة</div>
+                            <p class="text-sm leading-7 text-slate-600 dark:text-slate-300">التمرين الأول: انطق كلمة واحدة بوضوح. التمرين الثاني: انطق جملة كاملة. التمرين الثالث: اقرأ قطعة قصيرة بشكل طبيعي. التدرج يساعدك تتحسن خطوة بخطوة.</p>
+                        </div>
+                        <div class="rounded-2xl border border-slate-200 dark:border-white/10 bg-white/60 dark:bg-white/5 p-5">
+                            <div class="inline-flex px-3 py-1 rounded-lg bg-emerald-500/10 text-emerald-500 font-bold text-sm mb-3">✅ تقييم فوري بالذكاء الاصطناعي</div>
+                            <p class="text-sm leading-7 text-slate-600 dark:text-slate-300">النظام يقيّم نطقك فوراً ويعطيك نسبة الدقة والوضوح والسلاسة. لو نطقت صح يظهر لك شرح توضيحي بالعربي يساعدك تفهم المحتوى بشكل أعمق.</p>
+                        </div>
+                        <div class="rounded-2xl border border-slate-200 dark:border-white/10 bg-white/60 dark:bg-white/5 p-5">
+                            <div class="inline-flex px-3 py-1 rounded-lg bg-amber-500/10 text-amber-500 font-bold text-sm mb-3">🔊 مساعدة صوتية</div>
+                            <p class="text-sm leading-7 text-slate-600 dark:text-slate-300">لو ما قدرت تنطق صح بعد محاولتين، النظام يشغّل لك النطق الصحيح عشان تسمعه وتحاول مرة ثانية. ما في ضغط — تعلّم في وقتك.</p>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Battle Arena Feature --}}
+                <div class="glass-card p-8" data-aos="fade-up" data-aos-delay="290">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-12 h-12 rounded-2xl bg-red-500/10 text-red-500 flex items-center justify-center text-2xl">⚔️</div>
+                        <div>
+                            <h2 class="text-2xl font-black text-slate-900 dark:text-white">ساحة الباتل — Battle Arena</h2>
+                            <p class="text-sm text-slate-500 dark:text-slate-400">تحدّي جماعي مباشر مع طلاب الكورس.</p>
+                        </div>
+                    </div>
+
+                    <div class="rounded-2xl border border-red-500/20 bg-red-500/5 p-5 mb-6">
+                        <p class="text-sm leading-8 text-slate-700 dark:text-slate-200">
+                            الباتل هو وضع منافسة جماعي مباشر — تدخل تحدي مع طلاب من نفس الكورس وتجاوب على أسئلة بسرعة. كل إجابة صحيحة تجمع نقاط لفريقك. الأسرع والأدق يفوز!
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="rounded-2xl border border-slate-200 dark:border-white/10 bg-white/60 dark:bg-white/5 p-5">
+                            <div class="inline-flex px-3 py-1 rounded-lg bg-red-500/10 text-red-500 font-bold text-sm mb-3">🏟️ الوضع الجماعي</div>
+                            <p class="text-sm leading-7 text-slate-600 dark:text-slate-300">ادخل تحدي مباشر مع طلاب من نفس الكورس. النظام يجمعك مع لاعبين في لوبي انتظار، وبعدين تبدأ المنافسة الحقيقية.</p>
+                        </div>
+                        <div class="rounded-2xl border border-slate-200 dark:border-white/10 bg-white/60 dark:bg-white/5 p-5">
+                            <div class="inline-flex px-3 py-1 rounded-lg bg-red-500/10 text-red-500 font-bold text-sm mb-3">⏱️ أسئلة بزمن محدود</div>
+                            <p class="text-sm leading-7 text-slate-600 dark:text-slate-300">كل سؤال عليه وقت محدد — جاوب بسرعة ودقة عشان تجمع أكبر عدد من النقاط. الأسئلة عشوائية ومرتبطة بمحتوى الكورس.</p>
+                        </div>
+                        <div class="rounded-2xl border border-slate-200 dark:border-white/10 bg-white/60 dark:bg-white/5 p-5">
+                            <div class="inline-flex px-3 py-1 rounded-lg bg-red-500/10 text-red-500 font-bold text-sm mb-3">👥 نظام الفرق</div>
+                            <p class="text-sm leading-7 text-slate-600 dark:text-slate-300">تنقسم لفرق وكل إجابة صح تضيف نقاط لفريقك. التعاون والسرعة مهمين عشان فريقك يكون الأول.</p>
+                        </div>
+                        <div class="rounded-2xl border border-slate-200 dark:border-white/10 bg-white/60 dark:bg-white/5 p-5">
+                            <div class="inline-flex px-3 py-1 rounded-lg bg-red-500/10 text-red-500 font-bold text-sm mb-3">🏆 ترتيب ونتائج</div>
+                            <p class="text-sm leading-7 text-slate-600 dark:text-slate-300">بعد انتهاء الباتل يظهر الترتيب النهائي والنقاط. المنافسة تحفزك تراجع وتتعلم أكثر عشان تفوز في الباتل الجاي!</p>
+                        </div>
                     </div>
                 </div>
 
