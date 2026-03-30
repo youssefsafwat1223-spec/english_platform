@@ -31,7 +31,7 @@
                         {{-- Online indicator / Rank Badge --}}
                         <div class="absolute -bottom-3 -right-3 bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-3 py-1.5 rounded-xl text-xs font-bold shadow-lg border-2 border-white dark:border-[#0f172a] flex items-center gap-1.5">
                             <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                            {{ __('Level') }} {{ $stats['rank'] }}
+                            المستوى {{ $stats['rank'] }}
                         </div>
                     </div>
 
@@ -42,11 +42,11 @@
 
                         <div class="flex flex-wrap justify-center md:justify-start gap-3">
                             <a href="{{ route('student.profile.edit') }}" class="px-6 py-2.5 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-sm font-bold hover:scale-105 transition-transform flex items-center gap-2">
-                                <span>{{ __('Edit Profile') }}</span>
+                                <span>تعديل الملف الشخصي</span>
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
                             </a>
                             <a href="{{ route('student.profile.change-password') }}" class="px-6 py-2.5 rounded-full bg-white dark:bg-white/5 text-slate-700 dark:text-white border border-slate-200 dark:border-white/10 text-sm font-semibold hover:bg-slate-50 dark:hover:bg-white/10 transition-colors">
-                                {{ __('Password & Security') }}
+                                كلمة المرور والأمان
                             </a>
                         </div>
                     </div>
@@ -55,13 +55,13 @@
                     <div class="flex md:flex-col gap-6 md:pl-8 md:border-l border-slate-200 dark:border-white/10 shrink-0">
                         <div class="text-center md:text-right">
                             <div class="text-3xl font-black text-primary-500">{{ $stats['total_points'] }}</div>
-                            <div class="text-xs font-bold tracking-wider text-slate-400 uppercase">{{ __('XP Points') }}</div>
+                            <div class="text-xs font-bold tracking-wider text-slate-400 uppercase">النقاط</div>
                         </div>
                         <div class="text-center md:text-right">
                             <div class="text-3xl font-black text-amber-500 flex items-center justify-center md:justify-end gap-1">
                                 {{ $user->current_streak }} <span class="text-xl">🔥</span>
                             </div>
-                            <div class="text-xs font-bold tracking-wider text-slate-400 uppercase">{{ __('Day Streak') }}</div>
+                            <div class="text-xs font-bold tracking-wider text-slate-400 uppercase">سلسلة الأيام</div>
                         </div>
                     </div>
                 </div>
@@ -82,19 +82,19 @@
                             <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .24z"/></svg>
                         </div>
                         <div>
-                            <h3 class="font-bold text-slate-900 dark:text-white mb-1">{{ __('Telegram Bot') }}</h3>
+                            <h3 class="font-bold text-slate-900 dark:text-white mb-1">بوت تيليجرام</h3>
                             @if($user->telegram_chat_id)
                                 <div class="flex items-center gap-2 mb-2">
                                     <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                                    <span class="text-sm font-medium text-emerald-600 dark:text-emerald-400">{{ __('Connected') }}</span>
+                                    <span class="text-sm font-medium text-emerald-600 dark:text-emerald-400">مرتبط</span>
                                 </div>
-                                <p class="text-xs text-slate-500 dark:text-slate-400">{{ __('Receiving daily challenges.') }}</p>
+                                <p class="text-xs text-slate-500 dark:text-slate-400">تصلك الآن الأسئلة والتنبيهات اليومية.</p>
                             @else
                                 <div class="flex items-center gap-2 mb-3">
                                     <span class="w-2 h-2 rounded-full bg-amber-500"></span>
-                                    <span class="text-sm font-medium text-amber-600 dark:text-amber-400">{{ __('Not Connected') }}</span>
+                                    <span class="text-sm font-medium text-amber-600 dark:text-amber-400">غير مرتبط</span>
                                 </div>
-                                <a href="{{ route('student.onboarding') }}" class="text-xs font-bold text-[#0088cc] hover:underline">{{ __('Connect now') }} →</a>
+                                <a href="{{ route('student.onboarding') }}" class="text-xs font-bold text-[#0088cc] hover:underline">اربطه الآن ←</a>
                             @endif
                         </div>
                     </div>
@@ -103,15 +103,15 @@
                 {{-- Referral System --}}
                 <div class="p-6 rounded-[2rem] bg-gradient-to-br from-primary-500/5 to-accent-500/5 border border-primary-500/20 shadow-xl shadow-primary-500/5 text-center">
                     <h3 class="font-bold text-slate-900 dark:text-white mb-2 flex items-center justify-center gap-2">
-                        <span>🎁</span> {{ __('Refer & Earn') }}
+                        <span>🎁</span> الإحالات
                     </h3>
-                    <p class="text-sm text-slate-500 dark:text-slate-400 mb-4 mb-4">{{ __('Share your code to earn one free course when 5 people register through your referral link.') }}</p>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mb-4 mb-4">شارك كود الدعوة الخاص بك لتحصل على كورس واحد مجاني بعد 5 تسجيلات ناجحة عبر رابطك.</p>
                     
                     <div class="bg-white dark:bg-black/20 p-3 rounded-xl mb-4 border border-slate-200 dark:border-white/5">
                         <div class="font-mono text-xl font-black tracking-widest text-primary-500">{{ $user->referral_code }}</div>
                     </div>
                     
-                    <a href="{{ route('student.referrals.index') }}" class="text-sm font-bold text-slate-700 dark:text-white hover:text-primary-500 transition-colors">{{ __('View Referrals') }} →</a>
+                    <a href="{{ route('student.referrals.index') }}" class="text-sm font-bold text-slate-700 dark:text-white hover:text-primary-500 transition-colors">عرض الإحالات ←</a>
                 </div>
                 
                 {{-- Account Details --}}

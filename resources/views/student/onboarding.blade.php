@@ -38,19 +38,19 @@
                         <div class="inline-flex items-center justify-center w-16 h-16 mb-4 rounded-2xl bg-primary-100 dark:bg-primary-500/20 text-primary-500">
                             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                         </div>
-                        <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white mb-2">{{ __('Welcome') }}, {{ explode(' ', $user->name)[0] }}!</h2>
-                        <p class="text-gray-600 dark:text-white/70">{{ __('Let\'s complete your profile. How old are you?') }}</p>
+                        <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white mb-2">أهلًا، {{ explode(' ', $user->name)[0] }}!</h2>
+                        <p class="text-gray-600 dark:text-white/70">لنُكمل ملفك الشخصي. كم عمرك؟</p>
                     </div>
 
                     <div class="space-y-6">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-white/80 mb-2">{{ __('Full Name') }}</label>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-white/80 mb-2">الاسم الكامل</label>
                             <input type="text" x-model="form.name" required
                                    class="input-glass bg-white/50 dark:bg-white/5 border-gray-200 dark:border-white/10 focus:border-primary-500 text-gray-900 dark:text-white">
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-white/80 mb-2">{{ __('Age') }}</label>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-white/80 mb-2">العمر</label>
                             <input type="number" x-model="form.age" min="5" max="120" required placeholder="25"
                                    @keydown.enter.prevent="goNext(2)"
                                    class="input-glass text-center text-xl bg-white/50 dark:bg-white/5 border-gray-200 dark:border-white/10 focus:border-primary-500 text-gray-900 dark:text-white">
@@ -68,14 +68,14 @@
                         <div class="inline-flex items-center justify-center w-16 h-16 mb-4 rounded-2xl bg-accent-100 dark:bg-accent-500/20 text-accent-500">
                             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                         </div>
-                        <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white mb-2">{{ __('Where are you from?') }}</h2>
-                        <p class="text-gray-600 dark:text-white/70">{{ __('Tell us a bit more about yourself (Optional)') }}</p>
+                        <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white mb-2">من أين أنت؟</h2>
+                        <p class="text-gray-600 dark:text-white/70">أخبرنا بمعلومات إضافية عنك، وهذا الجزء اختياري.</p>
                     </div>
 
                     <div class="space-y-6">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 dark:text-white/80 mb-2">{{ __('Address / City') }}</label>
-                            <input type="text" x-model="form.address" placeholder="{{ __('e.g. Cairo, Egypt') }}"
+                            <label class="block text-sm font-medium text-gray-700 dark:text-white/80 mb-2">العنوان أو المدينة</label>
+                            <input type="text" x-model="form.address" placeholder="مثال: القاهرة، مصر"
                                    class="input-glass bg-white/50 dark:bg-white/5 border-gray-200 dark:border-white/10 focus:border-primary-500 text-gray-900 dark:text-white">
                         </div>
 
@@ -132,7 +132,7 @@
                         </div>
                         
                         <div class="text-center mt-4">
-                            <button @click="skipTelegram()" class="text-sm text-gray-500 hover:text-gray-300 underline underline-offset-4">
+                            <button @click="skipTelegram()" class="text-sm text-gray-500 underline underline-offset-4 hover:text-gray-700 dark:hover:text-white">
                                 سأربط تيليجرام لاحقًا وأكمل الإعداد الآن
                             </button>
                         </div>
@@ -151,12 +151,12 @@
                                     <svg class="w-8 h-8 text-[#0088cc]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .24z"/></svg>
                                 </div>
                             </div>
-                            <h2 class="text-2xl font-bold text-white mb-2">بانتظار إتمام الربط</h2>
-                            <p class="text-white/70">اتبع الخطوات التالية داخل تيليجرام لإكمال الربط بنجاح.</p>
+                            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">بانتظار إتمام الربط</h2>
+                            <p class="text-gray-600 dark:text-white/70">اتبع الخطوات التالية داخل تيليجرام لإكمال الربط بنجاح.</p>
                         </div>
 
-                        <div class="bg-white/5 rounded-2xl p-6 border border-white/10 mb-8">
-                            <ol class="space-y-4 text-white/90">
+                        <div class="bg-slate-50 dark:bg-white/5 rounded-2xl p-6 border border-slate-200 dark:border-white/10 mb-8">
+                            <ol class="space-y-4 text-slate-700 dark:text-white/90">
                                 <li class="flex items-start gap-4">
                                     <span class="flex-shrink-0 w-8 h-8 rounded-full bg-[#0088cc]/20 text-[#0088cc] flex items-center justify-center font-bold">1</span>
                                     <div class="pt-1">
@@ -173,7 +173,7 @@
                                     <span class="flex-shrink-0 w-8 h-8 rounded-full bg-[#0088cc]/20 text-[#0088cc] flex items-center justify-center font-bold">3</span>
                                     <div class="pt-1">
                                         <p class="font-medium">أرسل نفس رقم الهاتف المكتوب هنا مع كود الدولة</p>
-                                        <p class="mt-1 text-sm text-white/60">مثال: <code>+9665XXXXXXXX</code> أو <code>+2010XXXXXXX</code></p>
+                                        <p class="mt-1 text-sm text-slate-500 dark:text-white/60">مثال: <code>+9665XXXXXXXX</code> أو <code>+2010XXXXXXX</code></p>
                                     </div>
                                 </li>
                             </ol>
@@ -186,7 +186,7 @@
                         </a>
                         
                         <div class="text-center mt-6">
-                            <a href="{{ route('student.onboarding.complete') }}" class="text-sm text-gray-500 hover:text-white underline underline-offset-4">
+                            <a href="{{ route('student.onboarding.complete') }}" class="text-sm text-gray-500 underline underline-offset-4 hover:text-gray-700 dark:hover:text-white">
                                 تخطَّ والذهاب إلى لوحة التحكم
                             </a>
                         </div>
@@ -198,9 +198,9 @@
                             <div class="inline-flex items-center justify-center w-24 h-24 mb-6 rounded-full bg-emerald-500/20 text-emerald-500 border-4 border-emerald-500/50">
                                 <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
                             </div>
-                            <h2 class="text-4xl font-extrabold text-white mb-4">تم الربط بنجاح</h2>
+                            <h2 class="text-4xl font-extrabold text-gray-900 dark:text-white mb-4">تم الربط بنجاح</h2>
                             <p class="text-xl text-emerald-400 font-medium">حسابك أصبح مرتبطًا ببوت تيليجرام.</p>
-                            <p class="text-white/70 mt-4">ستصلك الآن الأسئلة اليومية والتنبيهات التعليمية عبر تيليجرام.</p>
+                            <p class="text-gray-600 dark:text-white/70 mt-4">ستصلك الآن الأسئلة اليومية والتنبيهات التعليمية عبر تيليجرام.</p>
                         </div>
 
                         <a href="{{ route('student.onboarding.complete') }}" 
@@ -284,7 +284,7 @@
             goNext(targetStep) {
                 this.errorMessage = '';
                 if (targetStep === 2 && (!this.form.name || !this.form.age)) {
-                    this.errorMessage = "{{ __('Please fill out your name and age.') }}";
+                    this.errorMessage = "اكتب الاسم والعمر أولًا.";
                     return;
                 }
                 this.step = targetStep;
@@ -377,7 +377,7 @@
                         }
                     }
                 } catch (e) {
-                    console.error(__('Polling error'), e);
+                    console.error('Polling error', e);
                 }
             }
         }

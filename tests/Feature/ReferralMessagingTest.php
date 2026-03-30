@@ -33,7 +33,7 @@ class ReferralMessagingTest extends TestCase
             ->get(route('student.profile.show'));
 
         $response->assertOk();
-        $response->assertSeeText('Share your code to earn one free course when 5 people register through your referral link.');
+        $response->assertSeeText('شارك كود الدعوة الخاص بك لتحصل على كورس واحد مجاني بعد 5 تسجيلات ناجحة عبر رابطك.');
         $response->assertDontSeeText('free subscription');
     }
 
@@ -46,6 +46,6 @@ class ReferralMessagingTest extends TestCase
             ->get(route('student.referrals.how-it-works'));
 
         $response->assertOk();
-        $response->assertSeeText('Once 5 people register successfully through your link, you unlock one free course.');
+        $response->assertSeeText('عند اكتمال 5 تسجيلات ناجحة عبر رابطك، تحصل على كورس واحد مجاني.');
     }
 }

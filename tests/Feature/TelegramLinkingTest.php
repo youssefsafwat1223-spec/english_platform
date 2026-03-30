@@ -30,6 +30,22 @@ class TelegramLinkingTest extends TestCase
         $this->assertSame('+201012345678', $user->fresh()->phone);
     }
 
+    public function test_telegram_guide_page_renders_arabic_content_and_bot_username(): void
+    {
+        config(['services.telegram.bot_username' => 'SimpleEnglishBot']);
+
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)
+            ->withUnencryptedCookie(DeviceAccessService::COOKIE_NAME, str_repeat('2', 40))
+            ->get(route('student.telegram.guide'));
+
+        $response->assertOk();
+        $response->assertSeeText('دليل استخدام بوت تيليجرام');
+        $response->assertSeeText('@SimpleEnglishBot');
+        $response->assertDontSeeText('{{ config(');
+    }
+
     public function test_telegram_start_and_phone_linking_messages_use_arabic_and_country_code_examples(): void
     {
         config(['services.telegram.bot_token' => 'test-token']);
