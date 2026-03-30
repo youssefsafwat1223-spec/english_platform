@@ -1,4 +1,4 @@
-๏ปฟ@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', $lesson->title . ' - ' . config('app.name'))
 
@@ -14,7 +14,7 @@
                 <li>
                     <a href="{{ route('student.courses.my-courses') }}" class="hover:text-primary-500 transition-colors flex items-center gap-1">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-                        {{ __('ููุฑุณุงุชู') }}
+                        {{ __('฿ๆัำวสํ') }}
                     </a>
                 </li>
                 <li class="opacity-50">/</li>
@@ -54,7 +54,7 @@
                                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                         </svg>
-                                        <span class="text-white font-bold text-sm tracking-wider">{{ __('ุฌุงุฑู ุชุญู…ูู ุงูููุฏูู...') }}</span>
+                                        <span class="text-white font-bold text-sm tracking-wider">{{ __('ฬวัํ สอใํแ วแÝํฯํๆ...') }}</span>
                                     </div>
                                 </div>
                                 <iframe
@@ -174,14 +174,14 @@
                                            controls playsinline preload="metadata" 
                                            controlsList="nodownload" oncontextmenu="return false;"
                                            data-src="{{ $lesson->video_url }}">
-                                        {{ __('ุงูู…ุชุตูุญ ูุง ูุฏุนู… ุชุดุบูู ุงูููุฏูู.') }}
+                                        {{ __('วแใสีÝอ แว ํฯฺใ สิÛํแ วแÝํฯํๆ.') }}
                                     </video>
                                     
                                     {{-- Loading overlay while fetching Blob --}}
                                     <div id="videoLoaderOverlay" class="absolute inset-0 flex items-center justify-center bg-black/80 z-20">
                                         <div class="flex flex-col items-center gap-3">
                                             <svg class="w-10 h-10 text-primary-500 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                                            <span class="text-white font-bold text-sm tracking-wider">{{ __('ุฌุงุฑู ุชุฌููุฒ ุงูููุฏูู...') }}</span>
+                                            <span class="text-white font-bold text-sm tracking-wider">{{ __('ฬวัํ สฬๅํา วแÝํฯํๆ...') }}</span>
                                         </div>
                                     </div>
                                 @endif
@@ -195,7 +195,15 @@
                                 <div class="text-lg font-medium leading-relaxed mb-6">{!! nl2br(e($lesson->description)) !!}</div>
                             @endif
                             @if($lesson->text_content)
-                                <div class="leading-relaxed">{!! nl2br(e($lesson->text_content)) !!}</div>
+                                @php
+                                    $safeContent = nl2br(e($lesson->text_content));
+                                    $safeContent = preg_replace(
+                                        '/\[IMG:([a-zA-Z0-9_\-]+\.(png|jpg|jpeg|webp))\]/',
+                                        '<div class="my-6 rounded-2xl overflow-hidden border border-slate-200 dark:border-white/10"><img src="' + "'{{ asset('images/features') }}'" + '/$1" alt="$1" class="w-full h-auto" loading="lazy"></div>',
+                                        $safeContent
+                                    );
+                                @endphp
+                                <div class="leading-relaxed">{!! $safeContent !!}</div>
                             @endif
                         </div>
                     @endif
@@ -214,7 +222,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3v5zM3 14h3a2 2 0 012 2v3a2 2 0 01-2 2H5a2 2 0 01-2-2v-5z"></path>
                                     </svg>
                                 </div>
-                                <div class="md:hidden text-lg font-bold text-slate-900 dark:text-white">{{ __('ู…ูุฎุต ุตูุชู') }}</div>
+                                <div class="md:hidden text-lg font-bold text-slate-900 dark:text-white">{{ __('ใแฮี ีๆสํ') }}</div>
                             </div>
                             
                             <div class="flex-1 w-full space-y-2">
@@ -263,7 +271,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16.5 6.5l-6.79 6.79a3 3 0 104.24 4.24L21 10.48a5 5 0 10-7.07-7.07l-8.13 8.13a7 7 0 109.9 9.9L20 17"></path>
                                     </svg>
                                 </div>
-                                <h3 class="font-bold text-lg text-slate-900 dark:text-white">{{ __('ุงูู…ุฑููุงุช') }}</h3>
+                                <h3 class="font-bold text-lg text-slate-900 dark:text-white">{{ __('วแใัÝÞวส') }}</h3>
                             </div>
                             <div class="p-4 space-y-3">
                                 @foreach($lesson->attachments as $attachment)
@@ -298,12 +306,12 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 10a7 7 0 01-14 0m7 7v4m-4 0h8"></path>
                                         </svg>
                                     </div>
-                                    <h3 class="font-bold text-lg text-slate-900 dark:text-white">{{ __('ุชู…ุฑูู ุงููุทู') }}</h3>
+                                    <h3 class="font-bold text-lg text-slate-900 dark:text-white">{{ __('สใัํไ วแไุÞ') }}</h3>
                                 </div>
                                 <div class="p-6 relative z-10">
-                                    <p class="text-sm mb-5 text-slate-600 dark:text-slate-400 font-medium">{{ __('ุญุณู‘ู ู…ูุงุฑุงุชู ูู ุงููุทู ู…ุน ุชูููู… ููุฑู ุจุงูุฐูุงุก ุงูุงุตุทูุงุนู.') }}</p>
+                                    <p class="text-sm mb-5 text-slate-600 dark:text-slate-400 font-medium">{{ __('อำ๘ไ ใๅวัวส฿ Ýํ วแไุÞ ใฺ สÞํํใ Ýๆัํ ศวแะ฿วม วแวีุไวฺํ.') }}</p>
                                     <a href="{{ route('student.pronunciation.show', $lesson->pronunciationExercise) }}" class="btn-primary ripple-btn w-full justify-center shadow-lg shadow-indigo-500/25 bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 border-0 flex items-center gap-2">
-                                        {{ __('ุงุจุฏุฃ ุงูุชู…ุฑูู') }}
+                                        {{ __('วศฯร วแสใัํไ') }}
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
                                     </a>
                                 </div>
@@ -319,21 +327,21 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5h6m-6 4h6m-7 6h8m-9 4h10a2 2 0 002-2V7.5L14.5 3H7a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                         </svg>
                                     </div>
-                                    <h3 class="font-bold text-lg text-slate-900 dark:text-white">{{ __('ุงุฎุชุจุงุฑ') }}</h3>
+                                    <h3 class="font-bold text-lg text-slate-900 dark:text-white">{{ __('วฮสศวั') }}</h3>
                                 </div>
                                 <div class="p-6 relative z-10">
-                                    <p class="text-sm mb-5 text-slate-600 dark:text-slate-400 font-medium">{{ __('ุงุฌุชุฒ ุงูุงุฎุชุจุงุฑ ุฃูููุง ุญุชู ูุชู… ุงุญุชุณุงุจ ุงูุฏุฑุณ ูู…ูุชู…ู.') }}</p>
+                                    <p class="text-sm mb-5 text-slate-600 dark:text-slate-400 font-medium">{{ __('วฬสา วแวฮสศวั รๆแ๐ว อส์ ํสใ วอสำวศ วแฯัำ ฿ใ฿สใแ.') }}</p>
                                     @if($hasPassedCompletionQuiz)
                                         <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
                                             <span class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold border border-emerald-500/20 w-full sm:w-auto justify-center">
                                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                                {{ __('ูุงุฌุญ โ“') }}
+                                                {{ __('ไวฬอ ?') }}
                                             </span>
-                                            <a href="{{ route('student.quizzes.start', $completionQuiz) }}" class="btn-ghost font-bold text-slate-600 dark:text-slate-300 w-full sm:w-auto text-center hover:text-amber-500">{{ __('ุฅุนุงุฏุฉ ุงูุงุฎุชุจุงุฑ') }}</a>
+                                            <a href="{{ route('student.quizzes.start', $completionQuiz) }}" class="btn-ghost font-bold text-slate-600 dark:text-slate-300 w-full sm:w-auto text-center hover:text-amber-500">{{ __('ลฺวฯษ วแวฮสศวั') }}</a>
                                         </div>
                                     @else
                                         <a href="{{ route('student.quizzes.start', $completionQuiz) }}" class="btn-primary ripple-btn w-full justify-center shadow-lg shadow-amber-500/25 bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 border-0 flex items-center gap-2">
-                                            {{ __('ุงุจุฏุฃ ุงูุงุฎุชุจุงุฑ') }}
+                                            {{ __('วศฯร วแวฮสศวั') }}
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                                         </a>
                                     @endif
@@ -353,8 +361,8 @@
                                 </svg>
                             </div>
                             <div>
-                                <h3 class="font-extrabold text-xl text-slate-900 dark:text-white">{{ __('ุงูู…ูุงูุดุฉ') }}</h3>
-                                <p class="text-xs font-medium text-slate-500 tracking-wide uppercase">{{ $lesson->comments()->count() }} {{ __('ุชุนููู') }}</p>
+                                <h3 class="font-extrabold text-xl text-slate-900 dark:text-white">{{ __('วแใไวÞิษ') }}</h3>
+                                <p class="text-xs font-medium text-slate-500 tracking-wide uppercase">{{ $lesson->comments()->count() }} {{ __('สฺแํÞ') }}</p>
                             </div>
                         </div>
                     </div>
@@ -369,12 +377,12 @@
                                 <form action="{{ route('student.lessons.comments.store', [$course, $lesson]) }}" method="POST" x-data="{ loading: false, text: '' }" @submit="loading = true">
                                     @csrf
                                     <div class="relative group">
-                                        <textarea x-model="text" name="comment_text" rows="3" class="w-full bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-white/10 rounded-2xl py-3 px-4 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all resize-none shadow-inner" placeholder="{{ __('ุนูุฏู ุณุคุงูุ ุดุงุฑูู ู…ุน ุงูุทูุงุจ...') }}" required></textarea>
+                                        <textarea x-model="text" name="comment_text" rows="3" class="w-full bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-white/10 rounded-2xl py-3 px-4 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all resize-none shadow-inner" placeholder="{{ __('ฺไฯ฿ ำฤวแฟ ิวั฿ๅ ใฺ วแุแวศ...') }}" required></textarea>
                                         <div class="absolute bottom-3 right-3 flex items-center gap-2 opacity-0 group-focus-within:opacity-100 transition-opacity">
-                                            <button type="button" @click="text = ''" x-show="text.length > 0" class="btn-ghost btn-sm text-slate-400 hover:text-rose-500 h-8 px-3 rounded-lg">{{ __('ุฅูุบุงุก') }}</button>
+                                            <button type="button" @click="text = ''" x-show="text.length > 0" class="btn-ghost btn-sm text-slate-400 hover:text-rose-500 h-8 px-3 rounded-lg">{{ __('ลแÛวม') }}</button>
                                             <button type="submit" class="btn-primary ripple-btn h-8 px-4 py-0 rounded-lg shadow-md flex items-center gap-1.5" :disabled="loading || text.length === 0">
-                                                <span x-show="!loading" class="font-bold text-xs">{{ __('ูุดุฑ') }}</span>
-                                                <span x-show="loading" x-cloak class="font-bold text-xs">{{ __('ุฌุงุฑู ุงููุดุฑ...') }}</span>
+                                                <span x-show="!loading" class="font-bold text-xs">{{ __('ไิั') }}</span>
+                                                <span x-show="loading" x-cloak class="font-bold text-xs">{{ __('ฬวัํ วแไิั...') }}</span>
                                                 <svg x-show="!loading" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
                                             </button>
                                         </div>
@@ -406,7 +414,7 @@
                                                         @if($comment->is_admin_reply)
                                                             <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-primary-500/10 text-primary-600 dark:text-primary-400 text-[10px] font-black uppercase tracking-wider border border-primary-500/20">
                                                                 <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-                                                                {{ __('ุงูู…ุญุงุถุฑ') }}
+                                                                {{ __('วแใอวึั') }}
                                                             </span>
                                                         @endif
                                                     </div>
@@ -436,7 +444,7 @@
                                                                     <div class="flex items-center gap-2 mb-1">
                                                                         <span class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white">{{ $reply->user->name }}</span>
                                                                         @if($reply->is_admin_reply)
-                                                                            <span class="inline-flex items-center px-1.5 py-0.5 rounded-md bg-primary-500/10 text-primary-600 dark:text-primary-400 text-[9px] font-black uppercase tracking-wider border border-primary-500/20">{{ __('ุงูู…ุญุงุถุฑ') }}</span>
+                                                                            <span class="inline-flex items-center px-1.5 py-0.5 rounded-md bg-primary-500/10 text-primary-600 dark:text-primary-400 text-[9px] font-black uppercase tracking-wider border border-primary-500/20">{{ __('วแใอวึั') }}</span>
                                                                         @endif
                                                                         <span class="text-[10px] sm:text-xs font-medium text-slate-500 ml-auto">{{ $reply->created_at->diffForHumans() }}</span>
                                                                     </div>
@@ -457,8 +465,8 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h8m-8 4h5m-9 6l2.4-2.4A2 2 0 016.8 17H18a2 2 0 002-2V7a2 2 0 00-2-2H6a2 2 0 00-2 2v11z"></path>
                                         </svg>
                                     </div>
-                                    <p class="text-slate-900 dark:text-white font-bold mb-1">{{ __('ูุง ููุฌุฏ ุชุนูููุงุช') }}</p>
-                                    <p class="text-sm text-slate-500 dark:text-slate-400">{{ __('ูู ุฃูู ู…ู ูุณุฃู ุณุคุงู ุฃู ูุดุงุฑู ุฑุฃูู!') }}</p>
+                                    <p class="text-slate-900 dark:text-white font-bold mb-1">{{ __('แว ํๆฬฯ สฺแํÞวส') }}</p>
+                                    <p class="text-sm text-slate-500 dark:text-slate-400">{{ __('฿ไ รๆแ ใไ ํำรแ ำฤวแ รๆ ํิวั฿ ัรํๅ!') }}</p>
                                 </div>
                             @endforelse
                         </div>
@@ -472,7 +480,7 @@
                             <a href="{{ route('student.lessons.show', [$course, $previousLesson]) }}" class="btn-ghost flex items-center justify-center gap-2 px-6 py-3 font-bold text-slate-600 dark:text-slate-300 hover:text-primary-500 hover:bg-white dark:hover:bg-slate-800 rounded-xl transition-colors w-full sm:w-auto shadow-sm border border-slate-200 dark:border-white/5">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                                 <div>
-                                    <div class="text-[10px] uppercase tracking-wider text-slate-400 font-bold mb-0.5">{{ __('ุงูุณุงุจู') }}</div>
+                                    <div class="text-[10px] uppercase tracking-wider text-slate-400 font-bold mb-0.5">{{ __('วแำวศÞ') }}</div>
                                     <div class="text-sm line-clamp-1 max-w-[150px]">{{ $previousLesson->title }}</div>
                                 </div>
                             </a>
@@ -483,25 +491,25 @@
                         @if(!$progress->is_completed)
                             @if($requiresQuizPass && !$hasPassedCompletionQuiz)
                                 {{--
-                                {{ __('ุชู… ุงูุงูุชูุงุก') }}
+                                {{ __('สใ วแวไสๅวม') }}
                                 --}}
                                 <div class="flex flex-col items-stretch gap-2 w-full sm:w-auto">
                                     <a href="{{ route('student.quizzes.start', $completionQuiz) }}" class="btn-primary ripple-btn px-8 py-4 rounded-xl shadow-lg shadow-amber-500/25 font-bold flex items-center justify-center gap-2 w-full sm:w-auto bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 border-0">
                                         <span class="bg-black/20 rounded-full p-1"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg></span>
-                                        {{ __('ุงุฌุชุฒ ุงูุงุฎุชุจุงุฑ ุฃูููุง') }}
+                                        {{ __('วฬสา วแวฮสศวั รๆแ๐ว') }}
                                     </a>
-                                    <p class="text-center text-xs font-bold text-amber-600 dark:text-amber-400">{{ __('ูู ูุชู… ุงุนุชุจุงุฑ ุงูุฏุฑุณ ู…ูุชู…ููุง ูุจู ูุฌุงุญู ูู ุงูุงุฎุชุจุงุฑ.') }}</p>
+                                    <p class="text-center text-xs font-bold text-amber-600 dark:text-amber-400">{{ __('แไ ํสใ วฺสศวั วแฯัำ ใ฿สใแ๐ว Þศแ ไฬวอ฿ Ýํ วแวฮสศวั.') }}</p>
                                 </div>
                             @else
                                 <button type="button" onclick="markAsComplete(this)" class="btn-primary ripple-btn px-8 py-4 rounded-xl shadow-lg shadow-primary-500/25 font-bold flex items-center justify-center gap-2 w-full sm:w-auto bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 border-0">
                                     <span class="bg-black/20 rounded-full p-1"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg></span>
-                                    {{ __('ุชู… ุงูุงูุชูุงุก') }}
+                                    {{ __('สใ วแวไสๅวม') }}
                                 </button>
                             @endif
                         @else
                             <div class="px-8 py-4 rounded-xl font-bold flex items-center justify-center gap-2 w-full sm:w-auto bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
                                 <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                {{ __('ู…ูุชู…ู โ“') }}
+                                {{ __('ใ฿สใแ ?') }}
                             </div>
                         @endif
                     </div>
@@ -510,7 +518,7 @@
                         @if($nextLesson)
                             <a href="{{ route('student.lessons.show', [$course, $nextLesson]) }}" class="btn-primary ripple-btn flex items-center justify-center gap-2 px-6 py-3 font-bold rounded-xl w-full sm:w-auto shadow-md">
                                 <div class="text-right">
-                                    <div class="text-[10px] uppercase tracking-wider text-white/70 font-bold mb-0.5">{{ __('ุงูุชุงูู') }}</div>
+                                    <div class="text-[10px] uppercase tracking-wider text-white/70 font-bold mb-0.5">{{ __('วแสวแํ') }}</div>
                                     <div class="text-sm line-clamp-1 max-w-[150px]">{{ $nextLesson->title }}</div>
                                 </div>
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
@@ -531,27 +539,27 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 2.5V7h4.5M10 11h4m-4 3h6m-6 3h4"></path>
                                 </svg>
                             </span>
-                            <h3 class="font-bold text-slate-900 dark:text-white">{{ __('ู…ูุงุญุธุงุชู') }}</h3>
+                            <h3 class="font-bold text-slate-900 dark:text-white">{{ __('ใแวอูวสํ') }}</h3>
                         </div>
                         
                         <div x-show="saving" x-cloak class="flex items-center gap-1.5 text-xs font-bold text-amber-500 bg-amber-500/10 px-2 py-1 rounded-md">
                             <svg class="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                            {{ __('ุฌุงุฑู ุงูุญูุธ') }}
+                            {{ __('ฬวัํ วแอÝู') }}
                         </div>
                         <div x-show="saved" x-cloak class="flex items-center gap-1 text-xs font-bold text-emerald-500 bg-emerald-500/10 px-2 py-1 rounded-md">
                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                            {{ __('ุชู… ุงูุญูุธ') }}
+                            {{ __('สใ วแอÝู') }}
                         </div>
                     </div>
                     
                     <div class="p-6 flex-1 flex flex-col min-h-0">
                         <div class="relative flex-1 flex flex-col mb-4">
-                            <textarea x-model="noteText" @input="autoSave()" class="w-full flex-1 bg-yellow-50/50 dark:bg-yellow-900/10 border border-yellow-200/50 dark:border-yellow-900/30 rounded-2xl py-4 px-5 text-slate-800 dark:text-slate-200 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all resize-none shadow-inner text-sm leading-relaxed" placeholder="{{ __('ุงูุชุจ ู…ูุงุญุธุงุชู ููุง... (ุจูุชุญูุธ ุชููุงุฆู)') }}" style="background-image: repeating-linear-gradient(transparent, transparent 31px, rgba(0,0,0,0.05) 31px, rgba(0,0,0,0.05) 32px); line-height: 32px; attachment: local;"></textarea>
+                            <textarea x-model="noteText" @input="autoSave()" class="w-full flex-1 bg-yellow-50/50 dark:bg-yellow-900/10 border border-yellow-200/50 dark:border-yellow-900/30 rounded-2xl py-4 px-5 text-slate-800 dark:text-slate-200 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all resize-none shadow-inner text-sm leading-relaxed" placeholder="{{ __('ว฿สศ ใแวอูวส฿ ๅไว... (ศํสอÝู สแÞวฦํ)') }}" style="background-image: repeating-linear-gradient(transparent, transparent 31px, rgba(0,0,0,0.05) 31px, rgba(0,0,0,0.05) 32px); line-height: 32px; attachment: local;"></textarea>
                         </div>
 
                         @if($noteHistory->count() > 0)
                             <div class="shrink-0 pt-4 border-t border-slate-200 dark:border-white/10 max-h-[40%] overflow-y-auto pr-2 custom-scrollbar">
-                                <h4 class="font-bold text-xs uppercase tracking-wider text-slate-500 mb-3">{{ __('ู…ูุงุญุธุงุช ุณุงุจูุฉ') }}</h4>
+                                <h4 class="font-bold text-xs uppercase tracking-wider text-slate-500 mb-3">{{ __('ใแวอูวส ำวศÞษ') }}</h4>
                                 <div class="space-y-3">
                                     @foreach($noteHistory as $note)
                                         <div class="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-3 border border-slate-200 dark:border-white/5 hover:border-accent-500/30 transition-colors group cursor-pointer">
@@ -576,12 +584,12 @@
 @push('scripts')
 <script>
 const lessonUiText = {
-    confirmComplete: @json(__('ุชูุฏู… ู…ู…ุชุงุฒ! ูู ุชุฑูุฏ ุฅููุงุก ุงูุฏุฑุณ ูุงูุงูุชูุงู ููุฎุทูุฉ ุงูุชุงููุฉุ')),
-    completing: @json(__('ุฌุงุฑู ุงูุฅููุงุก...')),
-    completed: @json(__('ุชู…!')),
-    completedSuccess: @json(__('ุชู… ุฅููุงุก ุงูุฏุฑุณ ุจูุฌุงุญ!')),
-    completeError: @json(__('ุญุตู ุฎุทุฃ! ุญุงูู ุชุงูู.')),
-    notesSaveError: @json(__('ูุดู ุญูุธ ุงูู…ูุงุญุธุงุช. ุชุฃูุฏ ู…ู ุงูุงุชุตุงู.')),
+    confirmComplete: @json(__('สÞฯใ ใใสวา! ๅแ สัํฯ ลไๅวม วแฯัำ ๆวแวไสÞวแ แแฮุๆษ วแสวแํษฟ')),
+    completing: @json(__('ฬวัํ วแลไๅวม...')),
+    completed: @json(__('สใ!')),
+    completedSuccess: @json(__('สใ ลไๅวม วแฯัำ ศไฬวอ!')),
+    completeError: @json(__('อีแ ฮุร! อวๆแ สวไํ.')),
+    notesSaveError: @json(__('Ýิแ อÝู วแใแวอูวส. สร฿ฯ ใไ วแวสีวแ.')),
     progressUpdateIgnored: @json(__('Silently ignoring progress update fail')),
 };
 

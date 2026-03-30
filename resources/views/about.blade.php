@@ -165,6 +165,38 @@
                     </div>
                 </div>
 
+                {{-- Quiz Feature --}}
+                <div class="glass-card p-8" data-aos="fade-up" data-aos-delay="260">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center text-2xl">📝</div>
+                        <div>
+                            <h2 class="text-2xl font-black text-slate-900 dark:text-white">الاختبارات — Quizzes</h2>
+                            <p class="text-sm text-slate-500 dark:text-slate-400">اختبارات تفاعلية لقياس فهمك لكل درس.</p>
+                        </div>
+                    </div>
+
+                    <div class="rounded-2xl border border-amber-500/20 bg-amber-500/5 p-5 mb-6">
+                        <p class="text-sm leading-8 text-slate-700 dark:text-slate-200">
+                            كل درس ممكن يكون عليه اختبار لازم تجتازه عشان الدرس يتحسب مكتمل. الأسئلة مرتبطة بمحتوى الدرس مباشرة، ولو ما نجحت تقدر تعيد الاختبار — كل محاولاتك محفوظة.
+                        </p>
+                    </div>
+
+                    <div class="rounded-2xl overflow-hidden border border-amber-500/20 mb-6">
+                        <img src="{{ asset('images/features/quiz.png') }}" alt="واجهة الاختبار" class="w-full h-auto" loading="lazy">
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="rounded-2xl border border-slate-200 dark:border-white/10 bg-white/60 dark:bg-white/5 p-5">
+                            <div class="inline-flex px-3 py-1 rounded-lg bg-amber-500/10 text-amber-500 font-bold text-sm mb-3">✍️ اختبار كل درس</div>
+                            <p class="text-sm leading-7 text-slate-600 dark:text-slate-300">بعد ما تخلّص مشاهدة الفيديو أو قراءة المحتوى، ابدأ الاختبار وجاوب على الأسئلة. لو نجحت يظهر لك شارة "ناجح ✓" باللون الأخضر.</p>
+                        </div>
+                        <div class="rounded-2xl border border-slate-200 dark:border-white/10 bg-white/60 dark:bg-white/5 p-5">
+                            <div class="inline-flex px-3 py-1 rounded-lg bg-amber-500/10 text-amber-500 font-bold text-sm mb-3">🔄 إعادة المحاولة</div>
+                            <p class="text-sm leading-7 text-slate-600 dark:text-slate-300">لو ما نجحت تقدر تعيد الاختبار عدد غير محدود من المرات. كل محاولاتك محفوظة وتقدر تراجعها.</p>
+                        </div>
+                    </div>
+                </div>
+
                 {{-- Pronunciation Practice Feature --}}
                 <div class="glass-card p-8" data-aos="fade-up" data-aos-delay="270">
                     <div class="flex items-center gap-3 mb-6">
@@ -179,6 +211,10 @@
                         <p class="text-sm leading-8 text-slate-700 dark:text-slate-200">
                             هذا القسم مصمم عشان يطوّر نطقك بالإنجليزي بشكل تفاعلي وعملي! كل درس فيه تمرين نطق كامل يساعدك تتعلم الكلمات الجديدة وتنطقها صح، مش بس تقرأ قواعد.
                         </p>
+                    </div>
+
+                    <div class="rounded-2xl overflow-hidden border border-indigo-500/20 mb-6">
+                        <img src="{{ asset('images/features/pronunciation.png') }}" alt="واجهة تمرين النطق" class="w-full h-auto" loading="lazy">
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -215,6 +251,10 @@
                         <p class="text-sm leading-8 text-slate-700 dark:text-slate-200">
                             الباتل هو وضع منافسة جماعي مباشر — تدخل تحدي مع طلاب من نفس الكورس وتجاوب على أسئلة بسرعة. كل إجابة صحيحة تجمع نقاط لفريقك. الأسرع والأدق يفوز!
                         </p>
+                    </div>
+
+                    <div class="rounded-2xl overflow-hidden border border-red-500/20 mb-6">
+                        <img src="{{ asset('images/features/battle.png') }}" alt="واجهة ساحة الباتل" class="w-full h-auto" loading="lazy">
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
