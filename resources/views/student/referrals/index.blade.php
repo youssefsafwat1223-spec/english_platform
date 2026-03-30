@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'برنامج الإحالات' . ' - ' . config('app.name'))
+@section('title', __('ui.referrals.index_title') . ' - ' . config('app.name'))
 
 @section('content')
 <div class="py-12 lg:py-16 relative min-h-screen z-10">
@@ -13,20 +13,20 @@
             <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
                 <div>
                     <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-500 dark:text-violet-400 text-sm font-bold mb-4 shadow-sm">
-                        <span>🎁</span> برنامج الإحالات
+                        <span>🎁</span> {{ __('ui.referrals.badge') }}
                     </div>
                     <h1 class="text-3xl md:text-5xl font-extrabold mb-2 text-slate-900 dark:text-white tracking-tight">
-                        ادعُ أصدقاءك <span class="text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-primary-500">واكسب</span>
+                        {{ __('ui.referrals.hero_title_prefix') }} <span class="text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-primary-500">{{ __('ui.referrals.hero_title_highlight') }}</span>
                     </h1>
                     <p class="text-slate-600 dark:text-slate-400 font-medium max-w-2xl">
-                        شارك رابط الدعوة الخاص بك. الطالب الجديد يحصل على خصم، وأنت تجمع تقدّمك حتى تحصل على كورس واحد مجاني بعد 5 تسجيلات ناجحة عبر رابطك.
+                        {{ __('ui.referrals.hero_text') }}
                     </p>
                 </div>
 
                 <div class="shrink-0">
                     <a href="{{ route('student.referrals.how-it-works') }}" class="btn-primary ripple-btn px-6 py-3 rounded-xl shadow-lg shadow-violet-500/25 flex items-center gap-2 font-bold bg-gradient-to-r from-violet-600 to-violet-500 hover:from-violet-500 hover:to-violet-400 border-none text-white transition-all transform hover:scale-105">
                         <span class="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-sm shadow-inner shrink-0">?</span>
-                        كيف يعمل النظام؟
+                        {{ __('ui.referrals.how_button') }}
                     </a>
                 </div>
             </div>
@@ -44,10 +44,10 @@
                     </svg>
                 </div>
 
-                <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white mb-8">كود الدعوة الخاص بك</h2>
+                <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white mb-8">{{ __('ui.referrals.code_title') }}</h2>
 
                 <div class="rounded-3xl p-6 md:p-8 max-w-xl mx-auto mb-8 bg-white/60 dark:bg-slate-900/60 border border-slate-200/50 dark:border-white/10 shadow-inner backdrop-blur-md relative group cursor-pointer" onclick="copyReferralLink()">
-                    <div class="text-sm font-bold tracking-wider text-slate-500 dark:text-slate-400 mb-3">انسخ الرابط وشاركه مع أصدقائك</div>
+                    <div class="text-sm font-bold tracking-wider text-slate-500 dark:text-slate-400 mb-3">{{ __('ui.referrals.copy_hint') }}</div>
                     <div class="font-mono text-4xl md:text-6xl font-black bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-accent-500 tracking-wider mb-4">{{ $user->referral_code }}</div>
                     <div class="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-2xl bg-primary-500 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-lg scale-90 group-hover:scale-100">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -61,7 +61,7 @@
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
                         </svg>
-                        نسخ رابط الإحالة
+                        {{ __('ui.referrals.copy_link') }}
                     </button>
                 </div>
 
@@ -73,8 +73,8 @@
                             </svg>
                         </div>
                         <div class="text-right">
-                            <div class="text-xl font-black text-emerald-600 dark:text-emerald-400 mb-1">لديك خصم متاح</div>
-                            <div class="text-emerald-700/80 dark:text-emerald-300/80 font-medium">يمكنك استخدامه في عملية الشراء القادمة عند الدفع.</div>
+                            <div class="text-xl font-black text-emerald-600 dark:text-emerald-400 mb-1">{{ __('ui.referrals.discount_title') }}</div>
+                            <div class="text-emerald-700/80 dark:text-emerald-300/80 font-medium">{{ __('ui.referrals.discount_text') }}</div>
                         </div>
                     </div>
                 @endif
@@ -85,22 +85,22 @@
                             <span class="text-2xl">🎁</span>
                         </div>
                         <div class="text-right">
-                            <div class="text-xl font-black text-green-600 dark:text-green-400 mb-1">🎉 لديك كورس مجاني!</div>
-                            <div class="text-green-700/80 dark:text-green-300/80 font-medium">يمكنك استخدامه للحصول على كورس واحد مجانًا من صفحة الكورسات.</div>
+                            <div class="text-xl font-black text-green-600 dark:text-green-400 mb-1">🎉 {{ __('ui.referrals.free_course_title') }}</div>
+                            <div class="text-green-700/80 dark:text-green-300/80 font-medium">{{ __('ui.referrals.free_course_text') }}</div>
                         </div>
                     </div>
                 @else
                     <div class="mt-8 max-w-xl mx-auto">
                         <div class="rounded-2xl p-6 bg-white/60 dark:bg-slate-900/60 border border-slate-200/50 dark:border-white/10 backdrop-blur-md">
                             <div class="flex items-center justify-between mb-3">
-                                <span class="text-sm font-bold text-slate-700 dark:text-slate-300">🎁 كورس مجاني عند تسجيل 5 أشخاص عبر رابطك</span>
+                                <span class="text-sm font-bold text-slate-700 dark:text-slate-300">🎁 {{ __('ui.referrals.free_course_progress') }}</span>
                                 <span class="text-sm font-black text-primary-500">{{ min($referralProgress, 5) }}/5</span>
                             </div>
                             <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-3 overflow-hidden">
                                 <div class="h-full rounded-full bg-gradient-to-r from-primary-500 to-accent-500 transition-all duration-500" style="width: {{ min(($referralProgress / 5) * 100, 100) }}%"></div>
                             </div>
                             @if($referralProgress < 5)
-                                <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">باقي {{ 5 - $referralProgress }} تسجيلات للحصول على كورس مجاني.</p>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">{{ __('ui.referrals.registrations_left', ['count' => 5 - $referralProgress]) }}</p>
                             @endif
                         </div>
                     </div>
@@ -109,14 +109,14 @@
         </div>
 
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-12">
-            @php
-                $refStats = [
-                    ['icon' => '👆', 'value' => $stats['total_clicks'], 'label' => 'إجمالي النقرات', 'color' => 'primary'],
-                    ['icon' => '📝', 'value' => $stats['total_registrations'], 'label' => 'التسجيلات', 'color' => 'emerald'],
-                    ['icon' => '💳', 'value' => $stats['total_purchases'], 'label' => 'المشتريات', 'color' => 'blue'],
-                    ['icon' => '🏷️', 'value' => $stats['available_discounts'], 'label' => 'الخصومات المتاحة', 'color' => 'amber'],
-                ];
-            @endphp
+                @php
+                    $refStats = [
+                        ['icon' => '👆', 'value' => $stats['total_clicks'], 'label' => __('ui.referrals.total_clicks'), 'color' => 'primary'],
+                        ['icon' => '📝', 'value' => $stats['total_registrations'], 'label' => __('ui.referrals.registrations'), 'color' => 'emerald'],
+                        ['icon' => '💳', 'value' => $stats['total_purchases'], 'label' => __('ui.referrals.purchases'), 'color' => 'blue'],
+                        ['icon' => '🏷️', 'value' => $stats['available_discounts'], 'label' => __('ui.referrals.available_discounts'), 'color' => 'amber'],
+                    ];
+                @endphp
             @foreach($refStats as $s)
                 <div class="glass-card p-6 md:p-8 text-center group rounded-[2rem] border border-slate-200/50 dark:border-white/5 bg-white/50 dark:bg-slate-900/50 relative overflow-hidden" data-aos="zoom-in" data-aos-delay="{{ $loop->index * 100 }}">
                     <div class="absolute inset-0 bg-gradient-to-br from-{{ $s['color'] }}-500/5 to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
@@ -134,8 +134,8 @@
                         👥
                     </div>
                     <div>
-                        <h3 class="font-bold text-lg text-slate-900 dark:text-white">سجل الإحالات</h3>
-                        <p class="text-xs text-slate-500 dark:text-slate-400">تابع حالة الأشخاص الذين سجّلوا عبر رابطك.</p>
+                        <h3 class="font-bold text-lg text-slate-900 dark:text-white">{{ __('ui.referrals.history_title') }}</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">{{ __('ui.referrals.history_text') }}</p>
                     </div>
                 </div>
             </div>
@@ -144,10 +144,10 @@
                 <table class="w-full text-right whitespace-nowrap">
                     <thead>
                         <tr class="bg-slate-50/80 dark:bg-slate-800/50 border-y border-slate-200/50 dark:border-white/5 text-xs uppercase tracking-wider font-bold text-slate-500 dark:text-slate-400">
-                            <th class="px-6 py-4">الطالب</th>
-                            <th class="px-6 py-4">الحالة</th>
-                            <th class="px-6 py-4">التاريخ</th>
-                            <th class="px-6 py-4">الخصم المكتسب</th>
+                            <th class="px-6 py-4">{{ __('ui.referrals.student') }}</th>
+                            <th class="px-6 py-4">{{ __('Status') }}</th>
+                            <th class="px-6 py-4">{{ __('ui.referrals.date') }}</th>
+                            <th class="px-6 py-4">{{ __('ui.referrals.earned_discount') }}</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-200/50 dark:divide-white/5">
@@ -171,14 +171,14 @@
                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
                                             </svg>
-                                            اشترى كورسًا
+                                            {{ __('ui.referrals.status_purchased') }}
                                         </span>
                                     @elseif($referral->status === 'registered')
                                         <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-primary-500/10 text-primary-600 dark:text-primary-400 text-xs font-black border border-primary-500/20 shadow-sm">
                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                                             </svg>
-                                            سجل في المنصة
+                                            {{ __('ui.referrals.status_registered') }}
                                         </span>
                                     @else
                                         <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 text-xs font-black border border-blue-500/20 shadow-sm">
@@ -186,7 +186,7 @@
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                                             </svg>
-                                            نقر على الرابط
+                                            {{ __('ui.referrals.status_clicked') }}
                                         </span>
                                     @endif
                                 </td>
@@ -202,14 +202,14 @@
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                                                 </svg>
-                                                تم استخدامه
+                                                {{ __('ui.referrals.used') }}
                                             </span>
                                         @else
                                             <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 text-sm font-bold border border-amber-500/20 shadow-sm">
                                                 <svg class="w-4 h-4 hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/>
                                                 </svg>
-                                                متاح
+                                                {{ __('ui.referrals.available') }}
                                             </span>
                                         @endif
                                     @else
@@ -223,15 +223,15 @@
                                     <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-slate-100 dark:bg-slate-800 mb-6 border border-slate-200 dark:border-white/5 shadow-inner">
                                         <span class="text-4xl text-slate-400">👥</span>
                                     </div>
-                                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">لا توجد إحالات بعد</h3>
+                                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">{{ __('ui.referrals.empty_title') }}</h3>
                                     <p class="text-slate-500 dark:text-slate-400 mb-6 max-w-sm mx-auto">
-                                        ابدأ بمشاركة رابط الإحالة الخاص بك، وستظهر هنا حالة كل تسجيل أو شراء يتم من خلاله.
+                                        {{ __('ui.referrals.empty_text') }}
                                     </p>
                                     <button onclick="copyReferralLink()" class="btn-primary ripple-btn inline-flex items-center gap-2">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
                                         </svg>
-                                        نسخ رابط الإحالة
+                                        {{ __('ui.referrals.copy_link') }}
                                     </button>
                                 </td>
                             </tr>
@@ -252,15 +252,15 @@
 @push('scripts')
 <script>
 function copyReferralLink() {
-    const link = '{{ route('referral.track', $user->referral_code) }}';
+        const link = '{{ route('referral.track', $user->referral_code) }}';
     if (navigator.clipboard) {
         navigator.clipboard.writeText(link).then(() => {
-            if (window.showNotification) window.showNotification('تم نسخ رابط الإحالة بنجاح.', 'success');
+            if (window.showNotification) window.showNotification(@js(__('ui.referrals.copy_success')), 'success');
         }).catch(() => {
-            prompt('انسخ هذا الرابط:', link);
+            prompt(@js(__('ui.referrals.copy_prompt')), link);
         });
     } else {
-        prompt('انسخ هذا الرابط:', link);
+        prompt(@js(__('ui.referrals.copy_prompt')), link);
     }
 }
 </script>

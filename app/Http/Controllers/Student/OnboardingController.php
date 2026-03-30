@@ -37,7 +37,7 @@ class OnboardingController extends Controller
         $normalizedPhone = $this->telegramService->normalizePhoneNumber($validated['phone']);
 
         if (!$normalizedPhone) {
-            $message = 'اكتب رقم هاتف صحيحًا مع كود الدولة، مثل +9665XXXXXXXX أو +2010XXXXXXX.';
+            $message = __('ui.onboarding.invalid_phone_server');
 
             if ($request->wantsJson()) {
                 return response()->json([

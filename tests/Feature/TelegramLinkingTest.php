@@ -37,13 +37,63 @@ class TelegramLinkingTest extends TestCase
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)
+            ->withSession(['locale' => 'ar'])
             ->withUnencryptedCookie(DeviceAccessService::COOKIE_NAME, str_repeat('2', 40))
             ->get(route('student.telegram.guide'));
 
         $response->assertOk();
-        $response->assertSeeText('دليل استخدام بوت تيليجرام');
+        $response->assertSeeText('دليل بوت تيليجرام');
         $response->assertSeeText('@SimpleEnglishBot');
         $response->assertDontSeeText('{{ config(');
+    }
+
+    public function test_onboarding_and_telegram_guide_render_english_when_locale_is_english(): void
+    {
+        config(['services.telegram.bot_username' => 'SimpleEnglishBot']);
+
+        $user = User::factory()->create();
+
+        $guide = $this->actingAs($user)
+            ->withSession(['locale' => 'en'])
+            ->withUnencryptedCookie(DeviceAccessService::COOKIE_NAME, str_repeat('3', 40))
+            ->get(route('student.telegram.guide'));
+
+        $guide->assertOk();
+        $guide->assertSeeText('Telegram Bot Guide');
+        $guide->assertSeeText('Correct Linking Steps');
+        $guide->assertDontSeeText('دليل استخدام بوت تيليجرام');
+
+        $onboarding = $this->actingAs($user)
+            ->withSession(['locale' => 'en'])
+            ->withUnencryptedCookie(DeviceAccessService::COOKIE_NAME, str_repeat('4', 40))
+            ->get(route('student.onboarding'));
+
+        $onboarding->assertOk();
+        $onboarding->assertSeeText('Complete Your Profile');
+        $onboarding->assertSeeText('Link Telegram');
+        $onboarding->assertDontSeeText('إكمال الملف الشخصي');
+    }
+
+    public function test_onboarding_invalid_phone_message_is_localized_to_english(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)
+            ->withSession(['locale' => 'en'])
+            ->withUnencryptedCookie(DeviceAccessService::COOKIE_NAME, str_repeat('5', 40))
+            ->postJson(route('student.onboarding.store'), [
+                'name' => 'Test Student',
+                'age' => 22,
+                'address' => 'Cairo',
+                'secondary_email' => 'backup@example.com',
+                'phone' => 'invalid-phone',
+            ]);
+
+        $response->assertStatus(422);
+        $response->assertJsonPath(
+            'message',
+            'Please enter a valid phone number with country code, such as +9665XXXXXXXX or +2010XXXXXXX.'
+        );
     }
 
     public function test_telegram_start_and_phone_linking_messages_use_arabic_and_country_code_examples(): void

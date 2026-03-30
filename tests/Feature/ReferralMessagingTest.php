@@ -16,6 +16,7 @@ class ReferralMessagingTest extends TestCase
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)
+            ->withSession(['locale' => 'ar'])
             ->withUnencryptedCookie(DeviceAccessService::COOKIE_NAME, str_repeat('a', 40))
             ->get(route('student.referrals.index'));
 
@@ -29,6 +30,7 @@ class ReferralMessagingTest extends TestCase
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)
+            ->withSession(['locale' => 'ar'])
             ->withUnencryptedCookie(DeviceAccessService::COOKIE_NAME, str_repeat('b', 40))
             ->get(route('student.profile.show'));
 
@@ -42,10 +44,46 @@ class ReferralMessagingTest extends TestCase
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)
+            ->withSession(['locale' => 'ar'])
             ->withUnencryptedCookie(DeviceAccessService::COOKIE_NAME, str_repeat('c', 40))
             ->get(route('student.referrals.how-it-works'));
 
         $response->assertOk();
         $response->assertSeeText('عند اكتمال 5 تسجيلات ناجحة عبر رابطك، تحصل على كورس واحد مجاني.');
+    }
+
+    public function test_referral_pages_render_english_when_locale_is_english(): void
+    {
+        $user = User::factory()->create();
+
+        $referralsIndex = $this->actingAs($user)
+            ->withSession(['locale' => 'en'])
+            ->withUnencryptedCookie(DeviceAccessService::COOKIE_NAME, str_repeat('d', 40))
+            ->get(route('student.referrals.index'));
+
+        $referralsIndex->assertOk();
+        $referralsIndex->assertSeeText('Free course after 5 registrations through your link');
+        $referralsIndex->assertSeeText('Copy referral link');
+        $referralsIndex->assertDontSeeText('كورس مجاني عند تسجيل 5 أشخاص عبر رابطك');
+
+        $profile = $this->actingAs($user)
+            ->withSession(['locale' => 'en'])
+            ->withUnencryptedCookie(DeviceAccessService::COOKIE_NAME, str_repeat('e', 40))
+            ->get(route('student.profile.show'));
+
+        $profile->assertOk();
+        $profile->assertSeeText('Share your invite code to unlock one free course after 5 successful registrations through your link.');
+        $profile->assertSeeText('Telegram Bot');
+        $profile->assertDontSeeText('شارك كود الدعوة الخاص بك لتحصل على كورس واحد مجاني بعد 5 تسجيلات ناجحة عبر رابطك.');
+
+        $howItWorks = $this->actingAs($user)
+            ->withSession(['locale' => 'en'])
+            ->withUnencryptedCookie(DeviceAccessService::COOKIE_NAME, str_repeat('f', 40))
+            ->get(route('student.referrals.how-it-works'));
+
+        $howItWorks->assertOk();
+        $howItWorks->assertSeeText('How Referrals Work');
+        $howItWorks->assertSeeText('Once 5 successful registrations are completed through your link, you receive one free course.');
+        $howItWorks->assertDontSeeText('عند اكتمال 5 تسجيلات ناجحة عبر رابطك، تحصل على كورس واحد مجاني.');
     }
 }

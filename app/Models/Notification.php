@@ -159,6 +159,7 @@ class Notification extends Model
             'battle_started' => preg_match('/^(?:⚔️\s*)?Battle Started in (.+)!$/u', $value, $matches)
                 ? 'بدأ تحدي الباتل في ' . $matches[1] . '!'
                 : $this->translateExactValue($value),
+            'referral_reward' => __('ui.notifications.free_course_title'),
             'achievement_earned' => __('Achievement Unlocked!'),
             'course_purchased' => __('Course Purchased Successfully'),
             'certificate_issued' => __('Certificate Issued!'),
@@ -184,6 +185,7 @@ class Notification extends Model
             'battle_started' => preg_match('/^(.+) started a battle\. Join now before the lobby closes!$/u', $value, $matches)
                 ? $matches[1] . ' بدأ باتل جديدًا. انضم الآن قبل إغلاق اللوبي!'
                 : $this->translateExactValue($value),
+            'referral_reward' => __('ui.notifications.free_course_message'),
             'achievement_earned' => $this->translateAchievementMessage($value),
             'course_purchased' => preg_match('/^You have successfully enrolled in (.+)$/u', $value, $matches)
                 ? __('You have successfully enrolled in :course', ['course' => $matches[1]])

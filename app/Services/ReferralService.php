@@ -90,8 +90,8 @@ class ReferralService
             \App\Models\Notification::create([
                 'user_id' => $referrer->id,
                 'notification_type' => 'referral_reward',
-                'title' => '🎉 مبروك! حصلت على كورس مجاني!',
-                'message' => 'اكتملت 5 تسجيلات ناجحة عبر رابط الإحالة الخاص بك. يمكنك الآن الحصول على كورس واحد مجانًا.',
+                'title' => 'Congratulations! You unlocked a free course!',
+                'message' => 'You completed 5 successful registrations through your referral link. You can now claim one free course.',
                 'action_url' => route('student.courses.index'),
             ]);
         }

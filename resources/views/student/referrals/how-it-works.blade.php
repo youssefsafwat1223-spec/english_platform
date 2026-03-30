@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'كيف يعمل نظام الإحالات؟ - ' . config('app.name'))
+@section('title', __('ui.referrals.how_title') . ' - ' . config('app.name'))
 
 @section('content')
 <div class="py-12 lg:py-16 relative min-h-screen z-10">
@@ -12,15 +12,15 @@
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
-                كيف يعمل النظام؟
+                {{ __('ui.referrals.how_badge') }}
             </div>
 
             <h1 class="text-3xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight mb-4">
-                برنامج الإحالات
+                {{ __('ui.referrals.index_title') }}
             </h1>
 
             <p class="text-lg text-slate-600 dark:text-slate-400 font-medium max-w-2xl mx-auto">
-                ادعُ أصدقاءك للتعلّم معنا. الطالب الجديد يحصل على خصم عند الشراء، وأنت تستفيد من خصومات الإحالة. وعند اكتمال 5 تسجيلات ناجحة عبر رابطك، تحصل على كورس واحد مجاني.
+                {{ __('ui.referrals.how_intro') }}
             </p>
         </div>
 
@@ -29,9 +29,9 @@
 
             @php
                 $steps = [
-                    ['icon' => '📤', 'title' => 'شارك رابطك', 'desc' => 'أرسل رابط الإحالة أو كود الدعوة الخاص بك إلى أصدقائك أو زملائك أو عبر منصات التواصل.', 'color' => 'blue'],
-                    ['icon' => '🛒', 'title' => 'الطالب الجديد يشتري', 'desc' => 'يستخدم صديقك كود الإحالة أثناء أول عملية شراء ليحصل على خصم ' . $discountPercentage . '% على كورسه.', 'color' => 'purple'],
-                    ['icon' => '🎉', 'title' => 'أنت تستفيد', 'desc' => 'بعد اكتمال الشراء تحصل على خصم لإحدى عمليات الشراء القادمة. وبعد 5 تسجيلات ناجحة عبر رابطك تحصل على كورس واحد مجاني.', 'color' => 'emerald'],
+                    ['icon' => '📤', 'title' => __('ui.referrals.step_1_title'), 'desc' => __('ui.referrals.step_1_text'), 'color' => 'blue'],
+                    ['icon' => '🛒', 'title' => __('ui.referrals.step_2_title'), 'desc' => __('ui.referrals.step_2_text', ['discount' => $discountPercentage]), 'color' => 'purple'],
+                    ['icon' => '🎉', 'title' => __('ui.referrals.step_3_title'), 'desc' => __('ui.referrals.step_3_text'), 'color' => 'emerald'],
                 ];
             @endphp
 
@@ -61,19 +61,19 @@
                     📌
                 </div>
                 <div>
-                    <h2 class="text-xl font-bold text-slate-900 dark:text-white">قواعد مهمة</h2>
-                    <p class="text-sm font-medium text-slate-500 dark:text-slate-400">تأكد من فهم هذه النقاط حتى تستخدم نظام الإحالات بشكل صحيح.</p>
+                    <h2 class="text-xl font-bold text-slate-900 dark:text-white">{{ __('ui.referrals.rules_title') }}</h2>
+                    <p class="text-sm font-medium text-slate-500 dark:text-slate-400">{{ __('ui.referrals.rules_intro') }}</p>
                 </div>
             </div>
 
             <div class="p-8 md:p-10">
                 @php
                     $rules = [
-                        'يُطبق الخصم تلقائيًا أثناء الدفع عند استخدام كود إحالة صالح.',
-                        'عند اكتمال 5 تسجيلات ناجحة عبر رابطك، تحصل على كورس واحد مجاني.',
-                        'يمكن استخدام كود الإحالة في ما يصل إلى 5 عمليات شراء ناجحة للاستفادة من خصومات الإحالة.',
-                        'خصومات الإحالة تنتهي صلاحيتها بعد 30 يومًا إذا لم تُستخدم.',
-                        'استخدام كودك الشخصي بحساب آخر غير مسموح وسيتم تجاهله.',
+                        __('ui.referrals.rule_1'),
+                        __('ui.referrals.rule_2'),
+                        __('ui.referrals.rule_3'),
+                        __('ui.referrals.rule_4'),
+                        __('ui.referrals.rule_5'),
                     ];
                 @endphp
 
@@ -95,7 +95,7 @@
                 <svg class="w-5 h-5 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                 </svg>
-                انتقل إلى صفحة الإحالات
+                {{ __('ui.referrals.go_to_referrals') }}
             </a>
         </div>
     </div>
