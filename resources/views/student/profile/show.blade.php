@@ -105,7 +105,7 @@
                     <h3 class="font-bold text-slate-900 dark:text-white mb-2 flex items-center justify-center gap-2">
                         <span>🎁</span> {{ __('Refer & Earn') }}
                     </h3>
-                    <p class="text-sm text-slate-500 dark:text-slate-400 mb-4 mb-4">{{ __('Share your code to earn a free subscription if 5 people sign up through you.') }}</p>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mb-4 mb-4">{{ __('Share your code to earn one free course when 5 people register through your referral link.') }}</p>
                     
                     <div class="bg-white dark:bg-black/20 p-3 rounded-xl mb-4 border border-slate-200 dark:border-white/5">
                         <div class="font-mono text-xl font-black tracking-widest text-primary-500">{{ $user->referral_code }}</div>

@@ -17,7 +17,7 @@
                 {{ __('The Referral Program') }}
             </h1>
             <p class="text-lg text-slate-600 dark:text-slate-400 font-medium max-w-2xl mx-auto">
-                {{ __('Invite your friends to learn with us and you both get') }} <span class="font-bold text-primary-500">{{ $discountPercentage }}% {{ __('off') }}</span> {{ __('your next purchase.') }}
+                {{ __('Invite your friends to learn with us and both of you can benefit from referral discounts on purchases. Once 5 people register successfully through your link, you unlock one free course.') }}
             </p>
         </div>
 
@@ -70,7 +70,8 @@
                     @php
                         $rules = [
                             'Discount is applied automatically at checkout when using a valid code.',
-                            'Each referral code can be used by up to 5 people successfully.',
+                            'When 5 people register successfully through your link, you unlock one free course.',
+                            'Each referral code can be used by up to 5 successful purchases for referral discounts.',
                             'Referral discounts can be stacked/used once per user purchase.',
                             'Referral discounts expire after 30 days if left unused.',
                             'Self-referrals (using your own code with a different email) are not allowed and will be voided.',

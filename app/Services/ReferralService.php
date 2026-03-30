@@ -2,14 +2,15 @@
 
 namespace App\Services;
 
-use App\Models\User;
 use App\Models\Referral;
+use App\Models\User;
 
 class ReferralService
 {
     private const REFERRAL_MAX_USES = 5;
+
     /**
-     * Track referral click
+     * Track referral click.
      */
     public function trackClick($referralCode, $ipAddress = null)
     {
@@ -19,14 +20,14 @@ class ReferralService
             return null;
         }
 
-        // Store referral code in session for later use
+        // Store referral code in session for later use.
         session(['referral_code' => $referralCode]);
 
         return $referrer;
     }
 
     /**
-     * Create referral on user registration
+     * Create referral on user registration.
      */
     public function createReferral(User $referee)
     {
@@ -36,14 +37,12 @@ class ReferralService
             return null;
         }
 
-
         $referrer = User::where('referral_code', $referralCode)->first();
 
         if (!$referrer || $referrer->id === $referee->id) {
             return null;
         }
 
-        // Create referral record
         $referral = Referral::create([
             'referrer_id' => $referrer->id,
             'referee_id' => $referee->id,
@@ -53,25 +52,20 @@ class ReferralService
             'status' => 'registered',
         ]);
 
-        // Update referee with referrer info
         $referee->update([
             'referred_by' => $referrer->id,
         ]);
 
-        // Give referee a discount (expires in 30 days)
         $this->giveRefereeDiscount($referee);
-
-        // Check if referrer reached 5 referrals → give free enrollment
         $this->checkAndGrantFreeEnrollment($referrer);
 
-        // Clear session
         session()->forget('referral_code');
 
         return $referral;
     }
 
     /**
-     * Give discount to referee
+     * Give discount to referee.
      */
     private function giveRefereeDiscount(User $referee)
     {
@@ -82,7 +76,7 @@ class ReferralService
     }
 
     /**
-     * Check if referrer reached 5 referrals and grant free enrollment
+     * Check if referrer reached 5 successful registrations and grant one free course.
      */
     private function checkAndGrantFreeEnrollment(User $referrer)
     {
@@ -90,23 +84,21 @@ class ReferralService
             ->where('status', '!=', 'clicked')
             ->count();
 
-        // Grant free enrollment at every 5 referrals
         if ($totalRegistrations >= 5 && !$referrer->has_free_enrollment) {
             $referrer->update(['has_free_enrollment' => true]);
 
-            // Send notification
             \App\Models\Notification::create([
                 'user_id' => $referrer->id,
                 'notification_type' => 'referral_reward',
-                'title' => '🎉 مبروك! حصلت على اشتراك مجاني!',
-                'message' => 'لقد أحلت 5 أشخاص بنجاح! يمكنك الآن الاشتراك في أي كورس مجاناً.',
+                'title' => '🎉 مبروك! حصلت على كورس مجاني!',
+                'message' => 'اكتملت 5 تسجيلات ناجحة عبر رابط الإحالة الخاص بك. يمكنك الآن الحصول على كورس واحد مجانًا.',
                 'action_url' => route('student.courses.index'),
             ]);
         }
     }
 
     /**
-     * Apply referral code during checkout
+     * Apply referral code during checkout.
      */
     public function applyReferralCode(User $referee, string $referralCode): array
     {
@@ -193,9 +185,6 @@ class ReferralService
         ];
     }
 
-
-
-
     private function hasReachedReferralLimit(int $referrerId): bool
     {
         $maxUses = (int) config('app.referral_max_uses', self::REFERRAL_MAX_USES);
@@ -208,7 +197,7 @@ class ReferralService
     }
 
     /**
-     * Get referral statistics for user
+     * Get referral statistics for user.
      */
     public function getStatistics(User $user)
     {
@@ -227,23 +216,23 @@ class ReferralService
     }
 
     /**
-     * Get top referrers
+     * Get top referrers.
      */
     public function getTopReferrers($limit = 10)
     {
         return User::withCount([
             'referrals as successful_referrals_count' => function ($query) {
                 $query->where('status', 'purchased');
-            }
+            },
         ])
-        ->having('successful_referrals_count', '>', 0)
-        ->orderBy('successful_referrals_count', 'desc')
-        ->limit($limit)
-        ->get();
+            ->having('successful_referrals_count', '>', 0)
+            ->orderBy('successful_referrals_count', 'desc')
+            ->limit($limit)
+            ->get();
     }
 
     /**
-     * Check if user can use referral discount
+     * Check if user can use referral discount.
      */
     public function canUseDiscount(User $user)
     {
@@ -259,11 +248,12 @@ class ReferralService
     }
 
     /**
-     * Calculate referral discount amount
+     * Calculate referral discount amount.
      */
     public function calculateDiscountAmount($price)
     {
         $percentage = config('app.referral_discount_percentage', 10);
+
         return ($price * $percentage) / 100;
     }
 }

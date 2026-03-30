@@ -30,7 +30,7 @@ class ReferralController extends Controller
         // Check if user has available discount
         $hasDiscount = $user->has_referral_discount;
 
-        // Progress toward free enrollment (5 registrations needed)
+        // Progress toward one free course (5 registrations needed)
         $referralProgress = \App\Models\Referral::where('referrer_id', $user->id)
             ->where('status', '!=', 'clicked')
             ->count();
