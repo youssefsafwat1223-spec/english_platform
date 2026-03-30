@@ -76,7 +76,7 @@
                         </div>
                         <div class="flex items-center">
                             <input type="checkbox" id="has_pronunciation_exercise" name="has_pronunciation_exercise" value="1" {{ old('has_pronunciation_exercise') ? 'checked' : '' }} class="w-4 h-4 text-primary-500 focus:ring-primary-500 rounded" style="border-color: var(--color-border);">
-                            <label for="has_pronunciation_exercise" class="ml-2 text-sm" style="color: var(--color-text);">{{ __('Has pronunciation exercise') }}</label>
+                            <label for="has_pronunciation_exercise" class="ml-2 text-sm" style="color: var(--color-text);">{{ app()->getLocale() === 'ar' ? 'يتضمن تمرين نطق' : 'Has pronunciation exercise' }}</label>
                         </div>
                     </div>
 
@@ -291,18 +291,19 @@
 
                     <div id="pronunciationOptions" class="hidden">
                         <div class="rounded-xl p-4 space-y-4" style="background: var(--color-surface-hover);">
+                            <p class="text-xs font-medium" style="color: var(--color-text-muted);">{{ app()->getLocale() === 'ar' ? 'استخدم الحقول بهذا الترتيب: كلمة، ثم جملة، ثم قطعة قصيرة.' : 'Use these fields in this order: word, then sentence, then a short passage.' }}</p>
                             <div>
-                                <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('Sentence 1 *') }}</label>
-                                <input type="text" name="pronunciation_sentence_1" class="input-glass" value="{{ old('pronunciation_sentence_1') }}">
+                                <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ app()->getLocale() === 'ar' ? 'الكلمة *' : 'Word *' }}</label>
+                                <input type="text" name="pronunciation_sentence_1" class="input-glass" value="{{ old('pronunciation_sentence_1') }}" placeholder="{{ app()->getLocale() === 'ar' ? 'مثال: cake' : 'Example: cake' }}">
                                 @error('pronunciation_sentence_1')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                             </div>
                             <div>
-                                <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('Sentence 2') }}</label>
-                                <input type="text" name="pronunciation_sentence_2" class="input-glass" value="{{ old('pronunciation_sentence_2') }}">
+                                <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ app()->getLocale() === 'ar' ? 'الجملة' : 'Sentence' }}</label>
+                                <input type="text" name="pronunciation_sentence_2" class="input-glass" value="{{ old('pronunciation_sentence_2') }}" placeholder="{{ app()->getLocale() === 'ar' ? 'مثال: The cake tastes sweet.' : 'Example: The cake tastes sweet.' }}">
                             </div>
                             <div>
-                                <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('Sentence 3') }}</label>
-                                <input type="text" name="pronunciation_sentence_3" class="input-glass" value="{{ old('pronunciation_sentence_3') }}">
+                                <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ app()->getLocale() === 'ar' ? 'القطعة' : 'Passage' }}</label>
+                                <input type="text" name="pronunciation_sentence_3" class="input-glass" value="{{ old('pronunciation_sentence_3') }}" placeholder="{{ app()->getLocale() === 'ar' ? 'مثال: A short paragraph related to the lesson.' : 'Example: A short paragraph related to the lesson.' }}">
                             </div>
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div>
