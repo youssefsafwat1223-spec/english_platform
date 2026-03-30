@@ -214,6 +214,100 @@
                             @endif
                         </div>
                     @endif
+
+                    @php
+                        $lessonVocabulary = is_array($lesson->pronunciationExercise?->vocabulary_json ?? null)
+                            ? $lesson->pronunciationExercise->vocabulary_json
+                            : [];
+                    @endphp
+
+                    @if(!empty($lessonVocabulary))
+                        <div class="px-6 md:px-8 pb-8" data-aos="fade-up">
+                            <div class="rounded-[1.5rem] border border-slate-200/70 dark:border-white/10 bg-slate-50/80 dark:bg-white/[0.03] overflow-hidden">
+                                <div class="px-5 md:px-6 py-5 border-b border-slate-200/70 dark:border-white/5 flex flex-col sm:flex-row sm:items-center gap-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-11 h-11 rounded-2xl bg-primary-500/10 text-primary-500 flex items-center justify-center shrink-0">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7h16M4 12h16M4 17h10"></path>
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <h3 class="font-extrabold text-lg text-slate-900 dark:text-white">
+                                                {{ app()->getLocale() === 'ar' ? 'كلمات الدرس' : 'Lesson Vocabulary' }}
+                                            </h3>
+                                            <p class="text-xs font-medium text-slate-500 dark:text-slate-400">
+                                                {{ count($lessonVocabulary) }} {{ app()->getLocale() === 'ar' ? 'كلمات للمراجعة السريعة' : 'words for quick review' }}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div class="sm:ml-auto flex items-center gap-2">
+                                        <button type="button" onclick="scrollLessonVocabulary(-1)" class="w-10 h-10 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-600 dark:text-slate-300 hover:text-primary-500 hover:border-primary-500/30 transition-all">
+                                            <svg class="w-5 h-5 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                                            </svg>
+                                        </button>
+                                        <button type="button" onclick="scrollLessonVocabulary(1)" class="w-10 h-10 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-600 dark:text-slate-300 hover:text-primary-500 hover:border-primary-500/30 transition-all">
+                                            <svg class="w-5 h-5 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div id="lesson-vocabulary-track" class="flex gap-4 overflow-x-auto px-5 md:px-6 py-6 snap-x snap-mandatory" style="scroll-behavior: smooth; -ms-overflow-style: none; scrollbar-width: none;">
+                                    @foreach($lessonVocabulary as $index => $vocab)
+                                        <article class="min-w-[270px] sm:min-w-[320px] max-w-[320px] snap-start rounded-[1.5rem] border border-slate-200 dark:border-white/10 bg-white dark:bg-slate-900/40 p-5 shadow-sm">
+                                            <div class="flex items-start justify-between gap-4 mb-5">
+                                                <span class="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-primary-500/10 text-primary-500 font-black text-sm shrink-0">
+                                                    {{ $index + 1 }}
+                                                </span>
+                                                <button type="button" onclick='speakVocabularyWord(@json($vocab['word'] ?? ""))' class="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300 hover:text-primary-500 hover:border-primary-500/30 transition-all text-xs font-bold">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5L6 9H2v6h4l5 4V5zm5.54 3.46a5 5 0 010 7.08m2.83-9.91a9 9 0 010 12.74"></path>
+                                                    </svg>
+                                                    {{ app()->getLocale() === 'ar' ? 'استمع' : 'Listen' }}
+                                                </button>
+                                            </div>
+
+                                            <div class="space-y-4">
+                                                <div>
+                                                    <div class="text-[11px] uppercase tracking-[0.2em] text-slate-400 dark:text-slate-500 font-black mb-2">
+                                                        {{ app()->getLocale() === 'ar' ? 'الكلمة' : 'Word' }}
+                                                    </div>
+                                                    <div class="text-3xl font-black text-slate-900 dark:text-white tracking-wide" dir="ltr">
+                                                        {{ $vocab['word'] ?? '' }}
+                                                    </div>
+                                                </div>
+
+                                                @if(!empty($vocab['pronunciation']))
+                                                    <div class="rounded-2xl bg-primary-500/5 border border-primary-500/10 px-4 py-3">
+                                                        <div class="text-[11px] uppercase tracking-[0.2em] text-primary-400 font-black mb-1">
+                                                            {{ app()->getLocale() === 'ar' ? 'النطق' : 'Pronunciation' }}
+                                                        </div>
+                                                        <div class="text-base font-bold text-primary-500" dir="ltr" style="font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;">
+                                                            {{ $vocab['pronunciation'] }}
+                                                        </div>
+                                                    </div>
+                                                @endif
+
+                                                @if(!empty($vocab['meaning_ar']))
+                                                    <div>
+                                                        <div class="text-[11px] uppercase tracking-[0.2em] text-slate-400 dark:text-slate-500 font-black mb-2">
+                                                            {{ app()->getLocale() === 'ar' ? 'المعنى' : 'Meaning' }}
+                                                        </div>
+                                                        <p class="text-base font-bold text-slate-700 dark:text-slate-200 leading-relaxed">
+                                                            {{ $vocab['meaning_ar'] }}
+                                                        </p>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </article>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                    @endif
                 </div>
 
                 {{-- Audio Player --}}
@@ -605,6 +699,44 @@ const lessonCompletionRules = {
     hasPassedQuiz: @json($hasPassedCompletionQuiz),
 };
 
+function scrollLessonVocabulary(direction) {
+    const track = document.getElementById('lesson-vocabulary-track');
+    if (!track) return;
+
+    const card = track.querySelector('article');
+    const distance = card ? card.getBoundingClientRect().width + 16 : 320;
+
+    track.scrollBy({
+        left: direction * distance,
+        behavior: 'smooth',
+    });
+}
+
+function speakVocabularyWord(text) {
+    if (!text || !('speechSynthesis' in window)) {
+        return;
+    }
+
+    window.speechSynthesis.cancel();
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'en-US';
+    utterance.rate = 0.88;
+    utterance.pitch = 1;
+
+    const voices = window.speechSynthesis.getVoices();
+    const englishVoice = voices.find((voice) => voice.lang === 'en-US' && voice.name.includes('Google'))
+        || voices.find((voice) => voice.lang === 'en-US' && voice.name.includes('Microsoft'))
+        || voices.find((voice) => voice.lang === 'en-US')
+        || voices.find((voice) => voice.lang.startsWith('en'));
+
+    if (englishVoice) {
+        utterance.voice = englishVoice;
+    }
+
+    window.speechSynthesis.speak(utterance);
+}
+
 function markAsComplete(btn) {
     if (!btn) return;
 
@@ -752,9 +884,18 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+if ('speechSynthesis' in window) {
+    window.speechSynthesis.getVoices();
+    window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+}
 </script>
 <style>
 /* Custom scrollbar for notes area */
+.snap-x::-webkit-scrollbar {
+    display: none;
+}
+
 .custom-scrollbar::-webkit-scrollbar {
     width: 6px;
 }
