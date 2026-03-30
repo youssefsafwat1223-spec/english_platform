@@ -37,6 +37,9 @@ class StoreLessonRequest extends FormRequest
                 'pronunciation_sentence_1' => null,
                 'pronunciation_sentence_2' => null,
                 'pronunciation_sentence_3' => null,
+                'pronunciation_vocabulary_lines' => null,
+                'pronunciation_sentence_explanation' => null,
+                'pronunciation_passage_explanation' => null,
             ]);
         }
     }
@@ -82,6 +85,12 @@ class StoreLessonRequest extends FormRequest
             'pronunciation_sentence_1' => 'nullable|required_if:has_pronunciation_exercise,1|string',
             'pronunciation_sentence_2' => 'nullable|string',
             'pronunciation_sentence_3' => 'nullable|string',
+            'pronunciation_vocabulary_lines' => 'nullable|string',
+            'pronunciation_sentence_explanation' => 'nullable|string',
+            'pronunciation_passage_explanation' => 'nullable|string',
+            'pronunciation_reference_audio_1' => 'nullable|file|max:20480|mimes:mp3,wav,m4a,aac,ogg,webm',
+            'pronunciation_reference_audio_2' => 'nullable|file|max:20480|mimes:mp3,wav,m4a,aac,ogg,webm',
+            'pronunciation_reference_audio_3' => 'nullable|file|max:20480|mimes:mp3,wav,m4a,aac,ogg,webm',
             'pronunciation_passing_score' => 'nullable|integer|min:0|max:100',
             'pronunciation_max_duration' => 'nullable|integer|min:1',
             'pronunciation_allow_retake' => 'boolean',
