@@ -26,12 +26,15 @@
         </div>
 
         {{-- Vocabulary Table --}}
-        @if($exercise->vocabulary && count($exercise->vocabulary) > 0)
+        @php
+            try { $vocabList = is_array($exercise->vocabulary_json) ? $exercise->vocabulary_json : []; } catch(\Throwable $e) { $vocabList = []; }
+        @endphp
+        @if(!empty($vocabList))
         <div class="mb-10 rounded-2xl overflow-hidden" data-aos="fade-up">
             <div class="px-6 py-4 flex items-center gap-3" style="background: var(--glass-bg); border: 1px solid var(--glass-border); border-bottom: 1px solid var(--glass-border);">
                 <span class="text-xl">📚</span>
                 <span class="text-base font-bold" style="color: var(--color-text);">كلمات الدرس — Lesson Vocabulary</span>
-                <span class="ml-auto text-xs px-2 py-1 rounded-lg" style="background: rgba(var(--color-primary-rgb,139,92,246),0.1); color: var(--color-primary,#a78bfa);">{{ count($exercise->vocabulary) }} كلمات</span>
+                <span class="ml-auto text-xs px-2 py-1 rounded-lg" style="background: rgba(var(--color-primary-rgb,139,92,246),0.1); color: var(--color-primary,#a78bfa);">{{ count($vocabList) }} كلمات</span>
             </div>
             <div class="overflow-x-auto" style="background: var(--glass-bg); border: 1px solid var(--glass-border); border-top: none;">
                 <table class="w-full text-sm">
@@ -44,7 +47,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($exercise->vocabulary as $i => $vocab)
+                        @foreach($vocabList as $i => $vocab)
                         <tr class="border-b" style="border-color: var(--glass-border);">
                             <td class="px-4 py-3 text-xs font-bold" style="color: var(--color-text-muted);">{{ $i + 1 }}</td>
                             <td class="px-4 py-3 font-bold text-base" style="color: var(--color-text);">{{ $vocab['word'] ?? '' }}</td>
@@ -60,10 +63,14 @@
 
         {{-- Sentence Cards --}}
         @php
-            $explanations = [
-                1 => $exercise->passage_explanation ?? null,
-                2 => $exercise->sentence_explanation ?? null,
-            ];
+            try {
+                $explanations = [
+                    1 => $exercise->passage_explanation ?? null,
+                    2 => $exercise->sentence_explanation ?? null,
+                ];
+            } catch(\Throwable $e) {
+                $explanations = [1 => null, 2 => null];
+            }
         @endphp
         @foreach($exercise->sentences as $num => $sentence)
             <div class="mb-8 rounded-2xl overflow-hidden" data-aos="fade-up" data-aos-delay="{{ ($num - 1) * 100 }}"
