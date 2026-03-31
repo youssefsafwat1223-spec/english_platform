@@ -13,40 +13,29 @@
 
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 relative z-10">
         {{-- Header Section --}}
-        <div class="relative glass-card overflow-hidden rounded-[2rem] p-8 mb-8" data-aos="fade-down">
-            <div class="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-primary-500/10 opacity-50"></div>
-            
-            <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
-                <div>
-                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-500 dark:text-violet-400 text-sm font-bold mb-4 shadow-sm">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 4h8v3a4 4 0 0 1-8 0V4Z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 6H4a2 2 0 0 0 2 2h1m11-2h2a2 2 0 0 1-2 2h-1M12 11v4m-3 5h6"/></svg>
-                        {{ $isArabic ? 'الترتيب' : 'Rankings' }}
-                    </div>
-                    <h1 class="text-3xl md:text-5xl font-extrabold mb-2 text-slate-900 dark:text-white tracking-tight">
-                        {{ $isArabic ? 'أفضل' : 'Top' }} <span class="text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-primary-500">{{ $isArabic ? 'المتصدرين' : 'Leaderboard' }}</span>
-                    </h1>
-                    <p class="text-slate-600 dark:text-slate-400 font-medium max-w-2xl">
-                        {{ $isArabic ? 'ترتيب أفضل الطلاب حسب النقاط. اعرف مكانك الحالي بين بقية الطلاب.' : 'Top students by points. See where you stand among your peers!' }}
-                    </p>
-                </div>
-                
-                <div class="shrink-0 flex items-center gap-3">
-                    <a href="{{ route('student.profile.show') }}" class="inline-flex justify-center items-center px-6 py-3 bg-white/10 hover:bg-white/20 dark:bg-slate-800/50 dark:hover:bg-slate-700/50 text-slate-700 dark:text-white font-bold rounded-xl transition-all duration-300 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 group">
-                        <svg class="w-5 h-5 {{ $isArabic ? 'ml-2 mr-0 group-hover:translate-x-1 rotate-180' : 'mr-2 group-hover:-translate-x-1' }} transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-                        {{ $isArabic ? 'العودة إلى الملف الشخصي' : 'Back to Profile' }}
-                    </a>
-                </div>
-            </div>
-        </div>
+        <x-student.page-header
+            title="{!! $isArabic ? 'أفضل' : 'Top' !!} <span class='text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-primary-500'>{{ $isArabic ? 'المتصدرين' : 'Leaderboard' }}</span>"
+            subtitle="{{ $isArabic ? 'ترتيب أفضل الطلاب حسب النقاط. اعرف مكانك الحالي بين بقية الطلاب.' : 'Top students by points. See where you stand among your peers!' }}"
+            badge="{{ $isArabic ? 'الترتيب' : 'Rankings' }}"
+            badgeIcon='<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 4h8v3a4 4 0 0 1-8 0V4Z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 6H4a2 2 0 0 0 2 2h1m11-2h2a2 2 0 0 1-2 2h-1M12 11v4m-3 5h6"/></svg>'
+            badgeColor="violet"
+        >
+            <x-slot name="actions">
+                <a href="{{ route('student.profile.show') }}" class="btn-ghost flex items-center justify-center gap-2 px-6 py-3 font-bold rounded-xl w-full sm:w-auto transition-colors shadow-sm bg-white/10 hover:bg-white/20 dark:bg-slate-800/50 dark:hover:bg-slate-700/50 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 group">
+                    <svg class="w-5 h-5 {{ $isArabic ? 'ml-2 mr-0 group-hover:translate-x-1 rotate-180' : 'mr-2 group-hover:-translate-x-1' }} transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                    {{ $isArabic ? 'العودة إلى الملف الشخصي' : 'Back to Profile' }}
+                </a>
+            </x-slot>
+        </x-student.page-header>
 
         {{-- Your Rank --}}
-        <div class="glass-card p-6 mb-8 text-center gradient-border" data-aos="fade-up">
+        <x-student.card padding="p-6" class="text-center gradient-border" data-aos="fade-up">
             <div class="text-2xl font-extrabold text-primary-500 mb-1">{{ $isArabic ? 'ترتيبك الحالي' : 'Your Rank' }}: #{{ $userRank }}</div>
             <div class="text-slate-500 dark:text-slate-400 font-medium">{{ $currentUser->total_points }} {{ $isArabic ? 'نقطة' : 'points' }}</div>
-        </div>
+        </x-student.card>
 
         {{-- Leaderboard Table --}}
-        <div class="glass-card overflow-hidden" data-aos="fade-up" data-aos-delay="100">
+        <x-student.card padding="p-0" data-aos="fade-up" data-aos-delay="100">
             <div class="overflow-x-auto">
                 <table class="table-glass">
                     <thead>
@@ -94,7 +83,7 @@
                     </tbody>
                 </table>
             </div>
-        </div>
+        </x-student.card>
     </div>
 </div>
 @endsection

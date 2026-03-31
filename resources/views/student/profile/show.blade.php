@@ -4,6 +4,9 @@
 
 @section('content')
 <div class="min-h-screen py-16 relative overflow-hidden bg-slate-50 dark:bg-[#020617] transition-colors duration-500">
+
+@section('content')
+<div class="min-h-screen py-16 relative overflow-hidden bg-slate-50 dark:bg-[#020617] transition-colors duration-500">
     {{-- Ambient Background Orbs --}}
     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-primary-500/10 blur-[120px] rounded-full pointer-events-none"></div>
     <div class="absolute bottom-0 right-0 w-[600px] h-[600px] bg-accent-500/10 blur-[120px] rounded-full pointer-events-none"></div>
@@ -12,12 +15,12 @@
         
         {{-- Floating Profile Header Pill --}}
         <div class="mb-12" data-aos="fade-down">
-            <div class="p-1 rounded-[2.5rem] bg-gradient-to-br from-white/60 to-white/20 dark:from-white/10 dark:to-white/5 backdrop-blur-2xl border border-white/50 dark:border-white/10 shadow-2xl shadow-slate-200/50 dark:shadow-black/50 overflow-hidden relative group">
+            <div class="p-1 rounded-[1.5rem] lg:rounded-[2rem] bg-gradient-to-br from-white/60 to-white/20 dark:from-white/10 dark:to-white/5 backdrop-blur-2xl border border-white/50 dark:border-white/10 shadow-lg shadow-slate-200/20 dark:shadow-none overflow-hidden relative group">
                 
                 {{-- Animated subtle border glow --}}
                 <div class="absolute inset-0 bg-gradient-to-r from-transparent via-primary-500/20 to-transparent group-hover:translate-x-full transition-transform duration-1000"></div>
 
-                <div class="bg-white/80 dark:bg-[#0f172a]/80 rounded-[2.3rem] p-8 flex flex-col md:flex-row items-center gap-8 relative z-10">
+                <div class="bg-white dark:bg-[#0f172a] rounded-[1.3rem] lg:rounded-[1.8rem] p-8 flex flex-col md:flex-row items-center gap-8 relative z-10">
                     
                     {{-- Avatar --}}
                     <div class="relative shrink-0">
@@ -83,7 +86,7 @@
             <div class="space-y-8" data-aos="fade-up" data-aos-delay="100">
                 
                 {{-- Telegram Integration --}}
-                <div class="p-6 rounded-[2rem] bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 shadow-xl shadow-slate-200/20 dark:shadow-none relative overflow-hidden group">
+                <x-student.card class="relative overflow-hidden group">
                     <div class="absolute -right-6 -top-6 w-24 h-24 bg-[#0088cc]/10 rounded-full blur-xl group-hover:bg-[#0088cc]/20 transition-colors"></div>
                     <div class="flex items-start gap-4 relative z-10">
                         <div class="w-12 h-12 rounded-xl bg-[#0088cc]/10 text-[#0088cc] flex items-center justify-center shrink-0">
@@ -111,17 +114,17 @@
                             @endif
                         </div>
                     </div>
-                </div>
+                </x-student.card>
 
                 {{-- Referral System --}}
-                <div class="p-6 rounded-[2rem] bg-gradient-to-br from-primary-500/5 to-accent-500/5 border border-primary-500/20 shadow-xl shadow-primary-500/5 text-center">
+                <x-student.card class="bg-gradient-to-br from-primary-500/5 to-accent-500/5 border-primary-500/20 shadow-xl shadow-primary-500/5 text-center">
                     <h3 class="font-bold text-slate-900 dark:text-white mb-2 flex items-center justify-center gap-2">
                         <svg class="h-5 w-5 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5.5v13m6.5-6.5h-13" />
                         </svg>
                         {{ __('Refer & Earn') }}
                     </h3>
-                    <p class="text-sm text-slate-500 dark:text-slate-400 mb-4 mb-4">{{ __('ui.profile.referral_text') }}</p>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mb-4">{{ __('ui.profile.referral_text') }}</p>
                     
                     <div class="bg-white dark:bg-black/20 p-3 rounded-xl mb-4 border border-slate-200 dark:border-white/5">
                         <div class="font-mono text-xl font-black tracking-widest text-primary-500">{{ $user->referral_code }}</div>
@@ -133,7 +136,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.25" d="M5 12h14m-6-6 6 6-6 6" />
                         </svg>
                     </a>
-                </div>
+                </x-student.card>
                 
                 {{-- Account Details --}}
                 <div class="px-6 space-y-4">
@@ -228,7 +231,7 @@
                         <h3 class="text-xl font-black text-slate-900 dark:text-white tracking-tight">{{ __('Showcase') }}</h3>
                         <a href="{{ route('student.profile.achievements') }}" class="text-sm font-bold text-primary-500 hover:text-primary-600">{{ __('All Trophies') }}</a>
                     </div>
-                    <div class="p-6 rounded-[2rem] bg-white dark:bg-white/5 border border-slate-200 dark:border-white/5">
+                    <x-student.card padding="p-6">
                         <div class="flex flex-wrap gap-4">
                             @foreach($user->achievements()->take(6)->get() as $achievement)
                                 <div class="relative group cursor-pointer" title="{{ $achievement->name }}">
@@ -243,7 +246,7 @@
                                 </a>
                             @endif
                         </div>
-                    </div>
+                    </x-student.card>
                 </div>
                 @endif
 
@@ -264,4 +267,3 @@
 }
 </style>
 @endsection
-

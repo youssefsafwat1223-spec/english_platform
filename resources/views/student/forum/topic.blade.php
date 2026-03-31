@@ -33,7 +33,7 @@
         </nav>
 
         {{-- Main Topic Post --}}
-        <div class="glass-card overflow-hidden rounded-[2rem] border border-slate-200/50 dark:border-white/5 bg-white/60 dark:bg-slate-900/60 shadow-xl mb-8 relative group" data-aos="fade-up">
+        <x-student.card padding="p-0" class="overflow-hidden shadow-xl mb-8 relative group" data-aos="fade-up">
 
             {{-- Thread Line Context Box Style --}}
             <div class="absolute left-10 md:left-[3.25rem] top-24 bottom-0 w-0.5 bg-gradient-to-b from-primary-500/20 to-transparent hidden sm:block"></div>
@@ -91,7 +91,7 @@
                     {!! nl2br(e($topic->content)) !!}
                 </div>
             </div>
-        </div>
+        </x-student.card>
 
         {{-- Replies Header --}}
         <div class="flex items-center gap-4 mb-6" data-aos="fade-up">
@@ -112,7 +112,7 @@
             @endif
 
             @foreach($topic->replies as $reply)
-                <div class="glass-card rounded-[1.5rem] transition-all duration-300 {{ $reply->is_solution ? 'ring-2 ring-emerald-500 bg-emerald-50/50 dark:bg-emerald-900/10 shadow-lg shadow-emerald-500/10 border-emerald-500/30' : 'border border-slate-200/50 dark:border-white/5 bg-white/50 dark:bg-slate-900/40 hover:bg-white/80 dark:hover:bg-slate-900/60' }} relative z-10 group"
+                <x-student.card padding="p-0" class="transition-all duration-300 {{ $reply->is_solution ? 'ring-2 ring-emerald-500 bg-emerald-50/50 dark:bg-emerald-900/10 shadow-lg shadow-emerald-500/10 border-emerald-500/30' : 'bg-white/50 dark:bg-slate-900/40 hover:bg-white/80 dark:hover:bg-slate-900/60' }} relative z-10 group"
                      data-aos="fade-up" data-aos-delay="{{ min($loop->index * 30, 300) }}">
 
                     <div class="p-6 md:p-8">
@@ -156,13 +156,13 @@
                             {{-- Admin Mark as Solution could go here --}}
                         </div>
                     </div>
-                </div>
+                </x-student.card>
             @endforeach
         </div>
 
         {{-- Reply Form --}}
         @if(!$topic->is_locked)
-            <div class="glass-card overflow-hidden rounded-[2rem] border-t-4 border-t-primary-500 border-x border-b border-slate-200/50 dark:border-white/5 bg-white/80 dark:bg-slate-900/80 shadow-xl" data-aos="fade-up">
+            <x-student.card padding="p-0" class="border-t-4 border-t-primary-500 shadow-xl" data-aos="fade-up">
 
                 <div class="px-6 md:px-8 py-5 border-b border-slate-200/50 dark:border-white/5 flex items-center gap-3 bg-slate-50/50 dark:bg-black/20">
                     <div class="w-10 h-10 rounded-xl bg-primary-500/10 text-primary-500 flex items-center justify-center text-xl shrink-0 shadow-inner">
@@ -216,9 +216,9 @@
                         </div>
                     </form>
                 </div>
-            </div>
+            </x-student.card>
         @else
-            <div class="glass-card rounded-[2rem] text-center p-12 relative overflow-hidden border-t-4 border-t-slate-400 bg-slate-50 dark:bg-slate-800/50" data-aos="fade-up">
+            <x-student.card padding="p-12" class="text-center relative overflow-hidden border-t-4 border-t-slate-400 bg-slate-50 dark:bg-slate-800/50" data-aos="fade-up">
                 <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjIiIGZpbGw9InJnYmEoMTU2LCAxNjMsIDE3NSwgMC4yKSIvPjwvc3ZnPg==')] opacity-50 z-0"></div>
                 <div class="relative z-10 w-20 h-20 mx-auto rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center mb-6 shadow-inner text-4xl">
                     🔒
@@ -231,7 +231,7 @@
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
                     {{ __('Back to Category') }}
                 </a>
-            </div>
+            </x-student.card>
         @endif
     </div>
 </div>

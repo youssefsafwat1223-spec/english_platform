@@ -7,7 +7,7 @@
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-4 sm:space-y-8">
 
         {{-- Hero Section --}}
-        <div class="relative glass-card overflow-hidden rounded-2xl sm:rounded-[2rem] p-4 sm:p-8 md:p-12" data-aos="fade-down">
+        <x-student.card class="relative" padding="p-4 sm:p-8 md:p-12" mb="mb-0" :headerBorder="false" data-aos="fade-down">
             {{-- Aesthetic Background Elements --}}
             <div class="absolute top-0 right-0 p-12 opacity-10 pointer-events-none transform translate-x-1/4 -translate-y-1/4">
                 <svg width="400" height="400" viewBox="0 0 24 24" fill="none" class="text-white">
@@ -170,21 +170,15 @@
             <div class="lg:col-span-2 space-y-8">
                 
                 {{-- Continue Learning --}}
-                <div class="glass-card relative overflow-hidden" data-aos="fade-up" data-aos-delay="300">
-                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary-500 to-accent-500"></div>
-                    <div class="p-6 md:p-8 flex items-center border-b border-slate-200 dark:border-white/5">
-                        <h3 class="font-black text-2xl text-slate-900 dark:text-white flex items-center gap-3">
-                            <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary-500/10 text-primary-500">
-                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0 0 10 9.868v4.264a1 1 0 0 0 1.555.832l3.197-2.132a1 1 0 0 0 0-1.664Z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5.75A1.75 1.75 0 0 1 6.75 4h10.5A1.75 1.75 0 0 1 19 5.75v12.5A1.75 1.75 0 0 1 17.25 20H6.75A1.75 1.75 0 0 1 5 18.25V5.75Z" />
-                                </svg>
-                            </span>
-                            {{ __('Continue Learning') }}
-                        </h3>
-                    </div>
+                <x-student.card 
+                    title="{{ __('Continue Learning') }}" 
+                    icon='<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0 0 10 9.868v4.264a1 1 0 0 0 1.555.832l3.197-2.132a1 1 0 0 0 0-1.664Z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5.75A1.75 1.75 0 0 1 6.75 4h10.5A1.75 1.75 0 0 1 19 5.75v12.5A1.75 1.75 0 0 1 17.25 20H6.75A1.75 1.75 0 0 1 5 18.25V5.75Z" /></svg>'
+                    iconColor="primary"
+                    data-aos="fade-up" 
+                    data-aos-delay="300"
+                >
                     
-                    <div class="p-6 md:p-8 space-y-5">
+                    <div class="space-y-5">
                         @forelse($activeEnrollments->take(3) as $enrollment)
                             <div class="group relative rounded-2xl bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-white/10 p-5 hover:shadow-xl hover:border-primary-500/50 transition-all duration-300 flex flex-col sm:flex-row gap-6 items-center">
                                 
@@ -240,7 +234,7 @@
                             </div>
                         @endforelse
                     </div>
-                </div>
+                </x-student.card>
 
             </div>
 
@@ -271,21 +265,19 @@
                 @endif
 
                 {{-- Leaderboard Widget --}}
-                <div class="glass-card" data-aos="fade-left" data-aos-delay="600">
-                    <div class="p-6 border-b border-slate-200 dark:border-white/5 flex justify-between items-center">
-                        <h3 class="font-black text-xl text-slate-900 dark:text-white flex items-center gap-2">
-                            <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-amber-500/10 text-amber-500">
-                                <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-                                    <path d="M10 2a1 1 0 0 1 .832.445l1.393 2.09 2.494.363a1 1 0 0 1 .554 1.706l-1.804 1.76.426 2.485a1 1 0 0 1-1.451 1.055L10 10.73 7.556 11.92a1 1 0 0 1-1.451-1.055l.426-2.485-1.804-1.76a1 1 0 0 1 .554-1.706l2.494-.363 1.393-2.09A1 1 0 0 1 10 2Z" />
-                                    <path d="M4 13.5a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4V12h-1.5v1.5A2.5 2.5 0 0 1 12 16H8a2.5 2.5 0 0 1-2.5-2.5V12H4v1.5Z" />
-                                </svg>
-                            </span>
-                            {{ __('Top Rank') }}
-                        </h3>
+                <x-student.card 
+                    title="{{ __('Top Rank') }}" 
+                    icon='<svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2a1 1 0 0 1 .832.445l1.393 2.09 2.494.363a1 1 0 0 1 .554 1.706l-1.804 1.76.426 2.485a1 1 0 0 1-1.451 1.055L10 10.73 7.556 11.92a1 1 0 0 1-1.451-1.055l.426-2.485-1.804-1.76a1 1 0 0 1 .554-1.706l2.494-.363 1.393-2.09A1 1 0 0 1 10 2Z" /><path d="M4 13.5a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4V12h-1.5v1.5A2.5 2.5 0 0 1 12 16H8a2.5 2.5 0 0 1-2.5-2.5V12H4v1.5Z" /></svg>'
+                    iconColor="amber"
+                    padding="p-4"
+                    data-aos="fade-left" 
+                    data-aos-delay="600"
+                >
+                    <x-slot name="headerActions">
                         <a href="{{ route('student.leaderboard') }}" class="btn-ghost btn-sm text-xs font-bold text-slate-500">{{ __('View All') }}</a>
-                    </div>
+                    </x-slot>
                     
-                    <div class="p-4 space-y-2">
+                    <div class="space-y-2">
                         @foreach($topLearners as $index => $learner)
                         @php
                             $isTop3 = $index < 3;
@@ -325,10 +317,10 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </x-student.card>
 
                 {{-- Daily Tip / Recommendation --}}
-                <div class="glass-card overflow-hidden bg-gradient-to-br from-indigo-500/10 to-purple-500/10 border border-indigo-500/20 p-6" data-aos="fade-left" data-aos-delay="700">
+                <x-student.card class="bg-gradient-to-br from-indigo-500/10 to-purple-500/10 border-indigo-500/20" mb="mb-0" padding="p-6" data-aos="fade-left" data-aos-delay="700">
                     <div class="flex gap-4">
                         <div class="w-12 h-12 rounded-full bg-indigo-500/20 flex items-center justify-center text-2xl shrink-0 text-indigo-500">
                             <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -342,7 +334,7 @@
                             </p>
                         </div>
                     </div>
-                </div>
+                </x-student.card>
 
             </div>
         </div>

@@ -43,7 +43,7 @@
         {{-- Topics List --}}
         <div class="space-y-4">
             @forelse($topics as $topic)
-                <div class="glass-card rounded-[1.5rem] {{ $topic->is_pinned ? 'border-amber-500/30 bg-amber-50/50 dark:bg-amber-900/10' : 'border-slate-200/50 dark:border-white/5 bg-white/60 dark:bg-slate-900/60' }} hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group relative overflow-hidden" data-aos="fade-up" data-aos-delay="{{ min($loop->index * 50, 300) }}">
+                <x-student.card padding="p-0" class="{{ $topic->is_pinned ? 'border-amber-500/30 bg-amber-50/50 dark:bg-amber-900/10' : 'hover:bg-white/80 dark:hover:bg-slate-900/80' }} hover:-translate-y-1 transition-all duration-300 group relative overflow-hidden" data-aos="fade-up" data-aos-delay="{{ min($loop->index * 50, 300) }}">
                     @if($topic->is_pinned)
                         <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-amber-500/10 to-transparent rounded-tr-[1.5rem] pointer-events-none"></div>
                     @endif
@@ -126,9 +126,9 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </x-student.card>
             @empty
-                <div class="glass-card rounded-[2rem] text-center p-12 relative overflow-hidden bg-slate-50 dark:bg-slate-800/50" data-aos="fade-up">
+                <x-student.card padding="p-12" class="text-center relative overflow-hidden bg-slate-50 dark:bg-slate-800/50" data-aos="fade-up">
                     <div class="relative z-10 w-24 h-24 mx-auto rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center mb-6 shadow-inner text-5xl">
                         💬
                     </div>
@@ -140,7 +140,7 @@
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                         {{ __('Create First Topic') }}
                     </a>
-                </div>
+                </x-student.card>
             @endforelse
         </div>
 

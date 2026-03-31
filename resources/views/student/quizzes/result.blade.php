@@ -25,7 +25,7 @@
         @endif
 
         {{-- Result Hero Card --}}
-        <div class="glass-card overflow-hidden rounded-[2.5rem] mb-10 text-center border-t-8 shadow-2xl relative {{ $attempt->passed ? 'border-t-emerald-500 shadow-emerald-500/10' : 'border-t-rose-500 shadow-rose-500/10' }}" data-aos="zoom-in">
+        <x-student.card padding="p-0" class="overflow-hidden mb-10 text-center border-t-8 shadow-2xl relative {{ $attempt->passed ? 'border-t-emerald-500 shadow-emerald-500/10' : 'border-t-rose-500 shadow-rose-500/10' }}" data-aos="zoom-in">
             {{-- Decorative Background Elements --}}
             <div class="absolute -top-32 -left-32 w-64 h-64 rounded-full mix-blend-multiply filter blur-[64px] opacity-50 {{ $attempt->passed ? 'bg-emerald-400' : 'bg-rose-400' }}"></div>
             <div class="absolute -bottom-32 -right-32 w-64 h-64 rounded-full mix-blend-multiply filter blur-[64px] opacity-50 {{ $attempt->passed ? 'bg-teal-400' : 'bg-orange-400' }}"></div>
@@ -83,7 +83,7 @@
                     @endif
                 </div>
             </div>
-        </div>
+        </x-student.card>
 
         {{-- Actions --}}
         <div class="flex flex-wrap justify-center gap-4 mb-16" data-aos="fade-up">
@@ -143,7 +143,7 @@
                             $correctAnswerText = $correctOption ? ($answer->question->options[$correctOption] ?? $correctOption) : '-';
                         }
                     @endphp
-                    <div class="glass-card overflow-hidden rounded-3xl border {{ $isCorrect ? 'border-emerald-500/30 bg-emerald-50/30 dark:bg-emerald-900/10' : 'border-rose-500/30 bg-rose-50/30 dark:bg-rose-900/10' }}" data-aos="fade-up" data-aos-delay="{{ min($index * 50, 500) }}">
+                    <x-student.card padding="p-0" class="overflow-hidden border {{ $isCorrect ? 'border-emerald-500/30 bg-emerald-50/30 dark:bg-emerald-900/10' : 'border-rose-500/30 bg-rose-50/30 dark:bg-rose-900/10' }}" data-aos="fade-up" data-aos-delay="{{ min($index * 50, 500) }}">
                         <div class="p-6 md:p-8">
                             <div class="flex items-start gap-4">
                                 {{-- Status Icon --}}
@@ -222,7 +222,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </x-student.card>
                 @endforeach
             </div>
         </div>

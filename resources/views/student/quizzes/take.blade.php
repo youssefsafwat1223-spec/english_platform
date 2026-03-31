@@ -62,7 +62,7 @@
 
             @foreach($quiz->questions as $qIndex => $question)
                 <div x-show="currentQuestion === {{ $qIndex }}" style="display:none" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
-                    <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 md:p-10 shadow-sm border border-slate-200 dark:border-slate-800 mb-8">
+                    <x-student.card padding="p-6 md:p-10" rounded="rounded-3xl" class="shadow-sm border border-slate-200 dark:border-slate-800 mb-8" overrideColors="bg-white dark:bg-slate-900">
                         @if($audioEnabled)
                             <div class="mb-8 mx-auto max-w-xl space-y-3">
                                 @if($question->audio_url)
@@ -135,7 +135,7 @@
                                 @endforeach
                             @endif
                         </div>
-                    </div>
+                    </x-student.card>
                 </div>
             @endforeach
 

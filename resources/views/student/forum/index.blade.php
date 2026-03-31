@@ -8,36 +8,27 @@
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {{-- Header Section --}}
-        <div class="relative glass-card overflow-hidden rounded-[2rem] p-8 mb-12" data-aos="fade-down">
-            <div class="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-primary-500/10 opacity-50"></div>
-            
-            <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
-                <div>
-                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-500 dark:text-violet-400 text-sm font-bold mb-4 shadow-sm">
-                        <span>💬</span> {{ __('Discussion Board') }}
-                    </div>
-                    <h1 class="text-3xl md:text-5xl font-extrabold mb-2 text-slate-900 dark:text-white tracking-tight">
-                        {{ __('Community') }} <span class="text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-primary-500">{{ __('Forum') }}</span>
-                    </h1>
-                    <p class="text-slate-600 dark:text-slate-400 font-medium max-w-2xl">
-                        {{ __('Connect with fellow learners, share your knowledge, ask questions, and grow together.') }}
-                    </p>
-                </div>
-                
-                <div class="shrink-0 flex items-center gap-3">
-                    <a href="{{ route('student.forum.my-topics') }}" class="btn-primary ripple-btn px-6 py-3 rounded-xl shadow-lg shadow-violet-500/25 flex items-center gap-2 font-bold bg-gradient-to-r from-violet-600 to-violet-500 hover:from-violet-500 hover:to-violet-400 border-none text-white transition-all transform hover:scale-105">
-                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                        {{ __('My Topics') }}
-                    </a>
-                </div>
-            </div>
-        </div>
+        {{-- Header Section --}}
+        <x-student.page-header
+            title="{{ __('Community') }} <span class='text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-primary-500'>{{ __('Forum') }}</span>"
+            subtitle="{{ __('Connect with fellow learners, share your knowledge, ask questions, and grow together.') }}"
+            badge="💬 {{ __('Discussion Board') }}"
+            badgeColor="violet"
+            mb="mb-12"
+        >
+            <x-slot name="actions">
+                <a href="{{ route('student.forum.my-topics') }}" class="btn-primary ripple-btn flex items-center justify-center gap-2 px-6 py-3 rounded-xl shadow-lg shadow-violet-500/25 font-bold bg-gradient-to-r from-violet-600 to-violet-500 hover:from-violet-500 hover:to-violet-400 border-none text-white transition-all transform hover:scale-105 w-full sm:w-auto">
+                    <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                    {{ __('My Topics') }}
+                </a>
+            </x-slot>
+        </x-student.page-header>
 
         <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
             {{-- Main Categories --}}
             <div class="xl:col-span-2 space-y-5">
                 @foreach($categories as $category)
-                    <div class="glass-card overflow-hidden rounded-[1.5rem] border border-slate-200/50 dark:border-white/5 bg-white/50 dark:bg-slate-900/50 hover:bg-white/80 dark:hover:bg-slate-900/80 transition-all duration-300 group" data-aos="fade-up" data-aos-delay="{{ $loop->index * 80 }}">
+                    <x-student.card padding="p-0" class="group hover:bg-white/80 dark:hover:bg-slate-900/80 transition-all duration-300" data-aos="fade-up" data-aos-delay="{{ $loop->index * 80 }}">
                         <div class="p-6 md:p-8 relative">
                             <div class="absolute inset-0 bg-gradient-to-br from-primary-500/5 to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity"></div>
                             
@@ -83,14 +74,14 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </x-student.card>
                 @endforeach
             </div>
 
             {{-- Sidebar --}}
             <div class="xl:col-span-1 space-y-6">
                 {{-- Recent Topics --}}
-                <div class="glass-card overflow-hidden rounded-[2rem] border-t-4 border-t-primary-500 border-x border-b border-slate-200/50 dark:border-white/5 bg-white/80 dark:bg-slate-900/80 shadow-xl shadow-primary-500/5" data-aos="fade-left">
+                <x-student.card padding="p-0" class="border-t-4 border-t-primary-500 shadow-xl shadow-primary-500/5" data-aos="fade-left">
                     <div class="px-6 py-5 border-b border-slate-200/50 dark:border-white/5 flex items-center gap-3">
                         <div class="w-10 h-10 rounded-xl bg-primary-500/10 text-primary-500 flex items-center justify-center text-xl shrink-0">
                             ⏱️
@@ -123,10 +114,10 @@
                             </div>
                         @endif
                     </div>
-                </div>
+                </x-student.card>
 
                 {{-- Popular Topics --}}
-                <div class="glass-card overflow-hidden rounded-[2rem] border-t-4 border-t-amber-500 border-x border-b border-slate-200/50 dark:border-white/5 bg-white/80 dark:bg-slate-900/80 shadow-xl shadow-amber-500/5" data-aos="fade-left" data-aos-delay="100">
+                <x-student.card padding="p-0" class="border-t-4 border-t-amber-500 shadow-xl shadow-amber-500/5" data-aos="fade-left" data-aos-delay="100">
                     <div class="px-6 py-5 border-b border-slate-200/50 dark:border-white/5 flex items-center gap-3">
                         <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center text-xl shrink-0">
                             🔥
@@ -154,7 +145,7 @@
                             </div>
                         @endif
                     </div>
-                </div>
+                </x-student.card>
             </div>
         </div>
     </div>

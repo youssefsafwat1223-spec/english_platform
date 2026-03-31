@@ -8,27 +8,24 @@
 
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {{-- Header Section --}}
-        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10" data-aos="fade-down">
-            <div>
-                <h1 class="text-3xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight mb-3">
-                    {{ __('My Replies') }}
-                </h1>
-                <p class="text-lg text-slate-600 dark:text-slate-400 font-medium max-w-2xl">
-                    {{ __('Your recent contributions and answers across the community forum.') }}
-                </p>
-            </div>
-            <div class="shrink-0 flex items-center gap-3">
-                <a href="{{ route('student.forum.index') }}" class="btn-ghost flex items-center gap-2 group px-5 py-3 rounded-xl border border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/5 font-bold text-slate-700 dark:text-slate-300 transition-all">
+        {{-- Header Section --}}
+        <x-student.page-header
+            title="{{ __('My Replies') }}"
+            subtitle="{{ __('Your recent contributions and answers across the community forum.') }}"
+            mb="mb-10"
+        >
+            <x-slot name="actions">
+                <a href="{{ route('student.forum.index') }}" class="btn-ghost flex items-center justify-center gap-2 group px-5 py-3 rounded-xl border border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/5 font-bold text-slate-700 dark:text-slate-300 transition-all w-full sm:w-auto">
                     <svg class="w-5 h-5 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                     {{ __('Back to Forum') }}
                 </a>
-            </div>
-        </div>
+            </x-slot>
+        </x-student.page-header>
 
         {{-- Replies List --}}
         <div class="space-y-6">
             @forelse($replies as $reply)
-                <div class="glass-card rounded-[1.5rem] {{ $reply->is_solution ? 'border-emerald-500/30 bg-emerald-50/50 dark:bg-emerald-900/10 ring-1 ring-emerald-500/30' : 'border-slate-200/50 dark:border-white/5 bg-white/60 dark:bg-slate-900/60' }} hover:shadow-xl transition-all duration-300 group overflow-hidden relative" data-aos="fade-up" data-aos-delay="{{ min($loop->index * 50, 300) }}">
+                <x-student.card padding="p-0" class="{{ $reply->is_solution ? 'border-emerald-500/30 bg-emerald-50/50 dark:bg-emerald-900/10 ring-1 ring-emerald-500/30' : '' }} overflow-hidden relative group" data-aos="fade-up" data-aos-delay="{{ min($loop->index * 50, 300) }}">
                     @if($reply->is_solution)
                         <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-emerald-500/10 to-transparent rounded-tr-[1.5rem] pointer-events-none"></div>
                     @endif
@@ -82,9 +79,9 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </x-student.card>
             @empty
-                <div class="glass-card rounded-[2rem] text-center p-12 relative overflow-hidden bg-slate-50 dark:bg-slate-800/50" data-aos="fade-up">
+                <x-student.card padding="p-12" class="text-center relative overflow-hidden bg-slate-50 dark:bg-slate-800/50" data-aos="fade-up">
                     <div class="relative z-10 w-24 h-24 mx-auto rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center mb-6 shadow-inner text-5xl">
                         💬
                     </div>
@@ -96,7 +93,7 @@
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                         {{ __('Find Topics to Answer') }}
                     </a>
-                </div>
+                </x-student.card>
             @endforelse
         </div>
 

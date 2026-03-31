@@ -8,30 +8,21 @@
 
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 relative z-10">
         {{-- Header Section --}}
-        <div class="relative glass-card overflow-hidden rounded-[2rem] p-8 mb-8" data-aos="fade-down">
-            <div class="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-transparent to-primary-500/10 opacity-50"></div>
-            
-            <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-                <div>
-                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-sm font-bold mb-4 shadow-sm">
-                        <svg class="w-4 h-4 cursor-pointer" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                        {{ __('Activity') }}
-                    </div>
-                    <h1 class="text-3xl md:text-5xl font-extrabold mb-2 text-slate-900 dark:text-white tracking-tight">
-                        {{ __('Points') }} <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-primary-500">{{ __('History') }}</span>
-                    </h1>
-                    <p class="text-slate-600 dark:text-slate-400 font-medium max-w-2xl">
-                        {{ __('Track points earned from your activities.') }}
-                    </p>
-                </div>
-                <div class="shrink-0 flex items-center gap-3">
-                    <a href="{{ route('student.profile.show') }}" class="inline-flex justify-center items-center px-6 py-3 bg-white/10 hover:bg-white/20 dark:bg-slate-800/50 dark:hover:bg-slate-700/50 text-slate-700 dark:text-white font-bold rounded-xl transition-all duration-300 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 group">
-                        <svg class="w-5 h-5 mr-2 rtl:ml-2 rtl:mr-0 group-hover:-translate-x-1 rtl:group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-                        {{ __('Back to Profile') }}
-                    </a>
-                </div>
-            </div>
-        </div>
+        <x-student.page-header
+            title="{{ __('Points') }} <span class='text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-primary-500'>{{ __('History') }}</span>"
+            subtitle="{{ __('Track points earned from your activities.') }}"
+            badge="{{ __('Activity') }}"
+            badgeIcon='<svg class="w-4 h-4 cursor-pointer" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>'
+            badgeColor="emerald"
+            mb="mb-8"
+        >
+            <x-slot name="actions">
+                <a href="{{ route('student.profile.show') }}" class="btn-ghost flex items-center justify-center gap-2 px-6 py-3 font-bold rounded-xl w-full sm:w-auto transition-colors shadow-sm bg-white/10 hover:bg-white/20 dark:bg-slate-800/50 dark:hover:bg-slate-700/50 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 group">
+                    <svg class="w-5 h-5 mr-0 rtl:ml-2 rtl:-mr-2 group-hover:-translate-x-1 rtl:group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                    {{ __('Back to Profile') }}
+                </a>
+            </x-slot>
+        </x-student.page-header>
 
         {{-- Stats --}}
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -43,16 +34,16 @@
                 ];
             @endphp
             @foreach($pointStats as $s)
-                <div class="glass-card p-6 text-center group" data-aos="zoom-in" data-aos-delay="{{ $loop->index * 100 }}">
+                <x-student.card padding="p-6" class="text-center group" data-aos="zoom-in" data-aos-delay="{{ $loop->index * 100 }}">
                     <div class="text-3xl mb-2 group-hover:scale-110 transition-transform">{{ $s['icon'] }}</div>
                     <div class="text-3xl font-extrabold text-{{ $s['color'] }}-500">{{ $s['value'] }}</div>
-                    <div class="text-sm font-medium" style="color: var(--color-text-muted);">{{ $s['label'] }}</div>
-                </div>
+                    <div class="text-sm font-medium text-slate-500 dark:text-slate-400">{{ $s['label'] }}</div>
+                </x-student.card>
             @endforeach
         </div>
 
         {{-- History Table --}}
-        <div class="glass-card overflow-hidden" data-aos="fade-up">
+        <x-student.card padding="p-0" data-aos="fade-up">
             <div class="overflow-x-auto">
                 <table class="table-glass">
                     <thead>
@@ -66,21 +57,21 @@
                         @forelse($history as $item)
                             <tr>
                                 <td>
-                                    <div class="font-semibold" style="color: var(--color-text);">{{ $item->description ?? ucfirst(str_replace('_', ' ', $item->activity_type)) }}</div>
+                                    <div class="font-semibold text-slate-900 dark:text-white">{{ $item->description ?? ucfirst(str_replace('_', ' ', $item->activity_type)) }}</div>
                                 </td>
                                 <td><span class="font-bold text-emerald-500">+{{ $item->points_earned }}</span></td>
-                                <td style="color: var(--color-text-muted);">{{ $item->created_at->format('M d, Y H:i') }}</td>
+                                <td class="text-slate-500 dark:text-slate-400">{{ $item->created_at->format('M d, Y H:i') }}</td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="3" class="text-center py-8" style="color: var(--color-text-muted);">{{ __('No points history yet.') }}</td>
+                                <td colspan="3" class="text-center py-8 text-slate-500 dark:text-slate-400">{{ __('No points history yet.') }}</td>
                             </tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
-            <div class="glass-card-footer">{{ $history->links() }}</div>
-        </div>
+            <div class="px-6 py-4 border-t border-slate-200 dark:border-white/5">{{ $history->links() }}</div>
+        </x-student.card>
     </div>
 </div>
 @endsection

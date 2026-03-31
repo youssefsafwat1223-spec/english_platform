@@ -10,22 +10,14 @@
 @section('content')
 <div class="py-12 relative min-h-screen z-10">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-8">
-        <div class="relative glass-card overflow-hidden rounded-[2rem] p-8 mb-6" data-aos="fade-down">
-            <div class="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-primary-500/10 opacity-50"></div>
-            <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
-                <div>
-                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-500 dark:text-violet-400 text-sm font-bold mb-4 shadow-sm">
-                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7l9-4 9 4-9 4-9-4zm0 5l9 4 9-4m-18 5l9 4 9-4"/>
-                        </svg>
-                        {{ __('Explore Catalog') }}
-                    </div>
-                    <h1 class="text-3xl md:text-5xl font-extrabold mb-2 text-slate-900 dark:text-white tracking-tight">
-                        {{ __('Discover New') }} <span class="text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-primary-500">{{ __('Courses') }}</span>
-                    </h1>
-                    <p class="text-slate-600 dark:text-slate-400 font-medium max-w-2xl mt-4 text-lg">{{ __('Find the perfect course to level up your skills. Browse our expanding catalog of high-quality educational content.') }}</p>
-                </div>
-
+        <x-student.page-header
+            title="{!! __('Discover New') !!} <span class='text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-primary-500'>{{ __('Courses') }}</span>"
+            subtitle="{{ __('Find the perfect course to level up your skills. Browse our expanding catalog of high-quality educational content.') }}"
+            badge="{{ __('Explore Catalog') }}"
+            badgeIcon='<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7l9-4 9 4-9-4zm0 5l9 4 9-4m-18 5l9 4 9-4"/></svg>'
+            badgeColor="violet"
+        >
+            <x-slot name="actions">
                 <div class="shrink-0 flex items-center justify-center w-32 h-32 relative group perspective-1000 hidden md:flex">
                     <div class="absolute inset-0 bg-gradient-to-tr from-primary-500 to-accent-500 rounded-full blur-2xl opacity-40 group-hover:opacity-60 animate-pulse transition-opacity"></div>
                     <div class="relative w-full h-full glass-card rounded-full border border-white/20 dark:border-white/10 flex flex-col items-center justify-center p-4 backdrop-blur-xl transform transition-transform duration-500 group-hover:rotate-y-12">
@@ -33,8 +25,8 @@
                         <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mt-1">{{ __('Available') }}</span>
                     </div>
                 </div>
-            </div>
-        </div>
+            </x-slot>
+        </x-student.page-header>
 
         <form method="GET" action="{{ route('student.courses.index') }}" class="glass-card" data-aos="fade-up" data-aos-delay="100">
             <div class="p-6 md:p-8 grid grid-cols-1 md:grid-cols-4 gap-6">

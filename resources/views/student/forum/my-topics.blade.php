@@ -8,25 +8,22 @@
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {{-- Header Section --}}
-        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10" data-aos="fade-down">
-            <div>
-                <h1 class="text-3xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight mb-3">
-                    {{ __('My Topics') }}
-                </h1>
-                <p class="text-lg text-slate-600 dark:text-slate-400 font-medium max-w-2xl">
-                    {{ __('Discussions and topics you have started in the community forum.') }}
-                </p>
-            </div>
-            <div class="shrink-0 flex items-center gap-3">
-                <a href="{{ route('student.forum.index') }}" class="btn-ghost flex items-center gap-2 group px-5 py-3 rounded-xl border border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/5 font-bold text-slate-700 dark:text-slate-300 transition-all">
+        {{-- Header Section --}}
+        <x-student.page-header
+            title="{{ __('My Topics') }}"
+            subtitle="{{ __('Discussions and topics you have started in the community forum.') }}"
+            mb="mb-10"
+        >
+            <x-slot name="actions">
+                <a href="{{ route('student.forum.index') }}" class="btn-ghost flex items-center justify-center gap-2 group px-5 py-3 rounded-xl border border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/5 font-bold text-slate-700 dark:text-slate-300 transition-all w-full sm:w-auto">
                     <svg class="w-5 h-5 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                     {{ __('Back to Forum') }}
                 </a>
-            </div>
-        </div>
+            </x-slot>
+        </x-student.page-header>
 
         {{-- Topics List --}}
-        <div class="glass-card overflow-hidden rounded-[2rem] border border-slate-200/50 dark:border-white/5 shadow-xl bg-white/80 dark:bg-slate-900/80" data-aos="fade-up">
+        <x-student.card padding="p-0" data-aos="fade-up">
             <div class="px-6 py-5 border-b border-slate-200/50 dark:border-white/5 bg-slate-50/50 dark:bg-black/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-xl bg-primary-500/10 text-primary-500 flex items-center justify-center text-xl shrink-0 shadow-inner">
@@ -131,7 +128,7 @@
                     {{ $topics->links() }}
                 </div>
             @endif
-        </div>
+        </x-student.card>
     </div>
 </div>
 @endsection

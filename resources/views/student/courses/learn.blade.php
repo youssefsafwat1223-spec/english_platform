@@ -73,7 +73,7 @@
 
                 {{-- Mobile Dashboard Block --}}
                 <div class="lg:hidden w-full mb-8 relative z-20" data-aos="fade-up">
-                    <div class="bg-[#0f172a] rounded-[2.5rem] p-8 border border-slate-800 shadow-2xl relative overflow-hidden">
+                    <x-student.card rounded="rounded-[2.5rem]" padding="p-8" mb="mb-0">
                         {{-- Progress Ring --}}
                         <div class="text-center mb-8">
                             <div class="relative w-32 h-32 mx-auto mb-4">
@@ -127,7 +127,7 @@
                                 {{ __('ui.learn.view_certificate') }}
                             </a>
                         @endif
-                    </div>
+                    </x-student.card>
                 </div>
 
                 {{-- Curriculum Section --}}
@@ -341,7 +341,7 @@
             
             {{-- Right Column: Sticky Enrollment Card --}}
             <div class="hidden lg:block lg:col-span-5 xl:col-span-4 self-start sticky top-24 pt-8" data-aos="fade-up" data-aos-delay="200">
-                <div class="bg-[#0f172a] rounded-[2.5rem] p-8 border border-white/5 shadow-2xl overflow-hidden relative z-20">
+                <x-student.card rounded="rounded-[2.5rem]" padding="p-8" class="shadow-2xl relative z-20" mb="mb-0">
                     
                     {{-- Card Gradient Decoration --}}
                     <div class="absolute -top-20 -right-20 w-64 h-64 bg-primary-500/10 dark:bg-primary-500/5 blur-[60px] rounded-full pointer-events-none z-0"></div>
@@ -401,7 +401,7 @@
                             </a>
                         @endif
                     </div>
-                </div>
+                </x-student.card>
             </div>
 
         </div>

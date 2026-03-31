@@ -29,9 +29,9 @@
             @csrf
             <input type="hidden" name="category_id" value="{{ $category->id }}">
 
-            <div class="glass-card overflow-hidden rounded-[2rem] border border-slate-200/50 dark:border-white/5 bg-white/60 dark:bg-slate-900/60 shadow-xl relative">
+            <x-student.card padding="p-0" class="relative shadow-xl">
                 {{-- Decorative Line --}}
-                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary-500 via-accent-500 to-primary-500"></div>
+                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary-500 via-accent-500 to-primary-500 z-10"></div>
 
                 <div class="p-6 md:p-10 space-y-8">
                     {{-- Title Input --}}
@@ -41,7 +41,7 @@
                         </label>
                         <div class="relative">
                             <input id="title" type="text" name="title" x-model="title"
-                                   class="w-full bg-slate-50 dark:bg-black/20 border @error('title') border-rose-500 @else border-slate-200 dark:border-white/10 @enderror rounded-2xl px-5 py-4 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all shadow-inner text-lg font-bold placeholder-slate-400 dark:placeholder-slate-500" 
+                                   class="w-full bg-slate-50 dark:bg-white/5 border @error('title') border-rose-500 @else border-slate-200 dark:border-white/10 @enderror rounded-2xl px-5 py-4 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all shadow-inner text-lg font-bold placeholder-slate-400 dark:placeholder-slate-500" 
                                    required placeholder="{{ __('E.g. How to use phrasal verbs effectively?') }}">
                             
                             @error('title')
@@ -61,7 +61,7 @@
                         </label>
                         <div class="relative group">
                             <textarea id="content" name="content" x-model="content" rows="10" 
-                                      class="w-full bg-slate-50 dark:bg-black/20 border @error('content') border-rose-500 @else border-slate-200 dark:border-white/10 @enderror rounded-2xl px-5 py-4 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all shadow-inner text-base font-medium placeholder-slate-400 dark:placeholder-slate-500 resize-y min-h-[200px]" 
+                                      class="w-full bg-slate-50 dark:bg-white/5 border @error('content') border-rose-500 @else border-slate-200 dark:border-white/10 @enderror rounded-2xl px-5 py-4 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all shadow-inner text-base font-medium placeholder-slate-400 dark:placeholder-slate-500 resize-y min-h-[200px]" 
                                       required placeholder="{{ __('Describe your question, share your knowledge, or explain the context...') }}"></textarea>
                             
                             @error('content')
@@ -75,7 +75,7 @@
                 </div>
 
                 {{-- Form Actions --}}
-                <div class="px-6 md:px-10 py-5 border-t border-slate-200/50 dark:border-white/5 bg-slate-50/80 dark:bg-black/20 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div class="px-6 md:px-10 py-5 border-t border-slate-200/50 dark:border-white/5 bg-slate-50/80 dark:bg-white/5 flex flex-col sm:flex-row items-center justify-between gap-4">
                     <a href="{{ route('student.forum.category', $category->slug) }}" class="btn-ghost w-full sm:w-auto px-6 py-3 rounded-xl border border-slate-200 dark:border-white/10 hover:bg-slate-100 dark:hover:bg-white/5 font-bold text-slate-700 dark:text-slate-300 text-center transition-all">
                         {{ __('Cancel') }}
                     </a>
@@ -93,7 +93,7 @@
                         </span>
                     </button>
                 </div>
-            </div>
+            </x-student.card>
         </form>
     </div>
 </div>

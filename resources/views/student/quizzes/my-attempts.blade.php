@@ -8,35 +8,26 @@
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {{-- Header Section --}}
-        <div class="relative glass-card overflow-hidden rounded-[2rem] p-8 mb-10" data-aos="fade-down">
-            <div class="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-primary-500/10 opacity-50"></div>
-            
-            <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
-                <div>
-                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-500 dark:text-violet-400 text-sm font-bold mb-4 shadow-sm">
-                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6M9 8h6m3 11H6a2 2 0 01-2-2V7a2 2 0 012-2h8l4 4v8a2 2 0 01-2 2Z" />
-                        </svg>
-                        {{ __('Assessments') }}
-                    </div>
-                    <h1 class="text-3xl md:text-5xl font-extrabold mb-2 text-slate-900 dark:text-white tracking-tight">
-                        {{ __('My Quiz') }} <span class="text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-primary-500">{{ __('Attempts') }}</span>
-                    </h1>
-                    <p class="text-slate-600 dark:text-slate-400 font-medium max-w-2xl">
-                        {{ __('Review your past quiz results, track your improvement, and identify areas for further study.') }}
-                    </p>
-                </div>
-                
-                <div class="shrink-0 flex items-center gap-3">
-                    <a href="{{ route('student.courses.my-courses') }}" class="btn-primary ripple-btn px-6 py-3 rounded-xl shadow-lg shadow-violet-500/25 flex items-center gap-2 font-bold bg-gradient-to-r from-violet-600 to-violet-500 hover:from-violet-500 hover:to-violet-400 border-none text-white transition-all transform hover:scale-105">
-                        <svg class="w-5 h-5 transition-transform group-hover:-translate-x-1 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-                        {{ __('Back to Learning') }}
-                    </a>
-                </div>
-            </div>
-        </div>
+        <x-student.page-header
+            title="{{ __('My Quiz') }} <span class='text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-primary-500'>{{ __('Attempts') }}</span>"
+            subtitle="{{ __('Review your past quiz results, track your improvement, and identify areas for further study.') }}"
+            badge="{{ __('Assessments') }}"
+            badgeColor="violet"
+            mb="mb-10"
+        >
+            <x-slot name="badgeIcon">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6M9 8h6m3 11H6a2 2 0 01-2-2V7a2 2 0 012-2h8l4 4v8a2 2 0 01-2 2Z" />
+                </svg>
+            </x-slot>
+            <x-slot name="actions">
+                <a href="{{ route('student.courses.my-courses') }}" class="btn-primary ripple-btn px-6 py-3 rounded-xl shadow-lg shadow-violet-500/25 flex items-center justify-center gap-2 font-bold bg-gradient-to-r from-violet-600 to-violet-500 hover:from-violet-500 hover:to-violet-400 border-none text-white transition-all transform hover:scale-105 w-full sm:w-auto">
+                    <svg class="w-5 h-5 transition-transform group-hover:-translate-x-1 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                    {{ __('Back to Learning') }}
+                </a>
+            </x-slot>
+        </x-student.page-header>
 
-        {{-- Statistics Overview --}}
         @if(isset($stats))
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
             @php
@@ -48,7 +39,7 @@
             @endphp
             
             @foreach($quizStats as $s)
-                <div class="glass-card overflow-hidden rounded-[2rem] border border-slate-200/50 dark:border-white/5 bg-white/50 dark:bg-slate-900/50 relative group" data-aos="zoom-in" data-aos-delay="{{ $loop->index * 100 }}">
+                <x-student.card padding="p-0" class="overflow-hidden relative group" data-aos="zoom-in" data-aos-delay="{{ $loop->index * 100 }}">
                     <div class="absolute inset-0 bg-gradient-to-br from-{{ $s['color'] }}-500/5 to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                     <div class="p-6 md:p-8 flex items-center gap-6 relative z-10">
                         <div class="w-16 h-16 rounded-3xl bg-{{ $s['color'] }}-500/10 text-{{ $s['color'] }}-500 flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500 shadow-inner">
@@ -60,13 +51,13 @@
                             <p class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1">{{ __($s['desc']) }}</p>
                         </div>
                     </div>
-                </div>
+                </x-student.card>
             @endforeach
         </div>
         @endif
 
         {{-- Attempts Table --}}
-        <div class="glass-card overflow-hidden rounded-[2rem] border border-slate-200/50 dark:border-white/5 shadow-xl bg-white/80 dark:bg-slate-900/80" data-aos="fade-up">
+        <x-student.card padding="p-0" class="overflow-hidden shadow-xl" data-aos="fade-up">
             <div class="px-6 py-5 border-b border-slate-200/50 dark:border-white/5 bg-slate-50/50 dark:bg-black/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-xl bg-primary-500/10 text-primary-500 flex items-center justify-center text-xl shrink-0 shadow-inner">
@@ -201,7 +192,7 @@
                     {{ $attempts->links() }}
                 </div>
             @endif
-        </div>
+        </x-student.card>
     </div>
 </div>
 @endsection

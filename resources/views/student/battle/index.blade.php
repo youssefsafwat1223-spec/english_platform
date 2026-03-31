@@ -10,34 +10,22 @@
 <div class="py-12 relative overflow-hidden">
     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[400px] bg-gradient-to-b from-primary-500/8 to-transparent pointer-events-none z-0"></div>
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div class="relative glass-card overflow-hidden rounded-[2rem] p-8 mb-12" data-aos="fade-down">
-            <div class="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-primary-500/10 opacity-50"></div>
-
-            <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
-                <div>
-                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-500 dark:text-violet-400 text-sm font-bold mb-4 shadow-sm">
-                        <span>{{ $isArabic ? 'الوضع الجماعي' : 'Team mode' }}</span>
-                    </div>
-                    <h1 class="text-3xl md:text-5xl font-extrabold mb-2 text-slate-900 dark:text-white tracking-tight">
-                        {{ $isArabic ? 'ساحة الباتل' : 'Battle Arena' }}
-                    </h1>
-                    <p class="text-slate-600 dark:text-slate-400 font-medium max-w-2xl">
-                        {{ $isArabic
-                            ? 'ادخل تحديًا مباشرًا مع طلاب من نفس الكورس، جاوب بسرعة، واجمع النقاط لفريقك.'
-                            : 'Join a live battle with students from the same course, answer quickly, and score points for your team.' }}
-                    </p>
-                </div>
-            </div>
-        </div>
+        <x-student.page-header
+            title="{{ $isArabic ? 'ساحة الباتل' : 'Battle Arena' }}"
+            subtitle="{{ $isArabic ? 'ادخل تحديًا مباشرًا مع طلاب من نفس الكورس، جاوب بسرعة، واجمع النقاط لفريقك.' : 'Join a live battle with students from the same course, answer quickly, and score points for your team.' }}"
+            badge="{{ $isArabic ? 'الوضع الجماعي' : 'Team mode' }}"
+            badgeColor="violet"
+            mb="mb-12"
+        />
 
         @if($activeRoom)
-            <div class="glass-card p-6 mb-8 border-l-4 border-amber-500" data-aos="fade-up">
+            <x-student.card padding="p-6" class="mb-8 border-l-4 border-l-amber-500" data-aos="fade-up">
                 <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
                     <div>
-                        <h3 class="font-bold text-lg" style="color: var(--color-text);">
+                        <h3 class="font-bold text-lg text-slate-900 dark:text-white">
                             {{ $isArabic ? 'لديك باتل نشط الآن' : 'You already have an active battle' }}
                         </h3>
-                        <p class="text-sm" style="color: var(--color-text-muted);">
+                        <p class="text-sm text-slate-500 dark:text-slate-400">
                             {{ $activeRoom->course->title }}
                             -
                             {{ $activeRoom->status === 'playing'
@@ -53,15 +41,15 @@
                             : ($isArabic ? 'العودة إلى اللوبي' : 'Return to lobby') }}
                     </a>
                 </div>
-            </div>
+            </x-student.card>
         @endif
 
         @if($enrolledCourses->isEmpty())
-            <div class="glass-card p-12 text-center" data-aos="fade-up">
-                <h3 class="text-xl font-bold mb-2" style="color: var(--color-text);">
+            <x-student.card padding="p-12" class="text-center" data-aos="fade-up">
+                <h3 class="text-xl font-bold mb-2 text-slate-900 dark:text-white">
                     {{ $isArabic ? 'لا توجد كورسات جاهزة للباتل الآن' : 'No battle-ready courses yet' }}
                 </h3>
-                <p class="mb-6" style="color: var(--color-text-muted);">
+                <p class="mb-6 text-slate-500 dark:text-slate-400">
                     {{ $isArabic
                         ? 'يجب أن تكون مشتركًا في كورس يحتوي على عدد كافٍ من الأسئلة حتى يبدأ الباتل.'
                         : 'You must be enrolled in a course with enough questions before a battle can start.' }}
@@ -69,11 +57,11 @@
                 <a href="{{ route('student.courses.index') }}" class="btn-primary">
                     {{ $isArabic ? 'عرض كورساتي' : 'Browse my courses' }}
                 </a>
-            </div>
+            </x-student.card>
         @else
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach($enrolledCourses as $course)
-                    <div class="glass-card overflow-hidden group hover:-translate-y-2 transition-all duration-300" data-aos="fade-up" data-aos-delay="{{ $loop->index * 100 }}">
+                    <x-student.card padding="p-0" class="overflow-hidden group hover:-translate-y-2 transition-all duration-300" data-aos="fade-up" data-aos-delay="{{ $loop->index * 100 }}">
                         <div class="relative h-40 overflow-hidden">
                             <div class="absolute inset-0 bg-gradient-to-br from-red-500/30 to-blue-500/30"></div>
                             @if($course->thumbnail)
@@ -90,16 +78,16 @@
                         </div>
 
                         <div class="p-6">
-                            <div class="flex items-center justify-between mb-4 text-sm" style="color: var(--color-text-muted);">
+                            <div class="flex items-center justify-between mb-4 text-sm text-slate-500 dark:text-slate-400">
                                 <div>{{ $course->questions_count }} {{ $isArabic ? 'سؤال' : 'questions' }}</div>
                                 <div>{{ $isArabic ? 'نظام فرق' : 'Team battle' }}</div>
                             </div>
 
-                            <div class="flex flex-wrap gap-2 mb-4 text-xs" style="color: var(--color-text-muted);">
-                                <span class="px-2 py-1 rounded-full" style="background: var(--color-border);">
+                            <div class="flex flex-wrap gap-2 mb-4 text-xs text-slate-600 dark:text-slate-400">
+                                <span class="px-2 py-1 rounded-full bg-slate-100 dark:bg-slate-800">
                                     {{ $isArabic ? 'زمن محدود لكل سؤال' : 'Timed questions' }}
                                 </span>
-                                <span class="px-2 py-1 rounded-full" style="background: var(--color-border);">
+                                <span class="px-2 py-1 rounded-full bg-slate-100 dark:bg-slate-800">
                                     {{ $isArabic ? 'أسئلة عشوائية' : 'Random rounds' }}
                                 </span>
                             </div>
@@ -113,50 +101,50 @@
                                 </button>
                             </form>
                         </div>
-                    </div>
+                    </x-student.card>
                 @endforeach
             </div>
         @endif
 
-        <div class="mt-16 glass-card p-8" data-aos="fade-up">
-            <h2 class="text-2xl font-bold mb-6 text-center" style="color: var(--color-text);">
+        <x-student.card padding="p-8" class="mt-16" data-aos="fade-up">
+            <h2 class="text-2xl font-bold mb-6 text-center text-slate-900 dark:text-white">
                 {{ $isArabic ? 'كيف يعمل الباتل' : 'How battle works' }}
             </h2>
 
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
                 <div class="text-center">
-                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white text-xl font-bold mx-auto mb-3">1</div>
-                    <h4 class="font-bold mb-1" style="color: var(--color-text);">{{ $isArabic ? 'ادخل الغرفة' : 'Join the room' }}</h4>
-                    <p class="text-sm" style="color: var(--color-text-muted);">
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white text-xl font-bold mx-auto mb-3 shadow-inner shadow-white/20">1</div>
+                    <h4 class="font-bold mb-1 text-slate-900 dark:text-white">{{ $isArabic ? 'ادخل الغرفة' : 'Join the room' }}</h4>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">
                         {{ $isArabic ? 'اختر الكورس وانتظر اكتمال اللوبي.' : 'Pick your course and wait for the lobby to fill.' }}
                     </p>
                 </div>
 
                 <div class="text-center">
-                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center text-white text-xl font-bold mx-auto mb-3">2</div>
-                    <h4 class="font-bold mb-1" style="color: var(--color-text);">{{ $isArabic ? 'تقسيم الفرق' : 'Split teams' }}</h4>
-                    <p class="text-sm" style="color: var(--color-text-muted);">
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center text-white text-xl font-bold mx-auto mb-3 shadow-inner shadow-white/20">2</div>
+                    <h4 class="font-bold mb-1 text-slate-900 dark:text-white">{{ $isArabic ? 'تقسيم الفرق' : 'Split teams' }}</h4>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">
                         {{ $isArabic ? 'السيستم يوزع اللاعبين على فريقين تلقائيًا.' : 'The system splits players into two teams automatically.' }}
                     </p>
                 </div>
 
                 <div class="text-center">
-                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center text-white text-xl font-bold mx-auto mb-3">3</div>
-                    <h4 class="font-bold mb-1" style="color: var(--color-text);">{{ $isArabic ? 'جاوب بسرعة' : 'Answer fast' }}</h4>
-                    <p class="text-sm" style="color: var(--color-text-muted);">
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center text-white text-xl font-bold mx-auto mb-3 shadow-inner shadow-white/20">3</div>
+                    <h4 class="font-bold mb-1 text-slate-900 dark:text-white">{{ $isArabic ? 'جاوب بسرعة' : 'Answer fast' }}</h4>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">
                         {{ $isArabic ? 'كل إجابة صحيحة تضيف نقاطًا لك ولفريقك.' : 'Each correct answer gives points to you and your team.' }}
                     </p>
                 </div>
 
                 <div class="text-center">
-                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center text-white text-xl font-bold mx-auto mb-3">4</div>
-                    <h4 class="font-bold mb-1" style="color: var(--color-text);">{{ $isArabic ? 'احسم النتيجة' : 'Win the match' }}</h4>
-                    <p class="text-sm" style="color: var(--color-text-muted);">
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center text-white text-xl font-bold mx-auto mb-3 shadow-inner shadow-white/20">4</div>
+                    <h4 class="font-bold mb-1 text-slate-900 dark:text-white">{{ $isArabic ? 'احسم النتيجة' : 'Win the match' }}</h4>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">
                         {{ $isArabic ? 'الفريق الأعلى نقاطًا يفوز في نهاية الجولات.' : 'The team with the most points wins at the end of the rounds.' }}
                     </p>
                 </div>
             </div>
-        </div>
+        </x-student.card>
     </div>
 </div>
 @endsection

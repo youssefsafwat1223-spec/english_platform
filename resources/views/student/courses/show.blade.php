@@ -96,7 +96,7 @@
                 {{-- Mobile Inline Image Placeholder OR Dashboard for Enrolled --}}
                 @if(isset($isEnrolled) && $isEnrolled && isset($enrollment))
                 <div class="lg:hidden w-full mb-8 relative z-20" data-aos="fade-up">
-                    <div class="bg-[#0f172a] rounded-[2.5rem] p-8 border border-slate-800 shadow-2xl relative overflow-hidden">
+                    <x-student.card rounded="rounded-[2.5rem]" padding="p-8" mb="mb-0">
                         {{-- Progress Ring --}}
                         <div class="text-center mb-8">
                             <div class="relative w-32 h-32 mx-auto mb-4">
@@ -135,7 +135,7 @@
                             {{ __('متابعة التعلم') }}
                             <svg class="w-5 h-5 rtl:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                         </a>
-                    </div>
+                    </x-student.card>
                 </div>
                 @else
                 <div class="lg:hidden w-full aspect-video rounded-3xl overflow-hidden border border-slate-200 dark:border-white/10 shadow-lg relative group mb-8">
@@ -163,7 +163,7 @@
                         {{ __('وصف الكورس') }}
                     </h3>
                     
-                    <div class="bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-white/5 rounded-[1.5rem] lg:rounded-[2rem] shadow-sm p-6 lg:p-8 relative overflow-hidden group">
+                    <x-student.card padding="p-6 lg:p-8" mb="mb-0">
                         <div class="prose dark:prose-invert max-w-none prose-slate prose-img:rounded-xl prose-headings:font-black prose-a:text-primary-600 dark:prose-a:text-primary-400">
                             @if($course->description)
                                 {!! nl2br(e($course->description)) !!}
@@ -171,13 +171,13 @@
                                 <p class="text-slate-500 dark:text-slate-400 italic text-center py-8">{{ __('لا يوجد وصف متاح حالياً لهذا الكورس.') }}</p>
                             @endif
                         </div>
-                    </div>
+                    </x-student.card>
                 </div>
             </div>
             
             {{-- ─── RIGHT COLUMN: STICKY ENROLLMENT CARD (DESKTOP) ─── --}}
             <div class="hidden lg:block lg:col-span-5 xl:col-span-4 self-start sticky top-24 pt-8" data-aos="fade-up" data-aos-delay="200">
-                <div class="bg-white dark:bg-[#0f172a] rounded-[2.5rem] p-8 border border-slate-200 dark:border-white/5 shadow-2xl shadow-slate-200/50 dark:shadow-none overflow-hidden relative z-20">
+                <x-student.card rounded="rounded-[2.5rem]" padding="p-8" class="shadow-2xl shadow-slate-200/50 dark:shadow-none relative z-20" mb="mb-0">
                     
                     {{-- Card Gradient Decoration --}}
                     <div class="absolute -top-20 -right-20 w-64 h-64 bg-primary-500/10 dark:bg-primary-500/5 blur-[60px] rounded-full pointer-events-none z-0"></div>
@@ -262,7 +262,7 @@
                             </ul>
                         </div>
                     </div>
-                </div>
+                </x-student.card>
             </div>
 
         </div>
