@@ -112,9 +112,11 @@
                 <x-student.empty-state
                     title="{{ $isArabic ? 'لا توجد ملاحظات بعد' : 'No Notes Available' }}"
                     message="{{ $isArabic ? 'لم تكتب أي ملاحظات حتى الآن. أثناء مشاهدة الدروس يمكنك استخدام قسم الملاحظات لتسجيل أهم النقاط.' : 'You haven\'t taken any notes yet. While watching lessons, use the notes section to jot down important information.' }}"
-                    :icon="\"<svg class='w-10 h-10 text-slate-500 dark:text-slate-300' fill='none' stroke='currentColor' viewBox='0 0 24 24'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='1.8' d='M7 4.75A2.75 2.75 0 0 1 9.75 2h6.19L21 7.06V19.25A2.75 2.75 0 0 1 18.25 22h-8.5A2.75 2.75 0 0 1 7 19.25V4.75z'></path><path stroke-linecap='round' stroke-linejoin='round' stroke-width='1.8' d='M15 2.5V7h4.5M10 11h4m-4 3h6m-6 3h4'></path></svg>\""
                     data-aos="fade-up"
                 >
+                    <x-slot name="icon">
+                        <svg class="w-10 h-10 text-slate-500 dark:text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M7 4.75A2.75 2.75 0 0 1 9.75 2h6.19L21 7.06V19.25A2.75 2.75 0 0 1 18.25 22h-8.5A2.75 2.75 0 0 1 7 19.25V4.75z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 2.5V7h4.5M10 11h4m-4 3h6m-6 3h4"></path></svg>
+                    </x-slot>
                     <x-slot name="actions">
                         <a href="{{ route('student.courses.my-courses') }}" class="btn-primary ripple-btn inline-flex items-center gap-2 shadow-lg shadow-primary-500/25">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
