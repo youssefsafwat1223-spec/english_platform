@@ -43,7 +43,7 @@
                         @endforeach
                     </ul>
                 </div>
-            </div>
+            </x-student.card>
         @endif
 
         <form action="{{ route('student.profile.update') }}" method="POST" enctype="multipart/form-data" x-data="{ loading: false }" @submit="loading = true" data-aos="fade-up">
@@ -172,7 +172,7 @@
                         </span>
                     </button>
                 </div>
-            </div>
+            </x-student.card>
         </form>
     </div>
 </div>
