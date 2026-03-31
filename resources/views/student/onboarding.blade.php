@@ -217,7 +217,7 @@
 
                 </div>
             </div>
-        </div>
+        </x-student.card>
     </div>
 </div>
 

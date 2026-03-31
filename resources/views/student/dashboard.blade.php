@@ -65,7 +65,7 @@
                         <div class="absolute inset-0 bg-gradient-to-tr from-primary-500 to-accent-500 rounded-full blur-3xl opacity-30 group-hover:opacity-50 animate-pulse transition-opacity"></div>
                         
                         {{-- Metal Circle --}}
-                        <div class="absolute inset-2 rounded-full border border-white/20 dark:border-white/10 shadow-2xl overflow-hidden glass-card bg-gradient-to-br from-white/40 to-white/5 dark:from-white/10 dark:to-white/0 flex flex-col items-center justify-center p-8 text-center backdrop-blur-xl">
+                        <div class="absolute inset-2 rounded-full border border-white/20 dark:border-white/10 shadow-2xl overflow-hidden bg-gradient-to-br from-white/40 to-white/5 dark:from-white/10 dark:to-white/0 flex flex-col items-center justify-center p-8 text-center backdrop-blur-xl">
                             <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-shimmer pointer-events-none"></div>
                             
                             <div class="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-[0.2em] mb-1 sm:mb-2">{{ __('Current Level') }}</div>
@@ -89,7 +89,7 @@
         @if(isset($pendingPayments) && $pendingPayments->count() > 0)
             <div class="space-y-4 mb-2" data-aos="fade-up" data-aos-delay="150">
                 @foreach($pendingPayments as $payment)
-                    <div class="glass-card bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 p-5 flex flex-col sm:flex-row items-center justify-between gap-4 rounded-2xl relative overflow-hidden">
+                    <div class="backdrop-blur-xl shadow-lg ring-1 ring-black/5 dark:ring-white/10 bg-amber-50/80 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 p-5 flex flex-col sm:flex-row items-center justify-between gap-4 rounded-2xl relative overflow-hidden">
                         <div class="absolute inset-0 bg-gradient-to-r from-amber-500/10 to-transparent pointer-events-none"></div>
                         <div class="flex items-center gap-4 relative z-10 w-full sm:w-auto">
                             <div class="w-12 h-12 rounded-full bg-amber-100 dark:bg-amber-500/20 flex items-center justify-center text-2xl shrink-0 text-amber-600 dark:text-amber-500 shadow-inner">
@@ -119,7 +119,7 @@
 
         {{-- Quick Actions Row --}}
         <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-4" data-aos="fade-up" data-aos-delay="200">
-            <a href="{{ route('student.forum.index') }}" class="glass-card p-4 flex items-center justify-center gap-3 hover:bg-primary-500 hover:text-white group transition-colors shadow-sm">
+            <a href="{{ route('student.forum.index') }}" class="bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200/60 dark:border-white/10 rounded-[2rem] p-4 flex items-center justify-center gap-3 hover:bg-primary-500 hover:text-white group transition-colors shadow-sm relative overflow-hidden">
                 <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary-500/10 text-primary-500 group-hover:bg-white/15 group-hover:text-white transition-colors">
                     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h8M8 14h5m-9 6 1.4-4.2A8 8 0 1 1 20 12a8 8 0 0 1-8 8H4Z" />
@@ -127,7 +127,7 @@
                 </span>
                 <span class="font-bold text-xs sm:text-sm text-slate-700 dark:text-slate-200 group-hover:text-white">{{ __('Community Forum') }}</span>
             </a>
-            <a href="{{ route('student.games.index') }}" class="glass-card p-4 flex items-center justify-center gap-3 hover:bg-accent-500 hover:text-white group transition-colors shadow-sm">
+            <a href="{{ route('student.games.index') }}" class="bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200/60 dark:border-white/10 rounded-[2rem] p-4 flex items-center justify-center gap-3 hover:bg-accent-500 hover:text-white group transition-colors shadow-sm relative overflow-hidden">
                 <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-accent-500/10 text-accent-500 group-hover:bg-white/15 group-hover:text-white transition-colors">
                     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 9V5a3 3 0 1 0-6 0v4m9 0h1a2 2 0 0 1 2 2v1a2 2 0 0 1-2 2h-1m-10-5H6a2 2 0 0 0-2 2v1a2 2 0 0 0 2 2h1m2 0h6m-6 0v2a3 3 0 1 0 6 0v-2" />
@@ -135,7 +135,7 @@
                 </span>
                 <span class="font-bold text-xs sm:text-sm text-slate-700 dark:text-slate-200 group-hover:text-white">{{ __('Mini Games') }}</span>
             </a>
-            <a href="{{ route('student.referrals.index') }}" class="glass-card p-4 flex items-center justify-center gap-3 hover:bg-emerald-500 hover:text-white group transition-colors shadow-sm">
+            <a href="{{ route('student.referrals.index') }}" class="bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200/60 dark:border-white/10 rounded-[2rem] p-4 flex items-center justify-center gap-3 hover:bg-emerald-500 hover:text-white group transition-colors shadow-sm relative overflow-hidden">
                 <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-500 group-hover:bg-white/15 group-hover:text-white transition-colors">
                     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 8a3 3 0 1 1 6 0 3 3 0 0 1-6 0ZM3 11a4 4 0 1 1 8 0 4 4 0 0 1-8 0Zm12 9v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1m16 0v-1a4 4 0 0 0-3-3.87" />
@@ -143,7 +143,7 @@
                 </span>
                 <span class="font-bold text-xs sm:text-sm text-slate-700 dark:text-slate-200 group-hover:text-white">{{ __('Invite Friends') }}</span>
             </a>
-            <a href="{{ route('student.telegram.guide') }}" class="glass-card p-4 flex items-center justify-center gap-3 hover:bg-[#0088cc] hover:text-white group transition-colors shadow-sm">
+            <a href="{{ route('student.telegram.guide') }}" class="bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200/60 dark:border-white/10 rounded-[2rem] p-4 flex items-center justify-center gap-3 hover:bg-[#0088cc] hover:text-white group transition-colors shadow-sm relative overflow-hidden">
                 <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#0088cc]/10 text-[#0088cc] group-hover:bg-white/15 group-hover:text-white transition-colors">
                     <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path d="m21.6 4.8-3 14.15c-.23 1-.84 1.24-1.7.77l-4.7-3.46-2.27 2.19c-.25.25-.46.46-.95.46l.34-4.82 8.77-7.92c.38-.34-.08-.53-.59-.19L6.66 12.83 2 11.37c-1-.31-1.02-1 .23-1.49L20.4 2.87c.84-.31 1.58.19 1.2 1.93Z" />
@@ -152,7 +152,7 @@
                 <span class="font-bold text-xs sm:text-sm text-slate-700 dark:text-slate-200 group-hover:text-white">{{ __('Telegram Bot') }}</span>
             </a>
             @if(auth()->user()->enrollments()->exists())
-                <a href="{{ route('student.testimonial.edit') }}" class="glass-card p-4 flex items-center justify-center gap-3 hover:bg-amber-500 hover:text-white group transition-colors shadow-sm">
+                <a href="{{ route('student.testimonial.edit') }}" class="bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200/60 dark:border-white/10 rounded-[2rem] p-4 flex items-center justify-center gap-3 hover:bg-amber-500 hover:text-white group transition-colors shadow-sm relative overflow-hidden">
                     <span class="w-8 h-8 rounded-full bg-amber-500/10 group-hover:bg-white/15 text-amber-500 group-hover:text-white flex items-center justify-center transition-colors shrink-0">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.148 3.531a1 1 0 00.95.69h3.712c.969 0 1.371 1.24.588 1.81l-3.003 2.182a1 1 0 00-.364 1.118l1.147 3.531c.3.922-.755 1.688-1.539 1.118l-3.004-2.182a1 1 0 00-1.175 0l-3.004 2.182c-.784.57-1.838-.196-1.539-1.118l1.148-3.531a1 1 0 00-.364-1.118L2.65 8.958c-.783-.57-.38-1.81.588-1.81h3.712a1 1 0 00.95-.69l1.149-3.531z"></path>
