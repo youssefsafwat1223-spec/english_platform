@@ -80,7 +80,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </x-student.card>
 
         {{-- Stats Grid Removed --}}
 
