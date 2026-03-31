@@ -1,23 +1,24 @@
 @extends('layouts.app')
 
-@section('title', __('Community Forum') . ' — ' . config('app.name'))
+@section('title', __('Community Forum') . ' - ' . config('app.name'))
 
 @section('content')
 <div class="py-12 lg:py-16 relative min-h-screen z-10">
     <div class="absolute top-0 left-0 w-full h-[600px] bg-gradient-to-b from-primary-600/10 via-accent-500/5 to-transparent pointer-events-none z-0"></div>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <div class="student-container relative z-10">
         {{-- Header Section --}}
         {{-- Header Section --}}
         <x-student.page-header
-            title="{{ __('Community') }} <span class='text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-primary-500'>{{ __('Forum') }}</span>"
+            title="{{ __('Community') }} <span class='text-transparent bg-clip-text bg-gradient-to-r from-primary-500 to-accent-500'>{{ __('Forum') }}</span>"
             subtitle="{{ __('Connect with fellow learners, share your knowledge, ask questions, and grow together.') }}"
-            badge="💬 {{ __('Discussion Board') }}"
-            badgeColor="violet"
+            badge="{{ __('Discussion Board') }}"
+            badgeColor="primary"
+            badgeIcon="<svg class='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24' aria-hidden='true'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M7 8h10M7 12h7m8 0a8 8 0 1 1-3.2-6.4L21 3v9Z'/></svg>"
             mb="mb-12"
         >
             <x-slot name="actions">
-                <a href="{{ route('student.forum.my-topics') }}" class="btn-primary ripple-btn flex items-center justify-center gap-2 px-6 py-3 rounded-xl shadow-lg shadow-violet-500/25 font-bold bg-gradient-to-r from-violet-600 to-violet-500 hover:from-violet-500 hover:to-violet-400 border-none text-white transition-all transform hover:scale-105 w-full sm:w-auto">
+                <a href="{{ route('student.forum.my-topics') }}" class="btn-primary ripple-btn flex items-center justify-center gap-2 px-6 py-3 rounded-xl shadow-lg shadow-primary-500/25 font-bold bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-500 hover:to-primary-400 border-none text-white transition-all transform hover:scale-105 w-full sm:w-auto">
                     <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                     {{ __('My Topics') }}
                 </a>
@@ -151,3 +152,9 @@
     </div>
 </div>
 @endsection
+
+
+
+
+
+

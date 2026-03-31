@@ -14,16 +14,16 @@
 <div class="py-12 lg:py-16 relative min-h-screen z-10">
     <div class="absolute top-0 left-0 w-full h-[600px] bg-gradient-to-b from-primary-600/10 via-accent-500/5 to-transparent pointer-events-none z-0"></div>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <div class="student-container relative z-10">
         <x-student.page-header
-            title="{{ __('ui.referrals.hero_title_prefix') }} <span class='text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-primary-500'>{{ __('ui.referrals.hero_title_highlight') }}</span>"
+            title="{{ __('ui.referrals.hero_title_prefix') }} <span class='text-transparent bg-clip-text bg-gradient-to-r from-primary-500 to-accent-500'>{{ __('ui.referrals.hero_title_highlight') }}</span>"
             subtitle="{{ __('ui.referrals.hero_text') }}"
             badge="{{ __('ui.referrals.badge') }}"
-            badgeColor="violet"
+            badgeColor="primary"
             badgeIcon="<svg class='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24' aria-hidden='true'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M12 8v13m0-13V6a2 2 0 1 1 2 2h-2Zm0 0V5.5A2.5 2.5 0 1 0 9.5 8H12Zm-7 4h14M5 12a2 2 0 1 1 0-4h14a2 2 0 1 1 0 4M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7'/></svg>"
         >
             <x-slot name="actions">
-                <a href="{{ route('student.referrals.how-it-works') }}" class="btn-primary ripple-btn px-6 py-3 rounded-xl shadow-lg shadow-violet-500/25 flex items-center gap-2 font-bold bg-gradient-to-r from-violet-600 to-violet-500 hover:from-violet-500 hover:to-violet-400 border-none text-white transition-all transform hover:scale-105">
+                <a href="{{ route('student.referrals.how-it-works') }}" class="btn-primary ripple-btn px-6 py-3 rounded-xl shadow-lg shadow-primary-500/25 flex items-center gap-2 font-bold bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-500 hover:to-primary-400 border-none text-white transition-all transform hover:scale-105">
                     <span class="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center shadow-inner shrink-0">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.09 9a3 3 0 1 1 5.82 1c0 2-3 2-3 4"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 17h.01"/></svg>
                     </span>
@@ -80,8 +80,8 @@
                 @endif
 
                 @if($hasFreeEnrollment)
-                    <div class="mt-8 rounded-2xl p-6 bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/30 max-w-xl mx-auto flex items-center gap-4 text-right">
-                        <div class="w-14 h-14 rounded-full bg-green-500 text-white flex items-center justify-center shrink-0 shadow-lg shadow-green-500/30">
+                    <div class="mt-8 rounded-2xl p-6 bg-gradient-to-r from-primary-500/10 to-amber-500/10 border border-primary-500/20 max-w-xl mx-auto flex items-center gap-4 text-right">
+                        <div class="w-14 h-14 rounded-full bg-amber-500 text-white flex items-center justify-center shrink-0 shadow-lg shadow-amber-500/30">
                             <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V6a2 2 0 1 1 2 2h-2Zm0 0V5.5A2.5 2.5 0 1 0 9.5 8H12Zm-7 4h14M5 12a2 2 0 1 1 0-4h14a2 2 0 1 1 0 4M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg>
                         </div>
                         <div class="text-right">
@@ -233,20 +233,25 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="px-6 py-16 text-center">
-                                    <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-slate-100 dark:bg-slate-800 mb-6 border border-slate-200 dark:border-white/5 shadow-inner">
-                                        <svg class="w-10 h-10 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="10" cy="7" r="4" stroke-width="1.8"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M20 8a3 3 0 1 1-2.2 5"/></svg>
-                                    </div>
-                                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">{{ __('ui.referrals.empty_title') }}</h3>
-                                    <p class="text-slate-500 dark:text-slate-400 mb-6 max-w-sm mx-auto">
-                                        {{ __('ui.referrals.empty_text') }}
-                                    </p>
-                                    <button onclick="copyReferralLink()" class="btn-primary ripple-btn inline-flex items-center gap-2">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
-                                        </svg>
-                                        {{ __('ui.referrals.copy_link') }}
-                                    </button>
+                                <td colspan="4" class="px-6 py-12">
+                                    <x-student.empty-state
+                                        title="{{ __('ui.referrals.empty_title') }}"
+                                        message="{{ __('ui.referrals.empty_text') }}"
+                                    >
+                                        <x-slot name="icon">
+                                            <svg class="h-10 w-10 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="10" cy="7" r="4" stroke-width="1.8"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M20 8a3 3 0 1 1-2.2 5"/>
+                                            </svg>
+                                        </x-slot>
+                                        <x-slot name="actions">
+                                            <button onclick="copyReferralLink()" class="btn-primary ripple-btn inline-flex items-center gap-2">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                                </svg>
+                                                {{ __('ui.referrals.copy_link') }}
+                                            </button>
+                                        </x-slot>
+                                    </x-student.empty-state>
                                 </td>
                             </tr>
                         @endforelse
@@ -280,3 +285,9 @@ function copyReferralLink() {
 </script>
 @endpush
 @endsection
+
+
+
+
+
+

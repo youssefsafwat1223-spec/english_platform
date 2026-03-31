@@ -1,14 +1,14 @@
 @extends('layouts.app')
 
-@section('title', $topic->title . ' — Forum')
+@section('title', $topic->title . ' - Forum')
 
 @section('content')
 <div class="py-12 lg:py-16 relative min-h-screen z-10">
     {{-- Ambient Background --}}
-    <div class="absolute top-0 right-0 w-[500px] h-[500px] rounded-full blur-3xl pointer-events-none -mr-24 -mt-24 z-0 bg-gradient-to-br from-violet-500/10 to-cyan-500/5"></div>
+    <div class="absolute top-0 right-0 w-[500px] h-[500px] rounded-full blur-3xl pointer-events-none -mr-24 -mt-24 z-0 bg-gradient-to-br from-primary-500/10 to-accent-500/5"></div>
     <div class="absolute top-0 left-0 w-full h-[600px] bg-gradient-to-b from-primary-600/5 via-accent-500/5 to-transparent pointer-events-none z-0"></div>
 
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <div class="student-container max-w-4xl relative z-10">
 
         {{-- Breadcrumb --}}
         <nav class="mb-8 text-sm font-medium" data-aos="fade-down">
@@ -41,7 +41,7 @@
             {{-- Topic Header --}}
             <div class="px-6 md:px-8 py-6 md:py-8 border-b border-slate-200/50 dark:border-white/5 relative z-10">
                 <div class="flex items-start gap-4 md:gap-6">
-                    <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-white text-xl font-bold shrink-0 shadow-lg shadow-primary-500/20 bg-gradient-to-br from-violet-500 to-cyan-500 border-2 border-white dark:border-slate-800 z-10 transition-transform group-hover:scale-105 group-hover:rotate-3">
+                    <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-white text-xl font-bold shrink-0 shadow-lg shadow-primary-500/20 bg-gradient-to-br from-primary-500 to-accent-500 border-2 border-white dark:border-slate-800 z-10 transition-transform group-hover:scale-105 group-hover:rotate-3">
                         {{ strtoupper(substr($topic->user->name, 0, 1)) }}
                     </div>
                     <div class="flex-1 min-w-0">
@@ -61,7 +61,7 @@
                             @endif
                         </div>
                         <div class="flex flex-wrap items-center gap-3 md:gap-4 text-xs md:text-sm font-medium text-slate-500 dark:text-slate-400">
-                            <span class="inline-flex items-center gap-1.5 text-violet-600 dark:text-violet-400 font-bold bg-violet-500/10 px-2 py-0.5 rounded-md border border-violet-500/10">
+                            <span class="inline-flex items-center gap-1.5 text-primary-600 dark:text-primary-400 font-bold bg-primary-500/10 px-2 py-0.5 rounded-md border border-primary-500/10">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                                 {{ $topic->user->name }}
                             </span>
@@ -301,3 +301,9 @@ document.addEventListener('DOMContentLoaded', () => {
 </style>
 @endpush
 @endsection
+
+
+
+
+
+

@@ -4,7 +4,7 @@
     'iconColor' => 'primary',
     'headerBorder' => true,
     'padding' => 'p-6 lg:p-8',
-    'rounded' => 'rounded-[1.5rem] lg:rounded-[2rem]',
+    'rounded' => 'rounded-xl lg:rounded-[1.5rem]',
     'mb' => 'mb-8'
 ])
 

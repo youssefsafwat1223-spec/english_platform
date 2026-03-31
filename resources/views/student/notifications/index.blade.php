@@ -8,21 +8,21 @@
 
 @section('content')
 <div class="py-12 relative min-h-screen z-10">
-    <div class="max-w-4xl mx-auto sm:px-6 lg:px-8 space-y-8">
+    <div class="student-container max-w-4xl space-y-8">
 
         {{-- ─── HEADER SECTION ─── --}}
         <x-student.page-header
-            title="{{ $isArabic ? 'آخر' : 'Your' }} <span class='text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-primary-500'>{{ $isArabic ? 'التحديثات' : 'Updates' }}</span>"
+            title="{{ $isArabic ? 'آخر' : 'Your' }} <span class='text-transparent bg-clip-text bg-gradient-to-r from-primary-500 to-accent-500'>{{ $isArabic ? 'التحديثات' : 'Updates' }}</span>"
             subtitle="{{ $isArabic ? 'تابع تقدمك الدراسي وإنجازاتك وأي نشاط جديد على حسابك من مكان واحد.' : 'Stay on top of your learning progress, achievements, and account activity.' }}"
             badge="{{ $isArabic ? 'الإشعارات' : 'Notifications' }}"
-            badgeColor="violet"
+            badgeColor="primary"
             badgeIcon="<svg class='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24' aria-hidden='true'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M15 17h5l-1.41-1.41A2 2 0 0 1 18 14.17V11a6 6 0 1 0-12 0v3.17a2 2 0 0 1-.59 1.42L4 17h5'/><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M10 17a2 2 0 1 0 4 0'/></svg>"
         >
             <x-slot name="actions">
                 @if(isset($unreadCount) && $unreadCount > 0)
                     <form action="{{ route('student.notifications.mark-all-read') }}" method="POST" class="shrink-0">
                         @csrf
-                        <button type="submit" class="btn-primary ripple-btn px-6 py-3 rounded-xl shadow-lg shadow-violet-500/25 flex items-center gap-2 font-bold bg-gradient-to-r from-violet-600 to-violet-500 hover:from-violet-500 hover:to-violet-400 border-none text-white transition-all transform hover:scale-105">
+                        <button type="submit" class="btn-primary ripple-btn px-6 py-3 rounded-xl shadow-lg shadow-primary-500/25 flex items-center gap-2 font-bold bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-500 hover:to-primary-400 border-none text-white transition-all transform hover:scale-105">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                             {{ $isArabic ? 'تحديد الكل كمقروء' : 'Mark All Read' }}
                             <span class="ml-2 px-2 py-0.5 rounded-md bg-white/20 text-xs shadow-inner">{{ $unreadCount }}</span>
@@ -45,7 +45,7 @@
                         'forum' => ['icon' => 'chat-bubble', 'color' => 'primary'],
                         'course' => ['icon' => 'book-open', 'color' => 'indigo'],
                         'achievement' => ['icon' => 'sparkles', 'color' => 'amber'],
-                        'default' => ['icon' => 'bell', 'color' => 'violet'],
+                        'default' => ['icon' => 'bell', 'color' => 'primary'],
                     ];
                     $typeData = $typeIcons[$notification->notification_type ?? 'default'] ?? $typeIcons['default'];
                     $icon = $typeData['icon'];
@@ -132,17 +132,12 @@
                     </div>
                 </x-student.card>
             @empty
-                {{-- Empty State --}}
-                <x-student.card padding="p-12 lg:p-16" class="text-center py-20" data-aos="fade-up">
-                    <div class="w-24 h-24 rounded-full bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900 flex items-center justify-center mx-auto mb-6 shadow-inner border border-white/50 dark:border-white/5">
-                        <svg class="w-10 h-10 text-slate-500 dark:text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 17h5l-1.41-1.41A2 2 0 0118 14.17V11a6 6 0 10-12 0v3.17a2 2 0 01-.59 1.42L4 17h5"></path>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M10 17a2 2 0 104 0"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-2xl font-black text-slate-900 dark:text-white mb-2">{{ $isArabic ? 'لا توجد إشعارات جديدة' : 'All Caught Up!' }}</h3>
-                    <p class="text-slate-500 dark:text-slate-400 mx-auto max-w-sm">{{ $isArabic ? 'ليس لديك إشعارات نشطة حاليًا. سنخبرك فور حدوث أي شيء جديد.' : 'You have no active notifications at the moment. We\'ll let you know when something new happens.' }}</p>
-                </x-student.card>
+                <x-student.empty-state
+                    title="{{ $isArabic ? 'لا توجد إشعارات جديدة' : 'All Caught Up!' }}"
+                    message="{{ $isArabic ? 'ليس لديك إشعارات نشطة حاليًا. سنخبرك فور حدوث أي شيء جديد.' : 'You have no active notifications at the moment. We\'ll let you know when something new happens.' }}"
+                    :icon="\"<svg class='w-10 h-10 text-slate-500 dark:text-slate-300' fill='none' stroke='currentColor' viewBox='0 0 24 24'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='1.8' d='M15 17h5l-1.41-1.41A2 2 0 0 1 18 14.17V11a6 6 0 10-12 0v3.17a2 2 0 0 1-.59 1.42L4 17h5'></path><path stroke-linecap='round' stroke-linejoin='round' stroke-width='1.8' d='M10 17a2 2 0 104 0'></path></svg>\""
+                    data-aos="fade-up"
+                />
             @endforelse
         </div>
 
@@ -156,3 +151,9 @@
     </div>
 </div>
 @endsection
+
+
+
+
+
+

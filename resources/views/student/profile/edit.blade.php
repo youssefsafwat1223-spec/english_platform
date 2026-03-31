@@ -1,15 +1,15 @@
 @extends('layouts.app')
 
-@section('title', __('Edit Profile') . ' — ' . config('app.name'))
+@section('title', __('Edit Profile') . ' - ' . config('app.name'))
 
 @section('content')
 <div class="py-12 relative overflow-hidden">
     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[400px] bg-gradient-to-b from-primary-500/8 to-transparent pointer-events-none z-0"></div>
 
-    <div class="max-w-4xl mx-auto sm:px-6 lg:px-8 relative z-10">
+    <div class="student-container max-w-4xl relative z-10">
         {{-- Header Section --}}
         <x-student.card class="relative" padding="p-8" mb="mb-8" data-aos="fade-down">
-            <div class="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-transparent to-primary-500/10 opacity-50"></div>
+            <div class="absolute inset-0 bg-gradient-to-br from-primary-500/10 via-transparent to-amber-500/10 opacity-50"></div>
             
             <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div>
@@ -18,7 +18,7 @@
                         {{ __('Settings') }}
                     </div>
                     <h1 class="text-3xl md:text-5xl font-extrabold mb-2 text-slate-900 dark:text-white tracking-tight">
-                        {{ __('Edit') }} <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-primary-500">{{ __('Profile') }}</span>
+                        {{ __('Edit') }} <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-amber-500">{{ __('Profile') }}</span>
                     </h1>
                     <p class="text-slate-600 dark:text-slate-400 font-medium max-w-2xl">
                         {{ __('Update your personal information.') }}
@@ -177,3 +177,9 @@
     </div>
 </div>
 @endsection
+
+
+
+
+
+

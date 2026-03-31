@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
-@section('title', $category->name . ' — Forum')
+@section('title', $category->name . ' - Forum')
 
 @section('content')
 <div class="py-12 lg:py-16 relative min-h-screen z-10">
     <div class="absolute top-0 left-0 w-full h-[600px] bg-gradient-to-b from-primary-600/10 via-accent-500/5 to-transparent pointer-events-none z-0"></div>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <div class="student-container relative z-10">
         {{-- Breadcrumb Navigation --}}
         <nav class="mb-6 text-sm font-medium" data-aos="fade-down">
             <ol class="flex items-center gap-2 text-slate-500 dark:text-slate-400">
@@ -78,7 +78,7 @@
                                 </p>
                                 
                                 <div class="flex flex-wrap items-center gap-3 md:gap-4 text-[11px] md:text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                                    <span class="flex items-center gap-1.5 text-violet-600 dark:text-violet-400 bg-violet-500/10 px-2 py-0.5 rounded-md">
+                                    <span class="flex items-center gap-1.5 text-primary-600 dark:text-primary-400 bg-primary-500/10 px-2 py-0.5 rounded-md">
                                         {{ $topic->user->name }}
                                     </span>
                                     <span class="flex items-center gap-1.5">
@@ -110,7 +110,7 @@
                                 @else
                                     <div class="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">{{ __('Posted via') }}</div>
                                     <div class="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2 mb-1">
-                                        <div class="w-5 h-5 rounded-full bg-violet-500/20 text-violet-600 dark:text-violet-400 flex items-center justify-center text-[10px] uppercase font-black">
+                                        <div class="w-5 h-5 rounded-full bg-primary-500/20 text-primary-600 dark:text-primary-400 flex items-center justify-center text-[10px] uppercase font-black">
                                             {{ substr($topic->user->name, 0, 1) }}
                                         </div>
                                         {{ $topic->user->name }}
@@ -128,19 +128,19 @@
                     </div>
                 </x-student.card>
             @empty
-                <x-student.card padding="p-12" class="text-center relative overflow-hidden bg-slate-50 dark:bg-slate-800/50" data-aos="fade-up">
-                    <div class="relative z-10 w-24 h-24 mx-auto rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center mb-6 shadow-inner text-5xl">
-                        💬
-                    </div>
-                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2 relative z-10">{{ __('No topics found here yet') }}</h3>
-                    <p class="text-slate-500 dark:text-slate-400 font-medium max-w-sm mx-auto relative z-10 mb-8">
-                        {{ __('Be the first to start a conversation in this category!') }}
-                    </p>
-                    <a href="{{ route('student.forum.create-topic', $category->slug) }}" class="btn-primary ripple-btn inline-flex items-center gap-2 relative z-10">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                        {{ __('Create First Topic') }}
-                    </a>
-                </x-student.card>
+                <x-student.empty-state
+                    title="{{ __('No topics found here yet') }}"
+                    message="{{ __('Be the first to start a conversation in this category!') }}"
+                    :icon="\"<div class='text-5xl'>💬</div>\""
+                    data-aos="fade-up"
+                >
+                    <x-slot name="actions">
+                        <a href="{{ route('student.forum.create-topic', $category->slug) }}" class="btn-primary ripple-btn inline-flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                            {{ __('Create First Topic') }}
+                        </a>
+                    </x-slot>
+                </x-student.empty-state>
             @endforelse
         </div>
 
@@ -152,3 +152,9 @@
     </div>
 </div>
 @endsection
+
+
+
+
+
+

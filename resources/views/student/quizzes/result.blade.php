@@ -8,9 +8,9 @@
 
 @section('content')
 <div class="py-12 lg:py-16 relative min-h-screen z-10">
-    <div class="absolute top-0 left-0 w-full h-[600px] bg-gradient-to-b {{ $attempt->passed ? 'from-emerald-500/10 via-teal-500/5' : 'from-rose-500/10 via-red-500/5' }} to-transparent pointer-events-none z-0"></div>
+    <div class="absolute top-0 left-0 w-full h-[600px] bg-gradient-to-b {{ $attempt->passed ? 'from-primary-500/10 via-primary-400/5' : 'from-amber-500/10 via-amber-400/5' }} to-transparent pointer-events-none z-0"></div>
 
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <div class="student-container max-w-4xl relative z-10">
         {{-- Breadcrumb Navigation (Optional but good UX) --}}
         @if(isset($attempt->quiz) && isset($attempt->quiz->lesson))
             <nav class="mb-6 text-sm font-medium" data-aos="fade-down">
@@ -40,7 +40,7 @@
                     @endif
                 </div>
 
-                <h1 class="text-4xl md:text-5xl font-black mb-3 tracking-tight bg-clip-text text-transparent {{ $attempt->passed ? 'bg-gradient-to-r from-emerald-600 to-teal-400' : 'bg-gradient-to-r from-rose-600 to-red-400' }}">
+                <h1 class="text-4xl md:text-5xl font-black mb-3 tracking-tight bg-clip-text text-transparent {{ $attempt->passed ? 'bg-gradient-to-r from-primary-600 to-primary-400' : 'bg-gradient-to-r from-amber-600 to-amber-400' }}">
                     {{ $attempt->passed ? ($isArabic ? 'أحسنت!' : 'Congratulations!') : ($isArabic ? 'حاول مرة أخرى' : 'Keep Trying!') }}
                 </h1>
                 <p class="text-lg text-slate-600 dark:text-slate-300 mb-10 font-medium">
@@ -95,12 +95,12 @@
                         $nextLesson = $lesson->next_lesson;
                     @endphp
                     @if($nextLesson)
-                        <a href="{{ route('student.lessons.show', [$lesson->course, $nextLesson]) }}" class="btn-primary ripple-btn px-8 py-4 rounded-xl shadow-lg font-bold flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 border-0 text-white text-lg">
+                        <a href="{{ route('student.lessons.show', [$lesson->course, $nextLesson]) }}" class="btn-primary ripple-btn px-8 py-4 rounded-xl shadow-lg font-bold flex items-center gap-2 bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-500 hover:to-primary-400 border-0 text-white text-lg">
                             {{ $isArabic ? 'الدرس التالي' : 'Next Lesson' }}
                             <svg class="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                         </a>
                     @else
-                        <a href="{{ route('student.courses.learn', $attempt->quiz->lesson->course) }}" class="btn-primary ripple-btn px-8 py-4 rounded-xl shadow-lg font-bold flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 border-0 text-white text-lg">
+                        <a href="{{ route('student.courses.learn', $attempt->quiz->lesson->course) }}" class="btn-primary ripple-btn px-8 py-4 rounded-xl shadow-lg font-bold flex items-center gap-2 bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-500 hover:to-primary-400 border-0 text-white text-lg">
                             {{ $isArabic ? 'العودة إلى الكورس' : 'Back to Course' }}
                         </a>
                     @endif
@@ -148,7 +148,7 @@
                             <div class="flex items-start gap-4">
                                 {{-- Status Icon --}}
                                 <div class="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 shadow-inner 
-                                    {{ $isCorrect ? 'bg-gradient-to-br from-emerald-500 to-teal-400 text-white' : 'bg-gradient-to-br from-rose-500 to-red-400 text-white' }}">
+                                    {{ $isCorrect ? 'bg-gradient-to-br from-primary-500 to-primary-400 text-white' : 'bg-gradient-to-br from-amber-500 to-amber-400 text-white' }}">
                                     @if($isCorrect)
                                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
                                     @else
@@ -230,3 +230,8 @@
     </div>
 </div>
 @endsection
+
+
+
+
+

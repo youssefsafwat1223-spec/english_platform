@@ -72,7 +72,7 @@
 <div class="py-12 relative overflow-hidden" x-data="pronunciationApp()">
     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[400px] bg-gradient-to-b from-primary-500/8 to-transparent pointer-events-none z-0"></div>
 
-    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <div class="student-container max-w-3xl relative z-10">
         <x-student.page-header
             title="{{ $pageTitle }}"
             subtitle="{{ $exercise->lesson->title ?? $messages['subtitle'] }}"
@@ -563,3 +563,8 @@ if ('speechSynthesis' in window) {
 </script>
 @endpush
 @endsection
+
+
+
+
+

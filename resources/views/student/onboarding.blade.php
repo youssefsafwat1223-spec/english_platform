@@ -19,7 +19,7 @@
     <div class="absolute top-20 left-10 w-72 h-72 rounded-full bg-white/10 blur-3xl animate-float pointer-events-none"></div>
     <div class="absolute bottom-20 right-10 w-96 h-96 rounded-full bg-white/5 blur-3xl animate-float-slow pointer-events-none"></div>
 
-    <div class="w-full max-w-2xl mx-auto px-4 relative z-10" x-cloak>
+    <div class="w-full student-container max-w-2xl relative z-10" x-cloak>
 
         {{-- Main Container Card --}}
         <x-student.card padding="p-0" class="shadow-2xl border-t-4 border-primary-500 overflow-hidden relative" data-aos="fade-up">
@@ -397,3 +397,8 @@
 </script>
 @endpush
 @endsection
+
+
+
+
+

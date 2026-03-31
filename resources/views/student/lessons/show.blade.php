@@ -6,7 +6,7 @@
 <div class="py-6 lg:py-10 relative min-h-screen z-10">
     <div class="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-primary-600/5 via-accent-500/5 to-transparent pointer-events-none z-0"></div>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <div class="student-container relative z-10">
         
         {{-- Breadcrumb --}}
         <nav class="mb-8 text-sm font-medium" data-aos="fade-down">
@@ -412,9 +412,9 @@
                     <div class="space-y-6">
                         @if($lesson->pronunciationExercise)
                             <x-student.card padding="p-0" class="overflow-hidden relative group" data-aos="fade-up">
-                                <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-transparent pointer-events-none"></div>
+                                <div class="absolute inset-0 bg-gradient-to-br from-primary-500/10 to-transparent pointer-events-none"></div>
                                 <div class="px-6 py-5 border-b border-slate-200/50 dark:border-white/5 flex items-center gap-3 relative z-10">
-                                    <div class="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center shrink-0">
+                                    <div class="w-10 h-10 rounded-xl bg-primary-500/10 text-primary-500 flex items-center justify-center shrink-0">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3a3 3 0 013 3v5a3 3 0 11-6 0V6a3 3 0 013-3z"></path>
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 10a7 7 0 01-14 0m7 7v4m-4 0h8"></path>
@@ -424,7 +424,7 @@
                                 </div>
                                 <div class="p-6 relative z-10">
                                     <p class="text-sm mb-5 text-slate-600 dark:text-slate-400 font-medium">{{ __('حسّن مهاراتك في النطق مع تقييم فوري بالذكاء الاصطناعي.') }}</p>
-                                    <a href="{{ route('student.pronunciation.show', $lesson->pronunciationExercise) }}" class="btn-primary ripple-btn w-full justify-center shadow-lg shadow-indigo-500/25 bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 border-0 flex items-center gap-2">
+                                    <a href="{{ route('student.pronunciation.show', $lesson->pronunciationExercise) }}" class="btn-primary ripple-btn w-full justify-center shadow-lg shadow-primary-500/25 bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-500 hover:to-primary-400 border-0 flex items-center gap-2">
                                         {{ __('ابدأ التمرين') }}
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
                                     </a>
@@ -573,15 +573,16 @@
                                     </div>
                                 </div>
                             @empty
-                                <div class="text-center py-12 px-4 rounded-2xl border border-dashed border-slate-300 dark:border-slate-700/50 bg-slate-50 dark:bg-slate-800/20">
-                                    <div class="w-16 h-16 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center mx-auto mb-4 text-2xl">
-                                        <svg class="w-7 h-7 text-slate-500 dark:text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <x-student.empty-state
+                                    title="{{ __('لا يوجد تعليقات') }}"
+                                    message="{{ __('كن أول من يسأل سؤال أو يشارك رأيه!') }}"
+                                >
+                                    <x-slot name="icon">
+                                        <svg class="h-10 w-10 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h8m-8 4h5m-9 6l2.4-2.4A2 2 0 016.8 17H18a2 2 0 002-2V7a2 2 0 00-2-2H6a2 2 0 00-2 2v11z"></path>
                                         </svg>
-                                    </div>
-                                    <p class="text-slate-900 dark:text-white font-bold mb-1">{{ __('لا يوجد تعليقات') }}</p>
-                                    <p class="text-sm text-slate-500 dark:text-slate-400">{{ __('كن أول من يسأل سؤال أو يشارك رأيه!') }}</p>
-                                </div>
+                                    </x-slot>
+                                </x-student.empty-state>
                             @endforelse
                         </div>
                     </div>
@@ -612,7 +613,7 @@
                                     <p class="text-center text-xs font-bold text-amber-600 dark:text-amber-400">{{ __('لن يتم اعتبار الدرس مكتملًا قبل نجاحك في الاختبار.') }}</p>
                                 </div>
                             @else
-                                <button type="button" onclick="markAsComplete(this)" class="btn-primary ripple-btn px-8 py-4 rounded-xl shadow-lg shadow-primary-500/25 font-bold flex items-center justify-center gap-2 w-full sm:w-auto bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 border-0">
+                                <button type="button" onclick="markAsComplete(this)" class="btn-primary ripple-btn px-8 py-4 rounded-xl shadow-lg shadow-primary-500/25 font-bold flex items-center justify-center gap-2 w-full sm:w-auto bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-500 hover:to-primary-400 border-0">
                                     <span class="bg-black/20 rounded-full p-1"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg></span>
                                     {{ __('تم الانتهاء') }}
                                 </button>
@@ -764,7 +765,7 @@ function markAsComplete(btn) {
             
             // Success animation
             btn.innerHTML = `<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> ${lessonUiText.completed}`;
-            btn.classList.add('bg-emerald-500', 'from-emerald-500', 'to-emerald-400');
+            btn.classList.add('bg-primary-500', 'from-primary-500', 'to-primary-400');
             
             setTimeout(() => {
                 @if($nextLesson)
@@ -922,4 +923,9 @@ if ('speechSynthesis' in window) {
 </style>
 @endpush
 @endsection
+
+
+
+
+
 

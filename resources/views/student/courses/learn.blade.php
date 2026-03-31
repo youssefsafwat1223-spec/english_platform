@@ -15,7 +15,7 @@
     <div class="absolute top-0 left-0 w-full h-[50vh] bg-gradient-to-b from-primary-50/50 to-slate-50 dark:from-primary-900/10 dark:to-[#020617] pointer-events-none z-0"></div>
     <div class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary-500/20 to-transparent"></div>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 pt-8 lg:pt-16 pb-12">
+    <div class="student-container relative z-10 pt-8 lg:pt-16 pb-12">
         
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
             
@@ -217,7 +217,7 @@
                                                         <span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-slate-300 dark:bg-slate-600"></span> {{ $lesson->formatted_duration }}</span>
                                                     @endif
                                                     @if($lesson->has_quiz)
-                                                        <span class="inline-flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.5 rounded bg-violet-50 text-violet-600 dark:bg-violet-500/10 dark:text-violet-400 ml-1">
+                                                        <span class="inline-flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.5 rounded bg-primary-50 text-primary-600 dark:bg-primary-500/10 dark:text-primary-400 ml-1">
                                                             <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6M9 8h6m3 11H6a2 2 0 01-2-2V7a2 2 0 012-2h8l4 4v8a2 2 0 01-2 2Z" />
                                                             </svg>
@@ -246,15 +246,16 @@
                             </div>
                         </div>
                         @empty
-                        <div class="text-center p-12 text-slate-500 bg-white dark:bg-slate-800/20 rounded-[2rem] border-2 border-dashed border-slate-200 dark:border-white/10 shadow-sm">
-                            <div class="w-20 h-20 rounded-full bg-slate-50 dark:bg-white/5 flex items-center justify-center text-primary-500 mx-auto mb-4 border border-slate-100 dark:border-white/5">
-                                <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <x-student.empty-state
+                            title="{{ __('ui.learn.no_lessons_title') }}"
+                            message="{{ __('ui.learn.no_lessons_text') }}"
+                        >
+                            <x-slot name="icon">
+                                <svg class="h-10 w-10 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                                 </svg>
-                            </div>
-                            <div class="font-black text-xl mb-2 text-slate-700 dark:text-slate-300">{{ __('ui.learn.no_lessons_title') }}</div>
-                            <div class="text-sm font-semibold opacity-70">{{ __('ui.learn.no_lessons_text') }}</div>
-                        </div>
+                            </x-slot>
+                        </x-student.empty-state>
                         @endforelse
 
                         {{-- Fallback: Lessons NOT assigned to any level --}}
@@ -312,7 +313,7 @@
                                                         <span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-slate-300 dark:bg-slate-600"></span> {{ $lesson->formatted_duration }}</span>
                                                     @endif
                                                     @if($lesson->has_quiz)
-                                                        <span class="inline-flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.5 rounded bg-violet-50 text-violet-600 dark:bg-violet-500/10 dark:text-violet-400 ml-1">
+                                                        <span class="inline-flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.5 rounded bg-primary-50 text-primary-600 dark:bg-primary-500/10 dark:text-primary-400 ml-1">
                                                             <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6M9 8h6m3 11H6a2 2 0 01-2-2V7a2 2 0 012-2h8l4 4v8a2 2 0 01-2 2Z" />
                                                             </svg>
@@ -408,4 +409,9 @@
     </div>
 </div>
 @endsection
+
+
+
+
+
 

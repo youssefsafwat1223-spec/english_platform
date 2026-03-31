@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
-@section('title', __('Create Topic') . ' — ' . config('app.name'))
+@section('title', __('Create Topic') . ' - ' . config('app.name'))
 
 @section('content')
 <div class="py-12 lg:py-16 relative min-h-screen z-10">
     <div class="absolute top-0 left-0 w-full h-[600px] bg-gradient-to-b from-primary-600/10 via-accent-500/5 to-transparent pointer-events-none z-0"></div>
 
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <div class="student-container max-w-4xl relative z-10">
         {{-- Header Section --}}
         <div class="mb-10 text-center" data-aos="fade-down">
             <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary-500/10 border border-primary-500/20 text-primary-600 dark:text-primary-400 text-xs font-bold uppercase tracking-wider mb-4">
@@ -98,3 +98,9 @@
     </div>
 </div>
 @endsection
+
+
+
+
+
+

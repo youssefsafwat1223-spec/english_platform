@@ -9,13 +9,13 @@
 
 @section('content')
 <div class="py-12 relative min-h-screen z-10">
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-8">
+    <div class="student-container space-y-8">
         <x-student.page-header
-            title="{!! __('Discover New') !!} <span class='text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-primary-500'>{{ __('Courses') }}</span>"
+            title="{!! __('Discover New') !!} <span class='text-transparent bg-clip-text bg-gradient-to-r from-primary-500 to-accent-500'>{{ __('Courses') }}</span>"
             subtitle="{{ __('Find the perfect course to level up your skills. Browse our expanding catalog of high-quality educational content.') }}"
             badge="{{ __('Explore Catalog') }}"
             badgeIcon='<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7l9-4 9 4-9-4zm0 5l9 4 9-4m-18 5l9 4 9-4"/></svg>'
-            badgeColor="violet"
+            badgeColor="primary"
         >
             <x-slot name="actions">
                 <div class="shrink-0 flex items-center justify-center w-32 h-32 relative group perspective-1000 hidden md:flex">
@@ -154,15 +154,16 @@
                 </x-student.card>
             @empty
                 <div class="col-span-1 md:col-span-2 lg:col-span-3">
-                    <x-student.card padding="p-0" class="text-center py-24 px-6 relative overflow-hidden" data-aos="fade-up">
-                        <div class="absolute inset-0 bg-gradient-to-br from-primary-500/5 to-accent-500/5"></div>
-                        <div class="w-24 h-24 rounded-full bg-white dark:bg-slate-800 flex items-center justify-center mx-auto mb-6 shadow-xl border border-slate-200 dark:border-white/10 relative z-10">
-                            <svg class="h-10 w-10 text-slate-400 dark:text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                        </div>
-                        <h3 class="text-2xl font-black text-slate-900 dark:text-white mb-3 relative z-10">{{ __('No courses found') }}</h3>
-                        <p class="text-slate-500 dark:text-slate-400 mb-8 max-w-md mx-auto relative z-10 font-medium">{{ __('We couldn\'t find any courses matching your search criteria. Try adjusting your filters.') }}</p>
-                        <a href="{{ route('student.courses.index') }}" class="btn-primary ripple-btn px-8 py-3 rounded-xl shadow-lg shadow-primary-500/30 relative z-10 font-bold">{{ __('Clear All Filters') }}</a>
-                    </x-student.card>
+                    <x-student.empty-state
+                        title="{{ __('No courses found') }}"
+                        message="{{ __('We couldn\'t find any courses matching your search criteria. Try adjusting your filters.') }}"
+                        :icon="\"<svg class='w-10 h-10 text-slate-400 dark:text-slate-500' fill='none' stroke='currentColor' viewBox='0 0 24 24'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='1.8' d='M9 12h6m-6 4h6m2 5H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5.586a1 1 0 0 1 .707.293l5.414 5.414a1 1 0 0 1 .293.707V19a2 2 0 0 1-2 2z'/></svg>\""
+                        data-aos="fade-up"
+                    >
+                        <x-slot name="actions">
+                            <a href="{{ route('student.courses.index') }}" class="btn-primary ripple-btn px-8 py-3 rounded-xl shadow-lg shadow-primary-500/30 font-bold">{{ __('Clear All Filters') }}</a>
+                        </x-slot>
+                    </x-student.empty-state>
                 </div>
             @endforelse
         </div>
@@ -173,3 +174,9 @@
     </div>
 </div>
 @endsection
+
+
+
+
+
+

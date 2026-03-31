@@ -13,7 +13,7 @@
         <div class="absolute inset-0 bg-gradient-to-b from-slate-50/50 via-slate-50/95 to-slate-50 dark:from-[#020617]/50 dark:via-[#020617]/95 dark:to-[#020617] transition-colors duration-500"></div>
     </div>
 
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 pt-24 lg:pt-32">
+    <div class="student-container max-w-6xl relative z-10 pt-24 lg:pt-32">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10" data-aos="fade-down">
             <div>
                 <a href="{{ route('student.courses.show', $course) }}" class="inline-flex items-center text-sm font-bold text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-white transition-colors mb-4 group">
@@ -216,4 +216,9 @@
     </div>
 </div>
 @endsection
+
+
+
+
+
 

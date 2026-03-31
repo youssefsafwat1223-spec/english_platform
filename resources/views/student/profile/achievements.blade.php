@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
-@section('title', __('Achievements') . ' — ' . config('app.name'))
+@section('title', __('Achievements') . ' - ' . config('app.name'))
 
 @section('content')
 <div class="py-12 relative overflow-hidden">
     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[400px] bg-gradient-to-b from-primary-500/8 to-transparent pointer-events-none z-0"></div>
 
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 relative z-10">
+    <div class="student-container relative z-10">
         {{-- Header Section --}}
         <x-student.page-header
             title="{{ __('My') }} <span class='text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-primary-500'>{{ __('Achievements') }}</span>"
@@ -41,7 +41,16 @@
                     </x-student.card>
                 @empty
                     <div class="col-span-4">
-                        <x-student.card padding="p-8" class="text-center text-slate-500 dark:text-slate-400">{{ __('No achievements earned yet.') }}</x-student.card>
+                        <x-student.empty-state
+                            title="{{ __('No achievements earned yet.') }}"
+                            message="{{ __('Complete lessons, quizzes, and battles to unlock your first achievements.') }}"
+                        >
+                            <x-slot name="icon">
+                                <svg class="h-12 w-12 text-slate-400 dark:text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 21h8M12 17v4M7 4h10a1 1 0 0 1 1 1v2a5 5 0 0 1-5 5h-2a5 5 0 0 1-5-5V5a1 1 0 0 1 1-1Z"/>
+                                </svg>
+                            </x-slot>
+                        </x-student.empty-state>
                     </div>
                 @endforelse
             </div>
@@ -72,3 +81,9 @@
     </div>
 </div>
 @endsection
+
+
+
+
+
+

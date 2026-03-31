@@ -21,7 +21,7 @@
 
 <div class="py-12 relative overflow-hidden">
     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[400px] bg-gradient-to-b from-primary-500/8 to-transparent pointer-events-none z-0"></div>
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <div class="student-container max-w-4xl relative z-10">
         <div class="text-center mb-10" data-aos="zoom-in">
             @if($isCancelled && !$isAbandoned)
                 <h1 class="text-4xl md:text-5xl font-extrabold mb-3 text-slate-900 dark:text-white">
@@ -87,7 +87,7 @@
                 </div>
 
                 <div class="text-center">
-                    <div class="w-16 h-16 rounded-full bg-gradient-to-r from-red-500 to-blue-500 flex items-center justify-center text-white font-black text-lg shadow-inner shadow-white/20">
+                    <div class="w-16 h-16 rounded-full bg-gradient-to-r from-primary-500 to-amber-500 flex items-center justify-center text-white font-black text-lg shadow-inner shadow-white/20">
                         VS
                     </div>
                 </div>
@@ -225,3 +225,8 @@ createConfetti();
 </script>
 @endif
 @endsection
+
+
+
+
+

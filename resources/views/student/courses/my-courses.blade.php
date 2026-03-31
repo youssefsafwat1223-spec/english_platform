@@ -1,17 +1,17 @@
 @extends('layouts.app')
 
-@section('title', __('My Courses') . ' — ' . config('app.name'))
+@section('title', __('My Courses') . ' - ' . config('app.name'))
 
 @section('content')
 <div class="py-12 relative overflow-hidden">
     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[400px] bg-gradient-to-b from-primary-500/8 to-transparent pointer-events-none z-0"></div>
 
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 relative z-10">
+    <div class="student-container relative z-10">
         {{-- Header Section --}}
         <x-student.page-header
             title="{{ __('My') }} <span class='text-transparent bg-clip-text bg-gradient-to-r from-primary-500 to-accent-500'>{{ __('Courses') }}</span>"
             subtitle="{{ __('Keep learning where you left off and finish your enrolled courses.') }}"
-            badge="📚 {{ __('Learning') }}"
+            badge="{{ __('Learning') }}"
             badgeColor="primary"
         >
             <x-slot name="actions">
@@ -101,12 +101,16 @@
                 </x-student.card>
             @empty
                 <div class="col-span-1 md:col-span-2 lg:col-span-3">
-                    <x-student.card padding="p-0" class="text-center py-16" data-aos="fade-up">
-                        <div class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-white/10 shadow-inner">📚</div>
-                        <p class="text-xl font-bold mb-2 text-slate-900 dark:text-white">{{ __('No courses yet') }}</p>
-                        <p class="mb-6 text-slate-500 dark:text-slate-400 max-w-sm mx-auto">{{ __('Start your learning journey today and enroll in your first course to see it here!') }}</p>
-                        <a href="{{ route('student.courses.index') }}" class="btn-primary ripple-btn px-6 py-2.5 font-bold shadow-lg shadow-primary-500/30">{{ __('Browse Courses') }}</a>
-                    </x-student.card>
+                    <x-student.empty-state
+                        title="{{ __('No courses yet') }}"
+                        message="{{ __('Start your learning journey today and enroll in your first course to see it here!') }}"
+                        :icon="\"<svg class='w-10 h-10 text-slate-500 dark:text-slate-300' fill='none' stroke='currentColor' viewBox='0 0 24 24'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='1.8' d='M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253'/></svg>\""
+                        data-aos="fade-up"
+                    >
+                        <x-slot name="actions">
+                            <a href="{{ route('student.courses.index') }}" class="btn-primary ripple-btn px-6 py-2.5 font-bold shadow-lg shadow-primary-500/30">{{ __('Browse Courses') }}</a>
+                        </x-slot>
+                    </x-student.empty-state>
                 </div>
             @endforelse
         </div>
@@ -115,3 +119,9 @@
     </div>
 </div>
 @endsection
+
+
+
+
+
+

@@ -10,17 +10,17 @@
 <div class="py-12 lg:py-16 relative min-h-screen z-10">
     <div class="absolute top-0 left-0 w-full h-[600px] bg-gradient-to-b from-primary-600/10 via-accent-500/5 to-transparent pointer-events-none z-0"></div>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <div class="student-container relative z-10">
         <x-student.page-header
-            title="{{ $isArabic ? 'ملاحظاتي' : 'My' }} <span class='text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-primary-500'>{{ $isArabic ? 'الدراسية' : 'Notes' }}</span>"
+            title="{{ $isArabic ? 'ملاحظاتي' : 'My' }} <span class='text-transparent bg-clip-text bg-gradient-to-r from-primary-500 to-accent-500'>{{ $isArabic ? 'الدراسية' : 'Notes' }}</span>"
             subtitle="{{ $isArabic ? 'هنا تجد كل الملاحظات التي كتبتها أثناء مشاهدة الدروس ومتابعة الكورسات.' : 'Your personal collection of notes taken during courses and lessons.' }}"
             badge="{{ $isArabic ? 'الدراسة' : 'Study' }}"
-            badgeColor="violet"
+            badgeColor="primary"
             badgeIcon="<svg class='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24' aria-hidden='true'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M9 3h6l4 4v12a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z'/><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M9 9h6M9 13h6M9 17h4'/></svg>"
         >
             <x-slot name="actions">
                 @if(isset($notes) && $notes->count() > 0)
-                    <a href="{{ route('student.notes.export-pdf') }}" class="btn-primary ripple-btn px-6 py-3 rounded-xl shadow-lg shadow-violet-500/25 flex items-center gap-2 font-bold bg-gradient-to-r from-violet-600 to-violet-500 hover:from-violet-500 hover:to-violet-400 border-none text-white transition-all transform hover:scale-105">
+                    <a href="{{ route('student.notes.export-pdf') }}" class="btn-primary ripple-btn px-6 py-3 rounded-xl shadow-lg shadow-primary-500/25 flex items-center gap-2 font-bold bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-500 hover:to-primary-400 border-none text-white transition-all transform hover:scale-105">
                         <svg class="w-5 h-5 transition-transform group-hover:-translate-y-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                         {{ $isArabic ? 'تصدير PDF' : 'Export PDF' }}
                     </a>
@@ -109,22 +109,19 @@
                     <a href="{{ route('student.notes.show', $note) }}" class="absolute inset-0 z-0"></a>
                 </x-student.card>
             @empty
-                <x-student.card class="col-span-1 md:col-span-2 lg:col-span-3 text-center relative bg-white/50 dark:bg-slate-900/50" padding="p-12 lg:p-16" data-aos="fade-up">
-                    <div class="relative z-10 w-24 h-24 mx-auto rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-6 shadow-inner border border-slate-200 dark:border-slate-700">
-                        <svg class="w-10 h-10 text-slate-500 dark:text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M7 4.75A2.75 2.75 0 019.75 2h6.19L21 7.06V19.25A2.75 2.75 0 0118.25 22h-8.5A2.75 2.75 0 017 19.25V4.75z"></path>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 2.5V7h4.5M10 11h4m-4 3h6m-6 3h4"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-2xl font-black text-slate-900 dark:text-white mb-3 relative z-10">{{ $isArabic ? 'لا توجد ملاحظات بعد' : 'No Notes Available' }}</h3>
-                    <p class="text-slate-500 dark:text-slate-400 font-medium max-w-sm mx-auto relative z-10 mb-8">
-                        {{ $isArabic ? 'لم تكتب أي ملاحظات حتى الآن. أثناء مشاهدة الدروس يمكنك استخدام قسم الملاحظات لتسجيل أهم النقاط.' : 'You haven\'t taken any notes yet. While watching lessons, use the notes section to jot down important information.' }}
-                    </p>
-                    <a href="{{ route('student.courses.my-courses') }}" class="btn-primary ripple-btn inline-flex items-center gap-2 relative z-10 shadow-lg shadow-primary-500/25">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
-                        {{ $isArabic ? 'اذهب إلى كورساتي' : 'Go to My Courses' }}
-                    </a>
-                </x-student.card>
+                <x-student.empty-state
+                    title="{{ $isArabic ? 'لا توجد ملاحظات بعد' : 'No Notes Available' }}"
+                    message="{{ $isArabic ? 'لم تكتب أي ملاحظات حتى الآن. أثناء مشاهدة الدروس يمكنك استخدام قسم الملاحظات لتسجيل أهم النقاط.' : 'You haven\'t taken any notes yet. While watching lessons, use the notes section to jot down important information.' }}"
+                    :icon="\"<svg class='w-10 h-10 text-slate-500 dark:text-slate-300' fill='none' stroke='currentColor' viewBox='0 0 24 24'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='1.8' d='M7 4.75A2.75 2.75 0 0 1 9.75 2h6.19L21 7.06V19.25A2.75 2.75 0 0 1 18.25 22h-8.5A2.75 2.75 0 0 1 7 19.25V4.75z'></path><path stroke-linecap='round' stroke-linejoin='round' stroke-width='1.8' d='M15 2.5V7h4.5M10 11h4m-4 3h6m-6 3h4'></path></svg>\""
+                    data-aos="fade-up"
+                >
+                    <x-slot name="actions">
+                        <a href="{{ route('student.courses.my-courses') }}" class="btn-primary ripple-btn inline-flex items-center gap-2 shadow-lg shadow-primary-500/25">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                            {{ $isArabic ? 'اذهب إلى كورساتي' : 'Go to My Courses' }}
+                        </a>
+                    </x-slot>
+                </x-student.empty-state>
             @endforelse
         </div>
 
@@ -136,3 +133,9 @@
     </div>
 </div>
 @endsection
+
+
+
+
+
+

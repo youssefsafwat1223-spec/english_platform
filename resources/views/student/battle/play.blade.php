@@ -26,7 +26,7 @@
 
 <div class="py-12 relative overflow-hidden">
     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[400px] bg-gradient-to-b from-primary-500/8 to-transparent pointer-events-none z-0"></div>
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <div class="student-container max-w-4xl relative z-10">
         <x-student.card padding="p-4" class="mb-6">
             <div class="flex items-center gap-4">
                 <div class="flex-1">
@@ -35,7 +35,7 @@
                         <span class="text-lg font-extrabold text-red-500" id="team-a-score">{{ $room->team_a_score }}</span>
                     </div>
                     <div class="w-full h-3 rounded-full bg-slate-200 dark:bg-slate-700/30 overflow-hidden">
-                        <div id="team-a-bar" class="h-full bg-gradient-to-r from-red-500 to-red-400 rounded-full score-bar" style="width: 50%;"></div>
+                        <div id="team-a-bar" class="h-full bg-gradient-to-r from-primary-500 to-primary-400 rounded-full score-bar" style="width: 50%;"></div>
                     </div>
                 </div>
 
@@ -47,7 +47,7 @@
                         <span class="text-lg font-extrabold text-blue-500" id="team-b-score">{{ $room->team_b_score }}</span>
                     </div>
                     <div class="w-full h-3 rounded-full bg-slate-200 dark:bg-slate-700/30 overflow-hidden">
-                        <div id="team-b-bar" class="h-full bg-gradient-to-r from-blue-500 to-blue-400 rounded-full score-bar" style="width: 50%;"></div>
+                        <div id="team-b-bar" class="h-full bg-gradient-to-r from-amber-500 to-amber-400 rounded-full score-bar" style="width: 50%;"></div>
                     </div>
                 </div>
             </div>
@@ -88,7 +88,7 @@
             </div>
 
             <div class="w-full h-1.5 rounded-full bg-slate-200 dark:bg-slate-700/30 mb-6 overflow-hidden">
-                <div id="timer-bar" class="h-full bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full transition-all duration-1000 ease-linear" style="width: 100%;"></div>
+                <div id="timer-bar" class="h-full bg-gradient-to-r from-primary-500 to-primary-400 rounded-full transition-all duration-1000 ease-linear" style="width: 100%;"></div>
             </div>
 
             <h2 id="q-text" class="text-xl sm:text-2xl font-bold mb-8 leading-relaxed text-slate-900 dark:text-white">
@@ -289,11 +289,11 @@
         els.timerBar.style.width = pct + '%';
 
         if (time <= 5) {
-            els.timerBar.classList.remove('from-emerald-500', 'to-emerald-400');
-            els.timerBar.classList.add('from-red-500', 'to-red-400');
+            els.timerBar.classList.remove('from-primary-500', 'to-primary-400');
+            els.timerBar.classList.add('from-amber-500', 'to-amber-400');
         } else {
-            els.timerBar.classList.remove('from-red-500', 'to-red-400');
-            els.timerBar.classList.add('from-emerald-500', 'to-emerald-400');
+            els.timerBar.classList.remove('from-amber-500', 'to-amber-400');
+            els.timerBar.classList.add('from-primary-500', 'to-primary-400');
         }
     }
 
@@ -425,3 +425,8 @@
 })();
 </script>
 @endsection
+
+
+
+
+

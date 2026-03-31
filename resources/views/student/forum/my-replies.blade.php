@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
-@section('title', __('My Replies') . ' — ' . __('Forum'))
+@section('title', __('My Replies') . ' - ' . __('Forum'))
 
 @section('content')
 <div class="py-12 lg:py-16 relative min-h-screen z-10">
     <div class="absolute top-0 left-0 w-full h-[600px] bg-gradient-to-b from-primary-600/10 via-accent-500/5 to-transparent pointer-events-none z-0"></div>
 
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <div class="student-container max-w-5xl relative z-10">
         {{-- Header Section --}}
         {{-- Header Section --}}
         <x-student.page-header
@@ -27,7 +27,7 @@
             @forelse($replies as $reply)
                 <x-student.card padding="p-0" class="{{ $reply->is_solution ? 'border-emerald-500/30 bg-emerald-50/50 dark:bg-emerald-900/10 ring-1 ring-emerald-500/30' : '' }} overflow-hidden relative group" data-aos="fade-up" data-aos-delay="{{ min($loop->index * 50, 300) }}">
                     @if($reply->is_solution)
-                        <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-emerald-500/10 to-transparent rounded-tr-[1.5rem] pointer-events-none"></div>
+                        <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-primary-500/10 to-transparent rounded-tr-[1.5rem] pointer-events-none"></div>
                     @endif
                     
                     <div class="p-6 md:p-8">
@@ -81,19 +81,23 @@
                     </div>
                 </x-student.card>
             @empty
-                <x-student.card padding="p-12" class="text-center relative overflow-hidden bg-slate-50 dark:bg-slate-800/50" data-aos="fade-up">
-                    <div class="relative z-10 w-24 h-24 mx-auto rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center mb-6 shadow-inner text-5xl">
-                        💬
-                    </div>
-                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2 relative z-10">{{ __('No Replies Yet') }}</h3>
-                    <p class="text-slate-500 dark:text-slate-400 font-medium max-w-sm mx-auto relative z-10 mb-8">
-                        {{ __('You haven\'t posted any replies. Help others by sharing your knowledge or joining ongoing discussions!') }}
-                    </p>
-                    <a href="{{ route('student.forum.index') }}" class="btn-primary ripple-btn inline-flex items-center gap-2 relative z-10">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                        {{ __('Find Topics to Answer') }}
-                    </a>
-                </x-student.card>
+                <x-student.empty-state
+                    title="{{ __('No Replies Yet') }}"
+                    message="{{ __('You haven\'t posted any replies. Help others by sharing your knowledge or joining ongoing discussions!') }}"
+                    data-aos="fade-up"
+                >
+                    <x-slot name="icon">
+                        <svg class="h-10 w-10 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h7m8 0a8 8 0 1 1-3.2-6.4L21 3v9Z" />
+                        </svg>
+                    </x-slot>
+                    <x-slot name="actions">
+                        <a href="{{ route('student.forum.index') }}" class="btn-primary ripple-btn inline-flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                            {{ __('Find Topics to Answer') }}
+                        </a>
+                    </x-slot>
+                </x-student.empty-state>
             @endforelse
         </div>
 
@@ -105,3 +109,9 @@
     </div>
 </div>
 @endsection
+
+
+
+
+
+

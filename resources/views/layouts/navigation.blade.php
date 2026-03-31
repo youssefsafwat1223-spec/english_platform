@@ -97,11 +97,9 @@
                             <!-- Language Switcher -->
                             <div class="flex items-center">
                                 <a href="{{ route('switch-lang', app()->getLocale() == 'ar' ? 'en' : 'ar') }}"
-                                   class="flex items-center justify-center w-8 h-6 rounded-sm shadow-sm border border-slate-300 dark:border-slate-600 overflow-hidden shrink-0 hover:opacity-80 transition-opacity"
+                                   class="flex items-center justify-center px-2.5 h-7 rounded-lg shadow-sm border border-slate-300 dark:border-slate-600 text-[11px] font-bold tracking-wide text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
                                    title="{{ __('Switch Language') }}">
-                                    <img src="{{ app()->getLocale() == 'ar' ? asset('images/flags/sa.png') : asset('images/flags/us.png') }}"
-                                         alt="{{ app()->getLocale() == 'ar' ? 'Arabic' : 'United States' }}"
-                                         class="w-full h-full object-cover">
+                                    AR / EN
                                 </a>
                             </div>
 
@@ -260,11 +258,9 @@
 
                 {{-- Language Toggle --}}
                 <a href="{{ route('switch-lang', app()->getLocale() == 'ar' ? 'en' : 'ar') }}"
-                   class="relative flex items-center justify-center w-8 h-6 rounded-sm shadow-sm border border-slate-300 dark:border-slate-600 overflow-hidden shrink-0 hover:opacity-80 transition-opacity"
+                   class="relative flex items-center justify-center px-3 h-8 rounded-lg shadow-sm border border-slate-300 dark:border-slate-600 text-xs font-bold tracking-wide text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
                    title="{{ __('Switch Language') }}">
-                    <img src="{{ app()->getLocale() == 'ar' ? asset('images/flags/sa.png') : asset('images/flags/us.png') }}"
-                         alt="{{ app()->getLocale() == 'ar' ? 'Arabic' : 'United States' }}"
-                         class="w-full h-full object-cover">
+                    AR / EN
                 </a>
 
                 {{-- Desktop User Section --}}

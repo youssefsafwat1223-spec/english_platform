@@ -28,7 +28,7 @@
     <div class="absolute top-0 left-0 w-full h-[50vh] bg-gradient-to-b from-primary-50/50 to-slate-50 dark:from-primary-900/10 dark:to-[#020617] pointer-events-none z-0"></div>
     <div class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary-500/20 to-transparent"></div>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 pt-8 lg:pt-16 pb-12">
+    <div class="student-container relative z-10 pt-8 lg:pt-16 pb-12">
         
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
             
@@ -271,7 +271,7 @@
 
 {{-- ─── MOBILE FIXED BOTTOM CTA BAR ─── --}}
 <div class="fixed bottom-0 left-0 w-full bg-white/95 dark:bg-[#0f172a]/95 border-t border-slate-200 dark:border-white/10 p-4 pb-safe lg:hidden z-50 shadow-[0_-10px_40px_rgba(0,0,0,0.06)] dark:shadow-[0_-10px_40px_rgba(0,0,0,0.4)] backdrop-blur-xl">
-    <div class="flex items-center justify-between gap-4 max-w-7xl mx-auto">
+    <div class="flex items-center justify-between gap-4">
         <div class="shrink-0 flex flex-col justify-center">
             @if(isset($isEnrolled) && $isEnrolled)
                 <span class="text-[10px] font-black text-slate-500 dark:text-slate-400 mb-0.5 uppercase tracking-wider">{{ __('نسبة تقدمك') }}</span>
@@ -301,3 +301,8 @@
     </div>
 </div>
 @endsection
+
+
+
+
+

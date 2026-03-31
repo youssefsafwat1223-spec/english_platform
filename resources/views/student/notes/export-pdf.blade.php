@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>My Notes — {{ config('app.name') }}</title>
+    <title>My Notes - {{ config('app.name') }}</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 40px; color: #1a1a2e; }
         h1 { font-size: 24px; color: #6366f1; margin-bottom: 24px; border-bottom: 2px solid #6366f1; padding-bottom: 8px; }
@@ -31,3 +31,9 @@
     </div>
 </body>
 </html>
+
+
+
+
+
+

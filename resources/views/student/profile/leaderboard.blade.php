@@ -11,14 +11,14 @@
 <div class="py-12 relative overflow-hidden">
     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[400px] bg-gradient-to-b from-primary-500/8 to-transparent pointer-events-none z-0"></div>
 
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 relative z-10">
+    <div class="student-container relative z-10">
         {{-- Header Section --}}
         <x-student.page-header
-            title="{!! $isArabic ? 'أفضل' : 'Top' !!} <span class='text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-primary-500'>{{ $isArabic ? 'المتصدرين' : 'Leaderboard' }}</span>"
+            title="{!! $isArabic ? 'أفضل' : 'Top' !!} <span class='text-transparent bg-clip-text bg-gradient-to-r from-primary-500 to-accent-500'>{{ $isArabic ? 'المتصدرين' : 'Leaderboard' }}</span>"
             subtitle="{{ $isArabic ? 'ترتيب أفضل الطلاب حسب النقاط. اعرف مكانك الحالي بين بقية الطلاب.' : 'Top students by points. See where you stand among your peers!' }}"
             badge="{{ $isArabic ? 'الترتيب' : 'Rankings' }}"
             badgeIcon='<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 4h8v3a4 4 0 0 1-8 0V4Z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 6H4a2 2 0 0 0 2 2h1m11-2h2a2 2 0 0 1-2 2h-1M12 11v4m-3 5h6"/></svg>'
-            badgeColor="violet"
+            badgeColor="primary"
         >
             <x-slot name="actions">
                 <a href="{{ route('student.profile.show') }}" class="btn-ghost flex items-center justify-center gap-2 px-6 py-3 font-bold rounded-xl w-full sm:w-auto transition-colors shadow-sm bg-white/10 hover:bg-white/20 dark:bg-slate-800/50 dark:hover:bg-slate-700/50 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 group">
@@ -87,3 +87,9 @@
     </div>
 </div>
 @endsection
+
+
+
+
+
+

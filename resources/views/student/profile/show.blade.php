@@ -11,7 +11,7 @@
     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-primary-500/10 blur-[120px] rounded-full pointer-events-none"></div>
     <div class="absolute bottom-0 right-0 w-[600px] h-[600px] bg-accent-500/10 blur-[120px] rounded-full pointer-events-none"></div>
 
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 relative z-10">
+    <div class="student-container max-w-5xl relative z-10">
         
         {{-- Floating Profile Header Pill --}}
         <div class="mb-12" data-aos="fade-down">
@@ -168,8 +168,8 @@
                 <div class="flex overflow-x-auto pb-4 -mx-4 px-4 sm:mx-0 sm:px-0 gap-4 snap-x hide-scrollbar">
                     @php
                         $profileStats = [
-                            ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h10" />', 'value' => $stats['total_enrollments'], 'label' => __('Enrolled'), 'color' => 'from-blue-500 to-indigo-500'],
-                            ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />', 'value' => $stats['completed_courses'], 'label' => __('Completed'), 'color' => 'from-emerald-500 to-teal-500'],
+                            ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h10" />', 'value' => $stats['total_enrollments'], 'label' => __('Enrolled'), 'color' => 'from-primary-500 to-primary-400'],
+                            ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />', 'value' => $stats['completed_courses'], 'label' => __('Completed'), 'color' => 'from-amber-500 to-amber-400'],
                             ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5Z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14v6" />', 'value' => $stats['certificates'], 'label' => __('Certificates'), 'color' => 'from-purple-500 to-fuchsia-500'],
                             ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m12 17.75-5.228 2.749 1-5.823-4.23-4.126 5.846-.849L12 4.5l2.612 5.201 5.846.849-4.23 4.126 1 5.823L12 17.75Z" />', 'value' => $user->achievements()->count(), 'label' => __('Achievements'), 'color' => 'from-amber-500 to-orange-500'],
                         ];
@@ -211,15 +211,24 @@
                                 @endif
                             </div>
                         @empty
-                            <div class="p-8 text-center rounded-[1.5rem] border-2 border-dashed border-slate-300 dark:border-white/10">
-                                <p class="text-slate-500 dark:text-slate-400 font-medium mb-2">{{ __("You are not enrolled in the course.") }}</p>
-                                <a href="{{ route('student.courses.index') }}" class="inline-flex items-center gap-1 text-sm font-bold text-primary-500">
-                                    {{ __('Browse Course') }}
-                                    <svg class="h-3.5 w-3.5 {{ app()->getLocale() === 'ar' ? 'rotate-180' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.25" d="M5 12h14m-6-6 6 6-6 6" />
+                            <x-student.empty-state
+                                title="{{ __("You are not enrolled in the course.") }}"
+                                message="{{ __('Browse the catalog to start your first course and see progress here.') }}"
+                            >
+                                <x-slot name="icon">
+                                    <svg class="h-10 w-10 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                                     </svg>
-                                </a>
-                            </div>
+                                </x-slot>
+                                <x-slot name="actions">
+                                    <a href="{{ route('student.courses.index') }}" class="btn-primary ripple-btn inline-flex items-center gap-2">
+                                        {{ __('Browse Course') }}
+                                        <svg class="h-4 w-4 {{ app()->getLocale() === 'ar' ? 'rotate-180' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.25" d="M5 12h14m-6-6 6 6-6 6" />
+                                        </svg>
+                                    </a>
+                                </x-slot>
+                            </x-student.empty-state>
                         @endforelse
                     </div>
                 </div>
@@ -267,3 +276,8 @@
 }
 </style>
 @endsection
+
+
+
+
+

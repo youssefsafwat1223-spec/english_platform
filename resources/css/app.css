@@ -6,6 +6,24 @@
    BASE LAYER — Root Variables, Reset, Typography
    ═══════════════════════════════════════════════════════════════ */
 @layer base {
+    html {
+        font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    html[lang="ar"] {
+        font-family: 'Saudi Sans', system-ui, sans-serif;
+    }
+
+    body {
+        font-family: inherit !important;
+    }
+
+    code,
+    pre,
+    .font-mono {
+        font-family: 'JetBrains Mono', monospace;
+    }
+
     :root {
         /* Light Mode Palette - Vibrance Update */
         --color-bg: #f8fafc;
@@ -53,14 +71,14 @@
         /* slate-400 */
         --color-border: #1e293b;
         /* slate-800 */
-        --color-primary: #38bdf8;
-        /* sky-400 */
-        --color-primary-light: #7dd3fc;
-        /* sky-300 */
-        --color-accent: #8b5cf6;
-        /* violet-500 */
-        --color-accent-light: #a78bfa;
-        /* violet-400 */
+        --color-primary: #007bb5;
+        /* primary */
+        --color-primary-light: #38b2e8;
+        /* primary-light */
+        --color-accent: #f59e0b;
+        /* accent */
+        --color-accent-light: #fbbf24;
+        /* accent-light */
 
         --glass-bg: rgba(2, 6, 23, 0.6);
         /* slate-950 */
@@ -122,6 +140,69 @@
    COMPONENTS LAYER — Reusable UI Components
    ═══════════════════════════════════════════════════════════════ */
 @layer components {
+    .student-header {
+        @apply flex flex-col sm:flex-row sm:items-center justify-between gap-4;
+    }
+
+    .student-header-title {
+        @apply text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white;
+    }
+
+    .student-header-subtitle {
+        @apply text-sm sm:text-base text-slate-500 dark:text-slate-400;
+    }
+
+    .student-section {
+        @apply space-y-6 sm:space-y-8;
+    }
+
+    .student-container {
+        @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+    }
+
+    .student-page :where(h1) {
+        font-size: 1.5rem !important;
+        line-height: 2rem !important;
+        font-weight: 800 !important;
+        letter-spacing: -0.01em !important;
+    }
+
+    @media (min-width: 640px) {
+        .student-page :where(h1) {
+            font-size: 1.875rem !important;
+            line-height: 2.25rem !important;
+        }
+    }
+
+    .student-page :where(h2) {
+        font-size: 1.125rem !important;
+        line-height: 1.75rem !important;
+        font-weight: 700 !important;
+    }
+
+    @media (min-width: 640px) {
+        .student-page :where(h2) {
+            font-size: 1.25rem !important;
+            line-height: 1.75rem !important;
+        }
+    }
+
+    .student-page :where(p) {
+        font-size: 0.875rem !important;
+        line-height: 1.5rem !important;
+    }
+
+    @media (min-width: 640px) {
+        .student-page :where(p) {
+            font-size: 1rem !important;
+            line-height: 1.75rem !important;
+        }
+    }
+
+    .student-page :where(.text-muted) {
+        color: var(--color-text-muted) !important;
+    }
+
 
     /* ─── Glassmorphism Cards ─── */
     .glass-card {

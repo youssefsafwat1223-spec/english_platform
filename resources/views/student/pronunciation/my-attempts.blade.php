@@ -6,12 +6,12 @@
 <div class="py-12 relative overflow-hidden">
     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[400px] bg-gradient-to-b from-primary-500/8 to-transparent pointer-events-none z-0"></div>
 
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 relative z-10">
+    <div class="student-container relative z-10">
         <x-student.page-header
-            title="<span class='text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-primary-500'>{{ __('ui.pronunciation.attempts_title') }}</span>"
+            title="<span class='text-transparent bg-clip-text bg-gradient-to-r from-primary-500 to-accent-500'>{{ __('ui.pronunciation.attempts_title') }}</span>"
             subtitle="{{ __('ui.pronunciation.attempts_subtitle') }}"
             badge="{{ __('ui.pronunciation.attempts_title') }}"
-            badgeColor="violet"
+            badgeColor="primary"
             badgeIcon="<svg class='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z'/></svg>"
         />
 
@@ -87,4 +87,10 @@
     </div>
 </div>
 @endsection
+
+
+
+
+
+
 

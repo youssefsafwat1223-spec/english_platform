@@ -1,19 +1,19 @@
 @extends('layouts.app')
 
-@section('title', __('Points History') . ' — ' . config('app.name'))
+@section('title', __('Points History') . ' - ' . config('app.name'))
 
 @section('content')
 <div class="py-12 relative overflow-hidden">
     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[400px] bg-gradient-to-b from-primary-500/8 to-transparent pointer-events-none z-0"></div>
 
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 relative z-10">
+    <div class="student-container relative z-10">
         {{-- Header Section --}}
         <x-student.page-header
-            title="{{ __('Points') }} <span class='text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-primary-500'>{{ __('History') }}</span>"
+            title="{{ __('Points') }} <span class='text-transparent bg-clip-text bg-gradient-to-r from-primary-500 to-accent-500'>{{ __('History') }}</span>"
             subtitle="{{ __('Track points earned from your activities.') }}"
             badge="{{ __('Activity') }}"
             badgeIcon='<svg class="w-4 h-4 cursor-pointer" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>'
-            badgeColor="emerald"
+            badgeColor="primary"
             mb="mb-8"
         >
             <x-slot name="actions">
@@ -64,7 +64,18 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="3" class="text-center py-8 text-slate-500 dark:text-slate-400">{{ __('No points history yet.') }}</td>
+                                <td colspan="3" class="px-6 py-12">
+                                    <x-student.empty-state
+                                        title="{{ __('No points history yet.') }}"
+                                        message="{{ __('Complete lessons and activities to start earning points.') }}"
+                                    >
+                                        <x-slot name="icon">
+                                            <svg class="h-10 w-10 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6l4 2m5-2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                            </svg>
+                                        </x-slot>
+                                    </x-student.empty-state>
+                                </td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -75,3 +86,9 @@
     </div>
 </div>
 @endsection
+
+
+
+
+
+

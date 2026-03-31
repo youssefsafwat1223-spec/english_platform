@@ -9,7 +9,7 @@
 @section('content')
 <div class="py-12 relative min-h-screen z-10">
     <div class="absolute top-0 left-0 w-full h-[600px] bg-gradient-to-b from-cyan-500/10 via-cyan-500/5 to-transparent pointer-events-none z-0"></div>
-    <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 space-y-8 relative z-10">
+    <div class="student-container max-w-5xl space-y-8 relative z-10">
         <x-student.page-header
             title="{{ __('ui.telegram.guide_title') }}"
             subtitle="{{ __('ui.telegram.guide_intro') }}"
@@ -100,3 +100,8 @@
     </div>
 </div>
 @endsection
+
+
+
+
+

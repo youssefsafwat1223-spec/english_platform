@@ -10,7 +10,7 @@
 <div class="py-12 relative overflow-hidden">
     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[400px] bg-gradient-to-b from-primary-500/8 to-transparent pointer-events-none z-0"></div>
 
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <div class="student-container max-w-4xl relative z-10">
         <div class="text-center mb-8" data-aos="fade-down">
             <h1 class="text-3xl font-extrabold text-slate-900 dark:text-white"><span class="text-gradient">{{ __('Certificate') }}</span></h1>
             <p class="mt-2 text-slate-500 dark:text-slate-400">{{ $certificate->course->title }}</p>
@@ -81,3 +81,8 @@ function copyVerificationLink() {
 </script>
 @endpush
 @endsection
+
+
+
+
+

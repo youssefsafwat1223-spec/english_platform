@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
-@section('title', __('My Topics') . ' — ' . __('Forum'))
+@section('title', __('My Topics') . ' - ' . __('Forum'))
 
 @section('content')
 <div class="py-12 lg:py-16 relative min-h-screen z-10">
     <div class="absolute top-0 left-0 w-full h-[600px] bg-gradient-to-b from-primary-600/10 via-accent-500/5 to-transparent pointer-events-none z-0"></div>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <div class="student-container relative z-10">
         {{-- Header Section --}}
         {{-- Header Section --}}
         <x-student.page-header
@@ -52,7 +52,7 @@
                             <tr class="hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors group">
                                 <td class="px-6 py-5">
                                     <div class="flex items-start gap-3 w-48 sm:w-64 max-w-sm xl:w-auto whitespace-normal">
-                                        <div class="w-10 h-10 rounded-xl bg-violet-500/10 text-violet-600 dark:text-violet-400 flex items-center justify-center shrink-0 border border-violet-500/20 font-bold text-sm">
+                                        <div class="w-10 h-10 rounded-xl bg-primary-500/10 text-primary-600 dark:text-primary-400 flex items-center justify-center shrink-0 border border-primary-500/20 font-bold text-sm">
                                             {{ strtoupper(substr($topic->title, 0, 1)) }}
                                         </div>
                                         <div class="min-w-0 flex-1">
@@ -105,17 +105,22 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="px-6 py-16 text-center">
-                                    <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-slate-100 dark:bg-slate-800 mb-6 border border-slate-200 dark:border-white/5 shadow-inner">
-                                        <span class="text-4xl">📝</span>
-                                    </div>
-                                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">{{ __('No Topics Yet') }}</h3>
-                                    <p class="text-slate-500 dark:text-slate-400 mb-6 max-w-sm mx-auto">
-                                        {{ __('You haven\'t created any topics. Have a question or something to share? Start a conversation!') }}
-                                    </p>
-                                    <a href="{{ route('student.forum.index') }}" class="btn-primary ripple-btn inline-flex">
-                                        {{ __('Browse Forum Categories') }}
-                                    </a>
+                                <td colspan="5" class="px-6 py-12">
+                                    <x-student.empty-state
+                                        title="{{ __('No Topics Yet') }}"
+                                        message="{{ __('You haven\'t created any topics. Have a question or something to share? Start a conversation!') }}"
+                                    >
+                                        <x-slot name="icon">
+                                            <svg class="h-10 w-10 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h8M8 14h5m-9 6 1.4-4.2A8 8 0 1 1 20 12a8 8 0 0 1-8 8H4Z" />
+                                            </svg>
+                                        </x-slot>
+                                        <x-slot name="actions">
+                                            <a href="{{ route('student.forum.index') }}" class="btn-primary ripple-btn inline-flex">
+                                                {{ __('Browse Forum Categories') }}
+                                            </a>
+                                        </x-slot>
+                                    </x-student.empty-state>
                                 </td>
                             </tr>
                         @endforelse
@@ -132,3 +137,10 @@
     </div>
 </div>
 @endsection
+
+
+
+
+
+
+

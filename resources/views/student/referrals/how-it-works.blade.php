@@ -6,23 +6,14 @@
 <div class="py-12 lg:py-16 relative min-h-screen z-10">
     <div class="absolute top-0 left-0 w-full h-[600px] bg-gradient-to-b from-primary-600/10 via-accent-500/5 to-transparent pointer-events-none z-0"></div>
 
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div class="mb-12 text-center" data-aos="fade-down">
-            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary-500/10 border border-primary-500/20 text-primary-600 dark:text-primary-400 text-xs font-bold mb-4">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                {{ __('ui.referrals.how_badge') }}
-            </div>
-
-            <h1 class="text-3xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight mb-4">
-                {{ __('ui.referrals.index_title') }}
-            </h1>
-
-            <p class="text-lg text-slate-600 dark:text-slate-400 font-medium max-w-2xl mx-auto">
-                {{ __('ui.referrals.how_intro') }}
-            </p>
-        </div>
+    <div class="student-container max-w-5xl relative z-10">
+        <x-student.page-header
+            title="{{ __('ui.referrals.index_title') }}"
+            subtitle="{{ __('ui.referrals.how_intro') }}"
+            badge="{{ __('ui.referrals.how_badge') }}"
+            badgeIcon="<svg class='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'></path></svg>"
+            data-aos="fade-down"
+        />
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 mb-16 relative">
             <div class="hidden md:block absolute top-12 left-1/6 right-1/6 h-0.5 bg-gradient-to-r from-transparent via-primary-500/30 to-transparent -z-10 mt-4"></div>
@@ -101,3 +92,8 @@
     </div>
 </div>
 @endsection
+
+
+
+
+

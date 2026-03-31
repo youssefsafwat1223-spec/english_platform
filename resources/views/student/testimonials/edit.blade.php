@@ -10,7 +10,7 @@
 <div class="py-8 lg:py-12 relative min-h-screen z-10">
     <div class="absolute inset-x-0 top-0 h-[420px] bg-gradient-to-b from-accent-500/10 via-primary-500/5 to-transparent pointer-events-none"></div>
 
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <div class="student-container max-w-5xl relative z-10">
         <div class="mb-8" data-aos="fade-down">
             <a href="{{ url()->previous() }}" class="inline-flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-primary-500 transition-colors">
                 <svg class="w-4 h-4 {{ $isArabic ? 'rotate-180' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -181,3 +181,8 @@
     </div>
 </div>
 @endsection
+
+
+
+
+

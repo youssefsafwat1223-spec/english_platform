@@ -6,22 +6,17 @@
 <div class="py-12 lg:py-16 relative min-h-screen z-10">
     <div class="absolute top-0 left-0 w-full h-[600px] bg-gradient-to-b from-primary-500/10 via-accent-500/5 to-transparent pointer-events-none z-0"></div>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <div class="student-container relative z-10">
         {{-- Header Section --}}
         <x-student.page-header
-            title="{{ __('My Quiz') }} <span class='text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-primary-500'>{{ __('Attempts') }}</span>"
+            title="{{ __('My Quiz') }} <span class='text-transparent bg-clip-text bg-gradient-to-r from-primary-500 to-accent-500'>{{ __('Attempts') }}</span>"
             subtitle="{{ __('Review your past quiz results, track your improvement, and identify areas for further study.') }}"
             badge="{{ __('Assessments') }}"
-            badgeColor="violet"
-            mb="mb-10"
+            badgeColor="primary"
+            badgeIcon="<svg class='h-4 w-4' fill='none' stroke='currentColor' viewBox='0 0 24 24' aria-hidden='true'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M9 12h6m-6 4h6M9 8h6m3 11H6a2 2 0 01-2-2V7a2 2 0 012-2h8l4 4v8a2 2 0 01-2 2Z' /></svg>"
         >
-            <x-slot name="badgeIcon">
-                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6M9 8h6m3 11H6a2 2 0 01-2-2V7a2 2 0 012-2h8l4 4v8a2 2 0 01-2 2Z" />
-                </svg>
-            </x-slot>
             <x-slot name="actions">
-                <a href="{{ route('student.courses.my-courses') }}" class="btn-primary ripple-btn px-6 py-3 rounded-xl shadow-lg shadow-violet-500/25 flex items-center justify-center gap-2 font-bold bg-gradient-to-r from-violet-600 to-violet-500 hover:from-violet-500 hover:to-violet-400 border-none text-white transition-all transform hover:scale-105 w-full sm:w-auto">
+                <a href="{{ route('student.courses.my-courses') }}" class="btn-primary ripple-btn px-6 py-3 rounded-xl shadow-lg shadow-primary-500/25 flex items-center justify-center gap-2 font-bold bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-500 hover:to-primary-400 border-none text-white transition-all transform hover:scale-105 w-full sm:w-auto">
                     <svg class="w-5 h-5 transition-transform group-hover:-translate-x-1 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
                     {{ __('Back to Learning') }}
                 </a>
@@ -166,19 +161,22 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="px-6 py-16 text-center">
-                                    <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-slate-100 dark:bg-slate-800 mb-6 border border-slate-200 dark:border-white/5 shadow-inner">
-                                        <svg class="h-10 w-10 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6M9 8h6m3 11H6a2 2 0 01-2-2V7a2 2 0 012-2h8l4 4v8a2 2 0 01-2 2Z" />
-                                        </svg>
-                                    </div>
-                                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">{{ __('No Quiz Attempts Yet') }}</h3>
-                                    <p class="text-slate-500 dark:text-slate-400 mb-6 max-w-sm mx-auto">
-                                        {{ __('You haven\'t taken any quizzes yet. Complete lessons and take their knowledge checks to see your progress here.') }}
-                                    </p>
-                                    <a href="{{ route('student.courses.my-courses') }}" class="btn-primary ripple-btn inline-flex">
-                                        {{ __('Start Learning') }}
-                                    </a>
+                                <td colspan="6" class="px-6 py-12">
+                                    <x-student.empty-state
+                                        title="{{ __('No Quiz Attempts Yet') }}"
+                                        message="{{ __('You haven\'t taken any quizzes yet. Complete lessons and take their knowledge checks to see your progress here.') }}"
+                                    >
+                                        <x-slot name="icon">
+                                            <svg class="h-10 w-10 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6M9 8h6m3 11H6a2 2 0 01-2-2V7a2 2 0 012-2h8l4 4v8a2 2 0 01-2 2Z" />
+                                            </svg>
+                                        </x-slot>
+                                        <x-slot name="actions">
+                                            <a href="{{ route('student.courses.my-courses') }}" class="btn-primary ripple-btn inline-flex">
+                                                {{ __('Start Learning') }}
+                                            </a>
+                                        </x-slot>
+                                    </x-student.empty-state>
                                 </td>
                             </tr>
                         @endforelse
@@ -196,4 +194,10 @@
     </div>
 </div>
 @endsection
+
+
+
+
+
+
 

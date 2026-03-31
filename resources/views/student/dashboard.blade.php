@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="pt-8 pb-12 sm:py-12 relative min-h-screen z-10 px-3 sm:px-0">
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-4 sm:space-y-8">
+    <div class="student-container space-y-4 sm:space-y-8">
 
         {{-- Hero Section --}}
         <x-student.card class="relative" padding="p-4 sm:p-8 md:p-12" mb="mb-0" :headerBorder="false" data-aos="fade-down">
@@ -220,18 +220,21 @@
                                 </div>
                             </div>
                         @empty
-                            <div class="text-center py-16 border-2 border-dashed border-slate-300 dark:border-white/20 rounded-2xl bg-white/50 dark:bg-black/20 backdrop-blur-sm">
-                                <div class="w-20 h-20 rounded-full bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-800 flex items-center justify-center mx-auto mb-6 shadow-inner text-slate-500 dark:text-slate-300">
-                                    <svg class="h-10 w-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <x-student.empty-state
+                                title="{{ __('No Active Courses') }}"
+                                message="{{ __('You haven\'t started any courses yet. Browse our catalog and start learning today!') }}"
+                            >
+                                <x-slot name="icon">
+                                    <svg class="h-10 w-10 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6.75A2.75 2.75 0 0 1 6.75 4h10.5A2.75 2.75 0 0 1 20 6.75v10.5A2.75 2.75 0 0 1 17.25 20H6.75A2.75 2.75 0 0 1 4 17.25V6.75Zm4 2.75h8m-8 4h5" />
                                     </svg>
-                                </div>
-                                <h3 class="text-2xl text-slate-900 dark:text-white font-extrabold mb-2">{{ __('No Active Courses') }}</h3>
-                                <p class="text-slate-500 dark:text-slate-400 mb-6 max-w-md mx-auto">{{ __('You haven\'t started any courses yet. Browse our catalog and start learning today!') }}</p>
-                                <a href="{{ route('student.courses.index') }}" class="btn-primary ripple-btn px-8 shadow-lg shadow-primary-500/30">
-                                    {{ __('Explore Courses') }}
-                                </a>
-                            </div>
+                                </x-slot>
+                                <x-slot name="actions">
+                                    <a href="{{ route('student.courses.index') }}" class="btn-primary ripple-btn px-8 shadow-lg shadow-primary-500/30">
+                                        {{ __('Explore Courses') }}
+                                    </a>
+                                </x-slot>
+                            </x-student.empty-state>
                         @endforelse
                     </div>
                 </x-student.card>
@@ -320,16 +323,16 @@
                 </x-student.card>
 
                 {{-- Daily Tip / Recommendation --}}
-                <x-student.card class="bg-gradient-to-br from-indigo-500/10 to-purple-500/10 border-indigo-500/20" mb="mb-0" padding="p-6" data-aos="fade-left" data-aos-delay="700">
+                <x-student.card class="bg-gradient-to-br from-primary-500/10 to-accent-500/10 border-primary-500/20" mb="mb-0" padding="p-6" data-aos="fade-left" data-aos-delay="700">
                     <div class="flex gap-4">
-                        <div class="w-12 h-12 rounded-full bg-indigo-500/20 flex items-center justify-center text-2xl shrink-0 text-indigo-500">
+                        <div class="w-12 h-12 rounded-full bg-primary-500/20 flex items-center justify-center text-2xl shrink-0 text-primary-500">
                             <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M6 4h12a2 2 0 0 1 2 2v12l-4-3H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z" />
                             </svg>
                         </div>
                         <div>
                             <h4 class="font-bold text-slate-900 dark:text-white text-lg mb-2">{{ __('Pro Tip') }}</h4>
-                            <p class="text-sm text-slate-600 dark:text-indigo-200/80 leading-relaxed font-medium">
+                            <p class="text-sm text-slate-600 dark:text-primary-200/80 leading-relaxed font-medium">
                                 {{ __('Consistency is key! Spending just 30 minutes a day practicing yields better results than 2 hours once a week.') }}
                             </p>
                         </div>
@@ -356,4 +359,9 @@
 
 
 @endsection
+
+
+
+
+
 

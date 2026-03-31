@@ -13,7 +13,7 @@
 @section('content')
 <div class="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white pb-24 md:pb-12" x-data="quizController()" x-init="initQuiz()">
     <div class="sticky top-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-b border-slate-200 dark:border-white/10 shadow-sm">
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="student-container max-w-4xl">
             <div class="py-4 flex items-center justify-between gap-4">
                 <div class="flex-1 min-w-0">
                     <h1 class="text-lg md:text-xl font-bold truncate">{{ $quiz->title }}</h1>
@@ -39,7 +39,7 @@
         </div>
     </div>
 
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 md:pt-12">
+    <div class="student-container max-w-4xl pt-8 md:pt-12">
         @if(session('error') || $errors->any())
             <div class="mb-8 p-4 rounded-2xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-500/30 text-red-600 dark:text-red-400">
                 <div class="flex items-start gap-3">
@@ -140,7 +140,7 @@
             @endforeach
 
             <div class="fixed bottom-0 md:bottom-6 left-0 right-0 z-40 px-0 md:px-6 pointer-events-none">
-                <div class="max-w-4xl mx-auto pointer-events-auto bg-white/90 dark:bg-slate-800/90 backdrop-blur-xl border-t md:border border-slate-200 dark:border-slate-700 rounded-t-[2rem] md:rounded-[2rem] shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.1)] p-4 sm:p-5 flex items-center justify-between gap-4">
+                <div class="student-container max-w-4xl pointer-events-auto bg-white/90 dark:bg-slate-800/90 backdrop-blur-xl border-t md:border border-slate-200 dark:border-slate-700 rounded-t-[2rem] md:rounded-[2rem] shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.1)] p-4 sm:p-5 flex items-center justify-between gap-4">
                     <button type="button" @click="currentQuestion = Math.max(0, currentQuestion - 1)" class="btn-secondary flex-1 sm:flex-none flex justify-center items-center gap-2 px-6 py-3.5 sm:py-3 rounded-xl font-bold transition-all disabled:opacity-30 disabled:cursor-not-allowed bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-950 border border-slate-200 dark:border-slate-700" :disabled="currentQuestion === 0">
                         <svg class="w-5 h-5 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                         <span class="hidden sm:inline text-sm">{{ $isArabic ? 'السابق' : 'Previous' }}</span>
@@ -199,3 +199,8 @@ audio.custom-audio-player::-webkit-media-controls-panel{background-color:transpa
 </style>
 @endpush
 @endsection
+
+
+
+
+

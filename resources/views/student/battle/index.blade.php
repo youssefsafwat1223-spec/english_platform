@@ -9,12 +9,12 @@
 @section('content')
 <div class="py-12 relative overflow-hidden">
     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[400px] bg-gradient-to-b from-primary-500/8 to-transparent pointer-events-none z-0"></div>
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <div class="student-container max-w-6xl relative z-10">
         <x-student.page-header
             title="{{ $isArabic ? 'ساحة الباتل' : 'Battle Arena' }}"
             subtitle="{{ $isArabic ? 'ادخل تحديًا مباشرًا مع طلاب من نفس الكورس، جاوب بسرعة، واجمع النقاط لفريقك.' : 'Join a live battle with students from the same course, answer quickly, and score points for your team.' }}"
             badge="{{ $isArabic ? 'الوضع الجماعي' : 'Team mode' }}"
-            badgeColor="violet"
+            badgeColor="primary"
             mb="mb-12"
         />
 
@@ -45,25 +45,31 @@
         @endif
 
         @if($enrolledCourses->isEmpty())
-            <x-student.card padding="p-12" class="text-center" data-aos="fade-up">
-                <h3 class="text-xl font-bold mb-2 text-slate-900 dark:text-white">
-                    {{ $isArabic ? 'لا توجد كورسات جاهزة للباتل الآن' : 'No battle-ready courses yet' }}
-                </h3>
-                <p class="mb-6 text-slate-500 dark:text-slate-400">
-                    {{ $isArabic
-                        ? 'يجب أن تكون مشتركًا في كورس يحتوي على عدد كافٍ من الأسئلة حتى يبدأ الباتل.'
-                        : 'You must be enrolled in a course with enough questions before a battle can start.' }}
-                </p>
-                <a href="{{ route('student.courses.index') }}" class="btn-primary">
-                    {{ $isArabic ? 'عرض كورساتي' : 'Browse my courses' }}
-                </a>
-            </x-student.card>
+            <x-student.empty-state
+                title="{{ $isArabic ? 'لا توجد كورسات جاهزة للباتل الآن' : 'No battle-ready courses yet' }}"
+                message="{{ $isArabic
+                    ? 'يجب أن تكون مشتركًا في كورس يحتوي على عدد كافٍ من الأسئلة حتى يبدأ الباتل.'
+                    : 'You must be enrolled in a course with enough questions before a battle can start.' }}"
+                data-aos="fade-up"
+            >
+                <x-slot name="icon">
+                    <svg class="h-12 w-12 text-slate-400 dark:text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0 0 10 9.868v4.264a1 1 0 0 0 1.555.832l3.197-2.132a1 1 0 0 0 0-1.664Z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 12h.01M10 12h.01M14 12h.01M18 12h.01"/>
+                    </svg>
+                </x-slot>
+                <x-slot name="actions">
+                    <a href="{{ route('student.courses.index') }}" class="btn-primary">
+                        {{ $isArabic ? 'عرض كورساتي' : 'Browse my courses' }}
+                    </a>
+                </x-slot>
+            </x-student.empty-state>
         @else
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach($enrolledCourses as $course)
                     <x-student.card padding="p-0" class="overflow-hidden group hover:-translate-y-2 transition-all duration-300" data-aos="fade-up" data-aos-delay="{{ $loop->index * 100 }}">
                         <div class="relative h-40 overflow-hidden">
-                            <div class="absolute inset-0 bg-gradient-to-br from-red-500/30 to-blue-500/30"></div>
+                            <div class="absolute inset-0 bg-gradient-to-br from-primary-500/20 to-amber-500/20"></div>
                             @if($course->thumbnail)
                                 <img src="{{ Storage::url($course->thumbnail) }}" alt="{{ $course->title }}" class="w-full h-full object-cover">
                             @else
@@ -113,7 +119,7 @@
 
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
                 <div class="text-center">
-                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white text-xl font-bold mx-auto mb-3 shadow-inner shadow-white/20">1</div>
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center text-white text-xl font-bold mx-auto mb-3 shadow-inner shadow-white/20">1</div>
                     <h4 class="font-bold mb-1 text-slate-900 dark:text-white">{{ $isArabic ? 'ادخل الغرفة' : 'Join the room' }}</h4>
                     <p class="text-sm text-slate-500 dark:text-slate-400">
                         {{ $isArabic ? 'اختر الكورس وانتظر اكتمال اللوبي.' : 'Pick your course and wait for the lobby to fill.' }}
@@ -137,7 +143,7 @@
                 </div>
 
                 <div class="text-center">
-                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center text-white text-xl font-bold mx-auto mb-3 shadow-inner shadow-white/20">4</div>
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center text-white text-xl font-bold mx-auto mb-3 shadow-inner shadow-white/20">4</div>
                     <h4 class="font-bold mb-1 text-slate-900 dark:text-white">{{ $isArabic ? 'احسم النتيجة' : 'Win the match' }}</h4>
                     <p class="text-sm text-slate-500 dark:text-slate-400">
                         {{ $isArabic ? 'الفريق الأعلى نقاطًا يفوز في نهاية الجولات.' : 'The team with the most points wins at the end of the rounds.' }}
@@ -148,3 +154,9 @@
     </div>
 </div>
 @endsection
+
+
+
+
+
+
