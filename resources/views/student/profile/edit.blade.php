@@ -8,7 +8,7 @@
 
     <div class="max-w-4xl mx-auto sm:px-6 lg:px-8 relative z-10">
         {{-- Header Section --}}
-        <div class="relative glass-card overflow-hidden rounded-[2rem] p-8 mb-8" data-aos="fade-down">
+        <x-student.card class="relative" padding="p-8" mb="mb-8" data-aos="fade-down">
             <div class="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-transparent to-primary-500/10 opacity-50"></div>
             
             <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -31,10 +31,10 @@
                     </a>
                 </div>
             </div>
-        </div>
+        </x-student.card>
 
         @if ($errors->any())
-            <div class="glass-card p-4 mb-6 border-l-4 border-red-500" data-aos="fade-up">
+            <x-student.card padding="p-4" class="mb-6 border-l-4 border-l-red-500" data-aos="fade-up">
                 <div class="flex items-start gap-3">
                     <svg class="w-5 h-5 text-red-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     <ul class="text-sm space-y-1">
@@ -50,8 +50,8 @@
             @csrf
             @method('PUT')
 
-            <div class="glass-card overflow-hidden">
-                <div class="glass-card-body space-y-6">
+            <x-student.card padding="p-0" class="overflow-hidden">
+                <div class="p-6 md:p-8 space-y-6">
 
                     {{-- Personal Information --}}
                     <h3 class="text-lg font-bold" style="color: var(--color-text);">{{ __('Personal Information') }}</h3>
@@ -162,7 +162,7 @@
                     </div>
                 </div>
 
-                <div class="glass-card-footer flex justify-between items-center">
+                <div class="p-6 md:p-8 bg-slate-50/50 dark:bg-slate-900/50 border-t border-slate-200/50 dark:border-white/5 flex justify-between items-center">
                     <a href="{{ route('student.profile.show') }}" class="btn-secondary">{{ __('Cancel') }}</a>
                     <button type="submit" class="btn-primary ripple-btn" :disabled="loading">
                         <span x-show="!loading">{{ __('Update Profile') }}</span>
