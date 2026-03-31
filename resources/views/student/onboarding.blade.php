@@ -22,7 +22,7 @@
     <div class="w-full max-w-2xl mx-auto px-4 relative z-10" x-cloak>
 
         {{-- Main Container Card --}}
-        <div class="glass-card shadow-2xl border-t-4 border-primary-500 overflow-hidden relative" data-aos="fade-up">
+        <x-student.card padding="p-0" class="shadow-2xl border-t-4 border-primary-500 overflow-hidden relative" data-aos="fade-up">
 
             {{-- Progress Bar --}}
             <div class="h-2 bg-white/10 w-full relative">
