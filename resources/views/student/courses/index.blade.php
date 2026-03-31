@@ -157,9 +157,11 @@
                     <x-student.empty-state
                         title="{{ __('No courses found') }}"
                         message="{{ __('We couldn\'t find any courses matching your search criteria. Try adjusting your filters.') }}"
-                        :icon="\"<svg class='w-10 h-10 text-slate-400 dark:text-slate-500' fill='none' stroke='currentColor' viewBox='0 0 24 24'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='1.8' d='M9 12h6m-6 4h6m2 5H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5.586a1 1 0 0 1 .707.293l5.414 5.414a1 1 0 0 1 .293.707V19a2 2 0 0 1-2 2z'/></svg>\""
                         data-aos="fade-up"
                     >
+                        <x-slot name="icon">
+                            <svg class="w-10 h-10 text-slate-400 dark:text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 12h6m-6 4h6m2 5H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5.586a1 1 0 0 1 .707.293l5.414 5.414a1 1 0 0 1 .293.707V19a2 2 0 0 1-2 2z"/></svg>
+                        </x-slot>
                         <x-slot name="actions">
                             <a href="{{ route('student.courses.index') }}" class="btn-primary ripple-btn px-8 py-3 rounded-xl shadow-lg shadow-primary-500/30 font-bold">{{ __('Clear All Filters') }}</a>
                         </x-slot>
