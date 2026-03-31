@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="h-full transition-all duration-300">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Dashboard - English Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Arabic:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            DEFAULT: '#00416a',
+                            light: '#005a92',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Noto Sans Arabic', 'Inter', sans-serif;
+        }
+        .glass-card {
+            @apply bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl border border-white/40 dark:border-white/5 shadow-xl shadow-slate-200/20 dark:shadow-black/20;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-card:hover {
+            @apply -translate-y-2 shadow-2xl shadow-primary-500/10 border-emerald-500/30;
+        }
+        .btn-premium {
+            @apply flex items-center justify-center gap-2 rounded-2xl font-bold bg-gradient-to-br from-primary DEFAULT to-primary-light text-white shadow-lg transition-all active:scale-95 hover:brightness-110;
+        }
+        .mesh-bg {
+            @apply fixed inset-0 z-0 pointer-events-none;
+            background: 
+                radial-gradient(at 0% 0%, rgba(0, 65, 106, 0.05) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.05) 0px, transparent 50%);
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-slate-50 dark:bg-[#020617] text-slate-900 dark:text-slate-100 transition-colors duration-500">
+    <div class="mesh-bg"></div>
+
+    <div class="flex min-h-screen overflow-hidden relative z-10">
+        <!-- Sidebar (Desktop Only) -->
+        <aside class="w-72 bg-white dark:bg-slate-900/50 border-l border-slate-200 dark:border-white/5 hidden lg:flex flex-col">
+            <div class="p-8 border-b border-slate-100 dark:border-white/5 flex items-center gap-3">
+                <div class="w-10 h-10 bg-[#00416a] rounded-xl flex items-center justify-center text-white font-black text-xl shadow-lg">E</div>
+                <span class="text-xl font-extrabold tracking-tight">Simple English</span>
+            </div>
+            <nav class="flex-1 p-6 space-y-2">
+                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-[#00416a]/10 text-[#00416a] dark:text-emerald-400 font-bold">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                    لوحة التحكم
+                </a>
+                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-slate-100 dark:hover:bg-white/5 transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                    كورساتي
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Area -->
+        <main class="flex-1 overflow-y-auto pb-24 lg:pb-8">
+            <!-- Glass Nav -->
+            <header class="sticky top-0 z-30 bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl border-b border-slate-200 dark:border-white/5 px-6 lg:px-8 py-4 flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <div class="lg:hidden w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white font-bold">E</div>
+                    <div>
+                        <h1 class="text-lg lg:text-xl font-bold truncate max-w-[200px] lg:max-w-none">مرحباً، يوسف صفوت 👋</h1>
+                        <p class="hidden lg:block text-xs text-slate-500 dark:text-slate-400 font-medium">لنستكمل رحلة تعلم الإنجليزية اليوم.</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-center gap-2 lg:gap-4">
+                    <!-- Toggle Dark Mode -->
+                    <button onclick="toggleDarkMode()" class="p-2 lg:p-3 rounded-2xl bg-white dark:bg-white/5 border border-slate-200 dark:border-white/5 text-slate-500 dark:text-amber-400 hover:scale-110 transition-transform">
+                        <svg class="w-5 h-5 lg:w-6 lg:h-6 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                        <svg class="w-5 h-5 lg:w-6 lg:h-6 dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                    </button>
+                    <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-2xl bg-slate-200 dark:bg-white/10 p-0.5 border-2 border-white dark:border-white/5 shadow-lg overflow-hidden">
+                        <img src="https://ui-avatars.com/api/?name=YS&background=random" class="w-full h-full object-cover">
+                    </div>
+                </div>
+            </header>
+
+            <div class="max-w-6xl mx-auto p-6 lg:p-12">
+                <!-- Mobile Header Summary -->
+                <div class="lg:hidden mb-8 grid grid-cols-2 gap-3">
+                    <div class="glass-card p-4 rounded-3xl text-center">
+                        <p class="text-2xl font-black text-primary dark:text-emerald-400">12</p>
+                        <p class="text-[10px] font-bold uppercase tracking-wider text-slate-500">كورس مسجل</p>
+                    </div>
+                    <div class="glass-card p-4 rounded-3xl text-center">
+                        <p class="text-2xl font-black text-emerald-500">85%</p>
+                        <p class="text-[10px] font-bold uppercase tracking-wider text-slate-500">معدل الإنجاز</p>
+                    </div>
+                </div>
+
+                <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-4 mb-10">
+                    <div>
+                        <span class="inline-block px-3 py-1 rounded-full bg-primary/10 dark:bg-emerald-500/10 text-[#00416a] dark:text-emerald-400 text-[10px] font-black uppercase tracking-widest mb-3">برنامج التعلم</span>
+                        <h2 class="text-3xl lg:text-5xl font-black tracking-tight">كورساتي <span class="text-emerald-500 italic">الجارية</span></h2>
+                    </div>
+                    <a href="#" class="btn-premium px-8 py-4 w-full lg:w-auto shadow-primary-500/30 text-sm">تصفح المكتبة</a>
+                </div>
+
+                <!-- Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-10">
+                    <!-- Premium Course Card 1 -->
+                    <div class="glass-card rounded-[2.5rem] overflow-hidden flex flex-col group h-full">
+                        <div class="relative overflow-hidden aspect-video">
+                            <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Course">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent"></div>
+                            <div class="absolute top-4 left-4">
+                                <span class="bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-xl text-[10px] font-black uppercase text-white border border-white/20">Intermediate</span>
+                            </div>
+                        </div>
+                        <div class="p-8 lg:p-10 flex-1 flex flex-col">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-8 h-8 rounded-full border-2 border-white dark:border-white/5 shadow-md overflow-hidden bg-slate-100">
+                                    <img src="https://ui-avatars.com/api/?name=Dr+Youssef&background=random" class="w-full h-full">
+                                </div>
+                                <span class="text-xs font-bold text-slate-500 dark:text-slate-400">أ. د. يوسف صفوت</span>
+                            </div>
+                            <h3 class="text-xl lg:text-2xl font-extrabold mb-6 leading-tight group-hover:text-primary dark:group-hover:text-emerald-400 transition-colors">دورة تحويل القواعد إلى ممارسة</h3>
+                            
+                            <div class="mt-auto space-y-6">
+                                <div class="space-y-3">
+                                    <div class="flex justify-between text-xs font-black uppercase text-primary dark:text-emerald-400 tracking-widest">
+                                        <span>التقدم المحرز</span>
+                                        <span>78%</span>
+                                    </div>
+                                    <div class="h-1.5 w-full bg-slate-100 dark:bg-white/5 rounded-full overflow-hidden">
+                                        <div class="h-full bg-emerald-500 rounded-full shadow-[0_0_10px_rgba(16,185,129,0.4)]" style="width: 78%"></div>
+                                    </div>
+                                </div>
+                                <button class="btn-premium w-full py-4.5 py-4">استكمال من المحاضرة 4</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Duplicate for variety -->
+                    <div class="glass-card rounded-[2.5rem] overflow-hidden flex flex-col group h-full">
+                        <div class="relative overflow-hidden aspect-video">
+                            <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Course">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent"></div>
+                        </div>
+                        <div class="p-8 lg:p-10 flex-1 flex flex-col">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-8 h-8 rounded-full border-2 border-white dark:border-white/5 shadow-md overflow-hidden bg-slate-100">
+                                    <img src="https://ui-avatars.com/api/?name=Sara&background=random" class="w-full h-full">
+                                </div>
+                                <span class="text-xs font-bold text-slate-500 dark:text-slate-400">كوتش سارة</span>
+                            </div>
+                            <h3 class="text-xl lg:text-2xl font-extrabold mb-6 leading-tight group-hover:text-primary dark:group-hover:text-emerald-400 transition-colors">تطوير مهارات الاستماع واللكنة</h3>
+                            
+                            <div class="mt-auto space-y-6">
+                                <div class="space-y-3">
+                                    <div class="flex justify-between text-xs font-black uppercase text-primary dark:text-emerald-400 tracking-widest">
+                                        <span>التقدم المحرز</span>
+                                        <span>12%</span>
+                                    </div>
+                                    <div class="h-1.5 w-full bg-slate-100 dark:bg-white/5 rounded-full overflow-hidden">
+                                        <div class="h-full bg-emerald-500 rounded-full" style="width: 12%"></div>
+                                    </div>
+                                </div>
+                                <button class="btn-premium w-full py-4">ابدأ التعلم الآن</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Mobile Bottom Nav -->
+        <nav class="lg:hidden fixed bottom-6 left-6 right-6 h-18 bg-white/80 dark:bg-slate-900/80 backdrop-blur-2xl rounded-[2rem] border border-white/40 dark:border-white/5 shadow-2xl flex items-center justify-around px-8 z-40">
+            <button class="text-primary dark:text-emerald-400"><svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></button>
+            <button class="text-slate-400 hover:text-primary transition-colors"><svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg></button>
+            <button class="text-slate-400 hover:text-primary transition-colors"><svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg></button>
+        </nav>
+    </div>
+
+    <script>
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        }
+    </script>
+</body>
+</html>

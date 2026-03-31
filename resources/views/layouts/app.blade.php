@@ -72,7 +72,7 @@
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Saudi+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
         <!-- AOS (Animate On Scroll) -->
@@ -89,12 +89,18 @@
     <body class="font-sans antialiased min-h-screen flex flex-col">
 
         <!-- Premium Ambient Background -->
-        <div class="fixed inset-0 z-0 pointer-events-none overflow-hidden bg-slate-50 dark:bg-[#020617]" style="will-change: transform; transform: translateZ(0);">
-            {{-- Background Mesh/Base --}}
-            <div class="absolute inset-0 bg-mesh opacity-30 dark:opacity-50"></div>
-            
-            {{-- Grid Pattern --}}
-            <div class="absolute inset-0 bg-[linear-gradient(to_right,#0000000a_1px,transparent_1px),linear-gradient(to_bottom,#0000000a_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+        <div class="fixed inset-0 z-0 pointer-events-none overflow-hidden bg-slate-50 dark:bg-[#020617] transition-colors duration-500">
+            {{-- Glowing Modern Orbs --}}
+            <div class="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-gradient-to-br from-primary-400/30 to-blue-300/30 dark:from-primary-600/20 dark:to-blue-600/20 blur-[100px] sm:blur-[150px] mix-blend-multiply dark:mix-blend-screen opacity-80"></div>
+            <div class="absolute top-[10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-gradient-to-bl from-accent-400/20 to-purple-300/20 dark:from-accent-600/10 dark:to-purple-900/10 blur-[100px] sm:blur-[140px] mix-blend-multiply dark:mix-blend-screen opacity-70"></div>
+            <div class="absolute bottom-[-10%] left-[20%] w-[60%] h-[60%] rounded-full bg-gradient-to-tr from-sky-300/30 to-indigo-300/30 dark:from-sky-800/10 dark:to-indigo-900/10 blur-[100px] sm:blur-[150px] mix-blend-multiply dark:mix-blend-screen opacity-70"></div>
+
+            {{-- Dotted Pattern Overlay --}}
+            <div class="absolute inset-0 dark:hidden" style="background-image: radial-gradient(rgba(0,0,0,0.06) 1.5px, transparent 1.5px); background-size: 28px 28px;"></div>
+            <div class="absolute inset-0 hidden dark:block" style="background-image: radial-gradient(rgba(255,255,255,0.04) 1.5px, transparent 1.5px); background-size: 28px 28px;"></div>
+
+            {{-- Soft Vignette Mask to blend edges nicely --}}
+            <div class="absolute inset-0 bg-gradient-to-b from-transparent via-slate-50/20 to-slate-50/80 dark:via-[#020617]/20 dark:to-[#020617]/90"></div>
         </div>
 
         <!-- Navigation -->
@@ -126,7 +132,9 @@
         </main>
 
         <!-- Footer -->
-        @include('layouts.footer')
+        <div class="@auth @if(auth()->user()->is_student) pb-[110px] lg:pb-0 @endif @endauth">
+            @include('layouts.footer')
+        </div>
 
         <!-- CDN Libraries -->
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

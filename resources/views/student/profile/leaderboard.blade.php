@@ -29,9 +29,9 @@
         </x-student.page-header>
 
         {{-- Your Rank --}}
-        <x-student.card padding="p-6" class="text-center gradient-border" data-aos="fade-up">
-            <div class="text-2xl font-extrabold text-primary-500 mb-1">{{ $isArabic ? 'ترتيبك الحالي' : 'Your Rank' }}: #{{ $userRank }}</div>
-            <div class="text-slate-500 dark:text-slate-400 font-medium">{{ $currentUser->total_points }} {{ $isArabic ? 'نقطة' : 'points' }}</div>
+        <x-student.card padding="p-6" class="text-center gradient-border !bg-slate-900/90 dark:!bg-slate-900/95" data-aos="fade-up">
+            <div class="text-2xl font-extrabold text-white mb-1">{{ $isArabic ? 'ترتيبك الحالي' : 'Your Rank' }}: #{{ $userRank }}</div>
+            <div class="text-slate-300 font-medium">{{ $currentUser->total_points }} {{ $isArabic ? 'نقطة' : 'points' }}</div>
         </x-student.card>
 
         {{-- Leaderboard Table --}}
