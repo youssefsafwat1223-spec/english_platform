@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', __('Profile') . ' — ' . config('app.name'))
+@section('title', __('Profile') . ' - ' . config('app.name'))
 
 @section('content')
 <div class="min-h-screen py-16 relative overflow-hidden bg-slate-50 dark:bg-[#020617] transition-colors duration-500">
@@ -38,7 +38,12 @@
                     {{-- User Info --}}
                     <div class="flex-1 text-center md:text-left">
                         <h1 class="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight mb-2">{{ $user->name }}</h1>
-                        <p class="text-slate-500 dark:text-slate-400 font-medium mb-6">{{ $user->email }} • {{ $user->phone }}</p>
+                        <p class="text-slate-500 dark:text-slate-400 font-medium mb-6">
+                            {{ $user->email }}
+                            @if($user->phone)
+                                <span class="mx-2">&middot;</span>{{ $user->phone }}
+                            @endif
+                        </p>
 
                         <div class="flex flex-wrap justify-center md:justify-start gap-3">
                             <a href="{{ route('student.profile.edit') }}" class="px-6 py-2.5 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-sm font-bold hover:scale-105 transition-transform flex items-center gap-2">
@@ -59,7 +64,10 @@
                         </div>
                         <div class="text-center md:text-right">
                             <div class="text-3xl font-black text-amber-500 flex items-center justify-center md:justify-end gap-1">
-                                {{ $user->current_streak }} <span class="text-xl">🔥</span>
+                                {{ $user->current_streak }}
+                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3c1.2 2.2 1.8 3.8 1.8 4.8 0 1.7-1.1 2.8-2.2 3.8-1 1-2 2-2 3.7a4.4 4.4 0 0 0 8.8 0c0-3.1-2.1-5.2-6.4-12.3Z" />
+                                </svg>
                             </div>
                             <div class="text-xs font-bold tracking-wider text-slate-400 uppercase">{{ __('ui.profile.day_streak') }}</div>
                         </div>
@@ -94,7 +102,12 @@
                                     <span class="w-2 h-2 rounded-full bg-amber-500"></span>
                                     <span class="text-sm font-medium text-amber-600 dark:text-amber-400">{{ __('Not Connected') }}</span>
                                 </div>
-                                <a href="{{ route('student.onboarding') }}" class="text-xs font-bold text-[#0088cc] hover:underline">{{ __('Connect now') }} {{ app()->getLocale() === 'ar' ? '←' : '→' }}</a>
+                                <a href="{{ route('student.onboarding') }}" class="inline-flex items-center gap-1 text-xs font-bold text-[#0088cc] hover:underline">
+                                    {{ __('Connect now') }}
+                                    <svg class="h-3.5 w-3.5 {{ app()->getLocale() === 'ar' ? 'rotate-180' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.25" d="M5 12h14m-6-6 6 6-6 6" />
+                                    </svg>
+                                </a>
                             @endif
                         </div>
                     </div>
@@ -103,7 +116,10 @@
                 {{-- Referral System --}}
                 <div class="p-6 rounded-[2rem] bg-gradient-to-br from-primary-500/5 to-accent-500/5 border border-primary-500/20 shadow-xl shadow-primary-500/5 text-center">
                     <h3 class="font-bold text-slate-900 dark:text-white mb-2 flex items-center justify-center gap-2">
-                        <span>🎁</span> {{ __('Refer & Earn') }}
+                        <svg class="h-5 w-5 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5.5v13m6.5-6.5h-13" />
+                        </svg>
+                        {{ __('Refer & Earn') }}
                     </h3>
                     <p class="text-sm text-slate-500 dark:text-slate-400 mb-4 mb-4">{{ __('ui.profile.referral_text') }}</p>
                     
@@ -111,7 +127,12 @@
                         <div class="font-mono text-xl font-black tracking-widest text-primary-500">{{ $user->referral_code }}</div>
                     </div>
                     
-                    <a href="{{ route('student.referrals.index') }}" class="text-sm font-bold text-slate-700 dark:text-white hover:text-primary-500 transition-colors">{{ __('View Referrals') }} {{ app()->getLocale() === 'ar' ? '←' : '→' }}</a>
+                    <a href="{{ route('student.referrals.index') }}" class="inline-flex items-center gap-1 text-sm font-bold text-slate-700 dark:text-white hover:text-primary-500 transition-colors">
+                        {{ __('View Referrals') }}
+                        <svg class="h-3.5 w-3.5 {{ app()->getLocale() === 'ar' ? 'rotate-180' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.25" d="M5 12h14m-6-6 6 6-6 6" />
+                        </svg>
+                    </a>
                 </div>
                 
                 {{-- Account Details --}}
@@ -144,16 +165,16 @@
                 <div class="flex overflow-x-auto pb-4 -mx-4 px-4 sm:mx-0 sm:px-0 gap-4 snap-x hide-scrollbar">
                     @php
                         $profileStats = [
-                            ['icon' => '📚', 'value' => $stats['total_enrollments'], 'label' => __('Enrolled'), 'color' => 'from-blue-500 to-indigo-500'],
-                            ['icon' => '✅', 'value' => $stats['completed_courses'], 'label' => __('Completed'), 'color' => 'from-emerald-500 to-teal-500'],
-                            ['icon' => '🎓', 'value' => $stats['certificates'], 'label' => __('Certificates'), 'color' => 'from-purple-500 to-fuchsia-500'],
-                            ['icon' => '🏆', 'value' => $user->achievements()->count(), 'label' => __('Achievements'), 'color' => 'from-amber-500 to-orange-500'],
+                            ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h10" />', 'value' => $stats['total_enrollments'], 'label' => __('Enrolled'), 'color' => 'from-blue-500 to-indigo-500'],
+                            ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />', 'value' => $stats['completed_courses'], 'label' => __('Completed'), 'color' => 'from-emerald-500 to-teal-500'],
+                            ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5Z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14v6" />', 'value' => $stats['certificates'], 'label' => __('Certificates'), 'color' => 'from-purple-500 to-fuchsia-500'],
+                            ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m12 17.75-5.228 2.749 1-5.823-4.23-4.126 5.846-.849L12 4.5l2.612 5.201 5.846.849-4.23 4.126 1 5.823L12 17.75Z" />', 'value' => $user->achievements()->count(), 'label' => __('Achievements'), 'color' => 'from-amber-500 to-orange-500'],
                         ];
                     @endphp
                     @foreach($profileStats as $s)
                         <div class="snap-start shrink-0 w-32 p-4 rounded-[1.5rem] bg-white dark:bg-white/5 border border-slate-200 dark:border-white/5 shadow-lg shadow-slate-200/20 dark:shadow-none hover:scale-105 transition-transform">
-                            <div class="w-10 h-10 rounded-xl bg-gradient-to-br {{ $s['color'] }} flex items-center justify-center text-xl mb-3 shadow-lg text-white">
-                                {{ $s['icon'] }}
+                            <div class="w-10 h-10 rounded-xl bg-gradient-to-br {{ $s['color'] }} flex items-center justify-center mb-3 shadow-lg text-white">
+                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">{!! $s['icon'] !!}</svg>
                             </div>
                             <div class="text-2xl font-black text-slate-900 dark:text-white mb-0.5">{{ $s['value'] }}</div>
                             <div class="text-xs font-bold text-slate-500 dark:text-slate-400">{{ $s['label'] }}</div>
@@ -189,7 +210,12 @@
                         @empty
                             <div class="p-8 text-center rounded-[1.5rem] border-2 border-dashed border-slate-300 dark:border-white/10">
                                 <p class="text-slate-500 dark:text-slate-400 font-medium mb-2">{{ __("You are not enrolled in the course.") }}</p>
-                                <a href="{{ route('student.courses.index') }}" class="text-sm font-bold text-primary-500">{{ __('Browse Course') }} →</a>
+                                <a href="{{ route('student.courses.index') }}" class="inline-flex items-center gap-1 text-sm font-bold text-primary-500">
+                                    {{ __('Browse Course') }}
+                                    <svg class="h-3.5 w-3.5 {{ app()->getLocale() === 'ar' ? 'rotate-180' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.25" d="M5 12h14m-6-6 6 6-6 6" />
+                                    </svg>
+                                </a>
                             </div>
                         @endforelse
                     </div>
@@ -207,7 +233,7 @@
                             @foreach($user->achievements()->take(6)->get() as $achievement)
                                 <div class="relative group cursor-pointer" title="{{ $achievement->name }}">
                                     <div class="w-16 h-16 rounded-[1.25rem] bg-slate-50 dark:bg-[#0f172a] border border-slate-200 dark:border-white/10 border-b-4 border-b-amber-500/30 flex items-center justify-center text-3xl shadow-sm group-hover:-translate-y-1 group-hover:border-b-amber-500 transition-all">
-                                        {{ $achievement->icon ?? '🏆' }}
+                                        {{ $achievement->icon ?? '★' }}
                                     </div>
                                 </div>
                             @endforeach
@@ -238,3 +264,4 @@
 }
 </style>
 @endsection
+

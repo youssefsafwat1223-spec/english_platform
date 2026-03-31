@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', __('My Competitions') . ' — ' . config('app.name'))
+@section('title', __('My Competitions') . ' - ' . config('app.name'))
 
 @section('content')
 <div class="py-12 lg:py-16 relative min-h-screen z-10" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
@@ -43,12 +43,15 @@
             
             <div class="p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
                 <div class="flex items-center gap-5 text-center md:text-left">
-                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-rose-500 to-red-600 text-white flex items-center justify-center text-3xl shrink-0 shadow-lg shadow-rose-500/30 group-hover:scale-110 group-hover:rotate-6 transition-transform duration-500 border border-white/20">
-                        ⚔️
+                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-rose-500 to-red-600 text-white flex items-center justify-center shrink-0 shadow-lg shadow-rose-500/30 group-hover:scale-110 group-hover:rotate-6 transition-transform duration-500 border border-white/20">
+                        <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168 11.555 9.036A1 1 0 0 0 10 9.868v4.264a1 1 0 0 0 1.555.832l3.197-2.132a1 1 0 0 0 0-1.664Z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7.5h4m8 0h4M6 7.5l1-3h10l1 3M7 10.5l1 9h8l1-9" />
+                        </svg>
                     </div>
                     <div>
                         <h3 class="text-xl md:text-2xl font-black text-slate-900 dark:text-white mb-1">{{ __('Battle Arena') }}</h3>
-                        <p class="text-sm font-medium text-slate-600 dark:text-slate-400">{{ __('Challenge a random student to a quick 1-on-1 vocabulary battle and climb the ranks.') }}</p>
+                        <p class="text-sm font-medium text-slate-600 dark:text-slate-400">{{ __('ui.games.battle_arena_desc') }}</p>
                     </div>
                 </div>
                 <a href="{{ route('student.battle.index') }}" class="btn-primary ripple-btn shrink-0 px-8 py-3.5 rounded-xl shadow-lg shadow-rose-500/25 font-bold flex items-center gap-2 bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-400 hover:to-red-500 border-rose-500">
@@ -60,8 +63,12 @@
 
         {{-- Competitions List --}}
         <h2 class="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-3 mb-6" data-aos="fade-up">
-            <span class="w-8 h-8 rounded-lg bg-primary-500/10 text-primary-500 flex items-center justify-center">📅</span>
-            {{ __('Scheduled Competitions') }}
+            <span class="w-8 h-8 rounded-lg bg-primary-500/10 text-primary-500 flex items-center justify-center">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2Z" />
+                </svg>
+            </span>
+            {{ __('ui.games.scheduled_competitions') }}
         </h2>
 
         <div class="space-y-4">
@@ -83,11 +90,24 @@
                     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 relative z-10">
                         <div class="flex items-start md:items-center gap-4 md:gap-6 flex-1 min-w-0 w-full">
                             {{-- Status Icon --}}
-                            <div class="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-{{ $statusColor }}-500/10 text-{{ $statusColor }}-500 flex items-center justify-center text-2xl shrink-0 group-hover:scale-110 transition-transform">
-                                @if($game->status === 'active') <span class="animate-pulse">🔴</span>
-                                @elseif($game->status === 'scheduled') ⏳
-                                @elseif($game->status === 'completed') 🏆
-                                @else ❌
+                            <div class="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-{{ $statusColor }}-500/10 text-{{ $statusColor }}-500 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                                @if($game->status === 'active')
+                                    <svg class="h-6 w-6 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168 11.555 9.036A1 1 0 0 0 10 9.868v4.264a1 1 0 0 0 1.555.832l3.197-2.132a1 1 0 0 0 0-1.664Z" />
+                                        <circle cx="12" cy="12" r="9" stroke-width="2" />
+                                    </svg>
+                                @elseif($game->status === 'scheduled')
+                                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                    </svg>
+                                @elseif($game->status === 'completed')
+                                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                @else
+                                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 18 6M6 6l12 12" />
+                                    </svg>
                                 @endif
                             </div>
                             
@@ -143,8 +163,10 @@
                 </div>
             @empty
                 <div class="glass-card rounded-[2rem] text-center p-12 relative overflow-hidden bg-white/50 dark:bg-slate-900/50" data-aos="fade-up">
-                    <div class="relative z-10 w-24 h-24 mx-auto rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-6 shadow-inner text-5xl">
-                        🎮
+                    <div class="relative z-10 w-24 h-24 mx-auto rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-6 shadow-inner text-primary-500">
+                        <svg class="h-10 w-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6l4 2m5-2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                        </svg>
                     </div>
                     <h3 class="text-2xl font-black text-slate-900 dark:text-white mb-2 relative z-10">{{ __('No Competitions Available') }}</h3>
                     <p class="text-slate-500 dark:text-slate-400 font-medium max-w-sm mx-auto relative z-10 mb-2">
@@ -165,3 +187,4 @@
     </div>
 </div>
 @endsection
+

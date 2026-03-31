@@ -33,7 +33,7 @@ class EnsureApprovedDevice
         $request->session()->regenerateToken();
 
         return redirect()->route('login')->withErrors([
-            'email' => 'هذا الجهاز غير معتمد لهذا الحساب. تم إرسال طلب استبدال الجهاز إلى الإدارة للمراجعة.',
+            'email' => __('ui.devices.not_approved_message'),
         ]);
     }
 }

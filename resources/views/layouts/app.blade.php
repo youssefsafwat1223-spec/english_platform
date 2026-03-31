@@ -5,10 +5,31 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
+        @php
+            $defaultTitle = __('ui.meta.default_title');
+            $defaultDescription = __('ui.meta.default_description');
+            $defaultKeywords = __('ui.meta.default_keywords');
+            $defaultShortDescription = __('ui.meta.default_short_description');
+            $defaultJsonLd = json_encode([
+                '@context' => 'https://schema.org',
+                '@type' => 'EducationalOrganization',
+                'name' => 'Simple English',
+                'url' => config('app.url'),
+                'logo' => asset('logo.jpg'),
+                'description' => $defaultShortDescription,
+                'sameAs' => [],
+                'contactPoint' => [
+                    '@type' => 'ContactPoint',
+                    'contactType' => 'customer service',
+                    'availableLanguage' => ['Arabic', 'English'],
+                ],
+            ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        @endphp
+
         {{-- SEO Core --}}
-        <title>@yield('title', config('app.name', __('إتقان الإنجليزية — Simple English')))</title>
-        <meta name="description" content="@yield('meta_description', __('منصة تعليم اللغة الإنجليزية المدعومة بالذكاء الاصطناعي. كورسات شاملة، تمارين نطق، اختبارات تفاعلية وشهادات معتمدة.'))">
-        <meta name="keywords" content="@yield('meta_keywords', __('تعلم الإنجليزية, كورسات إنجليزي, منصة تعليمية, نطق إنجليزي, AI English learning, English courses, learn English online'))">
+        <title>@yield('title', config('app.name', $defaultTitle))</title>
+        <meta name="description" content="@yield('meta_description', $defaultDescription)">
+        <meta name="keywords" content="@yield('meta_keywords', $defaultKeywords)">
         <meta name="author" content="Simple English">
         <meta name="robots" content="index, follow">
         <meta name="google-site-verification" content="ry7DT25966tK8f2tVoyjXZ3qGsJNpLnR7TpbLhgLU44" />
@@ -17,8 +38,8 @@
 
         {{-- Open Graph (Facebook, WhatsApp, LinkedIn) --}}
         <meta property="og:type" content="@yield('og_type', 'website')">
-        <meta property="og:title" content="@yield('title', config('app.name', __('إتقان الإنجليزية — Simple English')))">
-        <meta property="og:description" content="@yield('meta_description', __('منصة تعليم اللغة الإنجليزية المدعومة بالذكاء الاصطناعي. كورسات شاملة، تمارين نطق، اختبارات تفاعلية وشهادات معتمدة.'))">
+        <meta property="og:title" content="@yield('title', config('app.name', $defaultTitle))">
+        <meta property="og:description" content="@yield('meta_description', $defaultDescription)">
         <meta property="og:url" content="{{ url()->current() }}">
         <meta property="og:image" content="@yield('og_image', asset('logo.jpg'))">
         <meta property="og:site_name" content="Simple English">
@@ -26,32 +47,19 @@
 
         {{-- Twitter Cards --}}
         <meta name="twitter:card" content="summary_large_image">
-        <meta name="twitter:title" content="@yield('title', config('app.name', __('إتقان الإنجليزية — Simple English')))">
-        <meta name="twitter:description" content="@yield('meta_description', 'منصة تعليم اللغة الإنجليزية المدعومة بالذكاء الاصطناعي.')">
+        <meta name="twitter:title" content="@yield('title', config('app.name', $defaultTitle))">
+        <meta name="twitter:description" content="@yield('meta_description', $defaultShortDescription)">
         <meta name="twitter:image" content="@yield('og_image', asset('logo.jpg'))">
 
         {{-- JSON-LD Structured Data --}}
         <script type="application/ld+json">
-        @yield('json_ld', '{
-            "@context": "https://schema.org",
-            "@type": "EducationalOrganization",
-            "name": "Simple English",
-            "url": "' . config('app.url') . '",
-            "logo": "' . asset('logo.jpg') . '",
-            "description": "منصة تعليم اللغة الإنجليزية المدعومة بالذكاء الاصطناعي",
-            "sameAs": [],
-            "contactPoint": {
-                "@type": "ContactPoint",
-                "contactType": "customer service",
-                "availableLanguage": ["Arabic", "English"]
-            }
-        }')
+        @yield('json_ld', $defaultJsonLd)
         </script>
 
         <link rel="icon" type="image/jpeg" href="{{ asset('favicon.jpg') }}">
         <link rel="apple-touch-icon" href="{{ asset('logo.jpg') }}">
 
-        <!-- Prevent dark mode flash — runs BEFORE anything renders -->
+        <!-- Prevent dark mode flash - runs before anything renders -->
         <script>
             (function() {
                 var theme = localStorage.getItem('theme');
@@ -147,3 +155,4 @@
 
     </body>
 </html>
+

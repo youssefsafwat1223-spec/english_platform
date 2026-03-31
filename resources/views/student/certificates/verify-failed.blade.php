@@ -1,21 +1,28 @@
 @extends('layouts.app')
 
-@section('title', __('Certificate Verification'))
+@section('title', __('ui.certificates.verification_title') . ' - ' . config('app.name'))
 
 @section('content')
-<div class="py-12">
-    <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
-        <div class="glass-card overflow-hidden text-center" data-aos="zoom-in">
+<div class="py-12 lg:py-16 relative min-h-screen z-10">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="glass-card overflow-hidden rounded-[2rem] text-center border border-slate-200/50 dark:border-white/5 shadow-xl bg-white/80 dark:bg-slate-900/80" data-aos="zoom-in">
             <div class="glass-card-body py-12">
-                <div class="text-6xl mb-4">❌</div>
-                <h1 class="text-2xl font-extrabold mb-4" style="color: var(--color-text);">{{ __('Certificate Verification Failed') }}</h1>
-                <p class="mb-6" style="color: var(--color-text-muted);">{{ $message ?? 'We could not verify this certificate.' }}</p>
-                <div class="flex justify-center gap-3">
-                    <a href="{{ route('home') }}" class="btn-primary ripple-btn">{{ __('Go to Home') }}</a>
-                    <a href="{{ route('student.courses.index') }}" class="btn-secondary">{{ __('Browse Courses') }}</a>
+                <div class="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-full bg-rose-500/10 text-rose-500 ring-8 ring-rose-500/5">
+                    <svg class="h-10 w-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </div>
+
+                <h1 class="text-2xl font-extrabold mb-4 text-slate-900 dark:text-white">{{ __('ui.certificates.verification_failed_title') }}</h1>
+                <p class="mb-6 text-slate-600 dark:text-slate-300">{{ $message ?? __('ui.certificates.failed_message') }}</p>
+
+                <div class="flex flex-col sm:flex-row justify-center gap-3">
+                    <a href="{{ route('home') }}" class="btn-primary ripple-btn">{{ __('ui.certificates.go_home') }}</a>
+                    <a href="{{ route('student.courses.index') }}" class="btn-secondary">{{ __('ui.certificates.browse_courses') }}</a>
                 </div>
             </div>
         </div>
     </div>
 </div>
 @endsection
+

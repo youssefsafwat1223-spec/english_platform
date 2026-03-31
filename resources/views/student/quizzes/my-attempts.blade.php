@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', __('My Quiz Attempts') . ' — ' . config('app.name'))
+@section('title', __('My Quiz Attempts') . ' - ' . config('app.name'))
 
 @section('content')
 <div class="py-12 lg:py-16 relative min-h-screen z-10">
@@ -14,7 +14,10 @@
             <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
                 <div>
                     <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-500 dark:text-violet-400 text-sm font-bold mb-4 shadow-sm">
-                        <span>📝</span> {{ __('Assessments') }}
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6M9 8h6m3 11H6a2 2 0 01-2-2V7a2 2 0 012-2h8l4 4v8a2 2 0 01-2 2Z" />
+                        </svg>
+                        {{ __('Assessments') }}
                     </div>
                     <h1 class="text-3xl md:text-5xl font-extrabold mb-2 text-slate-900 dark:text-white tracking-tight">
                         {{ __('My Quiz') }} <span class="text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-primary-500">{{ __('Attempts') }}</span>
@@ -38,9 +41,9 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
             @php
                 $quizStats = [
-                    ['icon' => '📝', 'value' => $stats['total_attempts'] ?? 0, 'label' => 'Total Attempts', 'color' => 'primary', 'desc' => __('Quizzes taken so far')],
-                    ['icon' => '🎯', 'value' => round($stats['average_score'] ?? 0) . '%', 'label' => 'Average Score', 'color' => 'blue', 'desc' => __('Your overall accuracy')],
-                    ['icon' => '🎓', 'value' => $stats['passed'] ?? 0, 'label' => 'Quizzes Passed', 'color' => 'emerald', 'desc' => __('Successfully completed')],
+                    ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6M9 8h6m3 11H6a2 2 0 01-2-2V7a2 2 0 012-2h8l4 4v8a2 2 0 01-2 2Z" />', 'value' => $stats['total_attempts'] ?? 0, 'label' => 'Total Attempts', 'color' => 'primary', 'desc' => __('Quizzes taken so far')],
+                    ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3a1 1 0 012 0v1.07A8.002 8.002 0 0120 12h-3a5 5 0 10-5 5v3A8 8 0 0111 4.07V3Z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 12l3-3" />', 'value' => round($stats['average_score'] ?? 0) . '%', 'label' => 'Average Score', 'color' => 'blue', 'desc' => __('Your overall accuracy')],
+                    ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />', 'value' => $stats['passed'] ?? 0, 'label' => 'Quizzes Passed', 'color' => 'emerald', 'desc' => __('Successfully completed')],
                 ];
             @endphp
             
@@ -48,8 +51,8 @@
                 <div class="glass-card overflow-hidden rounded-[2rem] border border-slate-200/50 dark:border-white/5 bg-white/50 dark:bg-slate-900/50 relative group" data-aos="zoom-in" data-aos-delay="{{ $loop->index * 100 }}">
                     <div class="absolute inset-0 bg-gradient-to-br from-{{ $s['color'] }}-500/5 to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                     <div class="p-6 md:p-8 flex items-center gap-6 relative z-10">
-                        <div class="w-16 h-16 rounded-3xl bg-{{ $s['color'] }}-500/10 text-{{ $s['color'] }}-500 flex items-center justify-center text-3xl shrink-0 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500 shadow-inner">
-                            {{ $s['icon'] }}
+                        <div class="w-16 h-16 rounded-3xl bg-{{ $s['color'] }}-500/10 text-{{ $s['color'] }}-500 flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500 shadow-inner">
+                            <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">{!! $s['icon'] !!}</svg>
                         </div>
                         <div>
                             <div class="text-3xl font-black bg-clip-text text-transparent bg-gradient-to-r from-{{ $s['color'] }}-600 to-{{ $s['color'] }}-400 tracking-tight mb-1">{{ $s['value'] }}</div>
@@ -67,7 +70,9 @@
             <div class="px-6 py-5 border-b border-slate-200/50 dark:border-white/5 bg-slate-50/50 dark:bg-black/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-xl bg-primary-500/10 text-primary-500 flex items-center justify-center text-xl shrink-0 shadow-inner">
-                        📋
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />
+                        </svg>
                     </div>
                     <h3 class="font-bold text-lg text-slate-900 dark:text-white">{{ __('Attempt History') }}</h3>
                 </div>
@@ -107,7 +112,7 @@
                                                 {{ $attempt->quiz->title ?? 'Quiz' }}
                                             </div>
                                             <div class="text-xs text-slate-500 dark:text-slate-400 truncate mt-0.5">
-                                                {{ $attempt->quiz->lesson->course->title ?? '' }} • {{ $attempt->quiz->lesson->title ?? '' }}
+                                                {{ $attempt->quiz->lesson->course->title ?? '' }} <span class="mx-1">&middot;</span> {{ $attempt->quiz->lesson->title ?? '' }}
                                             </div>
                                         </div>
                                     </div>
@@ -172,7 +177,9 @@
                             <tr>
                                 <td colspan="6" class="px-6 py-16 text-center">
                                     <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-slate-100 dark:bg-slate-800 mb-6 border border-slate-200 dark:border-white/5 shadow-inner">
-                                        <span class="text-4xl">📝</span>
+                                        <svg class="h-10 w-10 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6M9 8h6m3 11H6a2 2 0 01-2-2V7a2 2 0 012-2h8l4 4v8a2 2 0 01-2 2Z" />
+                                        </svg>
                                     </div>
                                     <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">{{ __('No Quiz Attempts Yet') }}</h3>
                                     <p class="text-slate-500 dark:text-slate-400 mb-6 max-w-sm mx-auto">
@@ -198,3 +205,4 @@
     </div>
 </div>
 @endsection
+

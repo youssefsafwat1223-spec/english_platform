@@ -242,7 +242,7 @@ class DeviceAccessService
         $deviceType = $this->detectDeviceType($userAgent);
 
         return [
-            'device_label' => trim($browser . ' على ' . $platform),
+            'device_label' => trim($browser . ' on ' . $platform),
             'device_type' => $deviceType,
             'platform' => $platform,
             'browser' => $browser,
@@ -281,7 +281,7 @@ class DeviceAccessService
             str_contains($value, 'android') => 'Android',
             str_contains($value, 'mac os') || str_contains($value, 'macintosh') => 'macOS',
             str_contains($value, 'linux') => 'Linux',
-            default => 'جهاز غير معروف',
+            default => __('ui.devices.unknown_device'),
         };
     }
 
@@ -295,7 +295,7 @@ class DeviceAccessService
             str_contains($value, 'chrome') && !str_contains($value, 'edg') && !str_contains($value, 'opr') => 'Chrome',
             str_contains($value, 'firefox') => 'Firefox',
             str_contains($value, 'safari') && !str_contains($value, 'chrome') => 'Safari',
-            default => 'متصفح غير معروف',
+            default => __('ui.devices.unknown_browser'),
         };
     }
 }
