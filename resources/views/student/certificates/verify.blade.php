@@ -5,8 +5,7 @@
 @section('content')
 <div class="py-12 lg:py-16 relative min-h-screen z-10">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div class="glass-card overflow-hidden rounded-[2rem] border border-slate-200/50 dark:border-white/5 shadow-xl bg-white/80 dark:bg-slate-900/80" data-aos="zoom-in">
-            <div class="p-8 md:p-10 text-center">
+        <x-student.card padding="p-8 md:p-10" class="shadow-xl bg-white/80 dark:bg-slate-900/80 text-center" data-aos="zoom-in">
                 <div class="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-500 ring-8 ring-emerald-500/5">
                     <svg class="h-12 w-12" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
@@ -46,8 +45,7 @@
                 <a href="{{ route('home') }}" class="btn-primary ripple-btn">
                     {{ __('ui.certificates.visit_platform') }}
                 </a>
-            </div>
-        </div>
+        </x-student.card>
     </div>
 </div>
 @endsection

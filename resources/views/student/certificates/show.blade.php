@@ -16,42 +16,40 @@
             <p class="mt-2 text-slate-500 dark:text-slate-400">{{ $certificate->course->title }}</p>
         </div>
 
-        <div class="glass-card overflow-hidden rounded-[2rem] border border-slate-200/60 dark:border-white/10 shadow-xl mb-6" data-aos="fade-up">
-            <div class="p-6 md:p-8 space-y-5">
-                <div class="flex flex-wrap gap-6 text-sm text-slate-600 dark:text-slate-300">
-                    <div>
-                        <span class="font-bold text-slate-900 dark:text-white">{{ __('Certificate ID:') }}</span>
-                        <span class="font-mono text-primary-500 ml-1">{{ $certificate->certificate_id }}</span>
-                    </div>
-                    <div>
-                        <span class="font-bold text-slate-900 dark:text-white">{{ __('Issued:') }}</span>
-                        <span class="ml-1 text-slate-500 dark:text-slate-400">{{ $certificate->issued_at?->format('M d, Y') }}</span>
-                    </div>
-                    <div>
-                        <span class="font-bold text-slate-900 dark:text-white">{{ __('Final Score:') }}</span>
-                        <span class="text-emerald-500 font-bold ml-1">{{ $certificate->final_score }}%</span>
-                    </div>
-                    <div>
-                        <span class="font-bold text-slate-900 dark:text-white">{{ __('Grade:') }}</span>
-                        <span class="ml-1 inline-flex items-center rounded-full bg-primary-500/10 px-3 py-1 text-xs font-black uppercase tracking-[0.2em] text-primary-600 dark:text-primary-400">{{ $certificate->grade }}</span>
-                    </div>
+        <x-student.card padding="p-6 md:p-8" class="shadow-xl mb-6 space-y-5" data-aos="fade-up">
+            <div class="flex flex-wrap gap-6 text-sm text-slate-600 dark:text-slate-300">
+                <div>
+                    <span class="font-bold text-slate-900 dark:text-white">{{ __('Certificate ID:') }}</span>
+                    <span class="font-mono text-primary-500 ml-1">{{ $certificate->certificate_id }}</span>
                 </div>
-
-                @if($certificate->pdf_url)
-                    <iframe src="{{ $certificate->pdf_url }}" class="w-full h-96 rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-slate-900" title="{{ __('Certificate') }}"></iframe>
-                @else
-                    <div class="text-center py-12 rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-slate-900/60">
-                        <div class="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-300 mb-4">
-                            <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M7 3h7l5 5v13a1 1 0 01-1 1H7a2 2 0 01-2-2V5a2 2 0 012-2z"/>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M14 3v5h5"/>
-                            </svg>
-                        </div>
-                        <p class="text-slate-500 dark:text-slate-400">{{ $isArabic ? 'ملف الشهادة غير متاح بعد.' : 'Certificate PDF is not available yet.' }}</p>
-                    </div>
-                @endif
+                <div>
+                    <span class="font-bold text-slate-900 dark:text-white">{{ __('Issued:') }}</span>
+                    <span class="ml-1 text-slate-500 dark:text-slate-400">{{ $certificate->issued_at?->format('M d, Y') }}</span>
+                </div>
+                <div>
+                    <span class="font-bold text-slate-900 dark:text-white">{{ __('Final Score:') }}</span>
+                    <span class="text-emerald-500 font-bold ml-1">{{ $certificate->final_score }}%</span>
+                </div>
+                <div>
+                    <span class="font-bold text-slate-900 dark:text-white">{{ __('Grade:') }}</span>
+                    <span class="ml-1 inline-flex items-center rounded-full bg-primary-500/10 px-3 py-1 text-xs font-black uppercase tracking-[0.2em] text-primary-600 dark:text-primary-400">{{ $certificate->grade }}</span>
+                </div>
             </div>
-        </div>
+
+            @if($certificate->pdf_url)
+                <iframe src="{{ $certificate->pdf_url }}" class="w-full h-96 rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-slate-900" title="{{ __('Certificate') }}"></iframe>
+            @else
+                <div class="text-center py-12 rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-slate-900/60">
+                    <div class="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-300 mb-4">
+                        <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M7 3h7l5 5v13a1 1 0 01-1 1H7a2 2 0 01-2-2V5a2 2 0 012-2z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M14 3v5h5"/>
+                        </svg>
+                    </div>
+                    <p class="text-slate-500 dark:text-slate-400">{{ $isArabic ? 'ملف الشهادة غير متاح بعد.' : 'Certificate PDF is not available yet.' }}</p>
+                </div>
+            @endif
+        </x-student.card>
 
         <div class="flex flex-wrap justify-center gap-3" data-aos="fade-up" data-aos-delay="100">
             <a href="{{ route('student.certificates.download', $certificate) }}" class="btn-primary ripple-btn" target="_blank">

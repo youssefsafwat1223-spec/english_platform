@@ -7,24 +7,16 @@
     <div class="absolute top-0 left-0 w-full h-[600px] bg-gradient-to-b from-primary-500/10 via-accent-500/5 to-transparent pointer-events-none z-0"></div>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div class="relative glass-card overflow-hidden rounded-[2rem] p-8 mb-12" data-aos="fade-down">
-            <div class="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-primary-500/10 opacity-50"></div>
-            <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
-                <div>
-                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-500 dark:text-violet-400 text-sm font-bold mb-4 shadow-sm">
-                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
-                        </svg>
-                        {{ __('Certificates') }}
-                    </div>
-                    <h1 class="text-3xl md:text-5xl font-extrabold mb-2 text-slate-900 dark:text-white tracking-tight">
-                        {{ __('Your') }} <span class="text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-primary-500">{{ __('Certificates') }}</span>
-                    </h1>
-                    <p class="text-slate-600 dark:text-slate-400 font-medium">{{ __('Download or share your earned certificates to showcase your English mastery.') }}</p>
-                </div>
-            </div>
-        </div>
+        <x-student.page-header
+            title="{{ __('Your') }} <span class='text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-primary-500'>{{ __('Certificates') }}</span>"
+            subtitle="{{ __('Download or share your earned certificates to showcase your English mastery.') }}"
+            badge="{{ __('Certificates') }}"
+            badgeColor="violet"
+            badgeIcon="<svg class='h-4 w-4' fill='none' stroke='currentColor' viewBox='0 0 24 24' aria-hidden='true'>
+                <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M12 14l9-5-9-5-9 5 9 5z'/>
+                <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z'/>
+            </svg>"
+        />
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
             @php
@@ -35,7 +27,7 @@
                 ];
             @endphp
             @foreach($certStats as $index => $s)
-                <div class="glass-card p-6 flex items-center gap-6 group hover:-translate-y-1 hover:shadow-xl transition-all duration-300 border-t-2 border-t-{{ $s['color'] }}-500/50" data-aos="fade-up" data-aos-delay="{{ $index * 100 }}">
+                <x-student.card padding="p-6" class="flex flex-row items-center gap-6 group hover:-translate-y-1 hover:shadow-xl transition-all duration-300 border-t-2 border-t-{{ $s['color'] }}-500/50" data-aos="fade-up" data-aos-delay="{{ $index * 100 }}">
                     <div class="w-16 h-16 rounded-2xl bg-{{ $s['color'] }}-500/10 text-{{ $s['color'] }}-500 flex items-center justify-center shrink-0 shadow-inner group-hover:bg-{{ $s['color'] }}-500 group-hover:text-white transition-colors duration-300">
                         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">{!! $s['icon'] !!}</svg>
                     </div>
@@ -43,13 +35,13 @@
                         <div class="text-3xl font-black text-slate-900 dark:text-white tracking-tight mb-1 group-hover:text-{{ $s['color'] }}-500 transition-colors">{{ $s['value'] }}</div>
                         <div class="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">{{ __($s['label']) }}</div>
                     </div>
-                </div>
+                </x-student.card>
             @endforeach
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
             @forelse($certificates as $index => $certificate)
-                <div class="glass-card overflow-hidden group hover:shadow-2xl hover:shadow-primary-500/10 transition-all duration-300 transform hover:-translate-y-1 flex flex-col" data-aos="fade-up" data-aos-delay="{{ $index * 100 }}">
+                <x-student.card padding="p-0" class="group hover:shadow-2xl hover:shadow-primary-500/10 transition-all duration-300 transform hover:-translate-y-1 flex flex-col h-full" data-aos="fade-up" data-aos-delay="{{ $index * 100 }}">
                     <div class="p-6 md:p-8 flex-1 relative z-10">
                         <div class="absolute top-0 right-0 -mt-10 -mr-10 opacity-5 dark:opacity-10 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-500 pointer-events-none">
                             <svg class="h-32 w-32 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -125,10 +117,10 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </x-student.card>
             @empty
                 <div class="col-span-full" data-aos="fade-up">
-                    <div class="glass-card p-12 text-center flex flex-col items-center justify-center min-h-[400px]">
+                    <x-student.card padding="p-12 lg:p-16" class="text-center flex flex-col items-center justify-center min-h-[400px]">
                         <div class="w-24 h-24 mb-6 rounded-3xl bg-slate-100 dark:bg-slate-800/50 flex items-center justify-center border border-slate-200 dark:border-white/5 shadow-inner">
                             <svg class="h-14 w-14 text-slate-400 dark:text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 14l9-5-9-5-9 5 9 5z"/>
@@ -141,7 +133,7 @@
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
                             {{ __('Explore Courses') }}
                         </a>
-                    </div>
+                    </x-student.card>
                 </div>
             @endforelse
         </div>
