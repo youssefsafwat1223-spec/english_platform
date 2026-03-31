@@ -36,7 +36,7 @@
             @endphp
 
             @foreach($steps as $step)
-                <div class="glass-card p-8 md:p-10 text-center group rounded-[2.5rem] border border-slate-200/50 dark:border-white/5 bg-white/60 dark:bg-slate-900/60 shadow-xl relative overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-{{ $step['color'] }}-500/10" data-aos="fade-up" data-aos-delay="{{ $loop->index * 150 }}">
+                <x-student.card padding="p-8 md:p-10" class="text-center group shadow-xl relative transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-{{ $step['color'] }}-500/10" data-aos="fade-up" data-aos-delay="{{ $loop->index * 150 }}">
                     <div class="absolute inset-0 bg-gradient-to-br from-{{ $step['color'] }}-500/5 to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
                     <div class="relative w-24 h-24 mx-auto mb-6">
@@ -51,11 +51,11 @@
 
                     <h3 class="text-xl font-extrabold text-slate-900 dark:text-white mb-3 tracking-tight">{{ $step['title'] }}</h3>
                     <p class="text-sm md:text-base text-slate-600 dark:text-slate-400 font-medium leading-relaxed">{{ $step['desc'] }}</p>
-                </div>
+                </x-student.card>
             @endforeach
         </div>
 
-        <div class="glass-card overflow-hidden rounded-[2rem] border border-slate-200/50 dark:border-white/5 shadow-xl bg-white/80 dark:bg-slate-900/80 mb-12 max-w-3xl mx-auto" data-aos="fade-up">
+        <x-student.card padding="p-0" class="shadow-xl bg-white/80 dark:bg-slate-900/80 mb-12 max-w-3xl mx-auto" data-aos="fade-up">
             <div class="px-8 py-6 border-b border-slate-200/50 dark:border-white/5 bg-slate-50/50 dark:bg-black/20 flex items-center gap-4">
                 <div class="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center text-2xl shrink-0 shadow-inner">
                     📌
@@ -88,7 +88,7 @@
                     @endforeach
                 </ul>
             </div>
-        </div>
+        </x-student.card>
 
         <div class="text-center pb-8" data-aos="fade-up">
             <a href="{{ route('student.referrals.index') }}" class="btn-primary ripple-btn inline-flex items-center gap-2 px-8 py-4 rounded-xl shadow-lg shadow-primary-500/25 font-bold text-lg">

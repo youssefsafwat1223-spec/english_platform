@@ -15,35 +15,24 @@
     <div class="absolute top-0 left-0 w-full h-[600px] bg-gradient-to-b from-primary-600/10 via-accent-500/5 to-transparent pointer-events-none z-0"></div>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div class="relative glass-card overflow-hidden rounded-[2rem] p-8 mb-10" data-aos="fade-down">
-            <div class="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-primary-500/10 opacity-50"></div>
+        <x-student.page-header
+            title="{{ __('ui.referrals.hero_title_prefix') }} <span class='text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-primary-500'>{{ __('ui.referrals.hero_title_highlight') }}</span>"
+            subtitle="{{ __('ui.referrals.hero_text') }}"
+            badge="{{ __('ui.referrals.badge') }}"
+            badgeColor="violet"
+            badgeIcon="<svg class='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24' aria-hidden='true'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M12 8v13m0-13V6a2 2 0 1 1 2 2h-2Zm0 0V5.5A2.5 2.5 0 1 0 9.5 8H12Zm-7 4h14M5 12a2 2 0 1 1 0-4h14a2 2 0 1 1 0 4M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7'/></svg>"
+        >
+            <x-slot name="actions">
+                <a href="{{ route('student.referrals.how-it-works') }}" class="btn-primary ripple-btn px-6 py-3 rounded-xl shadow-lg shadow-violet-500/25 flex items-center gap-2 font-bold bg-gradient-to-r from-violet-600 to-violet-500 hover:from-violet-500 hover:to-violet-400 border-none text-white transition-all transform hover:scale-105">
+                    <span class="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center shadow-inner shrink-0">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.09 9a3 3 0 1 1 5.82 1c0 2-3 2-3 4"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 17h.01"/></svg>
+                    </span>
+                    {{ __('ui.referrals.how_button') }}
+                </a>
+            </x-slot>
+        </x-student.page-header>
 
-            <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
-                <div>
-                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-500 dark:text-violet-400 text-sm font-bold mb-4 shadow-sm">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V6a2 2 0 1 1 2 2h-2Zm0 0V5.5A2.5 2.5 0 1 0 9.5 8H12Zm-7 4h14M5 12a2 2 0 1 1 0-4h14a2 2 0 1 1 0 4M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg>
-                        {{ __('ui.referrals.badge') }}
-                    </div>
-                    <h1 class="text-3xl md:text-5xl font-extrabold mb-2 text-slate-900 dark:text-white tracking-tight">
-                        {{ __('ui.referrals.hero_title_prefix') }} <span class="text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-primary-500">{{ __('ui.referrals.hero_title_highlight') }}</span>
-                    </h1>
-                    <p class="text-slate-600 dark:text-slate-400 font-medium max-w-2xl">
-                        {{ __('ui.referrals.hero_text') }}
-                    </p>
-                </div>
-
-                <div class="shrink-0">
-                    <a href="{{ route('student.referrals.how-it-works') }}" class="btn-primary ripple-btn px-6 py-3 rounded-xl shadow-lg shadow-violet-500/25 flex items-center gap-2 font-bold bg-gradient-to-r from-violet-600 to-violet-500 hover:from-violet-500 hover:to-violet-400 border-none text-white transition-all transform hover:scale-105">
-                        <span class="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center shadow-inner shrink-0">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.09 9a3 3 0 1 1 5.82 1c0 2-3 2-3 4"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 17h.01"/></svg>
-                        </span>
-                        {{ __('ui.referrals.how_button') }}
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <div class="glass-card overflow-hidden rounded-[2.5rem] mb-12 border-t-8 border-t-primary-500 shadow-2xl relative" data-aos="zoom-in">
+        <x-student.card padding="p-0" class="mb-12 border-t-8 border-t-primary-500 shadow-2xl relative" data-aos="zoom-in">
             <div class="absolute inset-0 bg-gradient-to-br from-primary-500/5 to-accent-500/10 pointer-events-none"></div>
             <div class="absolute -top-32 -right-32 w-64 h-64 rounded-full bg-primary-500/20 mix-blend-multiply filter blur-[64px] pointer-events-none"></div>
             <div class="absolute -bottom-32 -left-32 w-64 h-64 rounded-full bg-accent-500/20 mix-blend-multiply filter blur-[64px] pointer-events-none"></div>
@@ -117,7 +106,7 @@
                     </div>
                 @endif
             </div>
-        </div>
+        </x-student.card>
 
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-12">
                 @php
@@ -129,7 +118,7 @@
                     ];
                 @endphp
             @foreach($refStats as $s)
-                <div class="glass-card p-6 md:p-8 text-center group rounded-[2rem] border border-slate-200/50 dark:border-white/5 bg-white/50 dark:bg-slate-900/50 relative overflow-hidden" data-aos="zoom-in" data-aos-delay="{{ $loop->index * 100 }}">
+                <x-student.card padding="p-6 md:p-8" class="text-center group bg-white/50 dark:bg-slate-900/50 relative" data-aos="zoom-in" data-aos-delay="{{ $loop->index * 100 }}">
                     <div class="absolute inset-0 bg-gradient-to-br from-{{ $s['color'] }}-500/5 to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                     <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-white/70 text-{{ $s['color'] }}-500 shadow-sm transition-transform duration-500 group-hover:scale-110 group-hover:-rotate-6 dark:bg-slate-800/70">
                         @switch($s['icon'])
@@ -148,11 +137,11 @@
                     </div>
                     <div class="text-4xl md:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-{{ $s['color'] }}-600 to-{{ $s['color'] }}-400 mb-2">{{ $s['value'] }}</div>
                     <div class="text-xs font-bold tracking-wider text-slate-500 dark:text-slate-400">{{ $s['label'] }}</div>
-                </div>
+                </x-student.card>
             @endforeach
         </div>
 
-        <div class="glass-card overflow-hidden rounded-[2rem] border border-slate-200/50 dark:border-white/5 shadow-xl bg-white/80 dark:bg-slate-900/80" data-aos="fade-up">
+        <x-student.card padding="p-0" class="shadow-xl bg-white/80 dark:bg-slate-900/80" data-aos="fade-up">
             <div class="px-6 py-5 border-b border-slate-200/50 dark:border-white/5 bg-slate-50/50 dark:bg-black/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-xl bg-primary-500/10 text-primary-500 flex items-center justify-center text-xl shrink-0 shadow-inner">
@@ -270,7 +259,7 @@
                     {{ $referrals->links() }}
                 </div>
             @endif
-        </div>
+        </x-student.card>
     </div>
 </div>
 
