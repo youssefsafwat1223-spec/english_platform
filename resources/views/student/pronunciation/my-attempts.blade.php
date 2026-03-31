@@ -7,12 +7,13 @@
     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[400px] bg-gradient-to-b from-primary-500/8 to-transparent pointer-events-none z-0"></div>
 
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 relative z-10">
-        <div class="flex items-center justify-between mb-8" data-aos="fade-down">
-            <div>
-                <h1 class="text-3xl font-extrabold"><span class="text-gradient">{{ __('ui.pronunciation.attempts_title') }}</span></h1>
-                <p class="mt-2" style="color: var(--color-text-muted);">{{ __('ui.pronunciation.attempts_subtitle') }}</p>
-            </div>
-        </div>
+        <x-student.page-header
+            title="<span class='text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-primary-500'>{{ __('ui.pronunciation.attempts_title') }}</span>"
+            subtitle="{{ __('ui.pronunciation.attempts_subtitle') }}"
+            badge="{{ __('ui.pronunciation.attempts_title') }}"
+            badgeColor="violet"
+            badgeIcon="<svg class='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z'/></svg>"
+        />
 
         {{-- Stats --}}
         @if(isset($stats))
@@ -25,46 +26,46 @@
                 ];
             @endphp
             @foreach($pronStats as $s)
-                <div class="glass-card p-6 text-center group" data-aos="zoom-in" data-aos-delay="{{ $loop->index * 100 }}">
+                <x-student.card padding="p-6" class="text-center group" data-aos="zoom-in" data-aos-delay="{{ $loop->index * 100 }}">
                     <div class="mb-2 flex justify-center text-{{ $s['color'] }}-500 group-hover:scale-110 transition-transform">
                         <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">{!! $s['icon'] !!}</svg>
                     </div>
                     <div class="text-3xl font-extrabold text-{{ $s['color'] }}-500">{{ $s['value'] }}</div>
-                    <div class="text-sm font-medium" style="color: var(--color-text-muted);">{{ $s['label'] }}</div>
-                </div>
+                    <div class="text-sm font-medium text-slate-500 dark:text-slate-400">{{ $s['label'] }}</div>
+                </x-student.card>
             @endforeach
         </div>
         @endif
 
         {{-- Attempts --}}
-        <div class="glass-card overflow-hidden" data-aos="fade-up">
-            <div class="overflow-x-auto">
-                <table class="table-glass">
+        <x-student.card padding="p-0" class="overflow-hidden mb-12" data-aos="fade-up">
+            <div class="overflow-x-auto w-full">
+                <table class="w-full text-start whitespace-nowrap">
                     <thead>
-                        <tr>
-                            <th>{{ __('ui.pronunciation.exercise') }}</th>
-                            <th>{{ __('ui.pronunciation.lesson') }}</th>
-                            <th>{{ __('ui.pronunciation.score') }}</th>
-                            <th>{{ __('ui.pronunciation.date') }}</th>
+                        <tr class="bg-slate-50/80 dark:bg-slate-800/50 border-y border-slate-200/50 dark:border-white/5 text-xs uppercase tracking-wider font-bold text-slate-500 dark:text-slate-400">
+                            <th class="px-6 py-4">{{ __('ui.pronunciation.exercise') }}</th>
+                            <th class="px-6 py-4">{{ __('ui.pronunciation.lesson') }}</th>
+                            <th class="px-6 py-4 text-center">{{ __('ui.pronunciation.score') }}</th>
+                            <th class="px-6 py-4">{{ __('ui.pronunciation.date') }}</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="divide-y divide-slate-200/50 dark:divide-white/5">
                         @forelse($attempts as $attempt)
-                            <tr>
-                                <td>
-                                    <div class="font-bold" style="color: var(--color-text);">{{ $attempt->exercise->word ?? $attempt->exercise->phrase ?? __('ui.pronunciation.exercise') }}</div>
+                            <tr class="hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors group">
+                                <td class="px-6 py-4">
+                                    <div class="font-bold text-slate-900 dark:text-white">{{ $attempt->exercise->word ?? $attempt->exercise->phrase ?? __('ui.pronunciation.exercise') }}</div>
                                 </td>
-                                <td style="color: var(--color-text-muted);">{{ $attempt->exercise->lesson->title ?? '' }}</td>
-                                <td>
+                                <td class="px-6 py-4 text-slate-500 dark:text-slate-400">{{ $attempt->exercise->lesson->title ?? '' }}</td>
+                                <td class="px-6 py-4 text-center">
                                     <span class="font-extrabold {{ ($attempt->score ?? 0) >= 70 ? 'text-emerald-500' : 'text-amber-500' }}">
                                         {{ round($attempt->score ?? 0) }}%
                                     </span>
                                 </td>
-                                <td style="color: var(--color-text-muted);">{{ $attempt->created_at->format('M d, Y H:i') }}</td>
+                                <td class="px-6 py-4 text-slate-500 dark:text-slate-400">{{ $attempt->created_at->format('M d, Y H:i') }}</td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="text-center py-12" style="color: var(--color-text-muted);">
+                                <td colspan="4" class="px-6 py-16 text-center text-slate-500 dark:text-slate-400">
                                     <div class="mb-4 flex justify-center text-primary-500">
                                         <svg class="h-10 w-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18a4 4 0 004-4V8a4 4 0 10-8 0v6a4 4 0 004 4Zm0 0v3m-4 0h8" />
@@ -77,10 +78,12 @@
                     </tbody>
                 </table>
             </div>
-            @if(isset($attempts) && method_exists($attempts, 'links'))
-                <div class="glass-card-footer">{{ $attempts->links() }}</div>
+            @if(isset($attempts) && method_exists($attempts, 'links') && $attempts->hasPages())
+                <div class="px-6 py-4 border-t border-slate-200/50 dark:border-white/5 bg-slate-50/50 dark:bg-black/20">
+                    {{ $attempts->links() }}
+                </div>
             @endif
-        </div>
+        </x-student.card>
     </div>
 </div>
 @endsection
