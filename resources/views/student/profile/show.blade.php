@@ -209,7 +209,7 @@
                             </div>
                         @empty
                             <x-student.empty-state
-                                title="{{ __("You are not enrolled in the course.") }}"
+                                title="{{ __('You are not enrolled in the course.') }}"
                                 message="{{ __('Browse the catalog to start your first course and see progress here.') }}"
                             >
                                 <x-slot name="icon">
