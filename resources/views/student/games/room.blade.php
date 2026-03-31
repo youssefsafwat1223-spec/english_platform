@@ -42,10 +42,10 @@
 
         {{-- Game Instructions (before start) --}}
         <template x-if="gameStatus === 'scheduled'">
-            <div class="glass-card overflow-hidden rounded-[2.5rem] border-t-8 border-t-primary-500 shadow-2xl max-w-2xl mx-auto relative group" data-aos="fade-up">
+            <x-student.card padding="p-8 md:p-12" class="border-t-8 border-t-primary-500 shadow-2xl max-w-2xl mx-auto relative group" data-aos="fade-up">
                 <div class="absolute inset-0 bg-gradient-to-br from-primary-500/5 to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 
-                <div class="p-8 md:p-12 text-center relative z-10">
+                <div class="text-center relative z-10">
                     <div class="w-24 h-24 mx-auto rounded-3xl bg-primary-500/10 text-primary-500 flex items-center justify-center text-5xl mb-6 shadow-inner group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500">
                         📖
                     </div>
@@ -72,7 +72,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </x-student.card>
         </template>
 
         {{-- Main Game Layout (Active / Completed) --}}
@@ -83,7 +83,7 @@
                 <div class="xl:col-span-2 space-y-6 flex flex-col h-[calc(100vh-150px)] min-h-[600px] max-h-[800px]">
 
                     {{-- Status Bar (Banner) --}}
-                    <div class="glass-card rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 border border-slate-200/50 dark:border-white/5 bg-white/80 dark:bg-slate-900/80 shadow-sm shrink-0" x-show="gameStatus === 'active'">
+                    <x-student.card padding="p-4" class="flex flex-col sm:flex-row items-center justify-between gap-4 shrink-0" x-show="gameStatus === 'active'">
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center text-xl shadow-inner">👑</div>
                             <div>
@@ -102,10 +102,10 @@
                                 {{ __('Only the Captain can submit the final answer.') }}
                             </span>
                         </template>
-                    </div>
+                    </x-student.card>
 
                     {{-- Question Area --}}
-                    <div class="glass-card rounded-[2rem] border border-slate-200/50 dark:border-white/5 bg-white/60 dark:bg-slate-900/60 shadow-xl flex-1 flex flex-col relative overflow-hidden" x-show="gameStatus === 'active' && question">
+                    <x-student.card padding="p-0" class="shadow-xl flex-1 flex flex-col relative" x-show="gameStatus === 'active' && question">
                         
                         {{-- Decorative background --}}
                         <div class="absolute top-0 right-0 w-64 h-64 bg-primary-500/5 rounded-full blur-3xl pointer-events-none transform translate-x-1/2 -translate-y-1/2 z-0"></div>
@@ -183,10 +183,10 @@
                                 </div>
                             </template>
                         </div>
-                    </div>
+                    </x-student.card>
 
                     {{-- Game Over Screen --}}
-                    <div class="glass-card rounded-[2.5rem] p-8 md:p-12 text-center relative overflow-hidden shadow-2xl flex-1 flex flex-col justify-center border-t-8 border-t-primary-500" x-show="gameStatus === 'completed'" x-data="{
+                    <x-student.card padding="p-8 md:p-12" class="text-center shadow-2xl flex-1 flex flex-col justify-center border-t-8 border-t-primary-500" x-show="gameStatus === 'completed'" x-data="{
                             maxScore: Math.max(...leaderboard.map(t => t.score)),
                             isWinner() { return this.teamScore === this.maxScore }
                         }">
@@ -228,14 +228,14 @@
                                 </a>
                             </div>
                         </div>
-                    </div>
+                    </x-student.card>
                 </div>
 
                 {{-- Right Column: Leaderboard + Chat --}}
                 <div class="xl:col-span-1 space-y-6 flex flex-col h-[calc(100vh-150px)] min-h-[600px] max-h-[800px]">
 
                     {{-- Leaderboard --}}
-                    <div class="glass-card rounded-[2rem] border border-slate-200/50 dark:border-white/5 bg-white/80 dark:bg-slate-900/80 shadow-xl overflow-hidden shrink-0">
+                    <x-student.card padding="p-0" class="shadow-xl shrink-0">
                         <div class="px-5 py-4 border-b border-slate-200/50 dark:border-white/5 bg-slate-50/50 dark:bg-black/20 flex items-center justify-between">
                             <h3 class="font-bold text-slate-900 dark:text-white flex items-center gap-2">
                                 <span class="text-xl">📊</span> {{ __('Live Ranking') }}
@@ -266,10 +266,10 @@
                                 </div>
                             </template>
                         </div>
-                    </div>
+                    </x-student.card>
 
                     {{-- Team Chat --}}
-                    <div class="glass-card flex-1 rounded-[2rem] border border-slate-200/50 dark:border-white/5 bg-white/80 dark:bg-slate-900/80 shadow-xl overflow-hidden flex flex-col">
+                    <x-student.card padding="p-0" class="flex-1 shadow-xl flex flex-col min-h-0">
                         <div class="px-5 py-4 border-b border-slate-200/50 dark:border-white/5 bg-slate-50/50 dark:bg-black/20 flex flex-col sm:flex-row sm:items-center justify-between gap-2 shrink-0">
                             <h3 class="font-bold text-slate-900 dark:text-white flex items-center gap-2">
                                 <span class="text-xl">💬</span> {{ __('Team Chat') }}
@@ -315,7 +315,7 @@
                                 </button>
                             </form>
                         </div>
-                    </div>
+                    </x-student.card>
 
                     {{-- Team Members --}}
                     {{-- Skipped team members list as the chat usually provides enough context and screen real estate is limited. If needed, can be re-added as a dropdown --}}

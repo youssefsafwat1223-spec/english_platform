@@ -8,46 +8,36 @@
 
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
-        {{-- Breadcrumb/Header --}}
-        <div class="mb-8" data-aos="fade-down">
-            <div class="flex items-center gap-2 text-sm font-bold text-slate-500 dark:text-slate-400 mb-4 uppercase tracking-wider flex-wrap">
-                <a href="{{ route('student.notes.index') }}" class="hover:text-primary-500 transition-colors flex items-center gap-1.5">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-                    {{ __('My Notes') }}
-                </a>
-                <span class="opacity-50">/</span>
-                <span>{{ $note->lesson->course->title ?? __('Course') }}</span>
-                <span class="opacity-50">/</span>
-                <span class="text-slate-700 dark:text-slate-300">{{ $note->lesson->title ?? __('Lesson') }}</span>
-            </div>
-            
-            <div class="flex flex-col md:flex-row md:items-start justify-between gap-6">
-                <div>
-                    <h1 class="text-3xl md:text-4xl font-black text-slate-900 dark:text-white mb-2 leading-tight">
-                        {{ $note->title ?? __('Untitled Note') }}
-                    </h1>
-                    <div class="flex items-center gap-3 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                        <span class="flex items-center gap-1.5 px-2 py-1 rounded-md bg-white/50 dark:bg-black/20 border border-slate-200 dark:border-slate-700">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                            {{ __('Last Updated') }} {{ $note->updated_at->format('M d, Y') }}
-                        </span>
-                    </div>
-                </div>
-                
-                <div class="flex items-center gap-3 shrink-0">
-                    <form action="{{ route('student.notes.delete', $note) }}" method="POST" onsubmit="return confirm(__('Are you sure you want to delete this note? This action cannot be undone.'))">
-                        @csrf @method('DELETE')
-                        <button type="submit" class="btn-ghost flex items-center gap-2 px-4 py-2.5 rounded-xl border border-rose-500/20 text-rose-500 bg-rose-500/10 hover:bg-rose-500 text-sm font-bold hover:text-white transition-colors group">
-                            <svg class="w-4 h-4 group-hover:animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                            {{ __('Delete') }}
-                        </button>
-                    </form>
-                </div>
-            </div>
+        {{-- Breadcrumb --}}
+        <div class="flex items-center gap-2 text-sm font-bold text-slate-500 dark:text-slate-400 mb-6 uppercase tracking-wider flex-wrap" data-aos="fade-down">
+            <a href="{{ route('student.notes.index') }}" class="hover:text-primary-500 transition-colors flex items-center gap-1.5">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                {{ __('My Notes') }}
+            </a>
+            <span class="opacity-50">/</span>
+            <span>{{ $note->lesson->course->title ?? __('Course') }}</span>
+            <span class="opacity-50">/</span>
+            <span class="text-slate-700 dark:text-slate-300">{{ $note->lesson->title ?? __('Lesson') }}</span>
         </div>
 
+        {{-- Header --}}
+        <x-student.page-header
+            title="{{ $note->title ?? __('Untitled Note') }}"
+            subtitle="{{ __('Last Updated') }} {{ $note->updated_at->format('M d, Y') }}"
+        >
+            <x-slot name="actions">
+                <form action="{{ route('student.notes.delete', $note) }}" method="POST" onsubmit="return confirm(__('Are you sure you want to delete this note? This action cannot be undone.'))">
+                    @csrf @method('DELETE')
+                    <button type="submit" class="btn-ghost flex items-center gap-2 px-4 py-2.5 rounded-xl border border-rose-500/20 text-rose-500 bg-rose-500/10 hover:bg-rose-500 text-sm font-bold hover:text-white transition-colors group">
+                        <svg class="w-4 h-4 group-hover:animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        {{ __('Delete') }}
+                    </button>
+                </form>
+            </x-slot>
+        </x-student.page-header>
+
         {{-- Note Paper Style Card --}}
-        <div class="glass-card overflow-hidden rounded-[2rem] border border-slate-200/50 dark:border-white/5 shadow-2xl relative" data-aos="fade-up">
+        <x-student.card padding="p-0" class="shadow-2xl relative" data-aos="fade-up">
             
             {{-- Paper styling details --}}
             <div class="absolute left-0 top-0 bottom-0 w-12 border-r border-rose-200/50 dark:border-rose-900/30 bg-rose-50/30 dark:bg-rose-900/10 hidden sm:block pointer-events-none"></div>
@@ -59,7 +49,7 @@
                     {!! nl2br(e($note->content)) !!}
                 </div>
             </div>
-        </div>
+        </x-student.card>
 
     </div>
 </div>
