@@ -156,6 +156,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6l4 2m5-2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                         </svg>
                     </div>
+                    <h3 class="text-2xl font-black text-slate-900 dark:text-white mb-2 relative z-10">{{ __('No Competitions Available') }}</h3>
                     <p class="text-slate-500 dark:text-slate-400 font-medium max-w-sm mx-auto relative z-10 mb-2">
                         {{ __('There are no scheduled live competitions at the moment.') }}
                     </p>
