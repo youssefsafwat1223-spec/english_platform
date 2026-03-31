@@ -23,7 +23,8 @@
         </x-student.page-header>
 
         {{-- Filters --}}
-        <form method="GET" action="{{ route('student.courses.my-courses') }}" class="glass-card mb-8 p-6 md:p-8" data-aos="fade-up">
+        <x-student.card padding="p-0" class="mb-8" data-aos="fade-up">
+            <form method="GET" action="{{ route('student.courses.my-courses') }}" class="p-6 md:p-8">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                 <div class="md:col-span-2">
                     <label for="q" class="block text-sm font-bold mb-2 text-slate-700 dark:text-slate-300">{{ __('Search') }}</label>
@@ -50,13 +51,14 @@
                     <a href="{{ route('student.courses.my-courses') }}" class="btn-ghost btn-sm text-slate-500 hover:text-primary-500 font-bold">{{ __('Clear Filters') }}</a>
                 @endif
             </div>
-        </form>
+            </form>
+        </x-student.card>
 
         {{-- Course Grid --}}
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @forelse($enrollments as $enrollment)
                 @php $lastAccessed = $enrollment->last_accessed_at ? $enrollment->last_accessed_at->diffForHumans() : 'Not yet'; @endphp
-                <div class="glass-card group overflow-hidden cursor-pointer" data-aos="fade-up" data-aos-delay="{{ $loop->index * 100 }}">
+                <x-student.card padding="p-0" class="group overflow-hidden cursor-pointer hover:-translate-y-1 hover:shadow-xl transition-all duration-300" data-aos="fade-up" data-aos-delay="{{ $loop->index * 100 }}">
                     <a href="{{ route('student.courses.learn', $enrollment->course) }}" class="block">
                         @if($enrollment->course->thumbnail)
                             <div class="relative overflow-hidden">
@@ -69,7 +71,7 @@
                                 <span class="text-white text-lg font-bold relative z-10">{{ Str::limit($enrollment->course->title, 20) }}</span>
                             </div>
                         @endif
-                        <div class="glass-card-body">
+                        <div class="p-6">
                             <h3 class="text-lg font-bold mb-2 group-hover:text-primary-500 transition-colors text-slate-900 dark:text-white">{{ $enrollment->course->title }}</h3>
                             <p class="text-sm mb-4 line-clamp-2 text-slate-600 dark:text-slate-400">{{ Str::limit($enrollment->course->short_description ?: $enrollment->course->description, 100) }}</p>
 
@@ -86,7 +88,7 @@
                         </div>
                     </a>
 
-                    <div class="glass-card-body pt-0">
+                    <div class="p-6 pt-0">
                         <div class="flex justify-between items-center pt-4 border-t border-slate-200 dark:border-white/10">
                             @if($enrollment->is_completed)
                                 <span class="badge-success badge text-emerald-600 bg-emerald-100 px-2 py-1 rounded text-xs font-bold">✓ {{ __('Completed') }}</span>
@@ -96,15 +98,15 @@
                             @endif
                         </div>
                     </div>
-                </div>
+                </x-student.card>
             @empty
                 <div class="col-span-1 md:col-span-2 lg:col-span-3">
-                    <div class="glass-card text-center py-16" data-aos="fade-up">
+                    <x-student.card padding="p-0" class="text-center py-16" data-aos="fade-up">
                         <div class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-white/10 shadow-inner">📚</div>
                         <p class="text-xl font-bold mb-2 text-slate-900 dark:text-white">{{ __('No courses yet') }}</p>
                         <p class="mb-6 text-slate-500 dark:text-slate-400 max-w-sm mx-auto">{{ __('Start your learning journey today and enroll in your first course to see it here!') }}</p>
                         <a href="{{ route('student.courses.index') }}" class="btn-primary ripple-btn px-6 py-2.5 font-bold shadow-lg shadow-primary-500/30">{{ __('Browse Courses') }}</a>
-                    </div>
+                    </x-student.card>
                 </div>
             @endforelse
         </div>
