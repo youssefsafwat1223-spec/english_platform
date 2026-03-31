@@ -21,7 +21,7 @@
         </div>
 
         <div class="grid grid-cols-1 xl:grid-cols-[1.1fr_0.9fr] gap-8 items-start">
-            <div class="glass-card rounded-[2rem] overflow-hidden border border-slate-200/60 dark:border-white/10" data-aos="fade-up">
+            <x-student.card padding="p-0" class="overflow-hidden" data-aos="fade-up">
                 <div class="p-6 md:p-8 border-b border-slate-200/60 dark:border-white/10 bg-slate-50/60 dark:bg-slate-900/20">
                     <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent-500/10 border border-accent-500/20 text-accent-600 dark:text-accent-400 text-sm font-black mb-5">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -112,10 +112,10 @@
                         </button>
                     </div>
                 </form>
-            </div>
+            </x-student.card>
 
             <div class="space-y-6">
-                <div class="glass-card rounded-[2rem] p-6 md:p-7 border border-slate-200/60 dark:border-white/10" data-aos="fade-up" data-aos-delay="100">
+                <x-student.card padding="p-6 md:p-7" data-aos="fade-up" data-aos-delay="100">
                     <h2 class="text-xl font-black text-slate-900 dark:text-white mb-4">{{ $isArabic ? 'حالة رأيك' : 'Your feedback status' }}</h2>
 
                     @if($testimonial)
@@ -157,9 +157,9 @@
                             </p>
                         </div>
                     @endif
-                </div>
+                </x-student.card>
 
-                <div class="glass-card rounded-[2rem] p-6 md:p-7 border border-slate-200/60 dark:border-white/10" data-aos="fade-up" data-aos-delay="180">
+                <x-student.card padding="p-6 md:p-7" data-aos="fade-up" data-aos-delay="180">
                     <h2 class="text-xl font-black text-slate-900 dark:text-white mb-4">{{ $isArabic ? 'نصائح لرأي قوي' : 'Tips for strong feedback' }}</h2>
                     <div class="space-y-3 text-sm font-medium text-slate-600 dark:text-slate-300">
                         <div class="flex items-start gap-3">
@@ -175,7 +175,7 @@
                             <p>{{ $isArabic ? 'لو عدّلت رأيك لاحقًا، سيتم مراجعته مرة أخرى قبل النشر.' : 'If you edit your feedback later, it will be reviewed again before publishing.' }}</p>
                         </div>
                     </div>
-                </div>
+                </x-student.card>
             </div>
         </div>
     </div>
