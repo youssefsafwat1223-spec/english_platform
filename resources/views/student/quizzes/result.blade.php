@@ -1,6 +1,10 @@
 @extends('layouts.app')
 
-@section('title', __('Quiz Result') . ' — ' . config('app.name'))
+@php
+    $isArabic = app()->getLocale() === 'ar';
+@endphp
+
+@section('title', ($isArabic ? 'نتيجة الاختبار' : 'Quiz Result') . ' - ' . config('app.name'))
 
 @section('content')
 <div class="py-12 lg:py-16 relative min-h-screen z-10">
@@ -11,7 +15,7 @@
         @if(isset($attempt->quiz) && isset($attempt->quiz->lesson))
             <nav class="mb-6 text-sm font-medium" data-aos="fade-down">
                 <ol class="flex items-center gap-2 text-slate-500 dark:text-slate-400">
-                    <li><a href="{{ route('student.courses.my-courses') }}" class="hover:text-primary-500 transition-colors">{{ __('My Courses') }}</a></li>
+                    <li><a href="{{ route('student.courses.my-courses') }}" class="hover:text-primary-500 transition-colors">{{ $isArabic ? 'كورساتي' : 'My Courses' }}</a></li>
                     <li class="opacity-50">/</li>
                     <li><a href="{{ route('student.courses.learn', $attempt->quiz->lesson->course) }}" class="hover:text-primary-500 transition-colors truncate max-w-[150px] sm:max-w-none inline-block align-bottom">{{ $attempt->quiz->lesson->course->title }}</a></li>
                     <li class="opacity-50">/</li>
@@ -37,10 +41,10 @@
                 </div>
 
                 <h1 class="text-4xl md:text-5xl font-black mb-3 tracking-tight bg-clip-text text-transparent {{ $attempt->passed ? 'bg-gradient-to-r from-emerald-600 to-teal-400' : 'bg-gradient-to-r from-rose-600 to-red-400' }}">
-                    {{ $attempt->passed ? __('Congratulations!') : __('Keep Trying!') }}
+                    {{ $attempt->passed ? ($isArabic ? 'أحسنت!' : 'Congratulations!') : ($isArabic ? 'حاول مرة أخرى' : 'Keep Trying!') }}
                 </h1>
                 <p class="text-lg text-slate-600 dark:text-slate-300 mb-10 font-medium">
-                    {{ __('You have completed the') }} <span class="font-bold text-slate-900 dark:text-white">{{ $attempt->quiz->title ?? 'Quiz' }}</span>
+                    {{ $isArabic ? 'أنهيت' : 'You have completed the' }} <span class="font-bold text-slate-900 dark:text-white">{{ $attempt->quiz->title ?? ($isArabic ? 'الاختبار' : 'Quiz') }}</span>
                 </p>
 
                 {{-- Score Ring --}}
@@ -55,7 +59,7 @@
                     </svg>
                     <div class="absolute inset-0 flex flex-col items-center justify-center">
                         <span class="text-4xl font-black text-slate-900 dark:text-white tracking-tighter">{{ round($attempt->score) }}<span class="text-2xl opacity-50">%</span></span>
-                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mt-1">{{ __('Score') }}</span>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mt-1">{{ $isArabic ? 'النتيجة' : 'Score' }}</span>
                     </div>
                 </div>
 
@@ -63,18 +67,18 @@
                 <div class="flex flex-wrap justify-center gap-4">
                     <div class="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-4 min-w-[130px] border border-slate-200 dark:border-white/5 shadow-sm">
                         <div class="text-3xl font-black text-slate-900 dark:text-white mb-1">{{ $attempt->correct_answers ?? 0 }}</div>
-                        <div class="text-xs font-bold uppercase tracking-wider text-emerald-500">{{ __('Correct') }}</div>
+                        <div class="text-xs font-bold uppercase tracking-wider text-emerald-500">{{ $isArabic ? 'صحيح' : 'Correct' }}</div>
                     </div>
                     
                     <div class="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-4 min-w-[130px] border border-slate-200 dark:border-white/5 shadow-sm">
                         <div class="text-3xl font-black text-slate-900 dark:text-white mb-1">{{ $attempt->total_questions ?? 0 }}</div>
-                        <div class="text-xs font-bold uppercase tracking-wider text-slate-500">{{ __('Questions') }}</div>
+                        <div class="text-xs font-bold uppercase tracking-wider text-slate-500">{{ $isArabic ? 'الأسئلة' : 'Questions' }}</div>
                     </div>
 
                     @if($attempt->time_taken)
                     <div class="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-4 min-w-[130px] border border-slate-200 dark:border-white/5 shadow-sm">
                         <div class="text-3xl font-black text-slate-900 dark:text-white mb-1">{{ gmdate('i:s', $attempt->time_taken) }}</div>
-                        <div class="text-xs font-bold uppercase tracking-wider text-blue-500">{{ __('Time Taken') }}</div>
+                        <div class="text-xs font-bold uppercase tracking-wider text-blue-500">{{ $isArabic ? 'الوقت المستغرق' : 'Time Taken' }}</div>
                     </div>
                     @endif
                 </div>
@@ -92,25 +96,25 @@
                     @endphp
                     @if($nextLesson)
                         <a href="{{ route('student.lessons.show', [$lesson->course, $nextLesson]) }}" class="btn-primary ripple-btn px-8 py-4 rounded-xl shadow-lg font-bold flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 border-0 text-white text-lg">
-                            {{ __('Next Lesson') }}
+                            {{ $isArabic ? 'الدرس التالي' : 'Next Lesson' }}
                             <svg class="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                         </a>
                     @else
                         <a href="{{ route('student.courses.learn', $attempt->quiz->lesson->course) }}" class="btn-primary ripple-btn px-8 py-4 rounded-xl shadow-lg font-bold flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 border-0 text-white text-lg">
-                            {{ __('Back to Course') }}
+                            {{ $isArabic ? 'العودة إلى الكورس' : 'Back to Course' }}
                         </a>
                     @endif
                 @else
                     {{-- Retake Option --}}
                     <a href="{{ route('student.quizzes.start', $attempt->quiz) }}" class="btn-primary ripple-btn px-8 py-4 rounded-xl shadow-lg shadow-primary-500/25 font-bold flex items-center gap-2 text-lg">
                         <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-                        {{ __('Retake Quiz') }}
+                        {{ $isArabic ? 'إعادة الاختبار' : 'Retake Quiz' }}
                     </a>
                 @endif
             @endif
             <a href="{{ route('student.quizzes.my-attempts') }}" class="btn-secondary px-8 py-4 rounded-xl font-bold flex items-center gap-2 text-lg bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:border-slate-300 dark:hover:border-slate-600">
                 <svg class="w-5 h-5 opacity-70 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-                {{ __('All Attempts') }}
+                {{ $isArabic ? 'كل المحاولات' : 'All Attempts' }}
             </a>
         </div>
 
@@ -121,7 +125,7 @@
                 <div class="w-10 h-10 rounded-xl bg-primary-500/10 text-primary-500 flex items-center justify-center shrink-0">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
                 </div>
-                <h2 class="text-2xl font-black text-slate-900 dark:text-white">{{ __('Questions Review') }}</h2>
+                <h2 class="text-2xl font-black text-slate-900 dark:text-white">{{ $isArabic ? 'مراجعة الأسئلة' : 'Questions Review' }}</h2>
             </div>
             
             <div class="space-y-6">
@@ -153,19 +157,19 @@
                                 </div>
                                 
                                 <div class="flex-1 min-w-0">
-                                    <div class="text-sm font-bold text-slate-500 dark:text-slate-400 mb-1 tracking-wider uppercase">{{ __('Question') }} {{ $index + 1 }}</div>
-                                    <h3 class="text-lg md:text-xl font-bold text-slate-900 dark:text-white mb-6 leading-relaxed">{{ $answer->question->text ?? $answer->question_text ?? 'Question ' . ($index + 1) }}</h3>
+                                    <div class="text-sm font-bold text-slate-500 dark:text-slate-400 mb-1 tracking-wider uppercase">{{ $isArabic ? 'السؤال' : 'Question' }} {{ $index + 1 }}</div>
+                                    <h3 class="text-lg md:text-xl font-bold text-slate-900 dark:text-white mb-6 leading-relaxed">{{ $answer->question->text ?? $answer->question_text ?? (($isArabic ? 'السؤال' : 'Question') . ' ' . ($index + 1)) }}</h3>
                                     
                                     <div class="space-y-3">
                                         @if($isDragDrop)
                                             {{-- Drag & Drop Answer Display --}}
                                             <div class="p-4 rounded-xl border {{ $isCorrect ? 'bg-emerald-100/50 dark:bg-emerald-500/20 border-emerald-200 dark:border-emerald-500/30' : 'bg-rose-100/50 dark:bg-rose-500/20 border-rose-200 dark:border-rose-500/30' }}">
-                                                <div class="text-xs font-bold uppercase tracking-wider mb-3 {{ $isCorrect ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400' }}">{{ __('Your Answer') }}</div>
+                                                <div class="text-xs font-bold uppercase tracking-wider mb-3 {{ $isCorrect ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400' }}">{{ $isArabic ? 'إجابتك' : 'Your Answer' }}</div>
                                                 <div class="space-y-2">
                                                     @foreach($userPairs as $pair)
                                                         <div class="flex items-center gap-2 text-sm font-bold text-slate-900 dark:text-white">
                                                             <span class="bg-white dark:bg-slate-700 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-600">{{ $pair['left'] ?? '' }}</span>
-                                                            <span class="text-slate-400">→</span>
+                                                            <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 12h14m-5-5 5 5-5 5"/></svg>
                                                             <span class="bg-white dark:bg-slate-700 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-600">{{ $pair['right'] ?? '' }}</span>
                                                         </div>
                                                     @endforeach
@@ -174,12 +178,12 @@
 
                                             @if(!$isCorrect)
                                                 <div class="p-4 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-                                                    <div class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">{{ __('Correct Answer') }}</div>
+                                                    <div class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">{{ $isArabic ? 'الإجابة الصحيحة' : 'Correct Answer' }}</div>
                                                     <div class="space-y-2">
                                                         @foreach($correctPairs as $pair)
                                                             <div class="flex items-center gap-2 text-sm font-bold text-slate-900 dark:text-white">
                                                                 <span class="bg-emerald-100 dark:bg-emerald-900/40 px-3 py-1.5 rounded-lg border border-emerald-200 dark:border-emerald-700">{{ $pair['left'] ?? '' }}</span>
-                                                                <span class="text-emerald-400">→</span>
+                                                                <svg class="w-4 h-4 text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 12h14m-5-5 5 5-5 5"/></svg>
                                                                 <span class="bg-emerald-100 dark:bg-emerald-900/40 px-3 py-1.5 rounded-lg border border-emerald-200 dark:border-emerald-700">{{ $pair['right'] ?? '' }}</span>
                                                             </div>
                                                         @endforeach
@@ -197,7 +201,7 @@
                                                     @endif
                                                 </div>
                                                 <div>
-                                                    <div class="text-xs font-bold uppercase tracking-wider {{ $isCorrect ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400' }}">{{ __('Your Answer') }}</div>
+                                                    <div class="text-xs font-bold uppercase tracking-wider {{ $isCorrect ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400' }}">{{ $isArabic ? 'إجابتك' : 'Your Answer' }}</div>
                                                     <div class="font-bold text-slate-900 dark:text-white text-base mt-0.5">{{ $userAnswerText }}</div>
                                                 </div>
                                             </div>
@@ -208,7 +212,7 @@
                                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
                                                     </div>
                                                     <div>
-                                                        <div class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">{{ __('Correct Answer') }}</div>
+                                                        <div class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">{{ $isArabic ? 'الإجابة الصحيحة' : 'Correct Answer' }}</div>
                                                         <div class="font-bold text-slate-900 dark:text-white text-base mt-0.5">{{ $correctAnswerText }}</div>
                                                     </div>
                                                 </div>

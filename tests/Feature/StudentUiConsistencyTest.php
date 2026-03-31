@@ -107,12 +107,21 @@ class StudentUiConsistencyTest extends TestCase
         $this->withoutMiddleware(EnsureApprovedDevice::class);
 
         $user = User::factory()->create();
+        $course = Course::factory()->create([
+            'title' => 'Student UI Course',
+            'slug' => 'student-ui-course',
+        ]);
 
         $responses = [
             $this->actingAsOnApprovedDevice($user)->withSession(['locale' => 'en'])->get(route('student.profile.show')),
             $this->actingAsOnApprovedDevice($user)->withSession(['locale' => 'en'])->get(route('student.games.index')),
             $this->actingAsOnApprovedDevice($user)->withSession(['locale' => 'en'])->get(route('student.quizzes.my-attempts')),
             $this->actingAsOnApprovedDevice($user)->withSession(['locale' => 'en'])->get(route('student.pronunciation.my-attempts')),
+            $this->actingAsOnApprovedDevice($user)->withSession(['locale' => 'en'])->get(route('student.notes.index')),
+            $this->actingAsOnApprovedDevice($user)->withSession(['locale' => 'en'])->get(route('student.notifications.index')),
+            $this->actingAsOnApprovedDevice($user)->withSession(['locale' => 'en'])->get(route('student.leaderboard')),
+            $this->actingAsOnApprovedDevice($user)->withSession(['locale' => 'en'])->get(route('student.referrals.index')),
+            $this->actingAsOnApprovedDevice($user)->withSession(['locale' => 'en'])->get(route('student.courses.show', $course)),
         ];
 
         foreach ($responses as $response) {

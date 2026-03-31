@@ -55,7 +55,8 @@
                         </span>
                         @if($course->average_rating)
                             <div class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 text-xs font-black border border-amber-200 dark:border-amber-800/50 shadow-sm">
-                                <span>★</span> {{ number_format($course->average_rating, 1) }}
+                                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 1.75l2.55 5.16 5.7.83-4.12 4.02.97 5.68L10 14.76l-5.1 2.68.97-5.68-4.12-4.02 5.7-.83L10 1.75Z"/></svg>
+                                {{ number_format($course->average_rating, 1) }}
                             </div>
                         @endif
                     </div>
@@ -70,7 +71,9 @@
 
                     <div class="flex flex-wrap items-center gap-4 sm:gap-6 text-sm font-medium text-slate-700 dark:text-slate-300">
                         <div class="flex items-center gap-3 flex-1 sm:flex-none bg-white dark:bg-slate-800/50 min-w-[140px] px-5 py-4 rounded-[1.25rem] border border-slate-200 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow">
-                            <div class="w-12 h-12 rounded-full bg-indigo-50 dark:bg-indigo-500/10 flex items-center justify-center text-indigo-500 text-xl border border-indigo-100 dark:border-indigo-500/20 shrink-0">📚</div>
+                            <div class="w-12 h-12 rounded-full bg-indigo-50 dark:bg-indigo-500/10 flex items-center justify-center text-indigo-500 border border-indigo-100 dark:border-indigo-500/20 shrink-0">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.25C10.83 5.48 9.25 5 7.5 5S4.17 5.48 3 6.25v11C4.17 16.48 5.75 16 7.5 16s3.33.48 4.5 1.25m0-11C13.17 5.48 14.75 5 16.5 5c1.75 0 3.33.48 4.5 1.25v11C19.83 16.48 18.25 16 16.5 16s-3.33.48-4.5 1.25"/></svg>
+                            </div>
                             <div>
                                 <div class="text-slate-400 dark:text-slate-500 text-[10px] uppercase font-black tracking-wider mb-1">{{ __('المحتوى') }}</div>
                                 <div class="font-black text-slate-900 dark:text-white">{{ $course->levels()->active()->count() }} {{ __('عنوان') }}</div>
@@ -78,7 +81,9 @@
                             </div>
                         </div>
                         <div class="flex items-center gap-3 flex-1 sm:flex-none bg-white dark:bg-slate-800/50 min-w-[140px] px-5 py-4 rounded-[1.25rem] border border-slate-200 dark:border-white/5 shadow-sm hover:shadow-md transition-shadow">
-                            <div class="w-12 h-12 rounded-full bg-teal-50 dark:bg-teal-500/10 flex items-center justify-center text-teal-500 text-xl border border-teal-100 dark:border-teal-500/20 shrink-0">⏱️</div>
+                            <div class="w-12 h-12 rounded-full bg-teal-50 dark:bg-teal-500/10 flex items-center justify-center text-teal-500 border border-teal-100 dark:border-teal-500/20 shrink-0">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m-6-9h6m3 6a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+                            </div>
                             <div>
                                 <div class="text-slate-400 dark:text-slate-500 text-[10px] uppercase font-black tracking-wider mb-1">{{ __('مدة الدراسة') }}</div>
                                 <div class="font-black text-slate-900 dark:text-white">{{ $course->estimated_duration_weeks ? $course->estimated_duration_weeks . ' ' . __('أسابيع تقريبًا') : __('حسب سرعتك') }}</div>
@@ -152,7 +157,9 @@
                 {{-- Course Description Section --}}
                 <div data-aos="fade-up" data-aos-delay="100" class="pt-6">
                     <h3 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mb-6 lg:mb-8 flex items-center gap-3">
-                        <span class="w-10 h-10 rounded-[0.8rem] bg-white dark:bg-slate-800 shadow-sm border border-slate-200 dark:border-white/5 flex items-center justify-center text-lg">📝</span>
+                        <span class="w-10 h-10 rounded-[0.8rem] bg-white dark:bg-slate-800 shadow-sm border border-slate-200 dark:border-white/5 flex items-center justify-center text-primary-500">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3h6l4 4v12a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 9h6M9 13h6M9 17h4"/></svg>
+                        </span>
                         {{ __('وصف الكورس') }}
                     </h3>
                     
