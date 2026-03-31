@@ -135,9 +135,12 @@
                 <x-student.empty-state
                     title="{{ $isArabic ? 'لا توجد إشعارات جديدة' : 'All Caught Up!' }}"
                     message="{{ $isArabic ? 'ليس لديك إشعارات نشطة حاليًا. سنخبرك فور حدوث أي شيء جديد.' : 'You have no active notifications at the moment. We\'ll let you know when something new happens.' }}"
-                    :icon="\"<svg class='w-10 h-10 text-slate-500 dark:text-slate-300' fill='none' stroke='currentColor' viewBox='0 0 24 24'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='1.8' d='M15 17h5l-1.41-1.41A2 2 0 0 1 18 14.17V11a6 6 0 10-12 0v3.17a2 2 0 0 1-.59 1.42L4 17h5'></path><path stroke-linecap='round' stroke-linejoin='round' stroke-width='1.8' d='M10 17a2 2 0 104 0'></path></svg>\""
                     data-aos="fade-up"
-                />
+                >
+                    <x-slot name="icon">
+                        <svg class="w-10 h-10 text-slate-500 dark:text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 17h5l-1.41-1.41A2 2 0 0 1 18 14.17V11a6 6 0 10-12 0v3.17a2 2 0 0 1-.59 1.42L4 17h5"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M10 17a2 2 0 104 0"></path></svg>
+                    </x-slot>
+                </x-student.empty-state>
             @endforelse
         </div>
 
