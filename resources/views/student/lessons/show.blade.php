@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('title', $lesson->title . ' - ' . config('app.name'))
 
@@ -28,6 +28,19 @@
                     {{ $lesson->title }}
                 </li>
             </ol>
+                    </a>
+                </li>
+                <li class="opacity-50">/</li>
+                <li>
+                    <a href="{{ route('student.courses.learn', $course) }}" class="hover:text-primary-500 transition-colors truncate max-w-[200px] sm:max-w-[250px] md:max-w-none inline-block align-bottom">
+                        {{ $course->title }}
+                    </a>
+                </li>
+                <li class="opacity-50">/</li>
+                <li class="text-slate-900 dark:text-white font-bold truncate max-w-[200px] sm:max-w-[400px] md:max-w-none inline-block align-bottom">
+                    {{ $lesson->title }}
+                </li>
+            </ol>
         </nav>
 
         <div class="grid grid-cols-1 xl:grid-cols-4 gap-8">
@@ -35,7 +48,7 @@
             <div class="xl:col-span-3 space-y-8">
                 
                 {{-- Title & Video Section --}}
-                <div class="glass-card overflow-hidden rounded-[2rem] border border-slate-200/50 dark:border-white/10" data-aos="fade-up">
+                <x-student.card padding="p-0" class="overflow-hidden border border-slate-200/50 dark:border-white/10" data-aos="fade-up">
                     <div class="p-6 md:p-8 md:pb-6 bg-slate-50/50 dark:bg-slate-900/20 border-b border-slate-200/50 dark:border-white/5">
                         <h1 class="text-2xl md:text-4xl font-black text-slate-900 dark:text-white leading-tight mb-2 tracking-tight">
                             {{ $lesson->title }}
@@ -308,11 +321,11 @@
                             </div>
                         </div>
                     @endif
-                </div>
+                </x-student.card>
 
                 {{-- Audio Player --}}
                 @if($lesson->audio)
-                    <div class="glass-card overflow-hidden rounded-[1.5rem] border border-primary-500/20 shadow-lg shadow-primary-500/5 group" x-data="createAudioPlayer('{{ Storage::url($lesson->audio->audio_path) }}')" data-aos="fade-up">
+                    <x-student.card padding="p-0" class="overflow-hidden border border-primary-500/20 shadow-lg shadow-primary-500/5 group" x-data="createAudioPlayer('{{ Storage::url($lesson->audio->audio_path) }}')" data-aos="fade-up">
                         <div class="absolute inset-0 bg-gradient-to-r from-primary-500/5 to-transparent pointer-events-none"></div>
                         <div class="p-6 md:p-8 relative z-10 flex flex-col md:flex-row items-center gap-6">
                             
@@ -359,13 +372,13 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </x-student.card>
                 @endif
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {{-- Attachments --}}
                     @if($lesson->attachments->count() > 0)
-                        <div class="glass-card overflow-hidden rounded-[1.5rem]" data-aos="fade-up">
+                        <x-student.card padding="p-0" class="overflow-hidden" data-aos="fade-up">
                             <div class="px-6 py-5 border-b border-slate-200/50 dark:border-white/5 flex items-center gap-3">
                                 <div class="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center shrink-0">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -392,13 +405,13 @@
                                     </a>
                                 @endforeach
                             </div>
-                        </div>
+                        </x-student.card>
                     @endif
 
                     {{-- Actions (Quizzes / Pronunciation) --}}
                     <div class="space-y-6">
                         @if($lesson->pronunciationExercise)
-                            <div class="glass-card overflow-hidden rounded-[1.5rem] relative group" data-aos="fade-up">
+                            <x-student.card padding="p-0" class="overflow-hidden relative group" data-aos="fade-up">
                                 <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-transparent pointer-events-none"></div>
                                 <div class="px-6 py-5 border-b border-slate-200/50 dark:border-white/5 flex items-center gap-3 relative z-10">
                                     <div class="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center shrink-0">
@@ -416,11 +429,11 @@
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
                                     </a>
                                 </div>
-                            </div>
+                            </x-student.card>
                         @endif
 
                         @if($completionQuiz)
-                            <div class="glass-card overflow-hidden rounded-[1.5rem] relative group" data-aos="fade-up">
+                            <x-student.card padding="p-0" class="overflow-hidden relative group" data-aos="fade-up">
                                 <div class="absolute inset-0 bg-gradient-to-br from-amber-500/10 to-transparent pointer-events-none"></div>
                                 <div class="px-6 py-5 border-b border-slate-200/50 dark:border-white/5 flex items-center gap-3 relative z-10">
                                     <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center shrink-0">
@@ -447,13 +460,13 @@
                                         </a>
                                     @endif
                                 </div>
-                            </div>
+                            </x-student.card>
                         @endif
                     </div>
                 </div>
 
                 {{-- Comments Section --}}
-                <div class="glass-card overflow-hidden rounded-[2rem] border-t-4 border-t-primary-500" id="comments" data-aos="fade-up">
+                <x-student.card padding="p-0" class="overflow-hidden border-t-4 border-t-primary-500" id="comments" data-aos="fade-up">
                     <div class="px-8 py-6 border-b border-slate-200/50 dark:border-white/5 bg-slate-50/50 dark:bg-slate-900/20 flex flex-col sm:flex-row items-center justify-between gap-4">
                         <div class="flex items-center gap-3">
                             <div class="w-12 h-12 rounded-2xl bg-primary-500/10 text-primary-500 flex items-center justify-center text-xl shrink-0 shadow-inner">
@@ -572,7 +585,7 @@
                             @endforelse
                         </div>
                     </div>
-                </div>
+                </x-student.card>
 
                 {{-- Lesson Navigation (Bottom) --}}
                 <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4" data-aos="fade-up">
@@ -591,9 +604,6 @@
                     <div class="w-full sm:w-auto shrink-0 flex justify-center">
                         @if(!$progress->is_completed)
                             @if($requiresQuizPass && !$hasPassedCompletionQuiz)
-                                {{--
-                                {{ __('تم الانتهاء') }}
-                                --}}
                                 <div class="flex flex-col items-stretch gap-2 w-full sm:w-auto">
                                     <a href="{{ route('student.quizzes.start', $completionQuiz) }}" class="btn-primary ripple-btn px-8 py-4 rounded-xl shadow-lg shadow-amber-500/25 font-bold flex items-center justify-center gap-2 w-full sm:w-auto bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 border-0">
                                         <span class="bg-black/20 rounded-full p-1"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg></span>
