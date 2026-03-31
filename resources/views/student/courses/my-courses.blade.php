@@ -104,9 +104,11 @@
                     <x-student.empty-state
                         title="{{ __('No courses yet') }}"
                         message="{{ __('Start your learning journey today and enroll in your first course to see it here!') }}"
-                        :icon="\"<svg class='w-10 h-10 text-slate-500 dark:text-slate-300' fill='none' stroke='currentColor' viewBox='0 0 24 24'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='1.8' d='M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253'/></svg>\""
                         data-aos="fade-up"
                     >
+                        <x-slot name="icon">
+                            <svg class="w-10 h-10 text-slate-500 dark:text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                        </x-slot>
                         <x-slot name="actions">
                             <a href="{{ route('student.courses.index') }}" class="btn-primary ripple-btn px-6 py-2.5 font-bold shadow-lg shadow-primary-500/30">{{ __('Browse Courses') }}</a>
                         </x-slot>
