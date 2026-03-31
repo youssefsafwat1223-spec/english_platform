@@ -4,7 +4,6 @@
 
 @section('content')
 <div class="py-12 relative overflow-hidden">
-    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[400px] bg-gradient-to-b from-primary-500/8 to-transparent pointer-events-none z-0"></div>
 
     <div class="student-container relative z-10">
         {{-- Header Section --}}
@@ -13,6 +12,7 @@
             subtitle="{{ __('Keep learning where you left off and finish your enrolled courses.') }}"
             badge="{{ __('Learning') }}"
             badgeColor="primary"
+            image="{{ asset('images/ai/my_courses_bg.png') }}"
         >
             <x-slot name="actions">
                 <a href="{{ route('student.courses.index') }}" class="btn-primary ripple-btn px-6 py-3 rounded-xl shadow-lg shadow-primary-500/25 flex items-center gap-2 font-bold transition-all transform hover:scale-105">
@@ -57,7 +57,7 @@
         {{-- Course Grid --}}
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @forelse($enrollments as $enrollment)
-                @php $lastAccessed = $enrollment->last_accessed_at ? $enrollment->last_accessed_at->diffForHumans() : 'Not yet'; @endphp
+                @php $lastAccessed = $enrollment->last_accessed_at ? $enrollment->last_accessed_at->diffForHumans() : __('Not yet'); @endphp
                 <x-student.card padding="p-0" class="group overflow-hidden cursor-pointer hover:-translate-y-1 hover:shadow-xl transition-all duration-300" data-aos="fade-up" data-aos-delay="{{ $loop->index * 100 }}">
                     <a href="{{ route('student.courses.learn', $enrollment->course) }}" class="block">
                         @if($enrollment->course->thumbnail)

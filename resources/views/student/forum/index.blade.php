@@ -4,7 +4,6 @@
 
 @section('content')
 <div class="py-12 lg:py-16 relative min-h-screen z-10">
-    <div class="absolute top-0 left-0 w-full h-[600px] bg-gradient-to-b from-primary-600/10 via-accent-500/5 to-transparent pointer-events-none z-0"></div>
 
     <div class="student-container relative z-10">
         {{-- Header Section --}}
@@ -32,7 +31,6 @@
                     <x-student.card padding="p-0" class="group hover:bg-white/80 dark:hover:bg-slate-900/80 transition-all duration-300" data-aos="fade-up" data-aos-delay="{{ $loop->index * 80 }}">
                         <div class="p-6 md:p-8 relative">
                             <div class="absolute inset-0 bg-gradient-to-br from-primary-500/5 to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                            
                             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6 relative z-10">
                                 <div class="flex items-start gap-5 flex-1 w-full">
                                     <div class="w-16 h-16 rounded-2xl bg-white dark:bg-slate-800 shadow-sm border border-slate-200 dark:border-white/5 flex items-center justify-center text-3xl shrink-0 group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-300">

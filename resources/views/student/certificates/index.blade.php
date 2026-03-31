@@ -4,8 +4,6 @@
 
 @section('content')
 <div class="py-12 lg:py-16 relative min-h-screen z-10">
-    <div class="absolute top-0 left-0 w-full h-[600px] bg-gradient-to-b from-primary-500/10 via-accent-500/5 to-transparent pointer-events-none z-0"></div>
-
     <div class="student-container relative z-10">
         <x-student.page-header
             title="{{ __('Your') }} <span class='text-transparent bg-clip-text bg-gradient-to-r from-primary-500 to-accent-500'>{{ __('Certificates') }}</span>"

@@ -3,10 +3,7 @@
 @section('title', __('Profile') . ' - ' . config('app.name'))
 
 @section('content')
-<div class="min-h-screen py-16 relative overflow-hidden bg-slate-50 dark:bg-[#020617] transition-colors duration-500">
-    {{-- Ambient Background Orbs --}}
-    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-primary-500/10 blur-[120px] rounded-full pointer-events-none"></div>
-    <div class="absolute bottom-0 right-0 w-[600px] h-[600px] bg-accent-500/10 blur-[120px] rounded-full pointer-events-none"></div>
+<div class="py-12 relative overflow-hidden">
 
     <div class="student-container max-w-5xl relative z-10">
         
@@ -152,7 +149,7 @@
                     @endif
                     <div>
                         <div class="text-xs text-slate-500 dark:text-slate-400 mb-1">{{ __('Member Since') }}</div>
-                        <div class="font-medium text-slate-900 dark:text-white">{{ $user->created_at->format('F Y') }}</div>
+                        <div class="font-medium text-slate-900 dark:text-white">{{ $user->created_at->translatedFormat('F Y') }}</div>
                     </div>
                 </div>
 

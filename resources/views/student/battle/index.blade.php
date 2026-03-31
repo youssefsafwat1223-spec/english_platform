@@ -8,7 +8,6 @@
 
 @section('content')
 <div class="py-12 relative overflow-hidden">
-    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[400px] bg-gradient-to-b from-primary-500/8 to-transparent pointer-events-none z-0"></div>
     <div class="student-container max-w-6xl relative z-10">
         <x-student.page-header
             title="{{ $isArabic ? 'ساحة الباتل' : 'Battle Arena' }}"

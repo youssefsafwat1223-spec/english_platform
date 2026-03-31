@@ -25,7 +25,6 @@
 <div class="relative min-h-screen bg-slate-50 dark:bg-[#020617] pb-24 lg:pb-0 font-sans">
     
     {{-- Decorative Background Top --}}
-    <div class="absolute top-0 left-0 w-full h-[50vh] bg-gradient-to-b from-primary-50/50 to-slate-50 dark:from-primary-900/10 dark:to-[#020617] pointer-events-none z-0"></div>
     <div class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary-500/20 to-transparent"></div>
 
     <div class="student-container relative z-10 pt-8 lg:pt-16 pb-12">
@@ -101,7 +100,7 @@
                         <div class="text-center mb-8">
                             <div class="relative w-32 h-32 mx-auto mb-4">
                                 <svg class="w-full h-full transform -rotate-90">
-                                    <circle cx="64" cy="64" r="56" stroke-width="8" fill="transparent" class="stroke-slate-800"/>
+                                    <circle cx="64" cy="64" r="56" stroke-width="8" fill="transparent" class="stroke-slate-200 dark:stroke-slate-800"/>
                                     <circle cx="64" cy="64" r="56" stroke-width="8" fill="transparent"
                                         stroke-dasharray="{{ 2 * 3.14159 * 56 }}"
                                         stroke-dashoffset="{{ 2 * 3.14159 * 56 * (1 - ($progress ?? 0) / 100) }}"
@@ -109,25 +108,25 @@
                                         style="transition: stroke-dashoffset 1s ease;"/>
                                 </svg>
                                 <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                                    <span class="text-3xl font-black text-white">{{ round($progress ?? 0) }}%</span>
+                                    <span class="text-3xl font-black text-slate-900 dark:text-white">{{ round($progress ?? 0) }}%</span>
                                 </div>
                             </div>
-                            <p class="text-sm font-bold text-slate-400">{{ __('تقدمك في الكورس') }}</p>
+                            <p class="text-sm font-bold text-slate-600 dark:text-slate-400">{{ __('تقدمك في الكورس') }}</p>
                         </div>
 
                         {{-- Stats --}}
                         <div class="space-y-3 text-sm mb-8">
-                            <div class="flex justify-between items-center p-3.5 rounded-2xl bg-slate-800/50">
-                                <span class="text-slate-400">{{ __('الدروس') }}</span>
-                                <span class="font-bold text-white">{{ $enrollment->completed_lessons ?? 0 }}/{{ $enrollment->total_lessons ?? $course->lessons->count() }}</span>
+                            <div class="flex justify-between items-center p-3.5 rounded-2xl bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-white/5">
+                                <span class="text-slate-600 dark:text-slate-400">{{ __('الدروس') }}</span>
+                                <span class="font-bold text-slate-900 dark:text-white">{{ $enrollment->completed_lessons ?? 0 }}/{{ $enrollment->total_lessons ?? $course->lessons->count() }}</span>
                             </div>
-                            <div class="flex justify-between items-center p-3.5 rounded-2xl bg-slate-800/50">
-                                <span class="text-slate-400">{{ __('تاريخ البدء') }}</span>
-                                <span class="font-bold text-white">{{ isset($enrollment->started_at) ? $enrollment->started_at->format('M d, Y') : '-' }}</span>
+                            <div class="flex justify-between items-center p-3.5 rounded-2xl bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-white/5">
+                                <span class="text-slate-600 dark:text-slate-400">{{ __('تاريخ البدء') }}</span>
+                                <span class="font-bold text-slate-900 dark:text-white">{{ isset($enrollment->started_at) ? $enrollment->started_at->format('M d, Y') : '-' }}</span>
                             </div>
-                            <div class="flex justify-between items-center p-3.5 rounded-2xl bg-slate-800/50">
-                                <span class="text-slate-400">{{ __('آخر نشاط') }}</span>
-                                <span class="font-bold border-b border-dashed border-slate-600 text-white">{{ isset($enrollment->last_accessed_at) ? $enrollment->last_accessed_at->diffForHumans() : __('لم تبدأ') }}</span>
+                            <div class="flex justify-between items-center p-3.5 rounded-2xl bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-white/5">
+                                <span class="text-slate-600 dark:text-slate-400">{{ __('آخر نشاط') }}</span>
+                                <span class="font-bold border-b border-dashed border-slate-400 dark:border-slate-600 text-slate-900 dark:text-white">{{ isset($enrollment->last_accessed_at) ? $enrollment->last_accessed_at->diffForHumans() : __('لم تبدأ') }}</span>
                             </div>
                         </div>
                         

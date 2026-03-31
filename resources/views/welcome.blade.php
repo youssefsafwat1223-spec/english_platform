@@ -101,8 +101,24 @@
                         </div>
 
                         <div class="relative h-[400px] lg:h-[600px] w-full hidden lg:block">
-                            <!-- 3D Scene Placeholder -->
-                            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-primary-500/20 rounded-full blur-3xl animate-pulse"></div>
+                            <!-- Premium 3D AI Illustration -->
+                            <div class="absolute inset-0 flex items-center justify-center animate-bounce-slow" style="animation: float 6s ease-in-out infinite;">
+                                <!-- Glow Effect Behind Hero Image -->
+                                <div class="absolute w-[400px] h-[400px] bg-primary-500/30 rounded-full blur-[100px] animate-pulse"></div>
+                                
+                                <img src="{{ asset('images/ai/welcome_hero_3d.png') }}" 
+                                     alt="Mastering English 3D" 
+                                     class="relative z-10 w-full h-auto max-w-[550px] object-contain drop-shadow-2xl"
+                                     style="filter: drop-shadow(0 25px 35px rgba(0, 123, 181, 0.25));">
+                            </div>
+
+                            <style>
+                                @keyframes float {
+                                    0% { transform: translateY(0px) rotate(0deg); }
+                                    50% { transform: translateY(-20px) rotate(2deg); }
+                                    100% { transform: translateY(0px) rotate(0deg); }
+                                }
+                            </style>
                         </div>
                     </div>
                 </div>

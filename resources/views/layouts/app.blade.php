@@ -132,9 +132,7 @@
         </main>
 
         <!-- Footer -->
-        <div class="@auth @if(auth()->user()->is_student) pb-[110px] lg:pb-0 @endif @endauth">
-            @include('layouts.footer')
-        </div>
+        @include('layouts.footer')
 
         <!-- CDN Libraries -->
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

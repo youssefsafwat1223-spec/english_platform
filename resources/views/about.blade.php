@@ -60,10 +60,6 @@
 @endphp
 
 <section class="relative py-20 overflow-hidden">
-    <div class="absolute inset-0 bg-grid-pattern opacity-20 dark:opacity-10"></div>
-    <div class="absolute top-10 right-10 w-72 h-72 rounded-full bg-primary-500/10 blur-3xl pointer-events-none"></div>
-    <div class="absolute bottom-0 left-0 w-64 h-64 rounded-full bg-accent-500/10 blur-3xl pointer-events-none"></div>
-
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-10">
         <div class="glass-card rounded-[2rem] p-8 md:p-12" data-aos="fade-up">
             <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-500/10 border border-primary-500/20 text-primary-500 font-bold text-sm mb-6">

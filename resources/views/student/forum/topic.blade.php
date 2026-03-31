@@ -6,7 +6,6 @@
 <div class="py-12 lg:py-16 relative min-h-screen z-10">
     {{-- Ambient Background --}}
     <div class="absolute top-0 right-0 w-[500px] h-[500px] rounded-full blur-3xl pointer-events-none -mr-24 -mt-24 z-0 bg-gradient-to-br from-primary-500/10 to-accent-500/5"></div>
-    <div class="absolute top-0 left-0 w-full h-[600px] bg-gradient-to-b from-primary-600/5 via-accent-500/5 to-transparent pointer-events-none z-0"></div>
 
     <div class="student-container max-w-4xl relative z-10">
 

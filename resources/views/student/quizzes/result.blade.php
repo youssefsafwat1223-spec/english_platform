@@ -8,7 +8,6 @@
 
 @section('content')
 <div class="py-12 lg:py-16 relative min-h-screen z-10">
-    <div class="absolute top-0 left-0 w-full h-[600px] bg-gradient-to-b {{ $attempt->passed ? 'from-primary-500/10 via-primary-400/5' : 'from-amber-500/10 via-amber-400/5' }} to-transparent pointer-events-none z-0"></div>
 
     <div class="student-container max-w-4xl relative z-10">
         {{-- Breadcrumb Navigation (Optional but good UX) --}}

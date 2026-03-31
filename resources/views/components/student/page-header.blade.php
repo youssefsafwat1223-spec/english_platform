@@ -5,14 +5,22 @@
     'badgeIcon' => null,
     'badgeColor' => 'primary',
     'mb' => 'mb-10 lg:mb-12',
+    'image' => null,
 ])
+
+@php
+    $bgImage = $image ?? asset('images/ai/dashboard_wide_bg.png');
+@endphp
 
 <div {{ $attributes->merge(['class' => 'relative pt-10 pb-12 sm:pt-12 sm:pb-16 ' . $mb]) }}>
     {{-- High-End Inner Banner Shape --}}
-    <div class="absolute inset-0 bg-white/60 dark:bg-slate-900/60 backdrop-blur-[40px] rounded-[3rem] border border-white dark:border-white/10 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] dark:shadow-[0_30px_70px_-10px_rgba(0,0,0,0.6)] overflow-hidden ring-1 ring-black/5 dark:ring-white/5">
+    <div class="absolute inset-0 bg-white/80 dark:bg-slate-900/80 backdrop-blur-[40px] rounded-[2rem] sm:rounded-[3rem] border border-white dark:border-white/10 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] dark:shadow-[0_30px_70px_-10px_rgba(0,0,0,0.6)] overflow-hidden ring-1 ring-black/5 dark:ring-white/5">
+        
+        <img src="{{ $bgImage }}" class="absolute inset-0 right-0 w-full h-full object-cover mix-blend-normal z-0 opacity-100 contrast-125 saturate-125" style="-webkit-mask-image: linear-gradient(to left, rgba(0,0,0,0) 25%, rgba(0,0,0,0.9) 100%); mask-image: linear-gradient(to left, rgba(0,0,0,0) 25%, rgba(0,0,0,0.9) 100%);">
+
         {{-- Animated Gradient Decoration --}}
-        <div class="absolute -top-32 -right-32 w-80 h-80 bg-primary-500/15 blur-[100px] rounded-full animate-pulse-soft"></div>
-        <div class="absolute -bottom-32 -left-32 w-80 h-80 bg-accent-500/15 blur-[100px] rounded-full animate-pulse-soft" style="animation-delay: 3s"></div>
+        <div class="absolute -top-32 -right-32 w-80 h-80 bg-primary-500/15 blur-[100px] rounded-full animate-pulse-soft pointer-events-none"></div>
+        <div class="absolute -bottom-32 -left-32 w-80 h-80 bg-accent-500/15 blur-[100px] rounded-full animate-pulse-soft pointer-events-none" style="animation-delay: 3s"></div>
         
         {{-- Glossy Shine Effect --}}
         <div class="absolute inset-0 bg-gradient-to-tr from-white/20 via-transparent to-transparent dark:from-white/5 pointer-events-none"></div>

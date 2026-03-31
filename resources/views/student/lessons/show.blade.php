@@ -4,7 +4,6 @@
 
 @section('content')
 <div class="py-6 lg:py-10 relative min-h-screen z-10">
-    <div class="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-primary-600/5 via-accent-500/5 to-transparent pointer-events-none z-0"></div>
 
     <div class="student-container relative z-10">
         

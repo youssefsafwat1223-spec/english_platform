@@ -15,7 +15,6 @@
 
 @section('content')
 <div class="py-12 relative overflow-hidden">
-    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[400px] bg-gradient-to-b from-primary-500/8 to-transparent pointer-events-none z-0"></div>
     <div class="student-container max-w-4xl relative z-10">
         <div class="text-center mb-10" data-aos="fade-down">
             <div class="inline-flex items-center gap-2 px-4 py-2 mb-4 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 font-bold text-sm shadow-sm">

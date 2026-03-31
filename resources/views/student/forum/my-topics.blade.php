@@ -4,10 +4,7 @@
 
 @section('content')
 <div class="py-12 lg:py-16 relative min-h-screen z-10">
-    <div class="absolute top-0 left-0 w-full h-[600px] bg-gradient-to-b from-primary-600/10 via-accent-500/5 to-transparent pointer-events-none z-0"></div>
-
     <div class="student-container relative z-10">
-        {{-- Header Section --}}
         {{-- Header Section --}}
         <x-student.page-header
             title="{{ __('My Topics') }}"
@@ -128,7 +125,7 @@
                 </table>
             </div>
 
-            @if(isset($topics) && method_exists($topics, 'links') && $topics->hasPages())
+            @if(isset($topics) && is_object($topics) && method_exists($topics, 'links') && $topics->hasPages())
                 <div class="px-6 py-4 border-t border-slate-200/50 dark:border-white/5 bg-slate-50/50 dark:bg-black/20">
                     {{ $topics->links() }}
                 </div>

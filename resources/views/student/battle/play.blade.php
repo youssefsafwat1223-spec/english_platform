@@ -25,7 +25,6 @@
 </style>
 
 <div class="py-12 relative overflow-hidden">
-    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[400px] bg-gradient-to-b from-primary-500/8 to-transparent pointer-events-none z-0"></div>
     <div class="student-container max-w-4xl relative z-10">
         <x-student.card padding="p-4" class="mb-6">
             <div class="flex items-center gap-4">

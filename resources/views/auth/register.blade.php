@@ -7,12 +7,11 @@
     
     {{-- Left Panel: Visual/Branding (Hidden on mobile) --}}
     <div class="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-slate-900 border-r border-white/5">
-        {{-- Background Image/Effect --}}
-        <div class="absolute inset-0 z-0">
-            <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-primary-500/20 via-transparent to-transparent opacity-80"></div>
+        {{-- Premium AI 3D Background Image --}}
+        <div class="absolute inset-0 z-0 bg-slate-900">
+            <img src="{{ asset('images/ai/login_panel_3d.png') }}" alt="Learning Journey" class="absolute inset-0 w-full h-full object-cover mix-blend-screen opacity-60">
+            <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-primary-500/20 via-slate-900/60 to-slate-900/90"></div>
             <div class="absolute bottom-0 left-0 w-full h-[500px] bg-gradient-to-t from-slate-900 to-transparent"></div>
-            {{-- Abstract Mesh --}}
-            <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4wNSkiLz48L3N2Zz4=')] opacity-30"></div>
         </div>
 
         <div class="relative z-10 flex flex-col justify-between p-16 w-full h-full">
@@ -72,7 +71,7 @@
             <div class="lg:hidden text-center mb-10">
                 <a href="{{ route('home') }}" class="inline-flex items-center gap-3">
                     <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center shadow-lg">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477-4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
                     </div>
                 </a>
             </div>

@@ -2,7 +2,6 @@
 @section('title', $game->title . ' - Game Room')
 @section('content')
 <div class="py-8 lg:py-12 relative min-h-screen overflow-hidden" x-data="gameRoom()" x-init="startPolling()" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
-    <div class="absolute top-0 left-0 w-full h-[600px] bg-gradient-to-b from-primary-600/10 via-accent-500/5 to-transparent pointer-events-none z-0"></div>
 
     <div class="student-container relative z-10">
 

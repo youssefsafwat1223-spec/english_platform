@@ -8,13 +8,9 @@
 
         {{-- Hero Section --}}
         <x-student.card class="relative" padding="p-4 sm:p-8 md:p-12" mb="mb-0" :headerBorder="false" data-aos="fade-down">
-            {{-- Aesthetic Background Elements --}}
-            <div class="absolute top-0 right-0 p-12 opacity-10 pointer-events-none transform translate-x-1/4 -translate-y-1/4">
-                <svg width="400" height="400" viewBox="0 0 24 24" fill="none" class="text-white">
-                    <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
+            {{-- Dedicated Wide Background Image --}}
+            <div class="absolute inset-0 rounded-3xl overflow-hidden pointer-events-none z-0">
+                <img src="{{ asset('images/ai/dashboard_wide_bg.png') }}" alt="Dashboard Background" class="absolute inset-0 right-0 w-full h-full object-cover mix-blend-normal z-0 opacity-100 contrast-125 saturate-125" style="-webkit-mask-image: linear-gradient(to left, rgba(0,0,0,0) 40%, rgba(0,0,0,1) 100%); mask-image: linear-gradient(to left, rgba(0,0,0,0) 40%, rgba(0,0,0,1) 100%);">
             </div>
             <div class="absolute inset-0 bg-gradient-to-br from-primary-500/10 via-transparent to-accent-500/10 opacity-50"></div>
             

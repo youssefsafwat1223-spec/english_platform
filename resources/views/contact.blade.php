@@ -4,11 +4,6 @@
 
 @section('content')
 <section class="py-24 relative overflow-hidden">
-    <div class="absolute inset-0 bg-mesh"></div>
-    <div class="absolute inset-0 bg-grid-pattern opacity-20 dark:opacity-10"></div>
-    <div class="absolute top-20 right-10 w-72 h-72 rounded-full bg-primary-500/10 blur-3xl animate-float pointer-events-none"></div>
-    <div class="absolute bottom-10 left-10 w-56 h-56 rounded-full bg-accent-500/10 blur-3xl animate-float-slow pointer-events-none"></div>
-
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {{-- Header --}}
         <div class="text-center mb-16" data-aos="fade-up">

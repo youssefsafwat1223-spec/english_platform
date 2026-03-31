@@ -11,7 +11,7 @@
     <div class="absolute bottom-0 right-1/4 w-80 h-80 rounded-full bg-accent-500/5 blur-3xl pointer-events-none"></div>
 
     <div class="relative" style="background: var(--glass-bg);">
-        <div class="max-w-7xl mx-auto py-16 px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto pt-16 px-6 lg:px-8 @auth @if(auth()->user()->is_student) pb-[110px] lg:pb-16 @else pb-16 @endif @else pb-16 @endauth">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
 
                 {{-- Brand Column --}}
