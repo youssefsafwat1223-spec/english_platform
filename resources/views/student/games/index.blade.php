@@ -157,19 +157,6 @@
                         </svg>
                     </div>
                     <h3 class="text-2xl font-black text-slate-900 dark:text-white mb-2 relative z-10">{{ __('No Competitions Available') }}</h3>
-                    <p class="text-slate-500 dark:text-slate-400 font-medium max-w-sm mx-auto relative z-10 mb-2">
-                        {{ __('There are no scheduled live competitions at the moment.') }}
-                    </p>
-                    <p class="text-xs text-slate-400 dark:text-slate-500 font-medium relative z-10">
-                        {{ __('You will be notified by email when a new event is scheduled by your instructor.') }}
-                    </p>
-                </div>
-            @endforelse
-        </div>
-
-        @if(isset($games) && method_exists($games, 'links') && $games->hasPages())
-            <div class="mt-10" data-aos="fade-up">
-                {{ $games->links() }}
             </div>
         @endif
     </div>

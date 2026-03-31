@@ -155,7 +155,7 @@ Route::get('lang/{locale}', function ($locale) {
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [LoginController::class, 'login']);
-    
+
     Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
     Route::post('/register', [RegisterController::class, 'register'])
         ->middleware('throttle:registration');
@@ -183,15 +183,15 @@ Route::prefix('admin/two-factor')->name('admin.two-factor.')->middleware(['auth'
 */
 
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin', 'active', 'admin.2fa'])->group(function () {
-    
+
     // Dashboard
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
-    
+
     // Courses
     Route::resource('courses', AdminCourseController::class);
     Route::post('/courses/{course}/toggle-status', [AdminCourseController::class, 'toggleStatus'])
         ->name('courses.toggle-status');
-    
+
     // Lessons
     Route::prefix('courses/{course}/lessons')->name('courses.lessons.')->group(function () {
         Route::get('/', [AdminLessonController::class, 'index'])->name('index');
@@ -213,7 +213,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin', 'active', '
         Route::put('/{level}', [AdminCourseLevelController::class, 'update'])->name('update');
         Route::delete('/{level}', [AdminCourseLevelController::class, 'destroy'])->name('destroy');
     });
-    
+
     // Questions
     Route::get('/analytics/questions', [App\Http\Controllers\Admin\AnalyticsController::class, 'questions'])->name('analytics.questions');
     Route::get('/questions/reference', [AdminQuestionController::class, 'reference'])
@@ -229,7 +229,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin', 'active', '
         ->name('questions.delete-audio');
     Route::post('/questions/ajax-store', [AdminQuestionController::class, 'storeAjax'])
         ->name('questions.ajax-store');
-    
+
     // Quizzes
     Route::resource('quizzes', AdminQuizController::class);
     Route::get('/quizzes/{quiz}/attempts', [AdminQuizController::class, 'attempts'])
@@ -240,7 +240,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin', 'active', '
         ->name('quizzes.get-questions');
     Route::get('/courses/{course}/questions', [AdminQuizController::class, 'getCourseQuestions'])
         ->name('quizzes.get-course-questions');
-    
+
     // Students
     Route::resource('students', AdminStudentController::class)->only(['index', 'show', 'destroy']);
     Route::post('/students/{student}/toggle-status', [AdminStudentController::class, 'toggleStatus'])
@@ -260,8 +260,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin', 'active', '
         ->name('device-requests.approve');
     Route::post('/device-requests/{deviceReplacementRequest}/reject', [AdminDeviceAccessRequestController::class, 'reject'])
         ->name('device-requests.reject');
-    
-    
+
+
     // Promo Codes
     Route::resource('promo-codes', App\Http\Controllers\Admin\PromoCodeController::class)->except(['show']);
 
@@ -274,7 +274,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin', 'active', '
     Route::get('/payments/{payment}', [AdminPaymentController::class, 'show'])->name('payments.show');
     Route::post('/payments/{payment}/refund', [AdminPaymentController::class, 'refund'])
         ->name('payments.refund');
-    
+
     // Certificates
     Route::get('/certificates', [AdminCertificateController::class, 'index'])->name('certificates.index');
     Route::get('/certificates/settings', [AdminCertificateController::class, 'settings'])
@@ -285,7 +285,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin', 'active', '
         ->name('certificates.preview');
     Route::get('/certificates/{certificate}', [AdminCertificateController::class, 'show'])
         ->name('certificates.show');
-    
+
     // Forum Management
     Route::prefix('forum')->name('forum.')->group(function () {
         Route::get('/', [AdminForumController::class, 'index'])->name('index');
@@ -295,7 +295,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin', 'active', '
             ->name('categories.update');
         Route::delete('/categories/{category}', [AdminForumController::class, 'deleteCategory'])
             ->name('categories.delete');
-        
+
         Route::get('/topics', [AdminForumController::class, 'topics'])->name('topics');
         Route::get('/topics/{topic}', [AdminForumController::class, 'showTopic'])->name('topics.show');
         Route::post('/topics/{topic}/pin', [AdminForumController::class, 'pinTopic'])->name('topics.pin');
@@ -304,7 +304,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin', 'active', '
         Route::post('/topics/{topic}/unlock', [AdminForumController::class, 'unlockTopic'])->name('topics.unlock');
         Route::delete('/topics/{topic}', [AdminForumController::class, 'deleteTopic'])->name('topics.delete');
         Route::delete('/replies/{reply}', [AdminForumController::class, 'deleteReply'])->name('replies.delete');
-        
+
         Route::get('/reports', [AdminForumController::class, 'reports'])->name('reports');
         Route::post('/reports/{report}/review', [AdminForumController::class, 'reviewReport'])
             ->name('reports.review');
@@ -313,7 +313,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin', 'active', '
         Route::post('/reports/{report}/dismiss', [AdminForumController::class, 'dismissReport'])
             ->name('reports.dismiss');
     });
-    
+
     // Email Campaigns
     Route::prefix('email-campaigns')->name('email-campaigns.')->group(function () {
         Route::get('/', [AdminEmailCampaignController::class, 'index'])->name('index');
@@ -322,7 +322,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin', 'active', '
         Route::post('/{campaign}/send', [AdminEmailCampaignController::class, 'send'])->name('send');
         Route::delete('/{campaign}', [AdminEmailCampaignController::class, 'destroy'])->name('destroy');
     });
-    
+
     // Game Arena
     Route::prefix('games')->name('games.')->group(function () {
         Route::get('/', [AdminGameSessionController::class, 'index'])->name('index');
@@ -337,11 +337,11 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin', 'active', '
         Route::post('/{game}/notify', [AdminGameSessionController::class, 'notify'])->name('notify');
         Route::delete('/{game}', [AdminGameSessionController::class, 'destroy'])->name('destroy');
     });
-    
+
     // Settings
     Route::prefix('settings')->name('settings.')->group(function () {
         Route::get('/', [AdminSettingsController::class, 'index'])->name('index');
-        
+
         Route::get('/general', [AdminSettingsController::class, 'general'])->name('general');
         Route::post('/general', [AdminSettingsController::class, 'updateGeneral'])->name('general.update');
 
@@ -355,17 +355,17 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin', 'active', '
             ->name('security.two-factor.recovery-codes');
         Route::delete('/security/two-factor', [AdminTwoFactorController::class, 'disable'])
             ->name('security.two-factor.disable');
-        
+
         Route::get('/telegram', [AdminSettingsController::class, 'telegram'])->name('telegram');
         Route::post('/telegram', [AdminSettingsController::class, 'updateTelegram'])->name('telegram.update');
         Route::post('/telegram/webhook/set', [AdminSettingsController::class, 'setWebhook'])
             ->name('telegram.webhook.set');
         Route::post('/telegram/webhook/delete', [AdminSettingsController::class, 'deleteWebhook'])
             ->name('telegram.webhook.delete');
-        
+
         Route::get('/payment', [AdminSettingsController::class, 'payment'])->name('payment');
         Route::post('/payment', [AdminSettingsController::class, 'updatePayment'])->name('payment.update');
-        
+
         Route::get('/points', [AdminSettingsController::class, 'points'])->name('points');
         Route::post('/points', [AdminSettingsController::class, 'updatePoints'])->name('points.update');
 
@@ -387,7 +387,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin', 'active', '
 */
 
 Route::prefix('student')->name('student.')->middleware(['auth', 'student', 'active', 'approved.device', 'track.activity'])->group(function () {
-    
+
     // Dashboard
     Route::get('/dashboard', [StudentDashboardController::class, 'index'])->name('dashboard');
 
@@ -396,7 +396,7 @@ Route::prefix('student')->name('student.')->middleware(['auth', 'student', 'acti
     Route::post('/onboarding', [OnboardingController::class, 'store'])->name('onboarding.store');
     Route::get('/onboarding/complete', [OnboardingController::class, 'complete'])->name('onboarding.complete');
     Route::get('/onboarding/check-telegram', [OnboardingController::class, 'checkTelegram'])->name('onboarding.check-telegram');
-    
+
     // Courses
     Route::get('/courses', [StudentCourseController::class, 'index'])->name('courses.index');
     Route::get('/courses/my-courses', [StudentCourseController::class, 'myCourses'])->name('courses.my-courses');
@@ -414,12 +414,12 @@ Route::prefix('student')->name('student.')->middleware(['auth', 'student', 'acti
     Route::get('/courses/{course}/learn', [StudentCourseController::class, 'learn'])
         ->name('courses.learn')
         ->middleware('enrolled');
-        
+
     // Remove Discount
     Route::get('/courses/{course}/remove-discount', function (\App\Models\Course $course) {
         $user = auth()->user();
         session()->forget('referral_code');
-        
+
         // If they had a referral discount, clear it from their profile
         if ($user->has_referral_discount) {
             \App\Models\Referral::where('referee_id', $user->id)
@@ -434,7 +434,7 @@ Route::prefix('student')->name('student.')->middleware(['auth', 'student', 'acti
 
         return redirect()->route('student.courses.enroll', $course)->with('success', __('تم إزالة الخصم بنجاح.'));
     })->name('courses.remove-discount');
-    
+
     // Lessons
     Route::prefix('courses/{course}/lessons')->name('lessons.')->middleware('enrolled')->group(function () {
         Route::get('/{lesson}', [StudentLessonController::class, 'show'])->name('show');
@@ -443,7 +443,7 @@ Route::prefix('student')->name('student.')->middleware(['auth', 'student', 'acti
             ->name('update-progress');
         Route::post('/{lesson}/comments', [StudentLessonController::class, 'storeComment'])->name('comments.store');
     });
-    
+
     // Notes
     Route::post('/notes', [StudentLessonController::class, 'storeNote'])->name('notes.store');
     Route::put('/notes/{note}', [StudentLessonController::class, 'updateNote'])->name('notes.update');
@@ -451,13 +451,13 @@ Route::prefix('student')->name('student.')->middleware(['auth', 'student', 'acti
     Route::get('/my-notes', [NotesController::class, 'index'])->name('notes.index');
     Route::get('/my-notes/{note}', [NotesController::class, 'show'])->name('notes.show');
     Route::get('/my-notes/export/pdf', [NotesController::class, 'export'])->name('notes.export');
-    
+
     // Quizzes
     Route::get('/quizzes/{quiz}/start', [StudentQuizController::class, 'start'])->name('quizzes.start');
     Route::post('/quizzes/{quiz}/submit', [StudentQuizController::class, 'submit'])->name('quizzes.submit');
     Route::get('/quizzes/attempts/{attempt}', [StudentQuizController::class, 'result'])->name('quizzes.result');
     Route::get('/my-quizzes', [StudentQuizController::class, 'myAttempts'])->name('quizzes.my-attempts');
-    
+
     // Pronunciation
     Route::get('/pronunciation/{exercise}', [PronunciationController::class, 'show'])
         ->name('pronunciation.show');
@@ -469,7 +469,7 @@ Route::prefix('student')->name('student.')->middleware(['auth', 'student', 'acti
     Route::post('/pronunciation/{exercise}/evaluate', [PronunciationController::class, 'evaluate'])
         ->middleware('throttle:pronunciation')
         ->name('pronunciation.evaluate');
-    
+
     // Certificates
     Route::get('/certificates', [StudentCertificateController::class, 'index'])->name('certificates.index');
     Route::get('/certificates/{certificate}', [StudentCertificateController::class, 'show'])
@@ -481,7 +481,7 @@ Route::prefix('student')->name('student.')->middleware(['auth', 'student', 'acti
     Route::post('/certificates/{certificate}/send-email', [StudentCertificateController::class, 'sendEmail'])
         ->middleware('throttle:certificate-email')
         ->name('certificates.send-email');
-    
+
     // Forum
     Route::prefix('forum')->name('forum.')->group(function () {
         Route::get('/', [StudentForumController::class, 'index'])->name('index');
@@ -501,7 +501,7 @@ Route::prefix('student')->name('student.')->middleware(['auth', 'student', 'acti
             ->middleware('throttle:forum-report')
             ->name('report');
     });
-    
+
     // Referrals
     Route::get('/referrals', [StudentReferralController::class, 'index'])->name('referrals.index');
     Route::get('/referrals/how-it-works', [StudentReferralController::class, 'howItWorks'])
@@ -512,7 +512,7 @@ Route::prefix('student')->name('student.')->middleware(['auth', 'student', 'acti
     Route::post('/testimonial', [StudentTestimonialController::class, 'store'])
         ->middleware('throttle:testimonial-submit')
         ->name('testimonial.store');
-    
+
     // Profile
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -526,7 +526,7 @@ Route::prefix('student')->name('student.')->middleware(['auth', 'student', 'acti
     Route::get('/profile/points-history', [ProfileController::class, 'pointsHistory'])
         ->name('profile.points-history');
     Route::get('/leaderboard', [ProfileController::class, 'leaderboard'])->name('leaderboard');
-    
+
     // Notifications
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::get('/notifications/{notification}/read', [NotificationController::class, 'markAsRead'])
@@ -537,7 +537,7 @@ Route::prefix('student')->name('student.')->middleware(['auth', 'student', 'acti
         ->name('notifications.unread-count');
     Route::get('/notifications/recent-json', [NotificationController::class, 'recentJson'])
         ->name('notifications.recent-json');
-    
+
     // Game Arena
     Route::prefix('games')->name('games.')->group(function () {
         Route::get('/', [LiveGameController::class, 'index'])->name('index');
@@ -567,9 +567,10 @@ if (app()->environment('local')) {
     Route::get('/test-telegram', function () {
         $token = config('services.telegram.bot_token');
         $webhook = config('services.telegram.webhook_url');
-        
-        if (!$token) return response()->json(['error' => 'No bot token found in config']);
-        
+
+        if (!$token)
+            return response()->json(['error' => 'No bot token found in config']);
+
         try {
             $response = \Illuminate\Support\Facades\Http::get("https://api.telegram.org/bot{$token}/getWebhookInfo");
             return response()->json([
