@@ -20,7 +20,7 @@
             <x-slot name="actions">
                 <div class="shrink-0 flex items-center justify-center w-32 h-32 relative group perspective-1000 hidden md:flex">
                     <div class="absolute inset-0 bg-gradient-to-tr from-primary-500 to-accent-500 rounded-full blur-2xl opacity-40 group-hover:opacity-60 animate-pulse transition-opacity"></div>
-                    <div class="relative w-full h-full glass-card rounded-full border border-white/20 dark:border-white/10 flex flex-col items-center justify-center p-4 backdrop-blur-xl transform transition-transform duration-500 group-hover:rotate-y-12">
+                    <div class="relative w-full h-full bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl rounded-full border border-white/20 dark:border-white/10 flex flex-col items-center justify-center p-4 transform transition-transform duration-500 group-hover:rotate-y-12 shadow-sm">
                         <span class="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-br from-primary-600 to-accent-500">{{ $courses->total() }}</span>
                         <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mt-1">{{ __('Available') }}</span>
                     </div>
@@ -28,7 +28,8 @@
             </x-slot>
         </x-student.page-header>
 
-        <form method="GET" action="{{ route('student.courses.index') }}" class="glass-card" data-aos="fade-up" data-aos-delay="100">
+        <x-student.card padding="p-0" data-aos="fade-up" data-aos-delay="100">
+            <form method="GET" action="{{ route('student.courses.index') }}">
             <div class="p-6 md:p-8 grid grid-cols-1 md:grid-cols-4 gap-6">
                 <div class="md:col-span-2">
                     <label for="q" class="block text-sm font-bold mb-2 text-slate-700 dark:text-slate-300">{{ __('Search') }}</label>
@@ -87,11 +88,12 @@
                     </a>
                 @endif
             </div>
-        </form>
+            </form>
+        </x-student.card>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 p-1">
             @forelse($courses as $course)
-                <div class="glass-card relative overflow-hidden group hover:-translate-y-2 hover:shadow-2xl transition-all duration-300 flex flex-col h-full border-t border-slate-200 dark:border-white/10" data-aos="fade-up" data-aos-delay="{{ min($loop->index * 100, 500) }}">
+                <x-student.card padding="p-0" class="relative group hover:-translate-y-2 hover:shadow-2xl transition-all duration-300 flex flex-col h-full border-t border-slate-200 dark:border-white/10" data-aos="fade-up" data-aos-delay="{{ min($loop->index * 100, 500) }}">
                     <div class="relative h-56 overflow-hidden shrink-0">
                         @if($course->thumbnail)
                             <img src="{{ Storage::url($course->thumbnail) }}" alt="{{ $course->title }}" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700 ease-out">
@@ -149,10 +151,10 @@
                             </a>
                         </div>
                     </div>
-                </div>
+                </x-student.card>
             @empty
                 <div class="col-span-1 md:col-span-2 lg:col-span-3">
-                    <div class="glass-card text-center py-24 px-6 relative overflow-hidden" data-aos="fade-up">
+                    <x-student.card padding="p-0" class="text-center py-24 px-6 relative overflow-hidden" data-aos="fade-up">
                         <div class="absolute inset-0 bg-gradient-to-br from-primary-500/5 to-accent-500/5"></div>
                         <div class="w-24 h-24 rounded-full bg-white dark:bg-slate-800 flex items-center justify-center mx-auto mb-6 shadow-xl border border-slate-200 dark:border-white/10 relative z-10">
                             <svg class="h-10 w-10 text-slate-400 dark:text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
@@ -160,13 +162,13 @@
                         <h3 class="text-2xl font-black text-slate-900 dark:text-white mb-3 relative z-10">{{ __('No courses found') }}</h3>
                         <p class="text-slate-500 dark:text-slate-400 mb-8 max-w-md mx-auto relative z-10 font-medium">{{ __('We couldn\'t find any courses matching your search criteria. Try adjusting your filters.') }}</p>
                         <a href="{{ route('student.courses.index') }}" class="btn-primary ripple-btn px-8 py-3 rounded-xl shadow-lg shadow-primary-500/30 relative z-10 font-bold">{{ __('Clear All Filters') }}</a>
-                    </div>
+                    </x-student.card>
                 </div>
             @endforelse
         </div>
 
         @if($courses->hasPages())
-            <div class="glass-card p-6 flex justify-center mt-10">{{ $courses->links() }}</div>
+            <x-student.card padding="p-6" class="flex justify-center mt-10">{{ $courses->links() }}</x-student.card>
         @endif
     </div>
 </div>
