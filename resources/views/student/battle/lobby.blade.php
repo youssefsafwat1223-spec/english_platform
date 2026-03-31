@@ -62,7 +62,7 @@
 
             <div id="players-grid" class="grid grid-cols-2 sm:grid-cols-5 gap-3">
                 @foreach($room->participants as $p)
-                    <div class="glass-card rounded-2xl bg-white/50 dark:bg-slate-900/40 border border-slate-200/50 dark:border-white/5 p-3 text-center transition-all {{ $p->user_id === auth()->id() ? 'ring-2 ring-primary-500 shadow-md shadow-primary-500/20' : '' }}">
+                    <div class="bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl shadow-sm rounded-2xl border border-slate-200/50 dark:border-white/5 p-3 text-center transition-all {{ $p->user_id === auth()->id() ? 'ring-2 ring-primary-500 shadow-md shadow-primary-500/20' : '' }}">
                         <div class="w-10 h-10 rounded-full bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center text-white font-bold mx-auto mb-2 shadow-inner shadow-white/20">
                             {{ strtoupper(substr($p->user->name, 0, 1)) }}
                         </div>
@@ -76,7 +76,7 @@
                 @endforeach
 
                 @for($i = $room->playerCount(); $i < $room->max_players; $i++)
-                    <div class="glass-card rounded-2xl border border-slate-200/50 dark:border-white/5 p-3 text-center opacity-40">
+                    <div class="bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl shadow-sm rounded-2xl border border-slate-200/50 dark:border-white/5 p-3 text-center opacity-40">
                         <div class="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center mx-auto mb-2">
                             <span class="text-lg text-slate-400">?</span>
                         </div>
@@ -165,7 +165,7 @@
 
         players.forEach(player => {
             const card = document.createElement('div');
-            card.className = `glass-card rounded-2xl bg-white/50 dark:bg-slate-900/40 border border-slate-200/50 dark:border-white/5 p-3 text-center transition-all ${player.is_me ? 'ring-2 ring-primary-500 shadow-md shadow-primary-500/20' : ''}`;
+            card.className = `bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl shadow-sm rounded-2xl border border-slate-200/50 dark:border-white/5 p-3 text-center transition-all ${player.is_me ? 'ring-2 ring-primary-500 shadow-md shadow-primary-500/20' : ''}`;
             card.innerHTML = `
                 <div class="w-10 h-10 rounded-full bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center text-white font-bold mx-auto mb-2 shadow-inner shadow-white/20">
                     ${player.name.charAt(0).toUpperCase()}
@@ -180,7 +180,7 @@
 
         for (let i = players.length; i < maxPlayers; i += 1) {
             const slot = document.createElement('div');
-            slot.className = 'glass-card rounded-2xl border border-slate-200/50 dark:border-white/5 p-3 text-center opacity-40';
+            slot.className = 'bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl shadow-sm rounded-2xl border border-slate-200/50 dark:border-white/5 p-3 text-center opacity-40';
             slot.innerHTML = `
                 <div class="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center mx-auto mb-2">
                     <span class="text-lg text-slate-400">?</span>

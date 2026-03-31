@@ -96,19 +96,19 @@
             </h2>
 
             <div id="options-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <button id="opt-a" disabled class="option-btn glass-card rounded-2xl bg-white/50 dark:bg-slate-900/40 border border-slate-200/50 dark:border-white/5 p-4 text-left flex items-center gap-3 hover:bg-slate-50 dark:hover:bg-slate-800">
+                <button id="opt-a" disabled class="option-btn bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl rounded-2xl border border-slate-200/50 dark:border-white/5 p-4 text-left flex items-center gap-3 hover:bg-slate-50 dark:hover:bg-slate-800/80 shadow-sm">
                     <span class="w-10 h-10 rounded-xl bg-primary-500/20 flex items-center justify-center text-primary-500 font-bold flex-shrink-0">A</span>
                     <span id="opt-a-text" class="font-medium text-slate-900 dark:text-white">-</span>
                 </button>
-                <button id="opt-b" disabled class="option-btn glass-card rounded-2xl bg-white/50 dark:bg-slate-900/40 border border-slate-200/50 dark:border-white/5 p-4 text-left flex items-center gap-3 hover:bg-slate-50 dark:hover:bg-slate-800">
+                <button id="opt-b" disabled class="option-btn bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl rounded-2xl border border-slate-200/50 dark:border-white/5 p-4 text-left flex items-center gap-3 hover:bg-slate-50 dark:hover:bg-slate-800/80 shadow-sm">
                     <span class="w-10 h-10 rounded-xl bg-accent-500/20 flex items-center justify-center text-accent-500 font-bold flex-shrink-0">B</span>
                     <span id="opt-b-text" class="font-medium text-slate-900 dark:text-white">-</span>
                 </button>
-                <button id="opt-c" disabled class="option-btn glass-card rounded-2xl bg-white/50 dark:bg-slate-900/40 border border-slate-200/50 dark:border-white/5 p-4 text-left flex items-center gap-3 hover:bg-slate-50 dark:hover:bg-slate-800" style="display: none;">
+                <button id="opt-c" disabled class="option-btn bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl rounded-2xl border border-slate-200/50 dark:border-white/5 p-4 text-left flex items-center gap-3 hover:bg-slate-50 dark:hover:bg-slate-800/80 shadow-sm" style="display: none;">
                     <span class="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-500 font-bold flex-shrink-0">C</span>
                     <span id="opt-c-text" class="font-medium text-slate-900 dark:text-white">-</span>
                 </button>
-                <button id="opt-d" disabled class="option-btn glass-card rounded-2xl bg-white/50 dark:bg-slate-900/40 border border-slate-200/50 dark:border-white/5 p-4 text-left flex items-center gap-3 hover:bg-slate-50 dark:hover:bg-slate-800" style="display: none;">
+                <button id="opt-d" disabled class="option-btn bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl rounded-2xl border border-slate-200/50 dark:border-white/5 p-4 text-left flex items-center gap-3 hover:bg-slate-50 dark:hover:bg-slate-800/80 shadow-sm" style="display: none;">
                     <span class="w-10 h-10 rounded-xl bg-amber-500/20 flex items-center justify-center text-amber-500 font-bold flex-shrink-0">D</span>
                     <span id="opt-d-text" class="font-medium text-slate-900 dark:text-white">-</span>
                 </button>

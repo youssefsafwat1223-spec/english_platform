@@ -48,7 +48,7 @@
             <div class="lg:col-span-7 xl:col-span-7 space-y-8">
                 
                 {{-- Payment Details Card --}}
-                <div class="glass-card overflow-hidden rounded-[2rem] border border-slate-200 dark:border-white/5 bg-white/50 dark:bg-[#0f172a]/50 backdrop-blur-xl shadow-lg group" data-aos="fade-up">
+                <x-student.card padding="p-0" class="overflow-hidden group shadow-lg" data-aos="fade-up">
                     <div class="p-8 border-b border-slate-100 dark:border-white/5 flex items-center justify-between">
                         <h3 class="text-xl font-black text-slate-900 dark:text-white flex items-center gap-3">
                             <span class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center text-white shadow-lg">
@@ -131,11 +131,10 @@
                             </button>
                         </form>
                     </div>
-                </div>
+                </x-student.card>
 
                 {{-- What Happens Next --}}
-                <div class="glass-card overflow-hidden rounded-[2rem] border border-slate-200 dark:border-white/5 bg-white/30 dark:bg-black/10" data-aos="fade-up" data-aos-delay="200">
-                    <div class="p-6 sm:p-8">
+                <x-student.card padding="p-6 sm:p-8" class="overflow-hidden bg-white/30 dark:bg-black/10" data-aos="fade-up" data-aos-delay="200">
                         <h3 class="font-bold text-lg mb-6 text-slate-900 dark:text-white">{{ __('ui.checkout.next_steps_title') }}</h3>
                         <div class="space-y-6">
                             @php $steps = [__('ui.checkout.next_step_1'), __('ui.checkout.next_step_2'), __('ui.checkout.next_step_3')]; @endphp
@@ -146,8 +145,7 @@
                                 </div>
                             @endforeach
                         </div>
-                    </div>
-                </div>
+                </x-student.card>
             </div>
 
             {{-- Right Column: Order Summary --}}
@@ -182,7 +180,7 @@
                             <div class="space-y-4">
                                 <div class="flex justify-between items-center mb-4">
                                     <span class="text-slate-600 dark:text-slate-400 font-medium">{{ __('ui.checkout.original_course_price') }}</span>
-                                    <span class="font-bold text-slate-900 dark:text-white">{{ number_format($course->price, 2) }} {{ __('ر.س') }}</span>
+                                    <span class="font-bold text-slate-900 dark:text-white">{{ number_format((float) $course->price, 2) }} {{ __('ر.س') }}</span>
                                 </div>
                                 
                                 @if($discount > 0)
@@ -195,7 +193,7 @@
                                                 {{ __('ui.checkout.referral_discount') }}
                                             @endif
                                         </div>
-                                        <span>-{{ number_format($discount, 2) }} {{ __('ر.س') }}</span>
+                                        <span>-{{ number_format((float) $discount, 2) }} {{ __('ر.س') }}</span>
                                     </div>
                                 @endif
                                 
@@ -203,7 +201,7 @@
                                     <div class="flex justify-between items-end">
                                         <span class="font-black text-slate-900 dark:text-white text-lg">{{ __('ui.checkout.total_amount') }}</span>
                                         <div class="text-left">
-                                            <span class="text-4xl font-black text-primary-600 dark:text-primary-400 leading-none">{{ number_format($finalAmount, 2) }} {{ __('ر.س') }}</span>
+                                            <span class="text-4xl font-black text-primary-600 dark:text-primary-400 leading-none">{{ number_format((float) $finalAmount, 2) }} {{ __('ر.س') }}</span>
                                             <p class="text-xs text-slate-500 mt-1 font-medium">{{ __('ui.checkout.price_note') }}</p>
                                         </div>
                                     </div>
