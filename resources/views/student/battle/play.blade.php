@@ -27,31 +27,31 @@
 <div class="py-12 relative overflow-hidden">
     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[400px] bg-gradient-to-b from-primary-500/8 to-transparent pointer-events-none z-0"></div>
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div class="glass-card p-4 mb-6">
+        <x-student.card padding="p-4" class="mb-6">
             <div class="flex items-center gap-4">
                 <div class="flex-1">
                     <div class="flex items-center justify-between mb-1">
                         <span class="text-sm font-bold text-red-500" id="team-a-name">{{ $room->team_a_name }}</span>
                         <span class="text-lg font-extrabold text-red-500" id="team-a-score">{{ $room->team_a_score }}</span>
                     </div>
-                    <div class="w-full h-3 rounded-full bg-gray-700/30 overflow-hidden">
+                    <div class="w-full h-3 rounded-full bg-slate-200 dark:bg-slate-700/30 overflow-hidden">
                         <div id="team-a-bar" class="h-full bg-gradient-to-r from-red-500 to-red-400 rounded-full score-bar" style="width: 50%;"></div>
                     </div>
                 </div>
 
-                <div class="text-2xl font-black" style="color: var(--color-text-muted);">VS</div>
+                <div class="text-2xl font-black text-slate-500 dark:text-slate-400">VS</div>
 
                 <div class="flex-1">
                     <div class="flex items-center justify-between mb-1">
                         <span class="text-sm font-bold text-blue-500" id="team-b-name">{{ $room->team_b_name }}</span>
                         <span class="text-lg font-extrabold text-blue-500" id="team-b-score">{{ $room->team_b_score }}</span>
                     </div>
-                    <div class="w-full h-3 rounded-full bg-gray-700/30 overflow-hidden">
+                    <div class="w-full h-3 rounded-full bg-slate-200 dark:bg-slate-700/30 overflow-hidden">
                         <div id="team-b-bar" class="h-full bg-gradient-to-r from-blue-500 to-blue-400 rounded-full score-bar" style="width: 50%;"></div>
                     </div>
                 </div>
             </div>
-        </div>
+        </x-student.card>
 
         <div class="text-center mb-4">
             <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold text-white {{ $participant->team === 'a' ? 'bg-red-500' : 'bg-blue-500' }}">
@@ -70,10 +70,10 @@
             </form>
         </div>
 
-        <div id="question-card" class="glass-card p-8 mb-6 question-enter">
+        <x-student.card padding="p-8" class="mb-6 question-enter" id="question-card">
             <div class="flex items-center justify-between mb-6">
                 <div class="flex items-center gap-3">
-                    <span class="text-sm font-bold px-3 py-1 rounded-full" style="background: var(--color-border); color: var(--color-text-muted);">
+                    <span class="text-sm font-bold px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400">
                         {{ $isArabic ? 'السؤال' : 'Question' }} <span id="q-number">-</span>/<span id="q-total">-</span>
                     </span>
                     <span class="text-sm font-bold px-3 py-1 rounded-full bg-amber-500/20 text-amber-500">
@@ -82,45 +82,45 @@
                 </div>
 
                 <div class="flex items-center gap-2">
-                    <span class="text-sm" style="color: var(--color-text-muted);">{{ $isArabic ? 'الوقت' : 'Time' }}</span>
-                    <span id="q-timer" class="text-2xl font-extrabold tabular-nums text-gradient">--</span>
+                    <span class="text-sm text-slate-500 dark:text-slate-400">{{ $isArabic ? 'الوقت' : 'Time' }}</span>
+                    <span id="q-timer" class="text-2xl font-extrabold tabular-nums text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-accent-500">--</span>
                 </div>
             </div>
 
-            <div class="w-full h-1.5 rounded-full bg-gray-700/30 mb-6 overflow-hidden">
+            <div class="w-full h-1.5 rounded-full bg-slate-200 dark:bg-slate-700/30 mb-6 overflow-hidden">
                 <div id="timer-bar" class="h-full bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full transition-all duration-1000 ease-linear" style="width: 100%;"></div>
             </div>
 
-            <h2 id="q-text" class="text-xl sm:text-2xl font-bold mb-8 leading-relaxed" style="color: var(--color-text);">
+            <h2 id="q-text" class="text-xl sm:text-2xl font-bold mb-8 leading-relaxed text-slate-900 dark:text-white">
                 {{ $isArabic ? 'جارٍ تحميل السؤال...' : 'Loading question...' }}
             </h2>
 
             <div id="options-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <button id="opt-a" disabled class="option-btn glass-card p-4 text-left flex items-center gap-3">
+                <button id="opt-a" disabled class="option-btn glass-card rounded-2xl bg-white/50 dark:bg-slate-900/40 border border-slate-200/50 dark:border-white/5 p-4 text-left flex items-center gap-3 hover:bg-slate-50 dark:hover:bg-slate-800">
                     <span class="w-10 h-10 rounded-xl bg-primary-500/20 flex items-center justify-center text-primary-500 font-bold flex-shrink-0">A</span>
-                    <span id="opt-a-text" class="font-medium" style="color: var(--color-text);">-</span>
+                    <span id="opt-a-text" class="font-medium text-slate-900 dark:text-white">-</span>
                 </button>
-                <button id="opt-b" disabled class="option-btn glass-card p-4 text-left flex items-center gap-3">
+                <button id="opt-b" disabled class="option-btn glass-card rounded-2xl bg-white/50 dark:bg-slate-900/40 border border-slate-200/50 dark:border-white/5 p-4 text-left flex items-center gap-3 hover:bg-slate-50 dark:hover:bg-slate-800">
                     <span class="w-10 h-10 rounded-xl bg-accent-500/20 flex items-center justify-center text-accent-500 font-bold flex-shrink-0">B</span>
-                    <span id="opt-b-text" class="font-medium" style="color: var(--color-text);">-</span>
+                    <span id="opt-b-text" class="font-medium text-slate-900 dark:text-white">-</span>
                 </button>
-                <button id="opt-c" disabled class="option-btn glass-card p-4 text-left flex items-center gap-3" style="display: none;">
+                <button id="opt-c" disabled class="option-btn glass-card rounded-2xl bg-white/50 dark:bg-slate-900/40 border border-slate-200/50 dark:border-white/5 p-4 text-left flex items-center gap-3 hover:bg-slate-50 dark:hover:bg-slate-800" style="display: none;">
                     <span class="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-500 font-bold flex-shrink-0">C</span>
-                    <span id="opt-c-text" class="font-medium" style="color: var(--color-text);">-</span>
+                    <span id="opt-c-text" class="font-medium text-slate-900 dark:text-white">-</span>
                 </button>
-                <button id="opt-d" disabled class="option-btn glass-card p-4 text-left flex items-center gap-3" style="display: none;">
+                <button id="opt-d" disabled class="option-btn glass-card rounded-2xl bg-white/50 dark:bg-slate-900/40 border border-slate-200/50 dark:border-white/5 p-4 text-left flex items-center gap-3 hover:bg-slate-50 dark:hover:bg-slate-800" style="display: none;">
                     <span class="w-10 h-10 rounded-xl bg-amber-500/20 flex items-center justify-center text-amber-500 font-bold flex-shrink-0">D</span>
-                    <span id="opt-d-text" class="font-medium" style="color: var(--color-text);">-</span>
+                    <span id="opt-d-text" class="font-medium text-slate-900 dark:text-white">-</span>
                 </button>
             </div>
-        </div>
+        </x-student.card>
 
-        <div id="answered-status" class="hidden glass-card p-4 mb-6 text-center">
+        <x-student.card id="answered-status" padding="p-4" class="hidden mb-6 text-center">
             <span id="answer-result-icon" class="text-4xl block mb-2"></span>
-            <span id="answer-result-text" class="text-lg font-bold" style="color: var(--color-text);"></span>
-        </div>
+            <span id="answer-result-text" class="text-lg font-bold text-slate-900 dark:text-white"></span>
+        </x-student.card>
 
-        <div class="text-center text-sm font-medium" style="color: var(--color-text-muted);">
+        <div class="text-center text-sm font-medium text-slate-500 dark:text-slate-400">
             {{ $isArabic ? 'إجابات اللاعبين' : 'Team answers' }}: <span id="answers-count">0</span>/<span id="answers-total">0</span>
         </div>
 
@@ -279,10 +279,10 @@
 
         if (time <= 5) {
             els.qTimer.classList.add('text-red-500');
-            els.qTimer.classList.remove('text-gradient');
+            els.qTimer.classList.remove('text-transparent', 'bg-clip-text', 'bg-gradient-to-r', 'from-primary-600', 'to-accent-500');
         } else {
             els.qTimer.classList.remove('text-red-500');
-            els.qTimer.classList.add('text-gradient');
+            els.qTimer.classList.add('text-transparent', 'bg-clip-text', 'bg-gradient-to-r', 'from-primary-600', 'to-accent-500');
         }
 
         const pct = (time / questionTimerTotal) * 100;

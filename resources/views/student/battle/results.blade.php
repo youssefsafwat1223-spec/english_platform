@@ -24,57 +24,57 @@
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div class="text-center mb-10" data-aos="zoom-in">
             @if($isCancelled && !$isAbandoned)
-                <h1 class="text-4xl md:text-5xl font-extrabold mb-3" style="color: var(--color-text);">
+                <h1 class="text-4xl md:text-5xl font-extrabold mb-3 text-slate-900 dark:text-white">
                     {{ $isArabic ? 'تم إلغاء الباتل' : 'Battle cancelled' }}
                 </h1>
-                <p class="text-xl" style="color: var(--color-text-muted);">
+                <p class="text-xl text-slate-500 dark:text-slate-400 font-medium">
                     {{ $isArabic
                         ? 'انتهى وقت اللوبي قبل اكتمال الحد الأدنى من اللاعبين.'
                         : 'The lobby expired before the minimum number of players joined.' }}
                 </p>
             @elseif($isAbandoned)
-                <h1 class="text-4xl md:text-5xl font-extrabold mb-3" style="color: var(--color-text);">
+                <h1 class="text-4xl md:text-5xl font-extrabold mb-3 text-slate-900 dark:text-white">
                     {{ $isArabic ? 'تم إغلاق الروم لعدم النشاط' : 'Room closed due to inactivity' }}
                 </h1>
-                <p class="text-xl" style="color: var(--color-text-muted);">
+                <p class="text-xl text-slate-500 dark:text-slate-400 font-medium">
                     {{ $isArabic
                         ? 'توقفت المباراة لأن اللاعبين لم يكملوا اللعب داخل الوقت المحدد.'
                         : 'The match was closed because the players stopped answering in time.' }}
                 </p>
             @elseif($isClosedByPlayerLeaving)
-                <h1 class="text-4xl md:text-5xl font-extrabold mb-3" style="color: var(--color-text);">
+                <h1 class="text-4xl md:text-5xl font-extrabold mb-3 text-slate-900 dark:text-white">
                     {{ $isArabic ? 'تم إنهاء الباتل بخروج لاعب' : 'Battle closed because a player left' }}
                 </h1>
-                <p class="text-xl" style="color: var(--color-text-muted);">
+                <p class="text-xl text-slate-500 dark:text-slate-400 font-medium">
                     {{ $isArabic
                         ? 'انتهت الجولة الحالية لأن أحد اللاعبين غادر الروم أثناء اللعب.'
                         : 'The current match was closed because one of the players left the room during play.' }}
                 </p>
             @elseif($isDraw)
-                <h1 class="text-5xl font-extrabold mb-3" style="color: var(--color-text);">
+                <h1 class="text-5xl font-extrabold mb-3 text-slate-900 dark:text-white">
                     {{ $isArabic ? 'تعادل' : "It's a draw" }}
                 </h1>
-                <p class="text-xl" style="color: var(--color-text-muted);">
+                <p class="text-xl text-slate-500 dark:text-slate-400 font-medium">
                     {{ $isArabic ? 'الفريقان أنهيا المباراة بنفس النتيجة.' : 'Both teams finished with the same score.' }}
                 </p>
             @elseif($isWinner)
-                <h1 class="text-5xl font-extrabold text-gradient mb-3">
+                <h1 class="text-5xl font-extrabold mb-3 text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-accent-500">
                     {{ $isArabic ? 'فريقك فاز' : 'You won' }}
                 </h1>
-                <p class="text-xl" style="color: var(--color-text-muted);">
+                <p class="text-xl text-slate-500 dark:text-slate-400 font-medium">
                     {{ $isArabic ? 'أداء قوي من فريقك حتى آخر جولة.' : 'Your team stayed ahead until the final round.' }}
                 </p>
             @else
-                <h1 class="text-5xl font-extrabold mb-3" style="color: var(--color-text);">
+                <h1 class="text-5xl font-extrabold mb-3 text-slate-900 dark:text-white">
                     {{ $isArabic ? 'انتهت المباراة' : 'Match finished' }}
                 </h1>
-                <p class="text-xl" style="color: var(--color-text-muted);">
+                <p class="text-xl text-slate-500 dark:text-slate-400 font-medium">
                     {{ $isArabic ? 'يمكنك المحاولة من جديد في جولة أخرى.' : 'You can try again in another battle.' }}
                 </p>
             @endif
         </div>
 
-        <div class="glass-card p-8 mb-8 {{ ($isWinner && !$isDraw) ? 'winner-glow' : '' }}" data-aos="fade-up">
+        <x-student.card padding="p-8" class="mb-8 {{ ($isWinner && !$isDraw) ? 'winner-glow' : '' }}" data-aos="fade-up">
             <div class="flex items-center justify-center gap-8">
                 <div class="text-center flex-1">
                     <div class="text-sm font-bold uppercase tracking-widest mb-2 text-red-500">{{ $room->team_a_name }}</div>
@@ -87,7 +87,7 @@
                 </div>
 
                 <div class="text-center">
-                    <div class="w-16 h-16 rounded-full bg-gradient-to-r from-red-500 to-blue-500 flex items-center justify-center text-white font-black text-lg">
+                    <div class="w-16 h-16 rounded-full bg-gradient-to-r from-red-500 to-blue-500 flex items-center justify-center text-white font-black text-lg shadow-inner shadow-white/20">
                         VS
                     </div>
                 </div>
@@ -102,16 +102,16 @@
                     @endif
                 </div>
             </div>
-        </div>
+        </x-student.card>
 
-        <div class="glass-card p-6 mb-8" data-aos="fade-up">
-            <h2 class="text-xl font-bold mb-4" style="color: var(--color-text);">
+        <x-student.card padding="p-6" class="mb-8" data-aos="fade-up">
+            <h2 class="text-xl font-bold mb-4 text-slate-900 dark:text-white">
                 {{ $isArabic ? 'أداؤك في الباتل' : 'Your performance' }}
             </h2>
             <div class="grid grid-cols-3 gap-4 text-center">
                 <div>
                     <div class="text-3xl font-extrabold text-primary-500">{{ $participant->individual_score }}</div>
-                    <div class="text-sm" style="color: var(--color-text-muted);">
+                    <div class="text-sm text-slate-500 dark:text-slate-400 font-medium">
                         {{ $isArabic ? 'نقاطك' : 'Your points' }}
                     </div>
                 </div>
@@ -121,21 +121,21 @@
                         $myTotal = \App\Models\BattleAnswer::where('battle_participant_id', $participant->id)->count();
                     @endphp
                     <div class="text-3xl font-extrabold text-emerald-500">{{ $myCorrect }}/{{ $myTotal }}</div>
-                    <div class="text-sm" style="color: var(--color-text-muted);">
+                    <div class="text-sm text-slate-500 dark:text-slate-400 font-medium">
                         {{ $isArabic ? 'إجابات صحيحة' : 'Correct answers' }}
                     </div>
                 </div>
                 <div>
                     <div class="text-3xl font-extrabold text-amber-500">+{{ $participant->individual_score }}</div>
-                    <div class="text-sm" style="color: var(--color-text-muted);">
+                    <div class="text-sm text-slate-500 dark:text-slate-400 font-medium">
                         {{ $isArabic ? 'النقاط المضافة' : 'Points earned' }}
                     </div>
                 </div>
             </div>
-        </div>
+        </x-student.card>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <div class="glass-card p-6 {{ $room->winner_team === 'a' ? 'ring-2 ring-amber-500' : '' }}" data-aos="fade-right">
+            <x-student.card padding="p-6" class="{{ $room->winner_team === 'a' ? 'ring-2 ring-amber-500 shadow-md shadow-amber-500/20' : '' }}" data-aos="fade-right">
                 <div class="flex items-center gap-2 mb-4">
                     <h3 class="text-lg font-bold text-red-500">{{ $room->team_a_name }}</h3>
                     @if($room->winner_team === 'a')
@@ -144,12 +144,12 @@
                 </div>
                 <div class="space-y-3">
                     @foreach($teamAPlayers as $p)
-                        <div class="flex items-center justify-between py-2 {{ !$loop->last ? 'border-b' : '' }}" style="border-color: var(--color-border);">
+                        <div class="flex items-center justify-between py-2 {{ !$loop->last ? 'border-b border-slate-200/50 dark:border-white/5' : '' }}">
                             <div class="flex items-center gap-3">
                                 <div class="w-8 h-8 rounded-full bg-red-500/20 flex items-center justify-center text-red-500 font-bold text-sm">
                                     {{ strtoupper(substr($p->user->name, 0, 1)) }}
                                 </div>
-                                <span class="font-medium text-sm" style="color: var(--color-text);">
+                                <span class="font-medium text-sm text-slate-900 dark:text-white">
                                     {{ $p->user->name }}
                                     @if($p->user_id === auth()->id())
                                         <span class="text-primary-500">({{ $isArabic ? 'أنت' : 'You' }})</span>
@@ -160,9 +160,9 @@
                         </div>
                     @endforeach
                 </div>
-            </div>
+            </x-student.card>
 
-            <div class="glass-card p-6 {{ $room->winner_team === 'b' ? 'ring-2 ring-amber-500' : '' }}" data-aos="fade-left">
+            <x-student.card padding="p-6" class="{{ $room->winner_team === 'b' ? 'ring-2 ring-amber-500 shadow-md shadow-amber-500/20' : '' }}" data-aos="fade-left">
                 <div class="flex items-center gap-2 mb-4">
                     <h3 class="text-lg font-bold text-blue-500">{{ $room->team_b_name }}</h3>
                     @if($room->winner_team === 'b')
@@ -171,12 +171,12 @@
                 </div>
                 <div class="space-y-3">
                     @foreach($teamBPlayers as $p)
-                        <div class="flex items-center justify-between py-2 {{ !$loop->last ? 'border-b' : '' }}" style="border-color: var(--color-border);">
+                        <div class="flex items-center justify-between py-2 {{ !$loop->last ? 'border-b border-slate-200/50 dark:border-white/5' : '' }}">
                             <div class="flex items-center gap-3">
                                 <div class="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-500 font-bold text-sm">
                                     {{ strtoupper(substr($p->user->name, 0, 1)) }}
                                 </div>
-                                <span class="font-medium text-sm" style="color: var(--color-text);">
+                                <span class="font-medium text-sm text-slate-900 dark:text-white">
                                     {{ $p->user->name }}
                                     @if($p->user_id === auth()->id())
                                         <span class="text-primary-500">({{ $isArabic ? 'أنت' : 'You' }})</span>
@@ -187,7 +187,7 @@
                         </div>
                     @endforeach
                 </div>
-            </div>
+            </x-student.card>
         </div>
 
         <div class="flex flex-col sm:flex-row items-center justify-center gap-4" data-aos="fade-up">
