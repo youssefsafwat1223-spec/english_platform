@@ -4,9 +4,6 @@
 
 @section('content')
 <div class="min-h-screen py-16 relative overflow-hidden bg-slate-50 dark:bg-[#020617] transition-colors duration-500">
-
-@section('content')
-<div class="min-h-screen py-16 relative overflow-hidden bg-slate-50 dark:bg-[#020617] transition-colors duration-500">
     {{-- Ambient Background Orbs --}}
     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-primary-500/10 blur-[120px] rounded-full pointer-events-none"></div>
     <div class="absolute bottom-0 right-0 w-[600px] h-[600px] bg-accent-500/10 blur-[120px] rounded-full pointer-events-none"></div>
@@ -170,8 +167,8 @@
                         $profileStats = [
                             ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h10" />', 'value' => $stats['total_enrollments'], 'label' => __('Enrolled'), 'color' => 'from-primary-500 to-primary-400'],
                             ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />', 'value' => $stats['completed_courses'], 'label' => __('Completed'), 'color' => 'from-amber-500 to-amber-400'],
-                            ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5Z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14v6" />', 'value' => $stats['certificates'], 'label' => __('Certificates'), 'color' => 'from-purple-500 to-fuchsia-500'],
-                            ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m12 17.75-5.228 2.749 1-5.823-4.23-4.126 5.846-.849L12 4.5l2.612 5.201 5.846.849-4.23 4.126 1 5.823L12 17.75Z" />', 'value' => $user->achievements()->count(), 'label' => __('Achievements'), 'color' => 'from-amber-500 to-orange-500'],
+                            ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5Z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14v6" />', 'value' => $stats['certificates'], 'label' => __('Certificates'), 'color' => 'from-primary-500 to-accent-500'],
+                            ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m12 17.75-5.228 2.749 1-5.823-4.23-4.126 5.846-.849L12 4.5l2.612 5.201 5.846.849-4.23 4.126 1 5.823L12 17.75Z" />', 'value' => $user->achievements()->count(), 'label' => __('Achievements'), 'color' => 'from-accent-500 to-accent-400'],
                         ];
                     @endphp
                     @foreach($profileStats as $s)
@@ -201,11 +198,11 @@
                                 <div class="flex-1 min-w-0">
                                     <h4 class="font-bold text-slate-900 dark:text-white truncate group-hover:text-primary-500 transition-colors">{{ $enrollment->course->title }}</h4>
                                     <div class="w-full h-1.5 bg-slate-100 dark:bg-black/40 rounded-full mt-2 overflow-hidden">
-                                        <div class="h-full rounded-full {{ $enrollment->is_completed ? 'bg-emerald-500' : 'bg-gradient-to-r from-primary-500 to-accent-500' }}" style="width: {{ $enrollment->progress_percentage }}%"></div>
+                                        <div class="h-full rounded-full {{ $enrollment->is_completed ? 'bg-accent-500' : 'bg-gradient-to-r from-primary-500 to-accent-500' }}" style="width: {{ $enrollment->progress_percentage }}%"></div>
                                     </div>
                                 </div>
                                 @if($enrollment->is_completed)
-                                    <div class="shrink-0 text-emerald-500">
+                                    <div class="shrink-0 text-accent-500">
                                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                     </div>
                                 @endif
@@ -244,7 +241,7 @@
                         <div class="flex flex-wrap gap-4">
                             @foreach($user->achievements()->take(6)->get() as $achievement)
                                 <div class="relative group cursor-pointer" title="{{ $achievement->name }}">
-                                    <div class="w-16 h-16 rounded-[1.25rem] bg-slate-50 dark:bg-[#0f172a] border border-slate-200 dark:border-white/10 border-b-4 border-b-amber-500/30 flex items-center justify-center text-3xl shadow-sm group-hover:-translate-y-1 group-hover:border-b-amber-500 transition-all">
+                                    <div class="w-16 h-16 rounded-[1.25rem] bg-slate-50 dark:bg-[#0f172a] border border-slate-200 dark:border-white/10 border-b-4 border-b-accent-500/30 flex items-center justify-center text-3xl shadow-sm group-hover:-translate-y-1 group-hover:border-b-accent-500 transition-all">
                                         {{ $achievement->icon ?? '★' }}
                                     </div>
                                 </div>
