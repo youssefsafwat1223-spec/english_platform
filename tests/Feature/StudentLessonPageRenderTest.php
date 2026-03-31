@@ -6,6 +6,7 @@ use App\Models\Course;
 use App\Models\Enrollment;
 use App\Models\Lesson;
 use App\Models\LessonProgress;
+use App\Models\PronunciationExercise;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -47,12 +48,29 @@ class StudentLessonPageRenderTest extends TestCase
             'is_completed' => true,
         ]);
 
+        PronunciationExercise::create([
+            'lesson_id' => $lesson->id,
+            'sentence_1' => 'cake',
+            'sentence_2' => 'The cake tastes sweet.',
+            'sentence_3' => 'A short passage.',
+            'vocabulary_json' => [
+                ['word' => 'cake', 'pronunciation' => '/keik/', 'meaning_ar' => 'كعكة'],
+                ['word' => 'pine', 'pronunciation' => '/pain/', 'meaning_ar' => 'صنوبر'],
+            ],
+            'passing_score' => 70,
+            'max_duration_seconds' => 10,
+            'allow_retake' => true,
+        ]);
+
         $response = $this->actingAs($user)->get(route('student.lessons.show', [$course, $lesson]));
 
         $response->assertOk();
         $response->assertSee('Lesson description');
         $response->assertSee('sample-card.png');
         $response->assertSee('images/features/sample-card.png');
+        $response->assertSee('cake');
+        $response->assertSee('/keik/');
+        $response->assertSee('lesson-vocabulary-track');
         $response->assertSee('مكتمل');
         $response->assertDontSee('مكتمل ?');
     }
