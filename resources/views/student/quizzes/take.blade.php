@@ -163,17 +163,25 @@
                 </div>
             </div>
 
-            <dialog x-ref="submitModal" class="overflow-visible rounded-3xl p-0 backdrop:bg-slate-900/60 backdrop:backdrop-blur-sm bg-white dark:bg-slate-900 shadow-2xl w-full max-w-sm mx-auto z-50 animate-zoom-in">
-                <div class="p-8 text-center bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 relative z-10 m-2">
-                    <div class="w-20 h-20 rounded-full bg-primary-50 dark:bg-primary-900/30 text-primary-500 fill-primary-500 flex items-center justify-center mx-auto mb-6"><svg class="w-10 h-10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg></div>
-                    <h3 class="text-2xl font-bold mb-3">{{ $isArabic ? 'هل أنت متأكد؟' : 'Are you sure?' }}</h3>
-                    <p class="text-slate-500 dark:text-slate-400 mb-6 font-medium">{{ $isArabic ? 'أجبت عن' : 'You answered' }} <strong class="text-slate-900 dark:text-white" x-text="Object.keys(answers).length"></strong> {{ $isArabic ? 'من أصل' : 'out of' }} {{ $questionCount }}.</p>
-                    <div x-show="Object.keys(answers).length < {{ $questionCount }}" class="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-sm font-bold p-3 rounded-xl mb-6">
-                        <span class="inline-flex items-center gap-2"><svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-7.938 4h15.876c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg><span>{{ $isArabic ? 'لديك أسئلة لم تُجب عنها.' : 'You have unanswered questions!' }}</span></span>
+            <dialog x-ref="submitModal" class="overflow-visible rounded-3xl p-0 backdrop:bg-slate-900/70 backdrop:backdrop-blur-md bg-transparent shadow-none w-full max-w-sm mx-auto z-50 animate-zoom-in">
+                <div class="p-8 text-center bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.25)] dark:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.6)] relative z-10">
+                    {{-- Icon --}}
+                    <div class="w-20 h-20 rounded-full bg-gradient-to-br from-primary-500 to-cyan-500 text-white flex items-center justify-center mx-auto mb-6 shadow-lg shadow-primary-500/30">
+                        <svg class="w-10 h-10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
                     </div>
-                    <div class="flex gap-3 mt-8">
-                        <button type="button" @click="$refs.submitModal.close()" class="btn-secondary flex-1 py-3 rounded-xl font-bold bg-slate-100 border-none">{{ $isArabic ? 'مراجعة' : 'Review' }}</button>
-                        <button type="button" @click="$refs.submitModal.close(); submitQuiz()" class="btn-primary flex-1 py-3 rounded-xl font-bold">{{ $isArabic ? 'إرسال' : 'Submit' }}</button>
+                    {{-- Title --}}
+                    <h3 class="text-2xl font-black mb-2 text-slate-900 dark:text-white">{{ $isArabic ? 'هل أنت متأكد؟' : 'Are you sure?' }}</h3>
+                    <p class="text-slate-500 dark:text-slate-400 mb-6 font-medium text-sm">{{ $isArabic ? 'أجبت عن' : 'You answered' }} <strong class="text-slate-900 dark:text-white text-base" x-text="Object.keys(answers).length"></strong> {{ $isArabic ? 'من أصل' : 'out of' }} <strong>{{ $questionCount }}</strong>.</p>
+                    
+                    {{-- Warning --}}
+                    <div x-show="Object.keys(answers).length < {{ $questionCount }}" class="bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 text-sm font-bold p-4 rounded-2xl mb-6 border border-amber-200 dark:border-amber-500/20">
+                        <span class="inline-flex items-center gap-2"><svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-7.938 4h15.876c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg><span>{{ $isArabic ? 'لديك أسئلة لم تُجب عنها.' : 'You have unanswered questions!' }}</span></span>
+                    </div>
+                    
+                    {{-- Buttons --}}
+                    <div class="flex gap-3">
+                        <button type="button" @click="$refs.submitModal.close()" class="flex-1 py-3.5 px-6 rounded-2xl font-bold text-sm bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition-all active:scale-95">{{ $isArabic ? 'مراجعة' : 'Review' }}</button>
+                        <button type="button" @click="$refs.submitModal.close(); submitQuiz()" class="flex-1 py-3.5 px-6 rounded-2xl font-bold text-sm bg-gradient-to-r from-primary-600 to-primary-500 text-white shadow-lg shadow-primary-500/30 hover:shadow-primary-500/50 hover:from-primary-500 hover:to-primary-400 transition-all active:scale-95">{{ $isArabic ? 'إرسال' : 'Submit' }}</button>
                     </div>
                 </div>
             </dialog>
