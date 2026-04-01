@@ -448,7 +448,7 @@
 
 {{-- ─── Mobile Bottom Tab Bar & Drawer (Students Only) ─── --}}
 @auth
-    @if(auth()->user()->is_student && !request()->routeIs('student.quizzes.take') && !request()->routeIs('student.lessons.show'))
+    @if(auth()->user()->is_student && !request()->routeIs('student.quizzes.start') && !request()->routeIs('student.lessons.show') && !request()->routeIs('student.pronunciation.show') && !request()->routeIs('student.games.room') && !request()->routeIs('student.battle.play'))
         <div x-data="{ 
             isDrawerOpen: false,
             lastScroll: 0,
