@@ -414,20 +414,36 @@ function pronunciationApp() {
                 return;
             }
 
-            if (this.isRecording) this.stopRecording();
-            if (this.isSpeaking) window.speechSynthesis.cancel();
+            // Stop any existing recognition before starting new one
+            if (this.isRecording) {
+                this.stopRecording();
+                setTimeout(() => this.startRecording(sentenceNumber), 300);
+                return;
+            }
+            
+            if (this.isSpeaking) {
+                window.speechSynthesis.cancel();
+                this.isSpeaking = false;
+                this.speakingSentence = null;
+            }
 
             this.recognition = this.initRecognition();
-            if (!this.recognition) return;
+            if (!this.recognition) {
+                if (window.showNotification) window.showNotification(this.messages.browser_title, 'error');
+                return;
+            }
 
             this.activeSentence = sentenceNumber;
             this.liveTranscript = '';
             this.isRecording = true;
 
             try {
+                // Speech recognition must be started within a user gesture (which this is)
                 this.recognition.start();
             } catch (e) {
+                console.error('Recognition start error:', e);
                 this.isRecording = false;
+                this.recognition = null;
                 if (window.showNotification) window.showNotification(this.messages.start_failed, 'error');
             }
         },

@@ -7,7 +7,6 @@
 
     <div class="student-container relative z-10">
         {{-- Header Section --}}
-        {{-- Header Section --}}
         <x-student.page-header
             title="{{ __('Community') }} <span class='text-transparent bg-clip-text bg-gradient-to-r from-primary-500 to-accent-500'>{{ __('Forum') }}</span>"
             subtitle="{{ __('Connect with fellow learners, share your knowledge, ask questions, and grow together.') }}"
