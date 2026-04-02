@@ -248,6 +248,11 @@ class Payment extends Model
 
         $totalLessons = $this->course->lessons()->count();
 
+        $expiresAt = null;
+        if ($this->course?->estimated_duration_weeks) {
+            $expiresAt = now()->addDays($this->course->estimated_duration_weeks * 7);
+        }
+
         $enrollment = Enrollment::create([
             'user_id' => $this->user_id,
             'course_id' => $this->course_id,
@@ -257,6 +262,8 @@ class Payment extends Model
             'discount_type' => $this->getEnrollmentDiscountType(),
             'discount_code' => $this->discount_code ?? $this->promoCode?->code,
             'total_lessons' => $totalLessons,
+            'started_at' => now(),
+            'expires_at' => $expiresAt,
         ]);
 
         // Increment course student count

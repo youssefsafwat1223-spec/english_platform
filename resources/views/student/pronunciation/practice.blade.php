@@ -314,6 +314,10 @@ function pronunciationApp() {
         results: {},
         failedAttempts: {},
         recognition: null,
+        recordingStartedAt: null,
+        recordingTimeoutId: null,
+        manualStop: false,
+        maxRecordMs: 12000,
         passingScore: {{ $exercise->passing_score ?? 70 }},
         messages: @json($messages),
         scoreLabels: @json($scoreLabels),
@@ -342,7 +346,7 @@ function pronunciationApp() {
             const recognition = new SpeechRecognition();
             recognition.lang = 'en-US';
             recognition.interimResults = true;
-            recognition.continuous = false;
+            recognition.continuous = true;
             recognition.maxAlternatives = 1;
 
             recognition.onresult = (event) => {
@@ -363,8 +367,36 @@ function pronunciationApp() {
             recognition.onend = () => {
                 const transcript = this.liveTranscript.trim();
                 const finishedSentence = this.activeSentence;
+                const elapsed = this.recordingStartedAt ? (Date.now() - this.recordingStartedAt) : 0;
+                const shouldRestart = !this.manualStop
+                    && this.isRecording
+                    && !transcript
+                    && this.recordingStartedAt
+                    && elapsed < (this.maxRecordMs - 500);
+
+                if (shouldRestart) {
+                    this.recognition = this.initRecognition();
+                    if (this.recognition) {
+                        setTimeout(() => {
+                            try {
+                                this.recognition.start();
+                            } catch (e) {
+                                console.error('Recognition restart error:', e);
+                                this.isRecording = false;
+                                this.recognition = null;
+                            }
+                        }, 200);
+                    }
+                    return;
+                }
+
                 this.isRecording = false;
                 this.recognition = null;
+                this.recordingStartedAt = null;
+                if (this.recordingTimeoutId) {
+                    clearTimeout(this.recordingTimeoutId);
+                    this.recordingTimeoutId = null;
+                }
 
                 if (finishedSentence && transcript) {
                     this.submitTranscript(finishedSentence, transcript);
@@ -374,6 +406,11 @@ function pronunciationApp() {
             recognition.onerror = (event) => {
                 this.isRecording = false;
                 this.recognition = null;
+                this.recordingStartedAt = null;
+                if (this.recordingTimeoutId) {
+                    clearTimeout(this.recordingTimeoutId);
+                    this.recordingTimeoutId = null;
+                }
 
                 if (event.error === 'aborted') {
                     return;
@@ -446,6 +483,16 @@ function pronunciationApp() {
             this.activeSentence = sentenceNumber;
             this.liveTranscript = '';
             this.isRecording = true;
+            this.manualStop = false;
+            this.recordingStartedAt = Date.now();
+            if (this.recordingTimeoutId) {
+                clearTimeout(this.recordingTimeoutId);
+            }
+            this.recordingTimeoutId = setTimeout(() => {
+                if (this.isRecording) {
+                    this.stopRecording(true);
+                }
+            }, this.maxRecordMs);
 
             try {
                 this.recognition.start();
@@ -453,15 +500,26 @@ function pronunciationApp() {
                 console.error('Recognition start error:', e);
                 this.isRecording = false;
                 this.recognition = null;
+                this.recordingStartedAt = null;
+                if (this.recordingTimeoutId) {
+                    clearTimeout(this.recordingTimeoutId);
+                    this.recordingTimeoutId = null;
+                }
                 if (window.showNotification) window.showNotification(this.messages.start_failed, 'error');
             }
         },
 
-        stopRecording() {
+        stopRecording(force = false) {
+            this.manualStop = true;
             if (this.recognition) {
                 this.recognition.stop();
             }
             this.isRecording = false;
+            this.recordingStartedAt = null;
+            if (this.recordingTimeoutId) {
+                clearTimeout(this.recordingTimeoutId);
+                this.recordingTimeoutId = null;
+            }
         },
 
         async submitTranscript(sentenceNumber, transcript) {

@@ -57,7 +57,11 @@
         {{-- Course Grid --}}
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @forelse($enrollments as $enrollment)
-                @php $lastAccessed = $enrollment->last_accessed_at ? $enrollment->last_accessed_at->diffForHumans() : __('Not yet'); @endphp
+                @php
+                    $lastAccessed = $enrollment->last_accessed_at ? $enrollment->last_accessed_at->diffForHumans() : __('Not yet');
+                    $expiresAt = $enrollment->expires_at;
+                    $daysLeft = $expiresAt ? now()->diffInDays($expiresAt, false) : null;
+                @endphp
                 <x-student.card padding="p-0" class="group overflow-hidden cursor-pointer hover:-translate-y-1 hover:shadow-xl transition-all duration-300" data-aos="fade-up" data-aos-delay="{{ $loop->index * 100 }}">
                     <a href="{{ route('student.courses.learn', $enrollment->course) }}" class="block">
                         @if($enrollment->course->thumbnail)
@@ -84,6 +88,15 @@
                                     <div class="bg-gradient-to-r from-primary-500 to-accent-500 h-full rounded-full transition-all duration-1000" style="width: {{ $enrollment->progress_percentage }}%"></div>
                                 </div>
                                 <div class="text-xs mt-2 text-slate-500 dark:text-slate-400">{{ __('Last activity') }}: {{ $lastAccessed }}</div>
+                                @if($daysLeft !== null)
+                                    <div class="text-xs mt-1 font-bold text-slate-500 dark:text-slate-400">
+                                        @if($daysLeft >= 0)
+                                            {{ app()->getLocale() === 'ar' ? 'ينتهي بعد' : 'Expires in' }} {{ $daysLeft }} {{ app()->getLocale() === 'ar' ? 'يوم' : 'days' }}
+                                        @else
+                                            {{ app()->getLocale() === 'ar' ? 'انتهت مدة الاشتراك' : 'Subscription expired' }}
+                                        @endif
+                                    </div>
+                                @endif
                             </div>
                         </div>
                     </a>

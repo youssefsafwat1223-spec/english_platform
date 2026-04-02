@@ -32,6 +32,10 @@ class DashboardController extends Controller
             ->orderBy('last_accessed_at', 'desc')
             ->get();
 
+        $primaryEnrollment = $activeEnrollments->first();
+        $levelProgress = $primaryEnrollment?->progress_percentage ?? 0;
+        $levelLabel = $levelProgress >= 50 ? 'PRO' : 'ROOKIE';
+
         // Only show the latest recent pending checkout per course.
         $pendingCutoff = now()->subMinutes(self::PENDING_PAYMENT_VISIBILITY_MINUTES);
 
@@ -63,6 +67,8 @@ class DashboardController extends Controller
             'current_streak' => $user->current_streak,
             'longest_streak' => $user->longest_streak,
             'achievements_count' => $user->achievements()->count(),
+            'level_label' => $levelLabel,
+            'level_progress' => $levelProgress,
         ];
 
         // Upcoming quiz/lesson

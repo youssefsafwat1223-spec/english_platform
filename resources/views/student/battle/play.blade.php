@@ -73,7 +73,7 @@
             <div class="flex items-center justify-between mb-6">
                 <div class="flex items-center gap-3">
                     <span class="text-sm font-bold px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400">
-                        {{ $isArabic ? 'السؤال' : 'Question' }} <span id="q-number">-</span>/<span id="q-total">-</span>
+                        {{ $isArabic ? 'السؤال' : 'Question' }}
                     </span>
                     <span class="text-sm font-bold px-3 py-1 rounded-full bg-amber-500/20 text-amber-500">
                         <span id="q-points">-</span> {{ $isArabic ? 'نقطة' : 'pts' }}
@@ -143,8 +143,6 @@
     let isSubmitting = false;
 
     const els = {
-        qNumber: document.getElementById('q-number'),
-        qTotal: document.getElementById('q-total'),
         qPoints: document.getElementById('q-points'),
         qTimer: document.getElementById('q-timer'),
         qText: document.getElementById('q-text'),
@@ -357,8 +355,6 @@
             els.questionCard.classList.add('question-enter');
             setTimeout(() => els.questionCard.classList.remove('question-enter'), 600);
 
-            els.qNumber.textContent = round.round_number;
-            els.qTotal.textContent = round.total_rounds;
             els.qPoints.textContent = round.points;
             els.qText.textContent = round.question_text;
 

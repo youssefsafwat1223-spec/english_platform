@@ -66,7 +66,7 @@
                             
                             <div class="text-xs font-black text-slate-500 dark:text-slate-400 uppercase tracking-[0.2em] mb-1 sm:mb-2">{{ __('Current Level') }}</div>
                             <div class="text-3xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-primary-600 to-accent-500 drop-shadow-lg mb-1 sm:mb-2">
-                                {{ $stats['total_enrollments'] > 0 ? 'PRO' : 'ROOKIE' }}
+                                {{ $stats['level_label'] ?? 'ROOKIE' }}
                             </div>
                             <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-900/10 dark:bg-black/30 text-sm font-mono text-primary-600 dark:text-primary-400 font-bold border border-primary-500/20">
                                 <svg class="w-4 h-4 text-amber-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 2a1 1 0 01.832.445l2.454 3.682 4.39.638a1 1 0 01.554 1.706l-3.176 3.097.75 4.373a1 1 0 01-1.451 1.054L10 14.73l-3.927 2.064a1 1 0 01-1.451-1.054l.75-4.373-3.176-3.097a1 1 0 01.554-1.706l4.39-.638 2.454-3.682A1 1 0 0110 2z" clip-rule="evenodd"/></svg>
@@ -176,6 +176,11 @@
                     
                     <div class="space-y-5">
                         @forelse($activeEnrollments->take(3) as $enrollment)
+                            @php
+                                $progressValue = (int) round(min(100, max(0, $enrollment->progress_percentage ?? 0)));
+                                $expiresAt = $enrollment->expires_at;
+                                $daysLeft = $expiresAt ? now()->diffInDays($expiresAt, false) : null;
+                            @endphp
                             <div class="group relative rounded-2xl bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-white/10 p-5 hover:shadow-xl hover:border-primary-500/50 transition-all duration-300 flex flex-col sm:flex-row gap-6 items-center">
                                 
                                 {{-- Icon 3D --}}
@@ -202,10 +207,19 @@
                                     {{-- Progress Bar --}}
                                     <div class="flex items-center gap-3">
                                         <div class="flex-1 h-3 bg-slate-100 dark:bg-slate-900 rounded-full overflow-hidden border border-slate-200/50 dark:border-white/5 shadow-inner relative">
-                                            <div class="absolute top-0 left-0 h-full bg-gradient-to-r from-primary-500 to-accent-500 rounded-full w-0 transition-all duration-1000 ease-out" style="width: {{ $enrollment->progress_percentage }}%"></div>
+                                            <div class="absolute top-0 left-0 h-full bg-gradient-to-r from-primary-500 to-accent-500 rounded-full w-0 transition-all duration-1000 ease-out" style="width: {{ $progressValue }}%"></div>
                                         </div>
-                                        <span class="text-sm font-bold text-slate-700 dark:text-slate-300 w-12 text-right">{{ $enrollment->progress_percentage }}%</span>
+                                        <span class="text-lg font-black text-primary-500 w-14 text-right">{{ $progressValue }}%</span>
                                     </div>
+                                    @if($daysLeft !== null)
+                                        <div class="mt-2 text-xs font-bold text-slate-500 dark:text-slate-400">
+                                            @if($daysLeft >= 0)
+                                                {{ $isArabic ? 'ينتهي بعد' : 'Expires in' }} {{ $daysLeft }} {{ $isArabic ? 'يوم' : 'days' }}
+                                            @else
+                                                {{ $isArabic ? 'انتهت مدة الاشتراك' : 'Subscription expired' }}
+                                            @endif
+                                        </div>
+                                    @endif
                                 </div>
                                 
                                 <div class="shrink-0 w-full sm:w-auto">
@@ -355,8 +369,6 @@
 
 
 @endsection
-
-
 
 
 

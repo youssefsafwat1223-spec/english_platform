@@ -84,7 +84,6 @@
 
                         <div class="p-6">
                             <div class="flex items-center justify-between mb-4 text-sm text-slate-500 dark:text-slate-400">
-                                <div>{{ $course->questions_count }} {{ $isArabic ? 'سؤال' : 'questions' }}</div>
                                 <div>{{ $isArabic ? 'نظام فرق' : 'Team battle' }}</div>
                             </div>
 

@@ -22,6 +22,7 @@ class Enrollment extends Model
         'total_lessons',
         'started_at',
         'completed_at',
+        'expires_at',
         'certificate_issued_at',
         'certificate_id',
         'last_accessed_at',
@@ -35,6 +36,7 @@ class Enrollment extends Model
             'progress_percentage' => 'decimal:2',
             'started_at' => 'datetime',
             'completed_at' => 'datetime',
+            'expires_at' => 'datetime',
             'certificate_issued_at' => 'datetime',
             'last_accessed_at' => 'datetime',
         ];
