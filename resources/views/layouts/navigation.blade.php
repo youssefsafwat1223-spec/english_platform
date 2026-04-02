@@ -419,13 +419,13 @@
             </div>
         @else
             <div class="border-t p-4" style="border-color: var(--glass-border);">
-                <div class="grid grid-cols-2 gap-3 rounded-2xl bg-white/80 dark:bg-white/5 border border-slate-200/70 dark:border-white/10 p-2 shadow-sm">
+                <div class="space-y-2">
                     <a href="{{ route('login') }}"
-                       class="text-center py-3 rounded-xl text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/10 transition-colors">
+                       class="btn-secondary btn-sm w-full text-center">
                         {{ __('Log In') }}
                     </a>
                     <a href="{{ route('register') }}"
-                       class="text-center py-3 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-primary-600 to-accent-600 hover:from-primary-500 hover:to-accent-500 shadow-md shadow-primary-500/20 transition-all">
+                       class="btn-primary btn-sm w-full text-center">
                         {{ __('Get Started') }}
                     </a>
                 </div>
