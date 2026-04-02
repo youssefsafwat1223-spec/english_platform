@@ -8,19 +8,19 @@
     'image' => null,
 ])
 
-<div {{ $attributes->merge(['class' => 'relative overflow-hidden rounded-[1.5rem] sm:rounded-[2rem] border border-slate-200/70 dark:border-white/10 bg-white/80 dark:bg-slate-900/70 backdrop-blur-sm shadow-[0_24px_48px_-24px_rgba(15,23,42,0.22)] dark:shadow-[0_28px_60px_-28px_rgba(2,6,23,0.8)] ring-1 ring-black/5 dark:ring-white/5 ' . $mb]) }}>
+<div {{ $attributes->merge(['class' => 'relative overflow-hidden rounded-[1.5rem] sm:rounded-[2rem] border border-slate-200/70 dark:border-white/10 bg-white/85 dark:bg-slate-900/75 backdrop-blur-sm shadow-[0_24px_48px_-24px_rgba(15,23,42,0.22)] dark:shadow-[0_28px_60px_-28px_rgba(2,6,23,0.8)] ring-1 ring-black/5 dark:ring-white/5 ' . $mb]) }}>
     {{-- Lightweight CSS background (no image payload) --}}
-    <div class="absolute inset-0 opacity-80 dark:opacity-30 pointer-events-none"
+    <div class="absolute inset-0 opacity-70 dark:opacity-35 pointer-events-none"
          style="background-image:
-            linear-gradient(to right, rgba(2,132,199,0.12) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(2,132,199,0.12) 1px, transparent 1px),
-            radial-gradient(circle at 20% 20%, rgba(2,132,199,0.18), transparent 40%),
-            radial-gradient(circle at 80% 80%, rgba(245,158,11,0.14), transparent 42%);
-            background-size: 24px 24px, 24px 24px, 100% 100%, 100% 100%;">
+            radial-gradient(circle at 18% 24%, rgba(2,132,199,0.20), transparent 38%),
+            radial-gradient(circle at 82% 78%, rgba(124,58,237,0.14), transparent 42%),
+            repeating-linear-gradient(90deg, rgba(2,132,199,0.09) 0 1px, transparent 1px 14px),
+            linear-gradient(180deg, rgba(255,255,255,0.00), rgba(255,255,255,0.55));
+            background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%;">
     </div>
-    <div class="absolute inset-0 bg-gradient-to-br from-white/70 via-white/40 to-transparent dark:from-slate-900/80 dark:via-slate-900/45 dark:to-transparent pointer-events-none"></div>
-    <div class="absolute -top-24 -right-24 w-64 h-64 rounded-full bg-primary-500/15 blur-3xl pointer-events-none"></div>
-    <div class="absolute -bottom-24 -left-24 w-64 h-64 rounded-full bg-accent-500/10 blur-3xl pointer-events-none"></div>
+    <div class="absolute inset-0 bg-gradient-to-br from-white/55 via-white/30 to-white/5 dark:from-slate-900/75 dark:via-slate-900/35 dark:to-slate-900/10 pointer-events-none"></div>
+    <div class="absolute -top-24 -right-24 w-64 h-64 rounded-full bg-primary-500/12 blur-3xl pointer-events-none"></div>
+    <div class="absolute -bottom-24 -left-24 w-64 h-64 rounded-full bg-accent-500/8 blur-3xl pointer-events-none"></div>
 
     <div class="relative z-10 px-5 sm:px-8 lg:px-10 py-6 sm:py-8 lg:py-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6 sm:gap-8">
         <div class="flex-1 min-w-0 space-y-4 sm:space-y-5">

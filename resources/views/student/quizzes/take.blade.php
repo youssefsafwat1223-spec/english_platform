@@ -11,12 +11,21 @@
 @section('title', ($isArabic ? 'حل الاختبار' : 'Take Quiz') . ': ' . $quiz->title . ' - ' . config('app.name'))
 
 @section('content')
-<div class="min-h-screen bg-slate-50 dark:bg-[#020617] pb-28 md:pb-16" x-data="quizController()" x-init="initQuiz()">
+<div class="min-h-screen bg-slate-50 dark:bg-[#020617] pb-40 md:pb-24" x-data="quizController()" x-init="initQuiz()">
     <div class="student-container max-w-5xl pt-8 lg:pt-12">
 
         {{-- Sticky Quiz Top Bar --}}
         <div class="sticky top-3 z-40">
-            <div class="rounded-2xl border border-slate-200/80 dark:border-white/10 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl shadow-lg px-5 py-4">
+            <div class="relative overflow-hidden rounded-[1.75rem] border border-white/60 dark:border-white/10 bg-white/80 dark:bg-slate-900/80 backdrop-blur-[20px] shadow-[0_24px_55px_-24px_rgba(15,23,42,0.3)]">
+                <div class="absolute inset-0 opacity-80 dark:opacity-35 pointer-events-none"
+                     style="background-image:
+                        radial-gradient(circle at 18% 20%, rgba(2,132,199,0.16), transparent 42%),
+                        radial-gradient(circle at 82% 80%, rgba(124,58,237,0.12), transparent 44%),
+                        linear-gradient(to right, rgba(2,132,199,0.12) 1px, transparent 1px),
+                        linear-gradient(to bottom, rgba(2,132,199,0.12) 1px, transparent 1px);
+                        background-size: 100% 100%, 100% 100%, 26px 26px, 26px 26px;"></div>
+                <div class="absolute inset-0 bg-gradient-to-br from-white/65 via-white/35 to-transparent dark:from-slate-900/80 dark:via-slate-900/45 dark:to-transparent pointer-events-none"></div>
+                <div class="relative z-10 px-5 py-4">
                 <div class="flex flex-col sm:flex-row sm:items-center gap-4">
                     <div class="flex-1 min-w-0">
                         <div class="text-xs font-black uppercase tracking-widest text-slate-400">{{ $isArabic ? 'اختبار' : 'Quiz' }}</div>
@@ -40,6 +49,7 @@
                 </div>
                 <div class="mt-4 h-2 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden">
                     <div class="h-full bg-gradient-to-r from-primary-500 to-accent-500 transition-all duration-300 ease-out" :style="`width: ${((currentQuestion + 1) / {{ $questionCount }}) * 100}%`"></div>
+                </div>
                 </div>
             </div>
             <div class="sm:hidden mt-2 inline-flex items-center gap-1.5 rounded-full border border-slate-200 dark:border-white/10 px-3 py-1.5 text-xs font-black text-slate-600 dark:text-slate-300 bg-white/80 dark:bg-slate-900/70 backdrop-blur">
@@ -162,9 +172,10 @@
             @endforeach
 
             {{-- Bottom Navigation --}}
-            <div class="fixed bottom-0 md:bottom-6 left-0 right-0 z-40 px-0 md:px-6 pointer-events-none">
-                <div class="student-container max-w-5xl pointer-events-auto bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-t md:border border-slate-200 dark:border-slate-800 rounded-t-[2rem] md:rounded-[2rem] shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.1)] p-4 sm:p-5 flex items-center justify-between gap-4">
-                    <button type="button" @click="currentQuestion = Math.max(0, currentQuestion - 1)" class="btn-secondary flex-1 sm:flex-none flex justify-center items-center gap-2 px-6 py-3.5 sm:py-3 rounded-xl font-bold transition-all disabled:opacity-30 disabled:cursor-not-allowed bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-950 border border-slate-200 dark:border-slate-700" :disabled="currentQuestion === 0">
+            <div class="fixed left-4 right-4 sm:left-8 sm:right-8 z-40 pointer-events-none" style="bottom: calc(env(safe-area-inset-bottom, 0px) + 0.75rem);">
+                <div class="student-container max-w-5xl pointer-events-auto relative bg-white/80 dark:bg-[#020617]/80 backdrop-blur-[30px] saturate-[1.8] border border-white/60 dark:border-white/10 rounded-[2.5rem] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] dark:shadow-[0_25px_50px_-12px_rgba(0,0,0,0.8)] ring-1 ring-black/5 dark:ring-white/10 p-3 sm:p-4 flex items-center justify-between gap-3 sm:gap-4 overflow-visible">
+                    <div class="absolute inset-x-10 -top-5 h-px bg-gradient-to-r from-transparent via-primary-500/40 to-transparent blur-sm"></div>
+                    <button type="button" @click="currentQuestion = Math.max(0, currentQuestion - 1)" class="btn-secondary flex-1 sm:flex-none flex justify-center items-center gap-2 px-5 py-3 rounded-2xl font-bold transition-all disabled:opacity-30 disabled:cursor-not-allowed bg-white/70 dark:bg-slate-900/70 hover:bg-white dark:hover:bg-slate-950 border border-slate-200/80 dark:border-slate-700" :disabled="currentQuestion === 0">
                         <svg class="w-5 h-5 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                         <span class="hidden sm:inline text-sm">{{ $isArabic ? 'السابق' : 'Previous' }}</span>
                     </button>
@@ -174,11 +185,11 @@
                         @endforeach
                     </div>
                     <div class="flex-1 sm:flex-none flex justify-end">
-                        <button type="button" @click="currentQuestion = Math.min({{ $questionCount - 1 }}, currentQuestion + 1)" x-show="currentQuestion < {{ $questionCount - 1 }}" class="btn-primary w-full sm:w-auto flex justify-center items-center gap-2 px-8 py-3.5 sm:py-3 rounded-xl font-bold shadow-md shadow-primary-500/20">
+                        <button type="button" @click="currentQuestion = Math.min({{ $questionCount - 1 }}, currentQuestion + 1)" x-show="currentQuestion < {{ $questionCount - 1 }}" class="btn-primary w-full sm:w-auto flex justify-center items-center gap-2 px-6 sm:px-8 py-3 rounded-2xl font-bold shadow-md shadow-primary-500/20">
                             <span class="text-sm">{{ $isArabic ? 'السؤال التالي' : 'Next Question' }}</span>
                             <svg class="w-5 h-5 rtl:-scale-x-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                         </button>
-                        <button type="button" @click="$refs.submitModal.showModal()" x-show="currentQuestion === {{ $questionCount - 1 }}" class="btn-primary w-full sm:w-auto flex justify-center items-center gap-2 px-8 py-3.5 sm:py-3 rounded-xl font-bold bg-slate-900 border-slate-900 hover:bg-slate-800 dark:bg-white dark:border-white dark:text-slate-900 dark:hover:bg-slate-200 shadow-md" :disabled="loading">
+                        <button type="button" @click="$refs.submitModal.showModal()" x-show="currentQuestion === {{ $questionCount - 1 }}" class="btn-primary w-full sm:w-auto flex justify-center items-center gap-2 px-6 sm:px-8 py-3 rounded-2xl font-bold bg-slate-900 border-slate-900 hover:bg-slate-800 dark:bg-white dark:border-white dark:text-slate-900 dark:hover:bg-slate-200 shadow-md" :disabled="loading">
                             <span x-show="!loading" class="flex items-center gap-2 text-sm">{{ $isArabic ? 'إرسال الاختبار' : 'Submit Quiz' }}<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg></span>
                             <span x-show="loading" x-cloak class="flex items-center gap-2 text-sm"><svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/></svg>{{ $isArabic ? 'جاري الإرسال...' : 'Submitting...' }}</span>
                         </button>
