@@ -87,7 +87,7 @@ class PaymentService
             $productId = $productResponse->json('id');
             $callbackUrl = $this->buildCallbackUrl($payment);
 
-            $paymentLinkResponse = $this->streamPayRequest('post', '/payment_links', [
+            $paymentLinkPayload = [
                 'name' => "Payment for {$course->title}",
                 'description' => "Course access payment for {$user->name}",
                 'currency' => 'SAR',
@@ -107,7 +107,15 @@ class PaymentService
                     'payment_id' => (string) $payment->id,
                 ],
                 'contact_information_type' => 'EMAIL',
-            ]);
+            ];
+
+            if (config('services.streampay.installments_enabled')) {
+                $paymentLinkPayload['payment_methods'] = [
+                    'installment' => true,
+                ];
+            }
+
+            $paymentLinkResponse = $this->streamPayRequest('post', '/payment_links', $paymentLinkPayload);
 
             if (!$paymentLinkResponse->successful()) {
                 $message = $this->extractGatewayErrorMessage(
