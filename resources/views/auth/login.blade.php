@@ -3,8 +3,7 @@
 @section('title', __('Log In') . ' — ' . config('app.name'))
 
 @section('content')
-<div class="min-h-screen flex relative overflow-hidden bg-slate-50 dark:bg-[#020617] transition-colors duration-500">
-    <div class="hidden lg:block pointer-events-none absolute inset-y-0 left-1/2 -translate-x-1/2 w-20 z-[5] bg-gradient-to-r from-slate-900/70 via-slate-900/25 to-transparent dark:from-slate-900/80 dark:via-slate-900/25 dark:to-transparent"></div>
+<div class="min-h-screen pt-24 lg:pt-28 flex relative overflow-hidden bg-slate-50 dark:bg-[#020617] transition-colors duration-500">
     
     {{-- Left Panel: Visual/Branding (Hidden on mobile) --}}
     <div class="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-slate-900">
@@ -40,6 +39,7 @@
 
     {{-- Right Panel: Login Form --}}
     <div class="w-full lg:w-1/2 flex items-center justify-center p-8 sm:p-12 lg:p-16 relative z-10">
+        <div class="hidden lg:block pointer-events-none absolute inset-y-0 ltr:left-0 rtl:right-0 w-20 ltr:bg-gradient-to-r ltr:from-slate-900/25 ltr:to-transparent rtl:bg-gradient-to-l rtl:from-slate-900/25 rtl:to-transparent"></div>
         
         <div class="w-full max-w-md animate-fade-in-up">
             
