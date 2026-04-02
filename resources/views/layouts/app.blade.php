@@ -122,8 +122,16 @@
             </script>
         @endif
 
+        @php
+            $isStudentRoute = request()->routeIs('student.*');
+            $hasStudentBottomBar = auth()->check()
+                && auth()->user()->is_student
+                && $isStudentRoute
+                && !request()->routeIs('student.quizzes.start');
+        @endphp
+
         <!-- Main Content -->
-        <main class="flex-grow relative z-10 w-full {{ request()->routeIs('home') ? 'pt-0' : 'pt-28 lg:pt-32' }} {{ request()->routeIs('student.*') ? 'student-page' : '' }}">
+        <main class="flex-grow relative z-10 w-full {{ request()->routeIs('home') ? 'pt-0' : 'pt-28 lg:pt-32' }} {{ $isStudentRoute ? 'student-page' : '' }} {{ $hasStudentBottomBar ? 'pb-28 sm:pb-32 lg:pb-0' : '' }}">
             @isset($slot)
                 {{ $slot }}
             @else

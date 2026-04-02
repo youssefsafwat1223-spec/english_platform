@@ -149,7 +149,7 @@
     }
 
     .student-header-subtitle {
-        @apply text-sm sm:text-base text-slate-500 dark:text-slate-400;
+        @apply text-sm sm:text-base font-medium text-slate-700 dark:text-slate-200;
     }
 
     .student-section {
