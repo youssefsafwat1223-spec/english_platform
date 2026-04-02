@@ -60,7 +60,8 @@
                 @php
                     $lastAccessed = $enrollment->last_accessed_at ? $enrollment->last_accessed_at->diffForHumans() : __('Not yet');
                     $expiresAt = $enrollment->expires_at;
-                    $daysLeft = $expiresAt ? now()->diffInDays($expiresAt, false) : null;
+                    $daysLeftRaw = $expiresAt ? (now()->diffInSeconds($expiresAt, false) / 86400) : null;
+                    $daysLeft = $daysLeftRaw !== null ? (int) ($daysLeftRaw >= 0 ? ceil($daysLeftRaw) : floor($daysLeftRaw)) : null;
                 @endphp
                 <x-student.card padding="p-0" class="group overflow-hidden cursor-pointer hover:-translate-y-1 hover:shadow-xl transition-all duration-300" data-aos="fade-up" data-aos-delay="{{ $loop->index * 100 }}">
                     <a href="{{ route('student.courses.learn', $enrollment->course) }}" class="block">

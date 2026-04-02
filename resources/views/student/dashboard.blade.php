@@ -179,7 +179,8 @@
                             @php
                                 $progressValue = (int) round(min(100, max(0, $enrollment->progress_percentage ?? 0)));
                                 $expiresAt = $enrollment->expires_at;
-                                $daysLeft = $expiresAt ? now()->diffInDays($expiresAt, false) : null;
+                                $daysLeftRaw = $expiresAt ? (now()->diffInSeconds($expiresAt, false) / 86400) : null;
+                                $daysLeft = $daysLeftRaw !== null ? (int) ($daysLeftRaw >= 0 ? ceil($daysLeftRaw) : floor($daysLeftRaw)) : null;
                             @endphp
                             <div class="group relative rounded-2xl bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-white/10 p-5 hover:shadow-xl hover:border-primary-500/50 transition-all duration-300 flex flex-col sm:flex-row gap-6 items-center">
                                 
@@ -369,7 +370,6 @@
 
 
 @endsection
-
 
 
 
