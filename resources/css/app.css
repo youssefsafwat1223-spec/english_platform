@@ -160,6 +160,16 @@
         @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
     }
 
+    .student-mobile-safe-area {
+        padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 7rem);
+    }
+
+    @media (min-width: 1024px) {
+        .student-mobile-safe-area {
+            padding-bottom: 0;
+        }
+    }
+
     .student-page :where(h1) {
         font-size: 1.5rem !important;
         line-height: 2rem !important;

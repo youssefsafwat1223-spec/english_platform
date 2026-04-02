@@ -615,7 +615,8 @@
         </div>
 
         {{-- ─── Actual Bottom Bar ─── --}}
-        <div class="fixed bottom-6 left-6 right-6 sm:bottom-8 sm:left-12 sm:right-12 z-[100] bg-white/80 dark:bg-[#020617]/80 backdrop-blur-[30px] saturate-[1.8] border border-white/60 dark:border-white/10 rounded-[2.5rem] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] dark:shadow-[0_25px_50px_-12px_rgba(0,0,0,0.8)] ring-1 ring-black/5 dark:ring-white/10 transition-all duration-500 overflow-visible"
+        <div class="fixed left-4 right-4 sm:left-8 sm:right-8 z-[100] bg-white/80 dark:bg-[#020617]/80 backdrop-blur-[30px] saturate-[1.8] border border-white/60 dark:border-white/10 rounded-[2.5rem] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] dark:shadow-[0_25px_50px_-12px_rgba(0,0,0,0.8)] ring-1 ring-black/5 dark:ring-white/10 transition-all duration-500 overflow-visible"
+             style="bottom: calc(env(safe-area-inset-bottom, 0px) + 0.75rem);"
              :class="!showNav ? 'translate-y-32' : 'translate-y-0'">
             
             {{-- High-End Inner Glow --}}

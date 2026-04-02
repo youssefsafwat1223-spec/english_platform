@@ -131,7 +131,7 @@
         @endphp
 
         <!-- Main Content -->
-        <main class="flex-grow relative z-10 w-full {{ request()->routeIs('home') ? 'pt-0' : 'pt-28 lg:pt-32' }} {{ $isStudentRoute ? 'student-page' : '' }} {{ $hasStudentBottomBar ? 'pb-28 sm:pb-32 lg:pb-0' : '' }}">
+        <main class="flex-grow relative z-10 w-full {{ request()->routeIs('home') ? 'pt-0' : 'pt-28 lg:pt-32' }} {{ $isStudentRoute ? 'student-page' : '' }} {{ $hasStudentBottomBar ? 'student-mobile-safe-area' : '' }}">
             @isset($slot)
                 {{ $slot }}
             @else
