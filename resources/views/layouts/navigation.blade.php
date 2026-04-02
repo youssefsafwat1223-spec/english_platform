@@ -419,15 +419,17 @@
             </div>
         @else
             <div class="border-t p-4" style="border-color: var(--glass-border);">
-                <div class="space-y-2">
-                    <a href="{{ route('login') }}"
-                       class="btn-secondary btn-sm w-full text-center">
-                        {{ __('Log In') }}
-                    </a>
-                    <a href="{{ route('register') }}"
-                       class="btn-primary btn-sm w-full text-center">
-                        {{ __('Get Started') }}
-                    </a>
+                <div class="rounded-2xl bg-white/80 dark:bg-white/5 border border-slate-200/70 dark:border-white/10 p-3 shadow-sm">
+                    <div class="space-y-2">
+                        <a href="{{ route('login') }}"
+                           class="btn-secondary btn-sm w-full text-center">
+                            {{ __('Log In') }}
+                        </a>
+                        <a href="{{ route('register') }}"
+                           class="btn-primary btn-sm w-full text-center">
+                            {{ __('Get Started') }}
+                        </a>
+                    </div>
                 </div>
             </div>
         @endauth
