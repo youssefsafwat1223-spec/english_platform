@@ -7,6 +7,12 @@
     $startedAt = $enrollment->started_at ? $enrollment->started_at->format('M d, Y') : '-';
     $lastAccessed = $enrollment->last_accessed_at ? $enrollment->last_accessed_at->diffForHumans() : __('ui.learn.not_started');
     $progress = $enrollment->progress_percentage ?? 0;
+    $expiresAt = $enrollment->expires_at;
+    $remainingDays = null;
+    if ($expiresAt) {
+        $diffSeconds = now()->diffInSeconds($expiresAt, false);
+        $remainingDays = (int) max(0, ceil($diffSeconds / 86400));
+    }
 @endphp
 
 <div class="relative min-h-screen bg-slate-50 dark:bg-[#020617] pb-24 lg:pb-0 font-sans">
@@ -379,6 +385,12 @@
                                 <span class="text-slate-600 dark:text-slate-400 font-bold">{{ __('ui.learn.last_activity') }}</span>
                                 <span class="font-black border-b border-dashed border-slate-400 dark:border-slate-600 text-slate-900 dark:text-white text-base">{{ $lastAccessed }}</span>
                             </div>
+                            @if(!is_null($remainingDays))
+                                <div class="flex justify-between items-center p-4 rounded-[1.25rem] bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-white/5">
+                                    <span class="text-slate-600 dark:text-slate-400 font-bold">{{ $isArabic ? 'متبقي' : 'Remaining' }}</span>
+                                    <span class="font-black text-slate-900 dark:text-white text-base">{{ $remainingDays }} {{ $isArabic ? 'يوم' : 'days' }}</span>
+                                </div>
+                            @endif
                         </div>
 
                         {{-- Actions --}}
