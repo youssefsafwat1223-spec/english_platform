@@ -349,15 +349,16 @@
                             </div>
                         </div>
                     @else
-                        <a href="{{ route('login') }}"
-                           class="btn-ghost text-sm font-medium">
-                            {{ __('Log In') }}
-                        </a>
-                        <a href="{{ route('register') }}"
-                           class="btn-primary btn-sm ripple-btn">
-                            {{ __('Get Started') }}
-                            <svg class="w-4 h-4 ms-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
-                        </a>
+                        <div class="hidden md:flex items-center gap-2 rounded-2xl border border-slate-200/70 dark:border-white/10 bg-white/80 dark:bg-white/5 backdrop-blur-xl p-1 shadow-sm">
+                            <a href="{{ route('login') }}"
+                               class="px-4 py-2 rounded-xl text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/10 transition-colors">
+                                {{ __('Log In') }}
+                            </a>
+                            <a href="{{ route('register') }}"
+                               class="px-4 py-2 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-primary-600 to-accent-600 hover:from-primary-500 hover:to-accent-500 shadow-md shadow-primary-500/20 transition-all">
+                                {{ __('Get Started') }}
+                            </a>
+                        </div>
                     @endauth
                 </div>
 
@@ -417,9 +418,17 @@
                 </form>
             </div>
         @else
-            <div class="border-t p-4 flex gap-3" style="border-color: var(--glass-border);">
-                <a href="{{ route('login') }}" class="btn-secondary btn-sm flex-1 text-center">{{ __('Log In') }}</a>
-                <a href="{{ route('register') }}" class="btn-primary btn-sm flex-1 text-center">{{ __('Get Started') }}</a>
+            <div class="border-t p-4" style="border-color: var(--glass-border);">
+                <div class="grid grid-cols-2 gap-3 rounded-2xl bg-white/80 dark:bg-white/5 border border-slate-200/70 dark:border-white/10 p-2 shadow-sm">
+                    <a href="{{ route('login') }}"
+                       class="text-center py-3 rounded-xl text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/10 transition-colors">
+                        {{ __('Log In') }}
+                    </a>
+                    <a href="{{ route('register') }}"
+                       class="text-center py-3 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-primary-600 to-accent-600 hover:from-primary-500 hover:to-accent-500 shadow-md shadow-primary-500/20 transition-all">
+                        {{ __('Get Started') }}
+                    </a>
+                </div>
             </div>
         @endauth
     </div>
