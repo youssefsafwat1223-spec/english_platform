@@ -42,6 +42,17 @@
                             <span>{{ $isArabic ? 'الوقت المستغرق' : 'Elapsed' }}:</span>
                             <span x-text="formatTime(elapsedSeconds)"></span>
                         </div>
+                        @if($audioEnabled)
+                            <button type="button" @click="toggleAudioMute()" class="inline-flex items-center gap-2 rounded-full border border-slate-200 dark:border-white/10 px-3 py-2 text-xs font-black bg-slate-50 dark:bg-slate-800/60 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700/70 transition-colors">
+                                <svg x-show="!audioMuted" class="w-4 h-4 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5L6 9H2v6h4l5 4V5zM15.54 8.46a5 5 0 010 7.07M19.07 4.93a10 10 0 010 14.14"/>
+                                </svg>
+                                <svg x-show="audioMuted" x-cloak class="w-4 h-4 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 9l6 6M15 9l-6 6M11 5L6 9H2v6h4l5 4V5z"/>
+                                </svg>
+                                <span x-text="audioMuted ? '{{ $isArabic ? 'تشغيل الصوت' : 'Unmute' }}' : '{{ $isArabic ? 'كتم الصوت' : 'Mute' }}'"></span>
+                            </button>
+                        @endif
                         <button type="button" @click="$refs.submitModal.showModal()" class="btn-secondary btn-sm">
                             {{ $isArabic ? 'إنهاء مبكر' : 'Finish Early' }}
                         </button>
@@ -219,7 +230,176 @@
 
 @push('scripts')
 <script>
-function quizController(){return{currentQuestion:0,answers:{},audioStats:{},loading:false,timeLeft:{{ ($quiz->time_limit ?? 0) * 60 }},elapsedSeconds:0,timerInterval:null,startedAt:new Date().toISOString(),completedAt:'',audioEnabled:@js($audioEnabled),audioAutoPlay:@js($audioAutoPlay),questionSpeechTexts:@json($questionSpeechTexts),initQuiz(){this.startTimer();this.registerAudioTracking();this.$watch('currentQuestion',(val)=>{if(this.audioAutoPlay){this.playQuestionAudio(val);}else{this.stopAllAudio();}});this.$nextTick(()=>{if(this.audioAutoPlay){setTimeout(()=>this.playQuestionAudio(0),500);}});if('speechSynthesis' in window){window.speechSynthesis.getVoices();window.speechSynthesis.onvoiceschanged=()=>window.speechSynthesis.getVoices();}window.addEventListener('keydown',(e)=>{const active=document.activeElement?document.activeElement.tagName.toLowerCase():'';if(['input','textarea','audio','video','select','button'].includes(active)){return;}if(e.key==='ArrowRight'||e.key==='ArrowDown'){if(this.currentQuestion<{{ $questionCount - 1 }}){this.currentQuestion++;e.preventDefault();}}else if(e.key==='ArrowLeft'||e.key==='ArrowUp'){if(this.currentQuestion>0){this.currentQuestion--;e.preventDefault();}}});},registerAudioTracking(){if(!this.audioEnabled){return;}document.querySelectorAll('audio[id^=\"audio-\"]').forEach((audio)=>{const index=Number(audio.id.replace('audio-',''));audio.addEventListener('play',()=>this.markAudioPlayback(index));});},stopAllAudio(){document.querySelectorAll('audio').forEach(audio=>{audio.pause();audio.currentTime=0;});if('speechSynthesis' in window){window.speechSynthesis.cancel();}},markAudioPlayback(index){const current=this.audioStats[index]??{played:false,replays:0};this.audioStats[index]={played:true,replays:current.played?current.replays+1:current.replays};},detectSpeechLanguage(text){return /[\u0600-\u06FF]/.test(text)?'ar-SA':'en-US';},speakQuestionText(index){if(!('speechSynthesis' in window)){return;}const text=this.questionSpeechTexts[index]??'';if(!text.trim()){return;}this.markAudioPlayback(index);const utterance=new SpeechSynthesisUtterance(text);utterance.lang=this.detectSpeechLanguage(text);utterance.rate=0.95;const voices=window.speechSynthesis.getVoices();const preferredVoice=voices.find((voice)=>voice.lang.toLowerCase().startsWith(utterance.lang.toLowerCase().slice(0,2)));if(preferredVoice){utterance.voice=preferredVoice;}window.speechSynthesis.cancel();window.speechSynthesis.speak(utterance);},playQuestionAudio(index){if(!this.audioEnabled){return;}this.stopAllAudio();const audio=document.getElementById(`audio-${index}`);if(audio){audio.play().catch(error=>{console.log('Audio playback fallback triggered:',error);this.speakQuestionText(index);});return;}this.speakQuestionText(index);},startTimer(){this.timerInterval=setInterval(()=>{this.elapsedSeconds++;if(this.timeLeft>0){this.timeLeft--;if(this.timeLeft<=0){clearInterval(this.timerInterval);this.submitQuiz();}}},1000);},submitQuiz(){this.completedAt=new Date().toISOString();this.loading=true;this.$nextTick(()=>{this.$refs.quizForm.submit();});},formatTime(s){if(s<0)return '00:00';const m=Math.floor(s/60);const sec=s%60;return String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0');}}}
+function quizController() {
+    return {
+        currentQuestion: 0,
+        answers: {},
+        audioStats: {},
+        loading: false,
+        timeLeft: {{ ($quiz->time_limit ?? 0) * 60 }},
+        elapsedSeconds: 0,
+        timerInterval: null,
+        startedAt: new Date().toISOString(),
+        completedAt: '',
+        audioEnabled: @js($audioEnabled),
+        audioAutoPlay: @js($audioAutoPlay),
+        audioMuted: false,
+        questionSpeechTexts: @json($questionSpeechTexts),
+
+        initQuiz() {
+            this.startTimer();
+            this.registerAudioTracking();
+            this.syncAudioMuteState();
+
+            this.$watch('currentQuestion', (val) => {
+                if (this.audioAutoPlay && !this.audioMuted) {
+                    this.playQuestionAudio(val);
+                } else {
+                    this.stopAllAudio();
+                }
+            });
+
+            this.$nextTick(() => {
+                if (this.audioAutoPlay && !this.audioMuted) {
+                    setTimeout(() => this.playQuestionAudio(0), 500);
+                }
+            });
+
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.getVoices();
+                window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+            }
+
+            window.addEventListener('keydown', (e) => {
+                const active = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
+                if (['input', 'textarea', 'audio', 'video', 'select', 'button'].includes(active)) return;
+                if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                    if (this.currentQuestion < {{ $questionCount - 1 }}) {
+                        this.currentQuestion++;
+                        e.preventDefault();
+                    }
+                } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                    if (this.currentQuestion > 0) {
+                        this.currentQuestion--;
+                        e.preventDefault();
+                    }
+                }
+            });
+        },
+
+        registerAudioTracking() {
+            if (!this.audioEnabled) return;
+            document.querySelectorAll('audio[id^="audio-"]').forEach((audio) => {
+                const index = Number(audio.id.replace('audio-', ''));
+                audio.addEventListener('play', () => this.markAudioPlayback(index));
+            });
+        },
+
+        syncAudioMuteState() {
+            document.querySelectorAll('audio[id^="audio-"]').forEach((audio) => {
+                audio.muted = this.audioMuted;
+            });
+        },
+
+        toggleAudioMute() {
+            this.audioMuted = !this.audioMuted;
+            this.syncAudioMuteState();
+            if (this.audioMuted) {
+                this.stopAllAudio();
+            }
+        },
+
+        stopAllAudio() {
+            document.querySelectorAll('audio').forEach((audio) => {
+                audio.pause();
+                audio.currentTime = 0;
+            });
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+            }
+        },
+
+        markAudioPlayback(index) {
+            const current = this.audioStats[index] ?? { played: false, replays: 0 };
+            this.audioStats[index] = {
+                played: true,
+                replays: current.played ? current.replays + 1 : current.replays,
+            };
+        },
+
+        detectSpeechLanguage(text) {
+            return /[\u0600-\u06FF]/.test(text) ? 'ar-SA' : 'en-US';
+        },
+
+        speakQuestionText(index) {
+            if (!('speechSynthesis' in window) || this.audioMuted) return;
+            const text = this.questionSpeechTexts[index] ?? '';
+            if (!text.trim()) return;
+
+            this.markAudioPlayback(index);
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = this.detectSpeechLanguage(text);
+            utterance.rate = 0.95;
+
+            const voices = window.speechSynthesis.getVoices();
+            const preferredVoice = voices.find((voice) =>
+                voice.lang.toLowerCase().startsWith(utterance.lang.toLowerCase().slice(0, 2))
+            );
+            if (preferredVoice) {
+                utterance.voice = preferredVoice;
+            }
+
+            window.speechSynthesis.cancel();
+            window.speechSynthesis.speak(utterance);
+        },
+
+        playQuestionAudio(index) {
+            if (!this.audioEnabled || this.audioMuted) return;
+
+            this.stopAllAudio();
+            const audio = document.getElementById(`audio-${index}`);
+            if (audio) {
+                audio.muted = this.audioMuted;
+                audio.play().catch((error) => {
+                    console.log('Audio playback fallback triggered:', error);
+                    this.speakQuestionText(index);
+                });
+                return;
+            }
+
+            this.speakQuestionText(index);
+        },
+
+        startTimer() {
+            this.timerInterval = setInterval(() => {
+                this.elapsedSeconds++;
+                if (this.timeLeft > 0) {
+                    this.timeLeft--;
+                    if (this.timeLeft <= 0) {
+                        clearInterval(this.timerInterval);
+                        this.submitQuiz();
+                    }
+                }
+            }, 1000);
+        },
+
+        submitQuiz() {
+            this.completedAt = new Date().toISOString();
+            this.loading = true;
+            this.$nextTick(() => {
+                this.$refs.quizForm.submit();
+            });
+        },
+
+        formatTime(s) {
+            if (s < 0) return '00:00';
+            const m = Math.floor(s / 60);
+            const sec = s % 60;
+            return String(m).padStart(2, '0') + ':' + String(sec).padStart(2, '0');
+        },
+    }
+}
 @foreach($quiz->questions as $qIndex => $question)
 @if($question->question_type === 'drag_drop' && $question->matching_pairs)
 function matchingQuestion{{ $qIndex }}(){const pairs=@json($question->matching_pairs);const leftItems=pairs.map(p=>p.left);const rightItems=pairs.map(p=>p.right).sort(()=>Math.random()-0.5);return{leftItems,rightItems,selectedLeft:null,matches:new Array(leftItems.length).fill(null),selectLeft(idx){if(this.matches[idx]!==null){this.selectedLeft=null;return;}this.selectedLeft=idx;},matchRight(rightIdx){if(this.selectedLeft===null||this.isRightUsed(rightIdx))return;this.matches[this.selectedLeft]=rightIdx;this.selectedLeft=null;if(this.allMatched()){const quizCtrl=Alpine.closestDataStack(this.$el).find(d=>d.answers!==undefined);if(quizCtrl){quizCtrl.answers[{{ $qIndex }}]='matched';}}},clearMatch(leftIdx){this.matches[leftIdx]=null;const quizCtrl=Alpine.closestDataStack(this.$el).find(d=>d.answers!==undefined);if(quizCtrl){delete quizCtrl.answers[{{ $qIndex }}];}},isRightUsed(rightIdx){return this.matches.includes(rightIdx);},allMatched(){return this.matches.every(m=>m!==null);},getAnswerJSON(){if(!this.allMatched())return '';return JSON.stringify(this.leftItems.map((left,idx)=>({left:left,right:this.rightItems[this.matches[idx]]})));}}}

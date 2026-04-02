@@ -140,7 +140,9 @@
         </main>
 
         <!-- Footer -->
-        @include('layouts.footer')
+        @if(!request()->routeIs('student.quizzes.start'))
+            @include('layouts.footer')
+        @endif
 
         <!-- CDN Libraries -->
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

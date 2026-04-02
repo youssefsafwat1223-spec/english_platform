@@ -3,10 +3,29 @@
 @php
     $isArabic = app()->getLocale() === 'ar';
     $elapsedSeconds = null;
+    $durationSeconds = (int) (($attempt->quiz->time_limit ?? 0) * 60);
+
     if ($attempt->started_at && $attempt->completed_at) {
-        $elapsedSeconds = $attempt->completed_at->diffInSeconds($attempt->started_at);
+        $elapsedSeconds = max(0, (int) $attempt->completed_at->diffInSeconds($attempt->started_at));
     } elseif (!is_null($attempt->time_taken)) {
-        $elapsedSeconds = (int) $attempt->time_taken;
+        $storedTime = max(0, (int) $attempt->time_taken);
+        if ($durationSeconds > 0 && $storedTime <= $durationSeconds) {
+            // Backward compatibility: some old attempts stored remaining time instead of elapsed.
+            $remainingGuess = $durationSeconds - $storedTime;
+            $elapsedSeconds = ($storedTime > ($durationSeconds * 0.75) && $remainingGuess >= 0) ? $remainingGuess : $storedTime;
+        } else {
+            $elapsedSeconds = $storedTime;
+        }
+    }
+
+    $formattedElapsed = null;
+    if (!is_null($elapsedSeconds)) {
+        $hours = intdiv($elapsedSeconds, 3600);
+        $minutes = intdiv($elapsedSeconds % 3600, 60);
+        $seconds = $elapsedSeconds % 60;
+        $formattedElapsed = $hours > 0
+            ? sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds)
+            : sprintf('%02d:%02d', $minutes, $seconds);
     }
 @endphp
 
@@ -80,9 +99,9 @@
                         <div class="text-xs font-bold uppercase tracking-wider text-slate-500">{{ $isArabic ? 'الأسئلة' : 'Questions' }}</div>
                     </div>
 
-                    @if(!is_null($elapsedSeconds))
+                    @if(!is_null($formattedElapsed))
                     <div class="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-4 min-w-[130px] border border-slate-200 dark:border-white/5 shadow-sm">
-                        <div class="text-3xl font-black text-slate-900 dark:text-white mb-1">{{ gmdate('i:s', $elapsedSeconds) }}</div>
+                        <div class="text-3xl font-black text-slate-900 dark:text-white mb-1">{{ $formattedElapsed }}</div>
                         <div class="text-xs font-bold uppercase tracking-wider text-blue-500">{{ $isArabic ? 'الوقت المستغرق' : 'Time Taken' }}</div>
                     </div>
                     @endif
