@@ -107,7 +107,7 @@ class PaymentService
                     'course_id' => (string) $course->id,
                     'payment_id' => (string) $payment->id,
                 ],
-                'contact_information_type' => $user->phone ? 'PHONE' : 'EMAIL',
+                'contact_information_type' => 'BOTH',
             ];
 
             if ($consumerId) {
