@@ -86,6 +86,7 @@ class PaymentService
 
             $productId = $productResponse->json('id');
             $callbackUrl = $this->buildCallbackUrl($payment);
+            $consumerId = $this->resolveStreamPayConsumerId($user);
 
             $paymentLinkPayload = [
                 'name' => "Payment for {$course->title}",
@@ -106,8 +107,12 @@ class PaymentService
                     'course_id' => (string) $course->id,
                     'payment_id' => (string) $payment->id,
                 ],
-                'contact_information_type' => 'EMAIL',
+                'contact_information_type' => $user->phone ? 'PHONE' : 'EMAIL',
             ];
+
+            if ($consumerId) {
+                $paymentLinkPayload['organization_consumer_id'] = $consumerId;
+            }
 
             if (config('services.streampay.installments_enabled')) {
                 $paymentLinkPayload['payment_methods'] = [
@@ -573,11 +578,161 @@ class PaymentService
             }, throw: false);
 
         return match (strtolower($method)) {
-            'get' => $request->get($this->apiUrl . $path),
+            'get' => $request->get($this->apiUrl . $path, $payload),
             'post' => $request->post($this->apiUrl . $path, $payload),
             'patch' => $request->patch($this->apiUrl . $path, $payload),
             default => throw new \InvalidArgumentException("Unsupported StreamPay method [{$method}]"),
         };
+    }
+
+    private function resolveStreamPayConsumerId(User $user): ?string
+    {
+        if (!config('services.streampay.consumer_enabled')) {
+            return null;
+        }
+
+        if ($user->streampay_consumer_id) {
+            return $user->streampay_consumer_id;
+        }
+
+        $email = $this->normalizeEmail($user->email);
+        $phone = $this->normalizePhone($user->phone);
+        $methods = $this->resolveConsumerCommunicationMethods($email, $phone);
+
+        if (empty($methods) || (!$email && !$phone)) {
+            return null;
+        }
+
+        $consumerId = $this->createStreamPayConsumer($user, $email, $phone, $methods);
+
+        if ($consumerId) {
+            $user->forceFill(['streampay_consumer_id' => $consumerId])->save();
+        }
+
+        return $consumerId;
+    }
+
+    private function createStreamPayConsumer(User $user, ?string $email, ?string $phone, array $methods): ?string
+    {
+        $payload = array_filter([
+            'name' => $user->name ?: ($email ?? 'Student'),
+            'email' => $email,
+            'phone_number' => $phone,
+            'external_id' => (string) $user->id,
+            'preferred_language' => app()->getLocale(),
+            'communication_methods' => $methods,
+        ], static fn ($value) => filled($value));
+
+        $response = $this->streamPayRequest('post', '/consumers', $payload);
+
+        if ($response->successful()) {
+            return $response->json('id');
+        }
+
+        $errorCode = strtoupper((string) $response->json('code'));
+        if ($errorCode === 'DUPLICATE_CONSUMER') {
+            return $this->findExistingStreamPayConsumerId($user, $email, $phone);
+        }
+
+        Log::warning('StreamPay consumer creation failed', [
+            'user_id' => $user->id,
+            'status' => $response->status(),
+            'response' => $response->json(),
+        ]);
+
+        return null;
+    }
+
+    private function findExistingStreamPayConsumerId(User $user, ?string $email, ?string $phone): ?string
+    {
+        $response = $this->streamPayRequest('get', '/consumers', [
+            'external_id' => (string) $user->id,
+        ]);
+
+        if (!$response->successful()) {
+            return null;
+        }
+
+        $records = $response->json('data')
+            ?? $response->json('items')
+            ?? $response->json();
+
+        if (!is_array($records)) {
+            return null;
+        }
+
+        foreach ($records as $record) {
+            if (!is_array($record)) {
+                continue;
+            }
+
+            if (
+                (isset($record['external_id']) && (string) $record['external_id'] === (string) $user->id)
+                || ($email && isset($record['email']) && strtolower((string) $record['email']) === strtolower($email))
+                || ($phone && isset($record['phone_number']) && (string) $record['phone_number'] === $phone)
+            ) {
+                return $record['id'] ?? null;
+            }
+        }
+
+        return null;
+    }
+
+    private function resolveConsumerCommunicationMethods(?string $email, ?string $phone): array
+    {
+        $raw = (string) config('services.streampay.consumer_communication_methods', '');
+        $methods = array_filter(array_map('trim', explode(',', $raw)));
+        $methods = array_map('strtoupper', $methods);
+
+        $filtered = [];
+        foreach ($methods as $method) {
+            if ($method === 'EMAIL' && $email) {
+                $filtered[] = $method;
+                continue;
+            }
+
+            if ($method === 'WHATSAPP' && $phone) {
+                $filtered[] = $method;
+                continue;
+            }
+
+            if ($method === 'SMS' && $phone) {
+                $filtered[] = $method;
+            }
+        }
+
+        return array_values(array_unique($filtered));
+    }
+
+    private function normalizePhone(?string $phone): ?string
+    {
+        if (!$phone) {
+            return null;
+        }
+
+        $phone = trim($phone);
+        if ($phone === '') {
+            return null;
+        }
+
+        if (!str_starts_with($phone, '+')) {
+            return null;
+        }
+
+        $normalized = preg_replace('/\s+/', '', $phone);
+
+        if (!$normalized || !preg_match('/^\+\d{6,15}$/', $normalized)) {
+            return null;
+        }
+
+        return $normalized;
+    }
+
+    private function normalizeEmail(?string $email): ?string
+    {
+        $email = $email ? trim($email) : '';
+
+        return $email !== '' ? $email : null;
     }
 
     private function streamPayHeaders(): array

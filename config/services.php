@@ -63,6 +63,8 @@ return [
         'api_url' => 'https://stream-app-service.streampay.sa/api/v2',
         'installments_enabled' => env('STREAMPAY_INSTALLMENTS_ENABLED', false),
         'webhook_tolerance' => env('STREAMPAY_WEBHOOK_TOLERANCE', 300),
+        'consumer_enabled' => env('STREAMPAY_CONSUMER_ENABLED', true),
+        'consumer_communication_methods' => env('STREAMPAY_CONSUMER_COMMUNICATION_METHODS', 'WHATSAPP,EMAIL'),
     ],
 
     /*
