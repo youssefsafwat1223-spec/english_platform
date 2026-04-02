@@ -4,6 +4,7 @@
 
 @section('content')
 @php
+    $isArabic = app()->getLocale() === 'ar';
     $startedAt = $enrollment->started_at ? $enrollment->started_at->format('M d, Y') : '-';
     $lastAccessed = $enrollment->last_accessed_at ? $enrollment->last_accessed_at->diffForHumans() : __('ui.learn.not_started');
     $progress = $enrollment->progress_percentage ?? 0;
