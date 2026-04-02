@@ -3,6 +3,9 @@
 @section('title', __('ui.checkout.title') . ' - ' . config('app.name'))
 
 @section('content')
+@php
+    $isArabic = app()->getLocale() === 'ar';
+@endphp
 <div class="relative min-h-screen pb-20">
     {{-- Cinematic Hero Background --}}
     <div class="absolute top-0 left-0 w-full h-[40vh] z-0 overflow-hidden">
