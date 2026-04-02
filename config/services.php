@@ -62,6 +62,7 @@ return [
         'webhook_url' => env('STREAMPAY_WEBHOOK_URL', env('APP_URL') . '/api/payment/webhook'),
         'api_url' => 'https://stream-app-service.streampay.sa/api/v2',
         'installments_enabled' => env('STREAMPAY_INSTALLMENTS_ENABLED', false),
+        'webhook_tolerance' => env('STREAMPAY_WEBHOOK_TOLERANCE', 300),
     ],
 
     /*

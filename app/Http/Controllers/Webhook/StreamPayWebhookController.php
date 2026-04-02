@@ -134,6 +134,16 @@ class StreamPayWebhookController extends Controller
                 return false;
             }
 
+            $timestampInt = (int) $timestamp;
+            if ($timestampInt > 1000000000000) {
+                $timestampInt = (int) floor($timestampInt / 1000);
+            }
+
+            $tolerance = (int) config('services.streampay.webhook_tolerance', 300);
+            if ($timestampInt <= 0 || abs(time() - $timestampInt) > $tolerance) {
+                return false;
+            }
+
             $expected = hash_hmac('sha256', "{$timestamp}.{$payload}", $secret);
 
             return hash_equals($expected, $signature);
