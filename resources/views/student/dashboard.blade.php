@@ -2,6 +2,10 @@
 
 @section('title', __('Dashboard') . ' - ' . config('app.name'))
 
+@php
+    $isArabic = app()->getLocale() === 'ar';
+@endphp
+
 @section('content')
 <div class="pt-8 pb-12 sm:py-12 relative min-h-screen z-10 px-3 sm:px-0">
     <div class="student-container space-y-4 sm:space-y-8">
@@ -370,6 +374,5 @@
 
 
 @endsection
-
 
 
