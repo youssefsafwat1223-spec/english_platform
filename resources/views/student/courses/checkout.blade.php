@@ -101,6 +101,23 @@
                                     @enderror
                                 @endif
                             </div>
+
+                            <div class="mb-8 p-4 bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl">
+                                <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">{{ $isArabic ? 'طريقة التواصل للدفع' : 'Payment contact method' }}</label>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm font-bold">
+                                    <label class="flex items-center gap-2 rounded-xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-black/20 px-4 py-3 cursor-pointer hover:border-primary-400 transition-colors">
+                                        <input type="radio" name="contact_information_type" value="EMAIL" class="text-primary-500 focus:ring-primary-500" checked>
+                                        <span>{{ $isArabic ? 'الإيميل' : 'Email' }}</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 rounded-xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-black/20 px-4 py-3 cursor-pointer hover:border-primary-400 transition-colors">
+                                        <input type="radio" name="contact_information_type" value="PHONE" class="text-primary-500 focus:ring-primary-500">
+                                        <span>{{ $isArabic ? 'رقم الهاتف' : 'Phone number' }}</span>
+                                    </label>
+                                </div>
+                                <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                                    {{ $isArabic ? 'اختر الطريقة التي تريد أن يطلب بها StreamPay بيانات التواصل أثناء الدفع.' : 'Choose how StreamPay should request your contact details during checkout.' }}
+                                </p>
+                            </div>
                             
                             @if(!isset($promoCode))
                             <div class="mb-8 p-4 bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl">

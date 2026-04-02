@@ -177,6 +177,7 @@ class CourseController extends Controller
         $validated = $request->validate([
             'referral_code' => ['nullable', 'string', 'max:50'],
             'promo_code_id' => ['nullable', 'exists:promo_codes,id'], // ID passed from the verified view
+            'contact_information_type' => ['nullable', 'in:EMAIL,PHONE'],
         ]);
 
         $referralCode = $validated['referral_code'] ?? null;
@@ -234,7 +235,14 @@ class CourseController extends Controller
         }
 
         // Create payment via StreamPay gateway
-        $result = $this->paymentService->createCharge($user, $course, $discountData, $promoCode, $discountCode);
+        $result = $this->paymentService->createCharge(
+            $user,
+            $course,
+            $discountData,
+            $promoCode,
+            $discountCode,
+            $validated['contact_information_type'] ?? null
+        );
 
         if ($result['success']) {
             return redirect()->away($result['redirect_url']);

@@ -31,7 +31,14 @@ class PaymentService
     /**
      * Create payment link using StreamPay.
      */
-    public function createCharge(User $user, Course $course, array $discountData, ?PromoCode $promoCode = null, ?string $discountCode = null): array
+    public function createCharge(
+        User $user,
+        Course $course,
+        array $discountData,
+        ?PromoCode $promoCode = null,
+        ?string $discountCode = null,
+        ?string $contactInformationType = null
+    ): array
     {
         $payment = null;
 
@@ -88,6 +95,11 @@ class PaymentService
             $callbackUrl = $this->buildCallbackUrl($payment);
             $consumerId = $this->resolveStreamPayConsumerId($user);
 
+            $contactInformationType = strtoupper((string) $contactInformationType);
+            if (!in_array($contactInformationType, ['EMAIL', 'PHONE'], true)) {
+                $contactInformationType = $user->phone ? 'PHONE' : 'EMAIL';
+            }
+
             $paymentLinkPayload = [
                 'name' => "Payment for {$course->title}",
                 'description' => "Course access payment for {$user->name}",
@@ -107,7 +119,7 @@ class PaymentService
                     'course_id' => (string) $course->id,
                     'payment_id' => (string) $payment->id,
                 ],
-                'contact_information_type' => 'BOTH',
+                'contact_information_type' => $contactInformationType,
             ];
 
             if ($consumerId) {
