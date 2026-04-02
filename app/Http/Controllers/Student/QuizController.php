@@ -60,10 +60,13 @@ class QuizController extends Controller
         // Get attempt number
         $attemptNumber = $quiz->getAttemptCount($user) + 1;
 
-        // Calculate time taken
+        // Calculate time taken (prefer client elapsed counter to avoid device clock issues)
         $startedAt = \Carbon\Carbon::parse($request->started_at);
         $completedAt = \Carbon\Carbon::parse($request->completed_at);
-        $timeTaken = $completedAt->diffInSeconds($startedAt);
+        $timeTaken = (int) ($request->input('time_taken') ?? $completedAt->diffInSeconds($startedAt));
+        if (!empty($quiz->time_limit)) {
+            $timeTaken = min($timeTaken, (int) $quiz->time_limit * 60);
+        }
 
         // Create attempt
         $attempt = QuizAttempt::create([

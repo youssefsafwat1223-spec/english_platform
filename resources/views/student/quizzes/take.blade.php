@@ -11,38 +11,45 @@
 @section('title', ($isArabic ? 'حل الاختبار' : 'Take Quiz') . ': ' . $quiz->title . ' - ' . config('app.name'))
 
 @section('content')
-<div class="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white pb-24 md:pb-12" x-data="quizController()" x-init="initQuiz()">
-    <div class="sticky top-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-b border-slate-200 dark:border-white/10 shadow-sm">
-        <div class="student-container max-w-4xl">
-            <div class="py-4 flex items-center justify-between gap-4">
-                <div class="flex-1 min-w-0">
-                    <h1 class="text-lg md:text-xl font-bold truncate">{{ $quiz->title }}</h1>
-                    <div class="text-sm text-slate-500 dark:text-slate-400 font-medium mt-1">
-                        {{ $isArabic ? 'السؤال' : 'Question' }} <span x-text="currentQuestion + 1"></span> {{ $isArabic ? 'من' : 'of' }} {{ $questionCount }}
+<div class="min-h-screen bg-slate-50 dark:bg-[#020617] pb-28 md:pb-16" x-data="quizController()" x-init="initQuiz()">
+    <div class="student-container max-w-5xl pt-8 lg:pt-12">
+
+        {{-- Sticky Quiz Top Bar --}}
+        <div class="sticky top-3 z-40">
+            <div class="rounded-2xl border border-slate-200/80 dark:border-white/10 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl shadow-lg px-5 py-4">
+                <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+                    <div class="flex-1 min-w-0">
+                        <div class="text-xs font-black uppercase tracking-widest text-slate-400">{{ $isArabic ? 'اختبار' : 'Quiz' }}</div>
+                        <h1 class="text-lg sm:text-xl font-black text-slate-900 dark:text-white truncate">{{ $quiz->title }}</h1>
+                        <div class="text-sm text-slate-500 dark:text-slate-400 font-semibold mt-1">
+                            {{ $isArabic ? 'السؤال' : 'Question' }} <span x-text="currentQuestion + 1"></span>
+                            {{ $isArabic ? 'من' : 'of' }} {{ $questionCount }}
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-3">
+                        <div class="hidden sm:flex items-center gap-2 rounded-full border border-slate-200 dark:border-white/10 px-3 py-2 text-xs font-black text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-800/60">
+                            <svg class="w-4 h-4 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            <span>{{ $isArabic ? 'الوقت المستغرق' : 'Elapsed' }}:</span>
+                            <span x-text="formatTime(elapsedSeconds)"></span>
+                        </div>
+                        <button type="button" @click="$refs.submitModal.showModal()" class="btn-secondary btn-sm">
+                            {{ $isArabic ? 'إنهاء مبكر' : 'Finish Early' }}
+                        </button>
                     </div>
                 </div>
-                <div class="flex items-center gap-3 shrink-0 relative">
-                    <div class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-sm font-bold">
-                        <svg class="w-4 h-4 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        <span>{{ $isArabic ? 'الوقت المستغرق' : 'Elapsed' }}:</span>
-                        <span x-text="formatTime(elapsedSeconds)"></span>
-                    </div>
-                    <button type="button" @click="$refs.submitModal.showModal()" class="btn-secondary text-sm px-4 py-2 rounded-lg font-bold">{{ $isArabic ? 'إنهاء مبكر' : 'Finish Early' }}</button>
-                    <div class="sm:hidden absolute -bottom-10 right-0 flex items-center gap-1.5 px-2 py-1 rounded-full bg-slate-900/10 dark:bg-slate-100/10 backdrop-blur shadow-sm text-xs font-bold rtl:-left-0">
-                        <span x-text="formatTime(elapsedSeconds)"></span>
-                        <svg class="h-3.5 w-3.5 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    </div>
+                <div class="mt-4 h-2 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden">
+                    <div class="h-full bg-gradient-to-r from-primary-500 to-accent-500 transition-all duration-300 ease-out" :style="`width: ${((currentQuestion + 1) / {{ $questionCount }}) * 100}%`"></div>
                 </div>
             </div>
-            <div class="w-full bg-slate-200 dark:bg-slate-800 h-1.5 rounded-t-lg overflow-hidden">
-                <div class="bg-primary-500 h-full rounded-r-full transition-all duration-300 ease-out" :style="`width: ${((currentQuestion + 1) / {{ $questionCount }}) * 100}%`"></div>
+            <div class="sm:hidden mt-2 inline-flex items-center gap-1.5 rounded-full border border-slate-200 dark:border-white/10 px-3 py-1.5 text-xs font-black text-slate-600 dark:text-slate-300 bg-white/80 dark:bg-slate-900/70 backdrop-blur">
+                <svg class="w-3.5 h-3.5 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <span x-text="formatTime(elapsedSeconds)"></span>
             </div>
         </div>
-    </div>
 
-    <div class="student-container max-w-4xl pt-8 md:pt-12">
         @if(session('error') || $errors->any())
-            <div class="mb-8 p-4 rounded-2xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-500/30 text-red-600 dark:text-red-400">
+            <div class="mt-6 mb-6 p-4 rounded-2xl bg-rose-50 dark:bg-rose-900/20 border border-rose-200 dark:border-rose-500/30 text-rose-600 dark:text-rose-400">
                 <div class="flex items-start gap-3">
                     <svg class="w-6 h-6 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
                     <div>
@@ -60,14 +67,26 @@
             @csrf
             <input type="hidden" name="started_at" x-model="startedAt">
             <input type="hidden" name="completed_at" x-model="completedAt">
+            <input type="hidden" name="time_taken" x-model="elapsedSeconds">
 
             @foreach($quiz->questions as $qIndex => $question)
-                <div x-show="currentQuestion === {{ $qIndex }}" style="display:none" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
-                    <x-student.card padding="p-6 md:p-10" rounded="rounded-3xl" class="shadow-sm border border-slate-200 dark:border-slate-800 mb-8" overrideColors="bg-white dark:bg-slate-900">
+                <div x-show="currentQuestion === {{ $qIndex }}" style="display:none" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0" class="mt-8">
+                    <x-student.card padding="p-6 md:p-8" rounded="rounded-3xl" class="border border-slate-200/80 dark:border-white/10">
+                        <div class="flex items-center gap-3 mb-6">
+                            <span class="px-3 py-1.5 rounded-full bg-primary-500/10 text-primary-600 dark:text-primary-400 text-xs font-black">
+                                {{ $isArabic ? 'السؤال' : 'Question' }} {{ $qIndex + 1 }}
+                            </span>
+                            @if($question->question_type === 'drag_drop')
+                                <span class="px-3 py-1.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-xs font-black">
+                                    {{ $isArabic ? 'تطابق' : 'Matching' }}
+                                </span>
+                            @endif
+                        </div>
+
                         @if($audioEnabled)
                             <div class="mb-8 mx-auto max-w-xl space-y-3">
                                 @if($question->audio_url)
-                                    <div class="rounded-[1.5rem] p-1.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 shadow-inner">
+                                    <div class="rounded-[1.25rem] p-1.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-white/10 shadow-inner">
                                         <audio id="audio-{{ $qIndex }}" controls preload="none" class="w-full h-12 custom-audio-player">
                                             <source src="{{ $question->audio_url }}" type="audio/mpeg">
                                         </audio>
@@ -82,7 +101,9 @@
                             </div>
                         @endif
 
-                        <h2 class="text-2xl md:text-3xl font-extrabold text-center mb-10 leading-relaxed">{{ $question->text ?? $question->question_text }}</h2>
+                        <h2 class="text-xl md:text-2xl font-extrabold text-center mb-8 leading-relaxed text-slate-900 dark:text-white">
+                            {{ $question->text ?? $question->question_text }}
+                        </h2>
 
                         <div class="space-y-4 max-w-3xl mx-auto">
                             <input type="hidden" name="answers[{{ $qIndex }}][question_id]" value="{{ $question->id }}">
@@ -94,15 +115,15 @@
                                     <input type="hidden" name="answers[{{ $qIndex }}][user_answer]" :value="getAnswerJSON()">
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
                                         <div class="space-y-3">
-                                            <h4 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-2 px-2">{{ $isArabic ? 'العناصر (اختر الأول)' : 'Items (choose first)' }}</h4>
+                                            <h4 class="text-xs font-black uppercase tracking-wider text-slate-400">{{ $isArabic ? 'العناصر' : 'Items' }}</h4>
                                             <template x-for="(item, idx) in leftItems" :key="'left-'+idx">
                                                 <div class="flex items-center gap-3 p-4 rounded-2xl border-2 transition-all cursor-pointer" :class="selectedLeft === idx ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20 shadow-sm scale-[1.01]' : (matches[idx] !== null ? 'border-emerald-400 bg-emerald-50 dark:bg-emerald-900/10' : 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 hover:border-slate-300 dark:hover:border-slate-600')" @click="selectLeft(idx)">
                                                     <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shrink-0 transition-colors" :class="matches[idx] !== null ? 'bg-emerald-500 text-white' : 'bg-white dark:bg-slate-700 text-slate-500 shadow-sm'"><span x-text="idx + 1"></span></div>
                                                     <span class="font-bold text-lg flex-1" x-text="item"></span>
                                                     <template x-if="matches[idx] !== null">
                                                         <div class="flex items-center gap-2">
-                                                            <span class="text-sm font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/40 px-3 py-1 rounded-full truncate max-w-[120px]" x-text="rightItems[matches[idx]]"></span>
-                                                            <button type="button" @click.stop="clearMatch(idx)" class="w-6 h-6 rounded-full bg-red-100 text-red-500 hover:bg-red-200 flex items-center justify-center transition-colors" :aria-label="@js($isArabic ? 'إلغاء الربط' : 'Clear match')">
+                                                            <span class="text-xs font-black text-emerald-700 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/40 px-3 py-1 rounded-full truncate max-w-[120px]" x-text="rightItems[matches[idx]]"></span>
+                                                            <button type="button" @click.stop="clearMatch(idx)" class="w-6 h-6 rounded-full bg-rose-100 text-rose-500 hover:bg-rose-200 flex items-center justify-center transition-colors" :aria-label="@js($isArabic ? 'إلغاء الربط' : 'Clear match')">
                                                                 <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
                                                             </button>
                                                         </div>
@@ -111,7 +132,7 @@
                                             </template>
                                         </div>
                                         <div class="space-y-3">
-                                            <h4 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-2 px-2">{{ $isArabic ? 'المطابقات (اختر الثاني)' : 'Matches (choose second)' }}</h4>
+                                            <h4 class="text-xs font-black uppercase tracking-wider text-slate-400">{{ $isArabic ? 'المطابقات' : 'Matches' }}</h4>
                                             <template x-for="(item, idx) in rightItems" :key="'right-'+idx">
                                                 <div class="flex items-center gap-3 p-4 rounded-2xl border-2 transition-all cursor-pointer" :class="isRightUsed(idx) ? 'border-emerald-200 dark:border-emerald-800/30 bg-slate-50 dark:bg-slate-900 opacity-50' : (selectedLeft !== null ? 'border-primary-300 dark:border-primary-700 bg-white dark:bg-slate-800 shadow-md animate-pulse-subtle' : 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 hover:border-slate-300 dark:hover:border-slate-600')" @click="matchRight(idx)">
                                                     <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm shrink-0 shadow-sm" :class="isRightUsed(idx) ? 'bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600' : 'bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300'"><span x-text="String.fromCharCode(65 + idx)"></span></div>
@@ -140,8 +161,9 @@
                 </div>
             @endforeach
 
+            {{-- Bottom Navigation --}}
             <div class="fixed bottom-0 md:bottom-6 left-0 right-0 z-40 px-0 md:px-6 pointer-events-none">
-                <div class="student-container max-w-4xl pointer-events-auto bg-white/90 dark:bg-slate-800/90 backdrop-blur-xl border-t md:border border-slate-200 dark:border-slate-700 rounded-t-[2rem] md:rounded-[2rem] shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.1)] p-4 sm:p-5 flex items-center justify-between gap-4">
+                <div class="student-container max-w-5xl pointer-events-auto bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-t md:border border-slate-200 dark:border-slate-800 rounded-t-[2rem] md:rounded-[2rem] shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.1)] p-4 sm:p-5 flex items-center justify-between gap-4">
                     <button type="button" @click="currentQuestion = Math.max(0, currentQuestion - 1)" class="btn-secondary flex-1 sm:flex-none flex justify-center items-center gap-2 px-6 py-3.5 sm:py-3 rounded-xl font-bold transition-all disabled:opacity-30 disabled:cursor-not-allowed bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-950 border border-slate-200 dark:border-slate-700" :disabled="currentQuestion === 0">
                         <svg class="w-5 h-5 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                         <span class="hidden sm:inline text-sm">{{ $isArabic ? 'السابق' : 'Previous' }}</span>
@@ -166,20 +188,14 @@
 
             <dialog x-ref="submitModal" class="overflow-visible rounded-3xl p-0 backdrop:bg-slate-900/70 backdrop:backdrop-blur-md bg-transparent shadow-none w-full max-w-sm mx-auto z-50 animate-zoom-in">
                 <div class="p-8 text-center bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.25)] dark:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.6)] relative z-10">
-                    {{-- Icon --}}
                     <div class="w-20 h-20 rounded-full bg-gradient-to-br from-primary-500 to-cyan-500 text-white flex items-center justify-center mx-auto mb-6 shadow-lg shadow-primary-500/30">
                         <svg class="w-10 h-10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
                     </div>
-                    {{-- Title --}}
                     <h3 class="text-2xl font-black mb-2 text-slate-900 dark:text-white">{{ $isArabic ? 'هل أنت متأكد؟' : 'Are you sure?' }}</h3>
                     <p class="text-slate-500 dark:text-slate-400 mb-6 font-medium text-sm">{{ $isArabic ? 'أجبت عن' : 'You answered' }} <strong class="text-slate-900 dark:text-white text-base" x-text="Object.keys(answers).length"></strong> {{ $isArabic ? 'من أصل' : 'out of' }} <strong>{{ $questionCount }}</strong>.</p>
-                    
-                    {{-- Warning --}}
                     <div x-show="Object.keys(answers).length < {{ $questionCount }}" class="bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 text-sm font-bold p-4 rounded-2xl mb-6 border border-amber-200 dark:border-amber-500/20">
                         <span class="inline-flex items-center gap-2"><svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-7.938 4h15.876c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg><span>{{ $isArabic ? 'لديك أسئلة لم تُجب عنها.' : 'You have unanswered questions!' }}</span></span>
                     </div>
-                    
-                    {{-- Buttons --}}
                     <div class="flex gap-3">
                         <button type="button" @click="$refs.submitModal.close()" class="flex-1 py-3.5 px-6 rounded-2xl font-bold text-sm bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition-all active:scale-95">{{ $isArabic ? 'مراجعة' : 'Review' }}</button>
                         <button type="button" @click="$refs.submitModal.close(); submitQuiz()" class="flex-1 py-3.5 px-6 rounded-2xl font-bold text-sm bg-gradient-to-r from-primary-600 to-primary-500 text-white shadow-lg shadow-primary-500/30 hover:shadow-primary-500/50 hover:from-primary-500 hover:to-primary-400 transition-all active:scale-95">{{ $isArabic ? 'إرسال' : 'Submit' }}</button>
@@ -208,8 +224,3 @@ audio.custom-audio-player::-webkit-media-controls-panel{background-color:transpa
 </style>
 @endpush
 @endsection
-
-
-
-
-

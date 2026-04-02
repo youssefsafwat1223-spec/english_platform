@@ -28,6 +28,7 @@ class SubmitQuizRequest extends FormRequest
             'answers.*.time_taken' => 'nullable|integer',
             'answers.*.audio_played' => 'nullable|boolean',
             'answers.*.audio_replay_count' => 'nullable|integer',
+            'time_taken' => 'nullable|integer|min:0',
             'started_at' => 'required|date',
             'completed_at' => 'required|date|after:started_at',
         ];

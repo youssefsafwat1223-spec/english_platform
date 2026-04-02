@@ -2,6 +2,12 @@
 
 @php
     $isArabic = app()->getLocale() === 'ar';
+    $elapsedSeconds = null;
+    if ($attempt->started_at && $attempt->completed_at) {
+        $elapsedSeconds = $attempt->completed_at->diffInSeconds($attempt->started_at);
+    } elseif (!is_null($attempt->time_taken)) {
+        $elapsedSeconds = (int) $attempt->time_taken;
+    }
 @endphp
 
 @section('title', ($isArabic ? 'نتيجة الاختبار' : 'Quiz Result') . ' - ' . config('app.name'))
@@ -74,9 +80,9 @@
                         <div class="text-xs font-bold uppercase tracking-wider text-slate-500">{{ $isArabic ? 'الأسئلة' : 'Questions' }}</div>
                     </div>
 
-                    @if($attempt->time_taken)
+                    @if(!is_null($elapsedSeconds))
                     <div class="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-4 min-w-[130px] border border-slate-200 dark:border-white/5 shadow-sm">
-                        <div class="text-3xl font-black text-slate-900 dark:text-white mb-1">{{ gmdate('i:s', $attempt->time_taken) }}</div>
+                        <div class="text-3xl font-black text-slate-900 dark:text-white mb-1">{{ gmdate('i:s', $elapsedSeconds) }}</div>
                         <div class="text-xs font-bold uppercase tracking-wider text-blue-500">{{ $isArabic ? 'الوقت المستغرق' : 'Time Taken' }}</div>
                     </div>
                     @endif
