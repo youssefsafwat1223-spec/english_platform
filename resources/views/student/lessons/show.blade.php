@@ -3,9 +3,25 @@
 @section('title', $lesson->title . ' - ' . config('app.name'))
 
 @section('content')
-<div class="py-6 lg:py-10 relative min-h-screen z-10">
-
-    <div class="student-container relative z-10">
+@php
+    $isArabic = app()->getLocale() === 'ar';
+@endphp
+<div class="py-12 relative min-h-screen z-10">
+    <div class="student-container space-y-8">
+        <x-student.page-header
+            title="{{ $lesson->title }}"
+            subtitle="{{ $course->title }}"
+            badge="{{ $isArabic ? 'الدرس' : 'Lesson' }}"
+            badgeColor="primary"
+            badgeIcon='<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5.586a1 1 0 0 1 .707.293l5.414 5.414a1 1 0 0 1 .293.707V19a2 2 0 0 1-2 2z"/></svg>'
+        >
+            <x-slot name="actions">
+                <a href="{{ route('student.courses.learn', $course) }}" class="btn-ghost btn-sm flex items-center gap-2">
+                    <svg class="w-4 h-4 {{ $isArabic ? 'rotate-180' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                    {{ $isArabic ? 'العودة للكورس' : 'Back to course' }}
+                </a>
+            </x-slot>
+        </x-student.page-header>
         
         {{-- Breadcrumb --}}
         <nav class="mb-8 text-sm font-medium" data-aos="fade-down">
@@ -14,19 +30,6 @@
                     <a href="{{ route('student.courses.my-courses') }}" class="hover:text-primary-500 transition-colors flex items-center gap-1">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
                         {{ __('كورساتي') }}
-                    </a>
-                </li>
-                <li class="opacity-50">/</li>
-                <li>
-                    <a href="{{ route('student.courses.learn', $course) }}" class="hover:text-primary-500 transition-colors truncate max-w-[200px] sm:max-w-[250px] md:max-w-none inline-block align-bottom">
-                        {{ $course->title }}
-                    </a>
-                </li>
-                <li class="opacity-50">/</li>
-                <li class="text-slate-900 dark:text-white font-bold truncate max-w-[200px] sm:max-w-[400px] md:max-w-none inline-block align-bottom">
-                    {{ $lesson->title }}
-                </li>
-            </ol>
                     </a>
                 </li>
                 <li class="opacity-50">/</li>

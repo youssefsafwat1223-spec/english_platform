@@ -132,7 +132,7 @@
                             @if($course->estimated_duration_weeks)
                                 <span class="flex items-center gap-1.5">
                                     <svg class="w-4 h-4 text-accent-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                    {{ __('Suggested') }} {{ $course->estimated_duration_weeks }} {{ __('Weeks') }}
+                                    {{ $isArabic ? 'مدة الاشتراك: ' . $course->estimated_duration_weeks . ' أسبوع' : 'Subscription duration: ' . $course->estimated_duration_weeks . ' weeks' }}
                                 </span>
                             @endif
                         </div>
@@ -176,7 +176,6 @@
     </div>
 </div>
 @endsection
-
 
 
 
