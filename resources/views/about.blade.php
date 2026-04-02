@@ -290,7 +290,7 @@
                     <div class="rounded-2xl border border-violet-500/20 bg-violet-500/5 p-5 mb-6">
                         <p class="text-sm leading-8 text-slate-700 dark:text-slate-200">
                             {{ __('Bot Integration Description') }}
-                            <span class="font-bold text-violet-500">@{{ config('services.telegram.bot_username', 'SimpleEnglishBot') }}</span>
+                            <span class="font-bold text-violet-500">{{ config('services.telegram.bot_username', 'SimpleEnglishBot') }}</span>
                         </p>
                     </div>
 

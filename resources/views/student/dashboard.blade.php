@@ -189,8 +189,12 @@
                             <div class="group relative rounded-2xl bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-white/10 p-5 hover:shadow-xl hover:border-primary-500/50 transition-all duration-300 flex flex-col sm:flex-row gap-6 items-center">
                                 
                                 {{-- Icon 3D --}}
-                                <div class="shrink-0 w-20 h-20 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-700 dark:to-slate-800 flex items-center justify-center text-3xl shadow-lg border border-white/50 dark:border-white/10 group-hover:rotate-6 transition-transform">
-                                    {{ substr($enrollment->course->title, 0, 1) }}
+                                <div class="shrink-0 w-20 h-20 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-700 dark:to-slate-800 flex items-center justify-center text-3xl shadow-lg border border-white/50 dark:border-white/10 overflow-hidden group-hover:rotate-6 transition-transform">
+                                    @if($enrollment->course->thumbnail)
+                                        <img src="{{ Storage::url($enrollment->course->thumbnail) }}" alt="{{ $enrollment->course->title }}" class="w-full h-full object-cover">
+                                    @else
+                                        {{ \Illuminate\Support\Str::substr($enrollment->course->title, 0, 1) }}
+                                    @endif
                                 </div>
                                 
                                 <div class="flex-1 w-full text-center sm:text-left">
@@ -374,5 +378,4 @@
 
 
 @endsection
-
 
