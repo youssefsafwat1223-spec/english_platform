@@ -6,7 +6,24 @@
     $durationSeconds = (int) (($attempt->quiz->time_limit ?? 0) * 60);
 
     if ($attempt->started_at && $attempt->completed_at) {
-        $elapsedSeconds = max(0, (int) $attempt->completed_at->diffInSeconds($attempt->started_at));
+        $elapsedFromTimestamps = max(0, (int) $attempt->completed_at->diffInSeconds($attempt->started_at));
+        $elapsedSeconds = $elapsedFromTimestamps;
+
+        if (!is_null($attempt->time_taken)) {
+            $storedTime = max(0, (int) $attempt->time_taken);
+            $storedElapsed = $storedTime;
+
+            // Backward compatibility: some old attempts stored remaining time instead of elapsed.
+            if ($durationSeconds > 0 && $storedTime <= $durationSeconds) {
+                $remainingGuess = $durationSeconds - $storedTime;
+                $storedElapsed = ($storedTime > ($durationSeconds * 0.75) && $remainingGuess >= 0) ? $remainingGuess : $storedTime;
+            }
+
+            // If timestamps were affected by client/server drift, prefer the realistic stored elapsed.
+            if ($elapsedFromTimestamps > ($storedElapsed + 30)) {
+                $elapsedSeconds = $storedElapsed;
+            }
+        }
     } elseif (!is_null($attempt->time_taken)) {
         $storedTime = max(0, (int) $attempt->time_taken);
         if ($durationSeconds > 0 && $storedTime <= $durationSeconds) {

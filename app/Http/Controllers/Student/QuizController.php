@@ -60,12 +60,30 @@ class QuizController extends Controller
         // Get attempt number
         $attemptNumber = $quiz->getAttemptCount($user) + 1;
 
-        // Calculate time taken (prefer client elapsed counter to avoid device clock issues)
+        // Calculate time taken (elapsed, not remaining).
         $startedAt = \Carbon\Carbon::parse($request->started_at);
         $completedAt = \Carbon\Carbon::parse($request->completed_at);
-        $timeTaken = (int) ($request->input('time_taken') ?? $completedAt->diffInSeconds($startedAt));
+        $serverElapsed = max(0, (int) $completedAt->diffInSeconds($startedAt));
+        $clientElapsed = max(0, (int) $request->input('time_taken', $serverElapsed));
+        $timeTaken = $clientElapsed;
+
         if (!empty($quiz->time_limit)) {
-            $timeTaken = min($timeTaken, (int) $quiz->time_limit * 60);
+            $limitSeconds = (int) $quiz->time_limit * 60;
+
+            // If a stale client sends countdown/remaining-like value, trust server elapsed.
+            if (
+                $clientElapsed > ($serverElapsed + 30) ||
+                $clientElapsed > $limitSeconds
+            ) {
+                $timeTaken = $serverElapsed;
+            }
+
+            $timeTaken = min(max(0, $timeTaken), $limitSeconds);
+        } else {
+            // No time limit: keep realistic elapsed when client/server drift is large.
+            if ($clientElapsed > ($serverElapsed + 30)) {
+                $timeTaken = $serverElapsed;
+            }
         }
 
         // Create attempt

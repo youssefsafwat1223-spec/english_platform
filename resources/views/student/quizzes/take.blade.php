@@ -11,7 +11,7 @@
 @section('title', ($isArabic ? 'حل الاختبار' : 'Take Quiz') . ': ' . $quiz->title . ' - ' . config('app.name'))
 
 @section('content')
-<div class="min-h-screen bg-slate-50 dark:bg-[#020617] pb-40 md:pb-24" x-data="quizController()" x-init="initQuiz()">
+<div class="min-h-screen bg-slate-50 dark:bg-[#020617] pb-44 md:pb-28" x-data="quizController()" x-init="initQuiz()">
     <div class="student-container max-w-5xl pt-8 lg:pt-12">
 
         {{-- Sticky Quiz Top Bar --}}
@@ -183,7 +183,8 @@
             @endforeach
 
             {{-- Bottom Navigation --}}
-            <div class="fixed left-4 right-4 sm:left-8 sm:right-8 z-40 pointer-events-none" style="bottom: calc(env(safe-area-inset-bottom, 0px) + 0.75rem);">
+            <div class="fixed left-4 right-4 sm:left-8 sm:right-8 z-[120] pointer-events-none"
+                 style="bottom: max(calc(env(safe-area-inset-bottom, 0px) + 0.75rem), 1rem);">
                 <div class="student-container max-w-5xl pointer-events-auto relative bg-white/80 dark:bg-[#020617]/80 backdrop-blur-[30px] saturate-[1.8] border border-white/60 dark:border-white/10 rounded-[2.5rem] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] dark:shadow-[0_25px_50px_-12px_rgba(0,0,0,0.8)] ring-1 ring-black/5 dark:ring-white/10 p-3 sm:p-4 flex items-center justify-between gap-3 sm:gap-4 overflow-visible">
                     <div class="absolute inset-x-10 -top-5 h-px bg-gradient-to-r from-transparent via-primary-500/40 to-transparent blur-sm"></div>
                     <button type="button" @click="currentQuestion = Math.max(0, currentQuestion - 1)" class="btn-secondary flex-1 sm:flex-none flex justify-center items-center gap-2 px-5 py-3 rounded-2xl font-bold transition-all disabled:opacity-30 disabled:cursor-not-allowed bg-white/70 dark:bg-slate-900/70 hover:bg-white dark:hover:bg-slate-950 border border-slate-200/80 dark:border-slate-700" :disabled="currentQuestion === 0">
@@ -197,7 +198,7 @@
                     </div>
                     <div class="flex-1 sm:flex-none flex justify-end">
                         <button type="button" @click="currentQuestion = Math.min({{ $questionCount - 1 }}, currentQuestion + 1)" x-show="currentQuestion < {{ $questionCount - 1 }}" class="btn-primary w-full sm:w-auto flex justify-center items-center gap-2 px-6 sm:px-8 py-3 rounded-2xl font-bold shadow-md shadow-primary-500/20">
-                            <span class="text-sm">{{ $isArabic ? 'السؤال التالي' : 'Next Question' }}</span>
+                            <span class="text-sm whitespace-nowrap">{{ $isArabic ? 'السؤال التالي' : 'Next Question' }}</span>
                             <svg class="w-5 h-5 rtl:-scale-x-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                         </button>
                         <button type="button" @click="$refs.submitModal.showModal()" x-show="currentQuestion === {{ $questionCount - 1 }}" class="btn-primary w-full sm:w-auto flex justify-center items-center gap-2 px-6 sm:px-8 py-3 rounded-2xl font-bold bg-slate-900 border-slate-900 hover:bg-slate-800 dark:bg-white dark:border-white dark:text-slate-900 dark:hover:bg-slate-200 shadow-md" :disabled="loading">

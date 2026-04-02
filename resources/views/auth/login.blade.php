@@ -3,10 +3,11 @@
 @section('title', __('Log In') . ' — ' . config('app.name'))
 
 @section('content')
-<div class="min-h-screen flex bg-slate-50 dark:bg-[#020617] transition-colors duration-500">
+<div class="min-h-screen flex relative overflow-hidden bg-slate-50 dark:bg-[#020617] transition-colors duration-500">
+    <div class="hidden lg:block pointer-events-none absolute inset-y-0 left-1/2 -translate-x-1/2 w-20 z-[5] bg-gradient-to-r from-slate-900/70 via-slate-900/25 to-transparent dark:from-slate-900/80 dark:via-slate-900/25 dark:to-transparent"></div>
     
     {{-- Left Panel: Visual/Branding (Hidden on mobile) --}}
-    <div class="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-slate-900 border-r border-white/5">
+    <div class="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-slate-900">
         {{-- Premium AI 3D Background Image --}}
         <div class="absolute inset-0 z-0 bg-slate-900">
             <img src="{{ asset('images/ai/login_panel_3d.png') }}" alt="Learning Journey" class="absolute inset-0 w-full h-full object-cover mix-blend-screen opacity-60">
