@@ -7,7 +7,7 @@
     $isArabic = app()->getLocale() === 'ar';
     $startedAt = $enrollment->started_at ? $enrollment->started_at->format('M d, Y') : '-';
     $lastAccessed = $enrollment->last_accessed_at ? $enrollment->last_accessed_at->diffForHumans() : __('ui.learn.not_started');
-    $progress = $enrollment->progress_percentage ?? 0;
+    $progress = (float) ($enrollment->progress_percentage ?? 0);
     $expiresAt = $enrollment->expires_at;
     $remainingDays = null;
     if ($expiresAt) {
@@ -16,414 +16,244 @@
     }
 @endphp
 
-<div class="relative min-h-screen bg-slate-50 dark:bg-[#020617] pb-24 lg:pb-0 font-sans">
-    
-    {{-- Decorative Background Top --}}
-    <div class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary-500/20 to-transparent"></div>
+<div class="min-h-screen bg-slate-50 dark:bg-[#020617]">
+    <div class="student-container max-w-7xl pt-10 pb-16">
+        <x-student.page-header
+            :title="$course->title"
+            :subtitle="__('ui.learn.keep_progress_text')"
+            :badge="__($course->level ?? 'Beginner')"
+        >
+            <x-slot name="actions">
+                <a href="{{ route('student.courses.my-courses') }}" class="btn-ghost btn-sm">
+                    {{ __('ui.learn.back_to_my_courses') }}
+                </a>
+                @if($currentLesson)
+                    <a href="{{ route('student.lessons.show', [$course, $currentLesson]) }}" class="btn-primary btn-sm">
+                        {{ __('ui.learn.continue_lessons') }}
+                    </a>
+                @endif
+            </x-slot>
+        </x-student.page-header>
 
-    <div class="student-container relative z-10 pt-8 lg:pt-16 pb-12">
-        
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
-            
-            {{-- Left Column: Hero and Curriculum --}}
-            <div class="lg:col-span-7 xl:col-span-8 space-y-10 lg:space-y-12">
-                
-                {{-- Breadcrumb & Top Navigation --}}
-                <div data-aos="fade-up">
-                    <nav class="flex mb-6 lg:mb-8" aria-label="Breadcrumb">
-                        <ol class="inline-flex items-center space-x-1 space-x-reverse md:space-x-3 text-sm font-bold text-slate-500 dark:text-slate-400">
-                            <li class="inline-flex items-center">
-                                <a href="{{ route('student.courses.my-courses') }}" class="inline-flex items-center bg-white dark:bg-slate-800/50 px-3.5 py-1.5 rounded-full border border-slate-200 dark:border-white/5 hover:text-primary-600 hover:border-primary-200 dark:hover:text-primary-400 dark:hover:border-primary-500/30 transition-all shadow-sm">
-                                    <svg class="w-4 h-4 rtl:mr-0 rtl:ml-1.5 mr-1.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
-                                    {{ __('ui.learn.back_to_my_courses') }}
-                                </a>
-                            </li>
-                        </ol>
-                    </nav>
-
-                    {{-- Hero Content --}}
-                    <div class="flex flex-wrap items-center gap-3 mb-5">
-                        <span class="px-3.5 py-1.5 rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400 text-xs font-black uppercase tracking-wider border border-primary-200 dark:border-primary-800/50 shadow-sm">
-                            {{ $course->level ?? __('Beginner') }}
-                        </span>
-                        @if($course->average_rating)
-                            <div class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 text-xs font-black border border-amber-200 dark:border-amber-800/50 shadow-sm">
-                                <svg class="h-4 w-4 fill-current" viewBox="0 0 20 20" aria-hidden="true">
-                                    <path d="m10 1.75 2.37 4.8 5.3.77-3.84 3.75.9 5.28L10 13.96 5.27 16.35l.9-5.28L2.33 7.32l5.3-.77L10 1.75Z" />
-                                </svg>
-                                {{ number_format($course->average_rating, 1) }}
-                            </div>
-                        @endif
-                    </div>
-
-                    <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white mb-4 lg:mb-6 leading-tight tracking-tight">
-                        {{ $course->title }}
-                    </h1>
-                    
-                    <p class="text-base sm:text-lg text-slate-600 dark:text-slate-400 leading-relaxed max-w-3xl mb-8 font-medium">
-                        {{ __('ui.learn.keep_progress_text') }}
-                    </p>
-
-                    @if($currentLesson)
-                        <div class="flex flex-col sm:flex-row items-center gap-4">
-                            <a href="{{ route('student.lessons.show', [$course, $currentLesson]) }}" class="flex items-center justify-center w-full sm:w-auto px-8 py-3.5 rounded-[1.25rem] bg-primary-600 text-white text-base font-black shadow-lg shadow-primary-500/30 gap-2 hover:bg-primary-500 active:scale-95 transition-all border border-primary-500">
-                                {{ __('ui.learn.continue_lessons') }}
-                                <svg class="w-5 h-5 rtl:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                            </a>
-                            <span class="text-sm font-bold text-slate-500 dark:text-slate-400 px-2 line-clamp-1 w-full text-center sm:text-right">
-                                {{ __('ui.learn.current_lesson') }} <span class="text-slate-800 dark:text-slate-200">{{ $currentLesson->title }}</span>
-                            </span>
-                        </div>
-                    @endif
-                </div>
-
-                {{-- Mobile Dashboard Block --}}
-                <div class="lg:hidden w-full mb-8 relative z-20" data-aos="fade-up">
-                    <x-student.card rounded="rounded-[2.5rem]" padding="p-8" mb="mb-0">
-                        {{-- Progress Ring --}}
-                        <div class="text-center mb-8">
-                            <div class="relative w-32 h-32 mx-auto mb-4">
-                                <svg class="w-full h-full transform -rotate-90">
-                                    <circle cx="64" cy="64" r="56" stroke-width="8" fill="transparent" class="stroke-slate-200 dark:stroke-slate-800"/>
-                                    <circle cx="64" cy="64" r="56" stroke-width="8" fill="transparent"
-                                        stroke-dasharray="{{ 2 * 3.14159 * 56 }}"
-                                        stroke-dashoffset="{{ 2 * 3.14159 * 56 * (1 - ($progress) / 100) }}"
-                                        class="text-primary-500" stroke="currentColor" stroke-linecap="round"
-                                        style="transition: stroke-dashoffset 1s ease;"/>
-                                </svg>
-                                <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                                    <span class="text-3xl font-black text-slate-900 dark:text-white">{{ round($progress) }}%</span>
-                                </div>
-                            </div>
-                            <p class="text-sm font-bold text-slate-600 dark:text-slate-400">{{ __('ui.learn.progress_badge') }}</p>
-                        </div>
-
-                        {{-- Stats --}}
-                        <div class="space-y-3 text-sm mb-8">
-                            <div class="flex justify-between items-center p-3.5 rounded-2xl bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-white/5">
-                                <span class="text-slate-600 dark:text-slate-400">{{ __('ui.learn.lessons') }}</span>
-                                <span class="font-bold text-slate-900 dark:text-white">{{ $enrollment->completed_lessons }}/{{ $enrollment->total_lessons }}</span>
-                            </div>
-                            <div class="flex justify-between items-center p-3.5 rounded-2xl bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-white/5">
-                                <span class="text-slate-600 dark:text-slate-400">{{ __('ui.learn.start_date') }}</span>
-                                <span class="font-bold text-slate-900 dark:text-white">{{ $startedAt }}</span>
-                            </div>
-                            <div class="flex justify-between items-center p-3.5 rounded-2xl bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-white/5">
-                                <span class="text-slate-600 dark:text-slate-400">{{ __('ui.learn.last_activity') }}</span>
-                                <span class="font-bold border-b border-dashed border-slate-400 dark:border-slate-600 text-slate-900 dark:text-white">{{ $lastAccessed }}</span>
-                            </div>
-                        </div>
-
-                        {{-- Actions --}}
-                        @if($enrollment->completed_at || $enrollment->progress_percentage >= 100)
-                            <form action="{{ route('student.courses.certificate', $course) }}" method="POST" class="w-full">
-                                @csrf
-                                <button type="submit" class="flex items-center justify-center w-full py-4 mb-3 rounded-[1.25rem] bg-emerald-600 border border-emerald-500 text-white text-base font-black shadow-lg shadow-emerald-500/20 gap-2 active:scale-95 transition-transform">
-                                    <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5Z" />
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14v6" />
-                                    </svg>
-                                    {{ __('ui.learn.send_certificate_to_telegram') }}
-                                </button>
-                            </form>
-                        @endif
-
-                        @if($enrollment->certificate)
-                            <a href="{{ route('student.certificates.show', $enrollment->certificate) }}" class="flex items-center justify-center w-full py-3.5 rounded-[1.25rem] bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors border border-slate-200 dark:border-slate-700 dark:hover:text-white">
-                                {{ __('ui.learn.view_certificate') }}
-                            </a>
-                        @endif
-                    </x-student.card>
-                </div>
-
-                {{-- Curriculum Section --}}
-                <div data-aos="fade-up" data-aos-delay="100" class="pt-6">
-                    <h3 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mb-6 lg:mb-8 flex items-center gap-3">
-                        <span class="w-10 h-10 rounded-[0.8rem] bg-white dark:bg-slate-800 shadow-sm border border-slate-200 dark:border-white/5 flex items-center justify-center text-primary-500">
-                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                            </svg>
-                        </span>
-                        {{ __('ui.learn.curriculum_title') }}
-                    </h3>
-                    
-                    <div class="space-y-4 lg:space-y-5">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div class="lg:col-span-8 space-y-6">
+                <x-student.card
+                    title="{{ __('ui.learn.curriculum_title') }}"
+                    icon='<svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>'
+                >
+                    <div class="space-y-4">
                         @forelse($course->levels()->active()->ordered()->with('lessons')->get() as $levelIndex => $level)
-                        @php
-                            $isLevelUnlocked = true;
-                            $completionPercent = $level->getCompletionPercentageFor(auth()->user());
-                            $isCompleted = $completionPercent === 100;
-                        @endphp
-                        <div x-data="{ openLevel: false }" class="bg-white dark:bg-[#0f172a] border {{ $isLevelUnlocked ? 'border-slate-200 hover:border-primary-200 dark:border-white/5 dark:hover:border-primary-900/50' : 'border-slate-200/60 dark:border-white/5' }} rounded-[1.5rem] lg:rounded-[2rem] shadow-sm hover:shadow-md transition-all duration-300 relative overflow-hidden group">
-                            
-
-
-                            {{-- Level Header --}}
-                            <div role="button" tabindex="0" @click="openLevel = !openLevel" @keydown.enter.prevent="openLevel = !openLevel" @keydown.space.prevent="openLevel = !openLevel" class="w-full p-4 lg:p-6 flex flex-col gap-5 text-right relative z-20 bg-slate-50/50 dark:bg-white/[0.02] cursor-pointer">
-                                <div class="flex items-center justify-between gap-4">
-                                    <h4 class="font-black text-lg lg:text-xl {{ $isLevelUnlocked ? 'text-slate-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400' : 'text-slate-500 dark:text-slate-400' }} break-words transition-colors leading-snug flex-1">
-                                        {{ $level->title }}
-                                    </h4>
-                                    <div class="shrink-0 w-12 h-12 lg:w-14 lg:h-14 rounded-[1rem] {{ $isCompleted ? 'bg-emerald-50 text-emerald-500 border border-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20' : ($isLevelUnlocked ? 'bg-primary-50 text-primary-600 border border-primary-100 dark:bg-primary-500/10 dark:text-primary-400 dark:border-primary-500/20' : 'bg-slate-100 text-slate-400 border border-slate-200 dark:bg-slate-800 dark:text-slate-500 dark:border-white/5') }} flex items-center justify-center font-black text-xl transition-all duration-300 shadow-sm">
-                                        @if($isCompleted)
-                                            <svg class="w-6 h-6 lg:w-7 lg:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
-                                        @else
-                                            {{ $levelIndex + 1 }}
-                                        @endif
-                                    </div>
-                                </div>
-                                
-                                <div class="flex flex-wrap items-center gap-2 text-xs lg:text-sm font-black">
-                                    <span class="inline-flex items-center px-3 py-2 rounded-xl border {{ $isCompleted ? 'bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20' : ($isLevelUnlocked ? 'bg-primary-50 text-primary-600 border-primary-100 dark:bg-primary-500/10 dark:text-primary-400 dark:border-primary-500/20' : 'bg-slate-100 text-slate-500 border-slate-200 dark:bg-slate-800/50 dark:text-slate-400 dark:border-white/5') }}">
-                                        {{ $isCompleted ? __('ui.learn.completed') : ($isLevelUnlocked ? __('ui.learn.available_now') : __('ui.learn.locked')) }}
-                                    </span>
-                                    <span class="inline-flex items-center px-3 py-2 rounded-xl border border-slate-200 bg-white text-slate-600 dark:bg-slate-900/40 dark:border-white/5 dark:text-slate-300">
-                                        {{ __('ui.learn.lessons') }}: {{ $level->lessons->count() }}
-                                    </span>
-                                    @if($completionPercent > 0 && !$isCompleted)
-                                        <span class="inline-flex items-center px-3 py-2 rounded-xl border border-amber-100 bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:border-amber-500/20 dark:text-amber-400">
-                                            {{ __('ui.learn.progress') }}: {{ round($completionPercent) }}%
-                                        </span>
-                                    @endif
-                                </div>
-                            </div>
-
-                            {{-- Progress Bar (if started but not completed) --}}
-                            @if($isLevelUnlocked && $completionPercent > 0 && !$isCompleted)
-                                <div class="w-full bg-slate-100 dark:bg-slate-800/50 h-1.5 overflow-hidden relative z-20 mt-1">
-                                    <div class="bg-gradient-to-r from-primary-500 to-accent-500 h-full rounded-full transition-all duration-1000 ease-out" style="width: {{ $completionPercent }}%"></div>
-                                </div>
-                            @endif
-
-                            {{-- Level Lessons List --}}
-                            <div x-show="openLevel" x-collapse x-cloak class="border-t border-slate-100 dark:border-white/5 relative z-20 bg-slate-50/30 dark:bg-slate-900/20">
-                                <div class="divide-y divide-slate-100 dark:divide-white/5 p-2 lg:p-4">
-                                    @foreach($level->lessons as $lessonIndex => $lesson)
-                                    @php
-                                        $lessonProgress = collect($enrollment->lessonProgress)->firstWhere('lesson_id', $lesson->id);
-                                        $isLessonCompleted = $lessonProgress && $lessonProgress->is_completed;
-                                        $isAccessible = true;
-                                        $isCurrent = $currentLesson && $currentLesson->id === $lesson->id;
-                                    @endphp
-                                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3 lg:p-4 rounded-xl lg:rounded-2xl {{ $isAccessible ? 'hover:bg-white dark:hover:bg-[#0f172a] hover:shadow-sm cursor-pointer border border-transparent hover:border-slate-200 dark:hover:border-white/5' : 'opacity-60' }} {{ $isCurrent ? 'ring-2 ring-primary-500/50 bg-white dark:bg-[#0f172a]' : '' }} transition-all"
-                                         @if($isAccessible) onclick="window.location='{{ route('student.lessons.show', [$course, $lesson]) }}'" @endif>
-                                        
-                                        <div class="flex items-center gap-4 flex-1 min-w-0">
-                                            <div class="shrink-0 w-10 h-10 rounded-full {{ $isLessonCompleted ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-500 border border-emerald-100 dark:border-emerald-500/20 shadow-inner' : ($isAccessible ? 'bg-primary-50 dark:bg-primary-500/10 text-primary-600 dark:text-primary-400 border border-primary-100 dark:border-primary-500/20 font-black' : 'bg-slate-100 dark:bg-slate-800 text-slate-400 border border-slate-200 dark:border-white/5') }} flex items-center justify-center text-sm shadow-inner transition-colors">
-                                                @if($isLessonCompleted)
-                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-                                                @else
-                                                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                                                @endif
-                                            </div>
-                                            <div class="min-w-0">
-                                                <h5 class="font-bold text-sm lg:text-base {{ $isAccessible ? 'text-slate-900 dark:text-slate-100 group-hover:text-primary-600 dark:group-hover:text-primary-400' : 'text-slate-500 dark:text-slate-500' }} line-clamp-2 transition-colors">{{ $lesson->title }}</h5>
-                                                <div class="flex flex-wrap items-center gap-2 text-xs font-bold mt-1 text-slate-500 dark:text-slate-400">
-                                                    @if($lesson->video_duration)
-                                                        <span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-slate-300 dark:bg-slate-600"></span> {{ $lesson->formatted_duration }}</span>
-                                                    @endif
-                                                    @if($lesson->has_quiz)
-                                                        <span class="inline-flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.5 rounded bg-primary-50 text-primary-600 dark:bg-primary-500/10 dark:text-primary-400 ml-1">
-                                                            <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6M9 8h6m3 11H6a2 2 0 01-2-2V7a2 2 0 012-2h8l4 4v8a2 2 0 01-2 2Z" />
-                                                            </svg>
-                                                            {{ __('ui.learn.quiz_badge') }}
-                                                        </span>
-                                                    @endif
-                                                </div>
-                                            </div>
+                            @php
+                                $completionPercent = $level->getCompletionPercentageFor(auth()->user());
+                                $isCompleted = $completionPercent === 100;
+                                $isUnlocked = true;
+                            @endphp
+                            <div x-data="{ openLevel: false }" class="rounded-2xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-slate-900/40 overflow-hidden">
+                                <button type="button" @click="openLevel = !openLevel" class="w-full flex items-start sm:items-center justify-between gap-4 px-5 py-4 text-left">
+                                    <div class="min-w-0">
+                                        <div class="flex items-center gap-3">
+                                            <span class="w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm border {{ $isCompleted ? 'bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20' : 'bg-primary-50 text-primary-600 border-primary-200 dark:bg-primary-500/10 dark:text-primary-400 dark:border-primary-500/20' }}">
+                                                {{ $levelIndex + 1 }}
+                                            </span>
+                                            <h3 class="text-base sm:text-lg font-black text-slate-900 dark:text-white line-clamp-2">
+                                                {{ $level->title }}
+                                            </h3>
                                         </div>
-                                        
-                                        @if($isAccessible)
-                                            <div class="w-full sm:w-auto mt-2 sm:mt-0">
-                                                <span class="flex w-full justify-center lg:justify-start items-center gap-1.5 px-5 py-2.5 rounded-xl text-xs font-black text-slate-700 bg-slate-100 dark:text-slate-300 dark:bg-slate-800 {{ $isLessonCompleted ? 'hover:bg-slate-200 dark:hover:bg-slate-700' : 'hover:bg-primary-600 hover:text-white dark:hover:bg-primary-500' }} transition-colors shadow-sm">
-                                                    {{ $isLessonCompleted ? __('ui.learn.review_lesson') : ($isCurrent ? __('ui.learn.continue_lesson') : __('ui.learn.watch_lesson')) }}
-                                                    <svg class="w-3.5 h-3.5 rtl:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                                        <div class="mt-2 flex flex-wrap items-center gap-2 text-xs font-bold text-slate-500 dark:text-slate-400">
+                                            <span class="inline-flex items-center px-3 py-1.5 rounded-full border border-slate-200 dark:border-white/10 bg-white/80 dark:bg-white/5">
+                                                {{ __('ui.learn.lessons') }}: {{ $level->lessons->count() }}
+                                            </span>
+                                            @if($completionPercent > 0)
+                                                <span class="inline-flex items-center px-3 py-1.5 rounded-full border border-primary-200 dark:border-primary-500/20 bg-primary-50 dark:bg-primary-500/10 text-primary-600 dark:text-primary-400">
+                                                    {{ __('ui.learn.progress') }}: {{ round($completionPercent) }}%
                                                 </span>
-                                            </div>
-                                        @else
-                                            <div class="hidden sm:flex shrink-0 w-8 h-8 items-center justify-center text-slate-300 dark:text-slate-600">
-                                                {{-- locked placeholder --}}
-                                            </div>
-                                        @endif
+                                            @endif
+                                            <span class="inline-flex items-center px-3 py-1.5 rounded-full border {{ $isCompleted ? 'border-emerald-200 dark:border-emerald-500/20 bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'border-slate-200 dark:border-white/10 bg-white/80 dark:bg-white/5 text-slate-500 dark:text-slate-400' }}">
+                                                {{ $isCompleted ? __('ui.learn.completed') : __('ui.learn.available_now') }}
+                                            </span>
+                                        </div>
                                     </div>
-                                    @endforeach
+                                    <span class="shrink-0 text-slate-400 dark:text-slate-500">
+                                        <svg class="w-5 h-5 transition-transform" :class="openLevel ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                    </span>
+                                </button>
+                                @if($isUnlocked && $completionPercent > 0 && !$isCompleted)
+                                    <div class="h-1 bg-slate-100 dark:bg-slate-800">
+                                        <div class="h-full bg-gradient-to-r from-primary-500 to-accent-500" style="width: {{ $completionPercent }}%"></div>
+                                    </div>
+                                @endif
+                                <div x-show="openLevel" x-collapse x-cloak class="border-t border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-slate-900/60">
+                                    <div class="divide-y divide-slate-200/60 dark:divide-white/10">
+                                        @foreach($level->lessons as $lesson)
+                                            @php
+                                                $lessonProgress = collect($enrollment->lessonProgress)->firstWhere('lesson_id', $lesson->id);
+                                                $isLessonCompleted = $lessonProgress && $lessonProgress->is_completed;
+                                                $isCurrent = $currentLesson && $currentLesson->id === $lesson->id;
+                                            @endphp
+                                            <a href="{{ route('student.lessons.show', [$course, $lesson]) }}" class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-5 py-4 hover:bg-white/80 dark:hover:bg-slate-900 transition-colors">
+                                                <div class="flex items-center gap-3 min-w-0">
+                                                    <span class="w-9 h-9 rounded-xl flex items-center justify-center text-xs font-black border {{ $isLessonCompleted ? 'bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20' : 'bg-slate-100 text-slate-500 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-white/10' }}">
+                                                        {{ $isLessonCompleted ? '✓' : '▶' }}
+                                                    </span>
+                                                    <div class="min-w-0">
+                                                        <div class="font-bold text-sm sm:text-base text-slate-900 dark:text-white line-clamp-2">
+                                                            {{ $lesson->title }}
+                                                        </div>
+                                                        <div class="mt-1 flex flex-wrap items-center gap-2 text-xs font-bold text-slate-500 dark:text-slate-400">
+                                                            @if($lesson->video_duration)
+                                                                <span>{{ $lesson->formatted_duration }}</span>
+                                                            @endif
+                                                            @if($lesson->has_quiz)
+                                                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary-50 text-primary-600 dark:bg-primary-500/10 dark:text-primary-400">
+                                                                    {{ __('ui.learn.quiz_badge') }}
+                                                                </span>
+                                                            @endif
+                                                            @if($isCurrent)
+                                                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-accent-50 text-accent-600 dark:bg-accent-500/10 dark:text-accent-400">
+                                                                    {{ __('ui.learn.continue_lesson') }}
+                                                                </span>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <span class="text-xs font-black text-slate-500 dark:text-slate-400">
+                                                    {{ $isLessonCompleted ? __('ui.learn.review_lesson') : __('ui.learn.watch_lesson') }}
+                                                </span>
+                                            </a>
+                                        @endforeach
+                                    </div>
                                 </div>
                             </div>
-                        </div>
                         @empty
-                        <x-student.empty-state
-                            title="{{ __('ui.learn.no_lessons_title') }}"
-                            message="{{ __('ui.learn.no_lessons_text') }}"
-                        >
-                            <x-slot name="icon">
-                                <svg class="h-10 w-10 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                                </svg>
-                            </x-slot>
-                        </x-student.empty-state>
+                            <x-student.empty-state
+                                title="{{ __('ui.learn.no_lessons_title') }}"
+                                message="{{ __('ui.learn.no_lessons_text') }}"
+                            >
+                                <x-slot name="icon">
+                                    <svg class="h-10 w-10 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                    </svg>
+                                </x-slot>
+                            </x-student.empty-state>
                         @endforelse
 
-                        {{-- Fallback: Lessons NOT assigned to any level --}}
                         @php
                             $orphanLessons = $course->lessons->whereNull('course_level_id');
                         @endphp
                         @if($orphanLessons->count() > 0)
-                        <div x-data="{ openOrphan: false }" class="bg-white dark:bg-[#0f172a] border border-slate-200 hover:border-primary-200 dark:border-white/5 dark:hover:border-primary-900/50 rounded-[1.5rem] lg:rounded-[2rem] shadow-sm hover:shadow-md transition-all duration-300 relative overflow-hidden group">
-                            {{-- Header --}}
-                            <div role="button" tabindex="0" @click="openOrphan = !openOrphan" @keydown.enter.prevent="openOrphan = !openOrphan" @keydown.space.prevent="openOrphan = !openOrphan" class="w-full p-4 lg:p-6 flex flex-col gap-5 text-right relative z-20 bg-slate-50/50 dark:bg-white/[0.02] cursor-pointer">
-                                <div class="flex items-center justify-between gap-4">
-                                    <h4 class="font-black text-lg lg:text-xl text-slate-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400 break-words transition-colors leading-snug flex-1">
-                                        {{ __('ui.learn.bonus_lessons') }}
-                                    </h4>
-                                    <div class="shrink-0 w-12 h-12 lg:w-14 lg:h-14 rounded-[1rem] bg-primary-50 text-primary-600 border border-primary-100 dark:bg-primary-500/10 dark:text-primary-400 dark:border-primary-500/20 flex items-center justify-center transition-all duration-300 shadow-sm">
-                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-                                        </svg>
-                                    </div>
-                                </div>
-                                <div class="flex flex-wrap items-center gap-2 text-xs lg:text-sm font-black">
-                                    <span class="inline-flex items-center px-3 py-2 rounded-xl border border-primary-100 bg-primary-50 text-primary-600 dark:bg-primary-500/10 dark:border-primary-500/20 dark:text-primary-400">
-                                        {{ __('ui.learn.always_available') }}
-                                    </span>
-                                    <span class="inline-flex items-center px-3 py-2 rounded-xl border border-slate-200 bg-white text-slate-600 dark:bg-slate-900/40 dark:border-white/5 dark:text-slate-300">
-                                        {{ __('ui.learn.lessons') }}: {{ $orphanLessons->count() }}
-                                    </span>
-                                </div>
-                            </div>
-
-                            {{-- Orphan Lessons List --}}
-                            <div x-show="openOrphan" x-collapse x-cloak class="border-t border-slate-100 dark:border-white/5 relative z-20 bg-slate-50/30 dark:bg-slate-900/20">
-                                <div class="divide-y divide-slate-100 dark:divide-white/5 p-2 lg:p-4">
-                                    @foreach($orphanLessons as $lesson)
-                                    @php
-                                        $lessonProgress = collect($enrollment->lessonProgress)->firstWhere('lesson_id', $lesson->id);
-                                        $isLessonCompleted = $lessonProgress && $lessonProgress->is_completed;
-                                        $isCurrent = $currentLesson && $currentLesson->id === $lesson->id;
-                                    @endphp
-                                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3 lg:p-4 rounded-xl lg:rounded-2xl hover:bg-white dark:hover:bg-[#0f172a] hover:shadow-sm cursor-pointer border border-transparent hover:border-slate-200 dark:hover:border-white/5 {{ $isCurrent ? 'ring-2 ring-primary-500/50 bg-white dark:bg-[#0f172a]' : '' }} transition-all"
-                                         onclick="window.location='{{ route('student.lessons.show', [$course, $lesson]) }}'">
-                                        
-                                        <div class="flex items-center gap-4 flex-1 min-w-0">
-                                            <div class="shrink-0 w-10 h-10 rounded-full {{ $isLessonCompleted ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-500 border border-emerald-100 dark:border-emerald-500/20 shadow-inner' : 'bg-primary-50 dark:bg-primary-500/10 text-primary-600 dark:text-primary-400 border border-primary-100 dark:border-primary-500/20 font-black' }} flex items-center justify-center text-sm shadow-inner transition-colors">
-                                                @if($isLessonCompleted)
-                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-                                                @else
-                                                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                                                @endif
-                                            </div>
-                                            <div class="min-w-0">
-                                                <h5 class="font-bold text-sm lg:text-base text-slate-900 dark:text-slate-100 line-clamp-2 transition-colors">{{ $lesson->title }}</h5>
-                                                <div class="flex flex-wrap items-center gap-2 text-xs font-bold mt-1 text-slate-500 dark:text-slate-400">
-                                                    @if($lesson->video_duration)
-                                                        <span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-slate-300 dark:bg-slate-600"></span> {{ $lesson->formatted_duration }}</span>
-                                                    @endif
-                                                    @if($lesson->has_quiz)
-                                                        <span class="inline-flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.5 rounded bg-primary-50 text-primary-600 dark:bg-primary-500/10 dark:text-primary-400 ml-1">
-                                                            <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6M9 8h6m3 11H6a2 2 0 01-2-2V7a2 2 0 012-2h8l4 4v8a2 2 0 01-2 2Z" />
-                                                            </svg>
-                                                            {{ __('ui.learn.quiz_badge') }}
-                                                        </span>
-                                                    @endif
-                                                </div>
-                                            </div>
+                            <div x-data="{ openOrphan: false }" class="rounded-2xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-slate-900/40 overflow-hidden">
+                                <button type="button" @click="openOrphan = !openOrphan" class="w-full flex items-start sm:items-center justify-between gap-4 px-5 py-4 text-left">
+                                    <div class="min-w-0">
+                                        <div class="flex items-center gap-3">
+                                            <span class="w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm border bg-primary-50 text-primary-600 border-primary-200 dark:bg-primary-500/10 dark:text-primary-400 dark:border-primary-500/20">
+                                                +
+                                            </span>
+                                            <h3 class="text-base sm:text-lg font-black text-slate-900 dark:text-white line-clamp-2">
+                                                {{ __('ui.learn.bonus_lessons') }}
+                                            </h3>
                                         </div>
-                                        
-                                        <div class="w-full sm:w-auto mt-2 sm:mt-0">
-                                            <span class="flex w-full justify-center lg:justify-start items-center gap-1.5 px-5 py-2.5 rounded-xl text-xs font-black text-slate-700 bg-slate-100 dark:text-slate-300 dark:bg-slate-800 {{ $isLessonCompleted ? 'hover:bg-slate-200 dark:hover:bg-slate-700' : 'hover:bg-primary-600 hover:text-white dark:hover:bg-primary-500' }} transition-colors shadow-sm">
-                                                {{ $isLessonCompleted ? __('ui.learn.review_lesson') : ($isCurrent ? __('ui.learn.continue_lesson') : __('ui.learn.watch_lesson')) }}
-                                                <svg class="w-3.5 h-3.5 rtl:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                                        <div class="mt-2 flex flex-wrap items-center gap-2 text-xs font-bold text-slate-500 dark:text-slate-400">
+                                            <span class="inline-flex items-center px-3 py-1.5 rounded-full border border-slate-200 dark:border-white/10 bg-white/80 dark:bg-white/5">
+                                                {{ __('ui.learn.lessons') }}: {{ $orphanLessons->count() }}
+                                            </span>
+                                            <span class="inline-flex items-center px-3 py-1.5 rounded-full border border-primary-200 dark:border-primary-500/20 bg-primary-50 dark:bg-primary-500/10 text-primary-600 dark:text-primary-400">
+                                                {{ __('ui.learn.always_available') }}
                                             </span>
                                         </div>
                                     </div>
-                                    @endforeach
-                                </div>
-                            </div>
-                        </div>
-                        @endif
-                    </div>
-                </div>
-            </div>
-            
-            {{-- Right Column: Sticky Enrollment Card --}}
-            <div class="hidden lg:block lg:col-span-5 xl:col-span-4 self-start sticky top-24 pt-8" data-aos="fade-up" data-aos-delay="200">
-                <x-student.card rounded="rounded-[2.5rem]" padding="p-8" class="shadow-2xl relative z-20" mb="mb-0">
-                    
-                    {{-- Card Gradient Decoration --}}
-                    <div class="absolute -top-20 -right-20 w-64 h-64 bg-primary-500/10 dark:bg-primary-500/5 blur-[60px] rounded-full pointer-events-none z-0"></div>
-
-                    <div class="relative z-10 w-full">
-                        {{-- Progress Ring --}}
-                        <div class="text-center mb-8">
-                            <div class="relative w-36 h-36 mx-auto mb-4">
-                                <svg class="w-full h-full transform -rotate-90">
-                                    <circle cx="72" cy="72" r="64" stroke-width="8" fill="transparent" class="stroke-slate-200 dark:stroke-slate-800"/>
-                                    <circle cx="72" cy="72" r="64" stroke-width="8" fill="transparent"
-                                        stroke-dasharray="{{ 2 * 3.14159 * 64 }}"
-                                        stroke-dashoffset="{{ 2 * 3.14159 * 64 * (1 - ($progress) / 100) }}"
-                                        class="text-primary-500" stroke="currentColor" stroke-linecap="round"
-                                        style="transition: stroke-dashoffset 1s ease;"/>
-                                </svg>
-                                <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                                    <span class="text-4xl font-black text-slate-900 dark:text-white">{{ round($progress) }}%</span>
-                                </div>
-                            </div>
-                            <p class="text-sm font-bold text-slate-600 dark:text-slate-400">{{ __('ui.learn.progress_badge') }}</p>
-                        </div>
-
-                        {{-- Stats --}}
-                        <div class="space-y-3 text-sm mb-8 w-full">
-                            <div class="flex justify-between items-center p-4 rounded-[1.25rem] bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-white/5">
-                                <span class="text-slate-600 dark:text-slate-400 font-bold">{{ __('ui.learn.completed_lessons') }}</span>
-                                <span class="font-black text-slate-900 dark:text-white text-base">{{ $enrollment->completed_lessons }}/{{ $enrollment->total_lessons }}</span>
-                            </div>
-                            <div class="flex justify-between items-center p-4 rounded-[1.25rem] bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-white/5">
-                                <span class="text-slate-600 dark:text-slate-400 font-bold">{{ __('ui.learn.start_date') }}</span>
-                                <span class="font-black text-slate-900 dark:text-white text-base">{{ $startedAt }}</span>
-                            </div>
-                            <div class="flex justify-between items-center p-4 rounded-[1.25rem] bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-white/5">
-                                <span class="text-slate-600 dark:text-slate-400 font-bold">{{ __('ui.learn.last_activity') }}</span>
-                                <span class="font-black border-b border-dashed border-slate-400 dark:border-slate-600 text-slate-900 dark:text-white text-base">{{ $lastAccessed }}</span>
-                            </div>
-                            @if(!is_null($remainingDays))
-                                <div class="flex justify-between items-center p-4 rounded-[1.25rem] bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-white/5">
-                                    <span class="text-slate-600 dark:text-slate-400 font-bold">{{ $isArabic ? 'متبقي' : 'Remaining' }}</span>
-                                    <span class="font-black text-slate-900 dark:text-white text-base">{{ $remainingDays }} {{ $isArabic ? 'يوم' : 'days' }}</span>
-                                </div>
-                            @endif
-                        </div>
-
-                        {{-- Actions --}}
-                        @if($enrollment->completed_at || $enrollment->progress_percentage >= 100)
-                            <form action="{{ route('student.courses.certificate', $course) }}" method="POST" class="w-full">
-                                @csrf
-                                <button type="submit" class="flex items-center justify-center w-full py-4 mb-3 rounded-[1.25rem] bg-emerald-600 border border-emerald-500 text-white text-lg font-black shadow-[0_10px_30px_rgba(16,185,129,0.2)] hover:bg-emerald-500 gap-2 hover:scale-[1.02] active:scale-95 transition-all">
-                                    <svg class="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5Z" />
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14v6" />
-                                    </svg>
-                                    {{ __('ui.learn.send_certificate_to_telegram') }}
+                                    <span class="shrink-0 text-slate-400 dark:text-slate-500">
+                                        <svg class="w-5 h-5 transition-transform" :class="openOrphan ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                    </span>
                                 </button>
-                            </form>
-                        @endif
-
-                        @if($enrollment->certificate)
-                            <a href="{{ route('student.certificates.show', $enrollment->certificate) }}" class="flex items-center justify-center w-full py-3.5 rounded-[1.25rem] bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors border border-slate-200 dark:border-slate-700 dark:hover:text-white">
-                                {{ __('ui.learn.view_certificate') }}
-                            </a>
+                                <div x-show="openOrphan" x-collapse x-cloak class="border-t border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-slate-900/60">
+                                    <div class="divide-y divide-slate-200/60 dark:divide-white/10">
+                                        @foreach($orphanLessons as $lesson)
+                                            @php
+                                                $lessonProgress = collect($enrollment->lessonProgress)->firstWhere('lesson_id', $lesson->id);
+                                                $isLessonCompleted = $lessonProgress && $lessonProgress->is_completed;
+                                            @endphp
+                                            <a href="{{ route('student.lessons.show', [$course, $lesson]) }}" class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-5 py-4 hover:bg-white/80 dark:hover:bg-slate-900 transition-colors">
+                                                <div class="flex items-center gap-3 min-w-0">
+                                                    <span class="w-9 h-9 rounded-xl flex items-center justify-center text-xs font-black border {{ $isLessonCompleted ? 'bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20' : 'bg-slate-100 text-slate-500 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-white/10' }}">
+                                                        {{ $isLessonCompleted ? '✓' : '▶' }}
+                                                    </span>
+                                                    <div class="min-w-0">
+                                                        <div class="font-bold text-sm sm:text-base text-slate-900 dark:text-white line-clamp-2">
+                                                            {{ $lesson->title }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <span class="text-xs font-black text-slate-500 dark:text-slate-400">
+                                                    {{ $isLessonCompleted ? __('ui.learn.review_lesson') : __('ui.learn.watch_lesson') }}
+                                                </span>
+                                            </a>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </div>
                         @endif
                     </div>
                 </x-student.card>
             </div>
 
+            <div class="lg:col-span-4">
+                <div class="lg:sticky lg:top-24 space-y-6">
+                    <x-student.card title="{{ __('ui.learn.progress_badge') }}">
+                        <div class="space-y-6">
+                            <div>
+                                <div class="flex items-center justify-between text-sm font-bold text-slate-500 dark:text-slate-400 mb-2">
+                                    <span>{{ __('ui.learn.progress') }}</span>
+                                    <span class="text-slate-900 dark:text-white">{{ round($progress) }}%</span>
+                                </div>
+                                <div class="h-2 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden">
+                                    <div class="h-full bg-gradient-to-r from-primary-500 to-accent-500" style="width: {{ $progress }}%"></div>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 gap-3 text-sm">
+                                <div class="flex items-center justify-between px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-white/10">
+                                    <span class="text-slate-500 dark:text-slate-400">{{ __('ui.learn.completed_lessons') }}</span>
+                                    <span class="font-black text-slate-900 dark:text-white">{{ $enrollment->completed_lessons }}/{{ $enrollment->total_lessons }}</span>
+                                </div>
+                                <div class="flex items-center justify-between px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-white/10">
+                                    <span class="text-slate-500 dark:text-slate-400">{{ __('ui.learn.start_date') }}</span>
+                                    <span class="font-black text-slate-900 dark:text-white">{{ $startedAt }}</span>
+                                </div>
+                                <div class="flex items-center justify-between px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-white/10">
+                                    <span class="text-slate-500 dark:text-slate-400">{{ __('ui.learn.last_activity') }}</span>
+                                    <span class="font-black text-slate-900 dark:text-white">{{ $lastAccessed }}</span>
+                                </div>
+                                @if(!is_null($remainingDays))
+                                    <div class="flex items-center justify-between px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-white/10">
+                                        <span class="text-slate-500 dark:text-slate-400">{{ $isArabic ? 'المتبقي' : 'Remaining' }}</span>
+                                        <span class="font-black text-slate-900 dark:text-white">{{ $remainingDays }} {{ $isArabic ? 'يوم' : 'days' }}</span>
+                                    </div>
+                                @endif
+                            </div>
+
+                            @if($enrollment->completed_at || $enrollment->progress_percentage >= 100)
+                                <form action="{{ route('student.courses.certificate', $course) }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="btn-primary w-full">
+                                        {{ __('ui.learn.send_certificate_to_telegram') }}
+                                    </button>
+                                </form>
+                            @endif
+
+                            @if($enrollment->certificate)
+                                <a href="{{ route('student.certificates.show', $enrollment->certificate) }}" class="btn-secondary w-full">
+                                    {{ __('ui.learn.view_certificate') }}
+                                </a>
+                            @endif
+                        </div>
+                    </x-student.card>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 @endsection
-
-
-
-
-
-
