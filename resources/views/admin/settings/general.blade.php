@@ -33,6 +33,23 @@
                             @endforeach
                         </select>
                     </div>
+                    <div class="pt-4 border-t" style="border-color: var(--color-border);">
+                        <h2 class="text-lg font-extrabold mb-4" style="color: var(--color-text);">{{ __('Dashboard Promo Banner') }}</h2>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-bold mb-2" style="color: var(--color-text);">{{ __('Promo Title') }}</label>
+                                <input type="text" name="dashboard_promo_title" class="input-glass" value="{{ old('dashboard_promo_title', $settings['dashboard_promo_title'] ?? '') }}">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold mb-2" style="color: var(--color-text);">{{ __('Promo Message') }}</label>
+                                <textarea name="dashboard_promo_message" rows="3" class="input-glass">{{ old('dashboard_promo_message', $settings['dashboard_promo_message'] ?? '') }}</textarea>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold mb-2" style="color: var(--color-text);">{{ __('Promo URL') }}</label>
+                                <input type="url" name="dashboard_promo_url" class="input-glass" value="{{ old('dashboard_promo_url', $settings['dashboard_promo_url'] ?? '') }}">
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="glass-card-footer">
                     <button type="submit" class="btn-primary ripple-btn" :class="{ 'opacity-50': loading }" :disabled="loading">

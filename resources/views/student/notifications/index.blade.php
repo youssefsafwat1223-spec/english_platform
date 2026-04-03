@@ -45,6 +45,9 @@
                         'forum' => ['icon' => 'chat-bubble', 'color' => 'primary'],
                         'course' => ['icon' => 'book-open', 'color' => 'indigo'],
                         'achievement' => ['icon' => 'sparkles', 'color' => 'amber'],
+                        'live_session_scheduled' => ['icon' => 'video-camera', 'color' => 'primary'],
+                        'live_session_reminder' => ['icon' => 'video-camera', 'color' => 'amber'],
+                        'promo_announcement' => ['icon' => 'sparkles', 'color' => 'amber'],
                         'default' => ['icon' => 'bell', 'color' => 'primary'],
                     ];
                     $typeData = $typeIcons[$notification->notification_type ?? 'default'] ?? $typeIcons['default'];
@@ -84,6 +87,9 @@
                                     @break
                                 @case('sparkles')
                                     <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8L12 3Zm7 12 1 2.5L22.5 18 20 19l-1 2.5L18 19l-2.5-1 2.5-.5 1-2.5ZM5 14l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8.8-2Z"/></svg>
+                                    @break
+                                @case('video-camera')
+                                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.55-2.28A1 1 0 0 1 21 8.62v6.76a1 1 0 0 1-1.45.9L15 14M5 6h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z"/></svg>
                                     @break
                                 @default
                                     <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.41-1.41A2 2 0 0 1 18 14.17V11a6 6 0 1 0-12 0v3.17a2 2 0 0 1-.59 1.42L4 17h5"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 17a2 2 0 1 0 4 0"/></svg>

@@ -27,6 +27,7 @@ use App\Http\Controllers\Admin\EmailCampaignController as AdminEmailCampaignCont
 use App\Http\Controllers\Admin\GameSessionController as AdminGameSessionController;
 use App\Http\Controllers\Admin\TestimonialController as AdminTestimonialController;
 use App\Http\Controllers\Admin\PromoVideoController as AdminPromoVideoController;
+use App\Http\Controllers\Admin\LiveSessionController as AdminLiveSessionController;
 use App\Http\Controllers\Admin\DeviceAccessRequestController as AdminDeviceAccessRequestController;
 
 // Student Controllers
@@ -41,6 +42,7 @@ use App\Http\Controllers\Student\ReferralController as StudentReferralController
 use App\Http\Controllers\Student\NotesController;
 use App\Http\Controllers\Student\ProfileController;
 use App\Http\Controllers\Student\NotificationController;
+use App\Http\Controllers\Student\LiveSessionController as StudentLiveSessionController;
 use App\Http\Controllers\Student\LiveGameController;
 use App\Http\Controllers\Student\BattleController;
 use App\Http\Controllers\Student\OnboardingController;
@@ -264,6 +266,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin', 'active', '
 
     // Promo Codes
     Route::resource('promo-codes', App\Http\Controllers\Admin\PromoCodeController::class)->except(['show']);
+
+    // Live Sessions
+    Route::resource('live-sessions', AdminLiveSessionController::class);
 
     // Payments
     Route::get('/payments', [AdminPaymentController::class, 'index'])->name('payments.index');
@@ -537,6 +542,10 @@ Route::prefix('student')->name('student.')->middleware(['auth', 'student', 'acti
         ->name('notifications.unread-count');
     Route::get('/notifications/recent-json', [NotificationController::class, 'recentJson'])
         ->name('notifications.recent-json');
+
+    // Live Sessions
+    Route::get('/live-sessions', [StudentLiveSessionController::class, 'index'])->name('live-sessions.index');
+    Route::get('/live-sessions/{liveSession}', [StudentLiveSessionController::class, 'show'])->name('live-sessions.show');
 
     // Game Arena
     Route::prefix('games')->name('games.')->group(function () {

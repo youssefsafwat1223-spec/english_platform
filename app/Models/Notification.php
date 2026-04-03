@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Notification extends Model
 {
@@ -33,14 +33,10 @@ class Notification extends Model
         ];
     }
 
-    // ==================== RELATIONSHIPS ====================
-
     public function user()
     {
         return $this->belongsTo(User::class);
     }
-
-    // ==================== SCOPES ====================
 
     public function scopeUnread($query)
     {
@@ -62,9 +58,6 @@ class Notification extends Model
         return $query->where('notification_type', $type);
     }
 
-    /**
-     * Localize stored notification titles on read.
-     */
     protected function title(): Attribute
     {
         return Attribute::make(
@@ -72,9 +65,6 @@ class Notification extends Model
         );
     }
 
-    /**
-     * Localize stored notification messages on read.
-     */
     protected function message(): Attribute
     {
         return Attribute::make(
@@ -82,11 +72,6 @@ class Notification extends Model
         );
     }
 
-    // ==================== METHODS ====================
-
-    /**
-     * Mark as read
-     */
     public function markAsRead()
     {
         if (!$this->is_read) {
@@ -97,9 +82,6 @@ class Notification extends Model
         }
     }
 
-    /**
-     * Mark as sent to telegram
-     */
     public function markAsSentToTelegram($messageId = null)
     {
         $this->update([
@@ -109,12 +91,9 @@ class Notification extends Model
         ]);
     }
 
-    /**
-     * Get icon based on notification type
-     */
     public function getIconAttribute()
     {
-        return match($this->notification_type) {
+        return match ($this->notification_type) {
             'course_purchased' => 'shopping-cart',
             'quiz_result' => 'clipboard-check',
             'comment_reply' => 'comment',
@@ -124,16 +103,16 @@ class Notification extends Model
             'achievement_earned' => 'award',
             'reply_marked_solution' => 'check-circle',
             'battle_started' => 'zap',
+            'live_session_scheduled' => 'video',
+            'live_session_reminder' => 'clock',
+            'promo_announcement' => 'megaphone',
             default => 'bell',
         };
     }
 
-    /**
-     * Get color based on notification type
-     */
     public function getColorAttribute()
     {
-        return match($this->notification_type) {
+        return match ($this->notification_type) {
             'course_purchased' => 'success',
             'quiz_result' => 'info',
             'comment_reply' => 'primary',
@@ -142,6 +121,9 @@ class Notification extends Model
             'achievement_earned' => 'success',
             'reply_marked_solution' => 'info',
             'battle_started' => 'warning',
+            'live_session_scheduled' => 'primary',
+            'live_session_reminder' => 'warning',
+            'promo_announcement' => 'warning',
             default => 'secondary',
         };
     }
@@ -152,13 +134,8 @@ class Notification extends Model
             return $value;
         }
 
-        $type = $attributes['notification_type'] ?? null;
-
-        return match ($type) {
+        return match ($attributes['notification_type'] ?? null) {
             'quiz_result' => __('Quiz Result'),
-            'battle_started' => preg_match('/^(?:⚔️\s*)?Battle Started in (.+)!$/u', $value, $matches)
-                ? 'بدأ تحدي الباتل في ' . $matches[1] . '!'
-                : $this->translateExactValue($value),
             'referral_reward' => __('ui.notifications.free_course_title'),
             'achievement_earned' => __('Achievement Unlocked!'),
             'course_purchased' => __('Course Purchased Successfully'),
@@ -166,6 +143,9 @@ class Notification extends Model
             'referral_success' => __('Referral Successful!'),
             'reply_marked_solution' => __('Your Reply Marked as Solution'),
             'comment_reply' => __('New Reply on Your Comment'),
+            'live_session_scheduled' => __('live_sessions.scheduled_title'),
+            'live_session_reminder' => __('live_sessions.reminder_title'),
+            'promo_announcement' => __('live_sessions.promo.special_offer'),
             default => $this->translateExactValue($value),
         };
     }
@@ -176,14 +156,9 @@ class Notification extends Model
             return $value;
         }
 
-        $type = $attributes['notification_type'] ?? null;
-
-        return match ($type) {
+        return match ($attributes['notification_type'] ?? null) {
             'quiz_result' => preg_match('/^You scored (\d+)% on (.+)\.$/u', $value, $matches)
                 ? __('You scored :score% on :quiz.', ['score' => $matches[1], 'quiz' => $matches[2]])
-                : $this->translateExactValue($value),
-            'battle_started' => preg_match('/^(.+) started a battle\. Join now before the lobby closes!$/u', $value, $matches)
-                ? $matches[1] . ' بدأ باتل جديدًا. انضم الآن قبل إغلاق اللوبي!'
                 : $this->translateExactValue($value),
             'referral_reward' => __('ui.notifications.free_course_message'),
             'achievement_earned' => $this->translateAchievementMessage($value),
@@ -202,6 +177,9 @@ class Notification extends Model
             'comment_reply' => preg_match('/^Admin replied to your comment on (.+)$/u', $value, $matches)
                 ? __('Admin replied to your comment on :lesson', ['lesson' => $matches[1]])
                 : $this->translateExactValue($value),
+            'live_session_scheduled' => $this->translateExactValue($value),
+            'live_session_reminder' => $this->translateExactValue($value),
+            'promo_announcement' => $this->translateExactValue($value),
             default => $this->translateExactValue($value),
         };
     }

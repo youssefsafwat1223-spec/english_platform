@@ -36,12 +36,18 @@ class SettingsController extends Controller
             'site_url' => 'required|url',
             'contact_email' => 'required|email',
             'timezone' => 'required|string',
+            'dashboard_promo_title' => 'nullable|string|max:255',
+            'dashboard_promo_message' => 'nullable|string|max:500',
+            'dashboard_promo_url' => 'nullable|url',
         ]);
 
         SystemSetting::set('site_name', $request->site_name, 'string', 'general', true);
         SystemSetting::set('site_url', $request->site_url, 'string', 'general', true);
         SystemSetting::set('contact_email', $request->contact_email, 'string', 'general');
         SystemSetting::set('timezone', $request->timezone, 'string', 'general');
+        SystemSetting::set('dashboard_promo_title', $request->dashboard_promo_title, 'string', 'general');
+        SystemSetting::set('dashboard_promo_message', $request->dashboard_promo_message, 'string', 'general');
+        SystemSetting::set('dashboard_promo_url', $request->dashboard_promo_url, 'string', 'general');
 
         return back()->with('success', 'General settings updated successfully!');
     }

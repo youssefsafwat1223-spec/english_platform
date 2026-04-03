@@ -71,6 +71,10 @@
                                class="nav-link {{ request()->routeIs('student.courses.my-courses') ? 'active' : '' }}">
                                 {{ __('My Courses') }}
                             </a>
+                            <a href="{{ route('student.live-sessions.index') }}"
+                               class="nav-link {{ request()->routeIs('student.live-sessions.*') ? 'active' : '' }}">
+                                {{ __('live_sessions.navigation') }}
+                            </a>
                             <a href="{{ route('student.quizzes.my-attempts') }}"
                                class="nav-link {{ request()->routeIs('student.quizzes.my-attempts') ? 'active' : '' }}">
                                 {{ __('All Attempts') }}
@@ -103,6 +107,10 @@
                             <a href="{{ route('admin.courses.index') }}"
                                class="nav-link {{ request()->routeIs('admin.courses.*') ? 'active' : '' }}">
                                 {{ __('Courses') }}
+                            </a>
+                            <a href="{{ route('admin.live-sessions.index') }}"
+                               class="nav-link {{ request()->routeIs('admin.live-sessions.*') ? 'active' : '' }}">
+                                {{ __('live_sessions.navigation') }}
                             </a>
                             
                             <!-- Exams Dropdown -->
@@ -392,6 +400,7 @@
                 @if(auth()->user()->is_admin)
                     <a href="{{ route('admin.dashboard') }}" class="block px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-primary-500/5" style="color: var(--color-text);">{{ __('Dashboard') }}</a>
                     <a href="{{ route('admin.courses.index') }}" class="block px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-primary-500/5" style="color: var(--color-text);">{{ __('Courses') }}</a>
+                    <a href="{{ route('admin.live-sessions.index') }}" class="block px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-primary-500/5" style="color: var(--color-text);">{{ __('live_sessions.navigation') }}</a>
                     <a href="{{ route('admin.questions.index') }}" class="block px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-primary-500/5" style="color: var(--color-text);">{{ __('Questions') }}</a>
                     <a href="{{ route('admin.quizzes.index') }}" class="block px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-primary-500/5" style="color: var(--color-text);">{{ __('Quizzes') }}</a>
                     <a href="{{ route('admin.students.index') }}" class="block px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-primary-500/5" style="color: var(--color-text);">{{ __('Students') }}</a>
@@ -584,6 +593,7 @@
                                 ['route' => 'student.certificates.index', 'icon' => '📜', 'label' => __('Certificates')],
                                 ['route' => 'student.profile.achievements', 'icon' => '🌟', 'label' => __('Achievements')],
                                 ['route' => 'student.quizzes.my-attempts', 'icon' => '📝', 'label' => __('All Attempts')],
+                                ['route' => 'student.live-sessions.index', 'icon' => '🎥', 'label' => __('live_sessions.navigation')],
                                 ['route' => 'student.games.index', 'icon' => '🎮', 'label' => __('Games')],
                                 ['route' => 'student.battle.index', 'icon' => '⚔️', 'label' => __('Battle')],
                                 ['route' => 'student.leaderboard', 'icon' => '🏆', 'label' => __('Leaderboard')],

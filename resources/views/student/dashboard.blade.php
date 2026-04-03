@@ -7,8 +7,103 @@
 @endphp
 
 @section('content')
-<div class="pt-8 pb-12 sm:py-12 relative min-h-screen z-10 px-3 sm:px-0">
+<div class="pt-2 pb-12 sm:pt-4 sm:pb-12 relative min-h-screen z-10 px-3 sm:px-0">
     <div class="student-container space-y-4 sm:space-y-8">
+
+        @if($featuredBanner && $featuredBanner['type'] === 'promo')
+            <div class="relative overflow-hidden rounded-[1.9rem] border border-white/10 shadow-[0_18px_60px_-30px_rgba(14,165,233,0.45)] backdrop-blur-xl"
+                 data-aos="fade-down"
+                 style="background:
+                    radial-gradient(circle at 8% 30%, rgba(34,211,238,0.20), transparent 24%),
+                    radial-gradient(circle at 82% 24%, rgba(59,130,246,0.16), transparent 28%),
+                    linear-gradient(135deg, rgba(8,15,33,0.96), rgba(18,34,64,0.94) 48%, rgba(9,20,40,0.96));">
+                <div class="absolute inset-0 opacity-25 pointer-events-none"
+                     style="background-image:
+                        linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px),
+                        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px);
+                        background-size: 28px 28px;"></div>
+                <div class="absolute inset-y-0 start-0 w-28 bg-gradient-to-r from-cyan-400/20 to-transparent pointer-events-none"></div>
+
+                <div class="relative z-10 px-4 sm:px-6 py-4 sm:py-5 flex flex-col xl:flex-row xl:items-center gap-4 xl:gap-6">
+                    <div class="flex items-start sm:items-center gap-3 sm:gap-4 min-w-0 flex-1">
+                        <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-white/10 border border-white/10 text-cyan-200 shadow-lg shadow-cyan-950/30 flex items-center justify-center shrink-0 backdrop-blur-md">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M13 16h-1v-4h-1m1-4h.01M6 4h12a2 2 0 0 1 2 2v12l-4-3H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/>
+                            </svg>
+                        </div>
+
+                        <div class="min-w-0 flex-1">
+                            <div class="flex flex-wrap items-center gap-2 mb-2">
+                                <span class="inline-flex items-center rounded-full px-3 py-1 text-[10px] sm:text-[11px] font-black uppercase tracking-[0.24em] bg-cyan-300/12 text-cyan-200 border border-cyan-300/15">
+                                    {{ __('live_sessions.promo.special_offer') }}
+                                </span>
+                                <span class="inline-flex items-center gap-1 text-[11px] font-bold text-slate-300">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                                    {{ __('live_sessions.promo.available_now') }}
+                                </span>
+                            </div>
+
+                            <div class="flex flex-col gap-1 sm:gap-1.5">
+                                <h3 class="text-base sm:text-lg lg:text-[1.15rem] font-black text-white leading-tight truncate">
+                                    {{ $featuredBanner['title'] }}
+                                </h3>
+                                <p class="text-sm text-slate-300/95 font-medium leading-relaxed max-w-3xl">
+                                    {{ $featuredBanner['message'] }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if($featuredBanner['action_label'] && $featuredBanner['action_url'])
+                        <div class="shrink-0 xl:self-center">
+                            <a href="{{ $featuredBanner['action_url'] }}"
+                               class="inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-3 rounded-2xl bg-gradient-to-r from-cyan-400 to-sky-500 text-slate-950 hover:from-cyan-300 hover:to-sky-400 font-black text-sm transition-all shadow-lg shadow-cyan-950/35 min-w-[148px]">
+                                {{ $featuredBanner['action_label'] }}
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                                </svg>
+                            </a>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        @endif
+
+        @if($featuredBanner && $featuredBanner['type'] === 'live-session')
+            <div class="rounded-[2rem] border overflow-hidden shadow-xl"
+                 data-aos="fade-down"
+                 style="background: linear-gradient(135deg, rgba(14,165,233,0.18), rgba(59,130,246,0.08)); border-color: rgba(14,165,233,0.25);">
+                <div class="relative px-5 py-5 sm:px-6 md:px-8 md:py-6">
+                    <div class="absolute inset-0 opacity-30 pointer-events-none"
+                         style="background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.18) 1px, transparent 0); background-size: 22px 22px;"></div>
+                    <div class="relative z-10 flex flex-col lg:flex-row lg:items-center gap-5 lg:gap-6">
+                        @if($featuredBanner['action_label'] && $featuredBanner['action_url'])
+                            <div class="shrink-0 order-2 lg:order-1">
+                                <a href="{{ $featuredBanner['action_url'] }}"
+                                   @if($featuredBanner['action_label'] === __('live_sessions.join_zoom_session')) target="_blank" rel="noopener noreferrer" @endif
+                                   class="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3 rounded-2xl font-bold text-white bg-sky-500 hover:bg-sky-400 shadow-lg shadow-sky-500/25 transition-colors min-w-[170px]">
+                                    <span>{{ $featuredBanner['action_label'] }}</span>
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                                </a>
+                            </div>
+                        @endif
+
+                        <div class="flex-1 min-w-0 order-1 lg:order-2 lg:text-right space-y-2">
+                            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-[0.22em] bg-white/80 text-sky-700">
+                                {{ $featuredBanner['eyebrow'] }}
+                            </div>
+                            <h2 class="text-xl sm:text-2xl md:text-3xl font-black text-white leading-tight">{{ $featuredBanner['title'] }}</h2>
+                            <p class="text-sm sm:text-base text-sky-50/90 font-semibold">{{ $featuredBanner['message'] }}</p>
+                            @if($featuredBanner['course'])
+                                <div class="text-[11px] sm:text-xs font-black uppercase tracking-[0.22em] text-sky-100/80">
+                                    {{ $featuredBanner['course'] }}
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
 
         {{-- Hero Section --}}
         <x-student.card class="relative" padding="p-4 sm:p-8 md:p-12" mb="mb-0" :headerBorder="false" data-aos="fade-down">
@@ -367,7 +462,6 @@
 <style>
     .background-size-200 { background-size: 200% 200%; }
     .animate-gradient-slow { animation: gradient 8s ease infinite; }
-    
     @keyframes gradient {
         0% { background-position: 0% 50%; }
         50% { background-position: 100% 50%; }
@@ -378,4 +472,3 @@
 
 
 @endsection
-

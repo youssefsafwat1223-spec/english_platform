@@ -136,6 +136,14 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * Live sessions created by this user.
+     */
+    public function createdLiveSessions()
+    {
+        return $this->hasMany(LiveSession::class, 'created_by');
+    }
+
+    /**
      * Lesson progress records
      */
     public function lessonProgress()

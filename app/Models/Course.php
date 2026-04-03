@@ -85,6 +85,14 @@ class Course extends Model
     }
 
     /**
+     * Live sessions assigned to this course.
+     */
+    public function liveSessions()
+    {
+        return $this->belongsToMany(LiveSession::class, 'course_live_session')->withTimestamps();
+    }
+
+    /**
      * Questions for this course
      */
     public function questions()
