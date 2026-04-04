@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Student;
 use App\Http\Controllers\Controller;
 use App\Models\PronunciationAttempt;
 use App\Models\PronunciationExercise;
+use App\Services\PronunciationRuleCoachService;
 use App\Services\RealtimePronunciationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -12,7 +13,10 @@ use Illuminate\Support\Str;
 
 class PronunciationController extends Controller
 {
-    public function __construct(private readonly RealtimePronunciationService $realtimeService)
+    public function __construct(
+        private readonly RealtimePronunciationService $realtimeService,
+        private readonly PronunciationRuleCoachService $ruleCoachService
+    )
     {
     }
 
@@ -65,6 +69,7 @@ class PronunciationController extends Controller
 
         $transcript = trim((string) $request->transcript);
         $comparison = $this->realtimeService->compare($expectedText, $transcript);
+        $coach = $this->ruleCoachService->build($expectedText, $transcript, $comparison, app()->getLocale());
         $analysis = $this->saveAttemptFromComparison(
             $user->id,
             $exercise->id,
@@ -73,6 +78,7 @@ class PronunciationController extends Controller
             $transcript,
             $expectedText,
             $comparison,
+            $coach,
             'web_speech_fallback',
             null,
             null,
@@ -87,6 +93,7 @@ class PronunciationController extends Controller
             'fluency' => $analysis['fluency_score'],
             'completion' => $analysis['completion_percent'],
             'feedback' => $analysis['feedback'],
+            'coach' => $analysis['coach'],
             'word_diff' => $comparison['word_diff'],
             'counts' => $comparison['counts'],
             'transcript' => $transcript,
@@ -179,6 +186,7 @@ class PronunciationController extends Controller
 
         $transcript = trim((string) $request->input('transcript', ''));
         $comparison = $this->realtimeService->compare($expectedText, $transcript);
+        $coach = $this->ruleCoachService->build($expectedText, $transcript, $comparison, app()->getLocale());
 
         return response()->json([
             'success' => true,
@@ -188,6 +196,7 @@ class PronunciationController extends Controller
             'counts' => $comparison['counts'],
             'scores' => $comparison['scores'],
             'feedback' => $comparison['feedback'],
+            'coach' => $coach,
         ]);
     }
 
@@ -229,6 +238,7 @@ class PronunciationController extends Controller
 
         $transcript = trim((string) $request->transcript);
         $comparison = $this->realtimeService->compare($expectedText, $transcript);
+        $coach = $this->ruleCoachService->build($expectedText, $transcript, $comparison, app()->getLocale());
 
         $analysis = $this->saveAttemptFromComparison(
             $user->id,
@@ -238,6 +248,7 @@ class PronunciationController extends Controller
             $transcript,
             $expectedText,
             $comparison,
+            $coach,
             (string) $request->input('provider', 'streaming'),
             $sessionId,
             $request->input('latency_ms'),
@@ -256,6 +267,7 @@ class PronunciationController extends Controller
             'fluency' => $analysis['fluency_score'],
             'completion' => $analysis['completion_percent'],
             'feedback' => $analysis['feedback'],
+            'coach' => $analysis['coach'],
             'word_diff' => $comparison['word_diff'],
             'counts' => $comparison['counts'],
             'transcript' => $transcript,
@@ -299,6 +311,7 @@ class PronunciationController extends Controller
         string $transcript,
         string $expectedText,
         array $comparison,
+        array $coach,
         string $provider,
         ?string $sessionId,
         ?int $latencyMs,
@@ -324,7 +337,7 @@ class PronunciationController extends Controller
             'clarity_score' => $scores['clarity'],
             'pronunciation_score' => $scores['pronunciation'],
             'fluency_score' => $scores['fluency'],
-            'feedback_text' => $comparison['feedback'],
+            'feedback_text' => $coach['summary'] ?? $comparison['feedback'],
             'ai_provider' => $provider,
             'transcript_text' => $transcript,
             'expected_text' => $expectedText,
@@ -343,6 +356,7 @@ class PronunciationController extends Controller
             'fluency_score' => (int) $attempt->fluency_score,
             'completion_percent' => (int) $attempt->completion_percent,
             'feedback' => (string) $attempt->feedback_text,
+            'coach' => $coach,
         ];
     }
 }

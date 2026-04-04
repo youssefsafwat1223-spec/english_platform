@@ -109,7 +109,7 @@ class PronunciationUiTest extends TestCase
         $editResponse->assertDontSee('Sentence 1', false);
     }
 
-    public function test_student_pronunciation_page_shows_vocabulary_explanations_and_iphone_mode_copy(): void
+    public function test_student_pronunciation_page_shows_vocabulary_explanations_without_legacy_iphone_mode_copy(): void
     {
         app()->setLocale('en');
 
@@ -159,8 +159,58 @@ class PronunciationUiTest extends TestCase
         $response->assertSee('/keik/', false);
         $response->assertSee('A sentence note for the learner.', false);
         $response->assertSee('A passage note for the learner.', false);
-        $response->assertSee('iPhone Mode', false);
-        $response->assertSee('Listen first, then repeat aloud', false);
-        $response->assertSee('Automatic scoring works best on desktop or Android Chrome.', false);
+        $response->assertDontSee('x-show="listenOnlyMode"', false);
+        $response->assertDontSee('listenOnlyMode,', false);
+        $response->assertSee('Coach Tip', false);
+    }
+
+    public function test_pronunciation_evaluation_returns_rule_based_coach_feedback(): void
+    {
+        app()->setLocale('en');
+
+        $user = User::factory()->create();
+        $course = Course::factory()->create();
+
+        $lesson = Lesson::create([
+            'course_id' => $course->id,
+            'title' => 'Pronunciation Coach Lesson',
+            'slug' => 'pronunciation-coach-lesson',
+            'order_index' => 1,
+            'has_pronunciation_exercise' => true,
+            'is_free' => false,
+        ]);
+
+        Enrollment::create([
+            'user_id' => $user->id,
+            'course_id' => $course->id,
+            'price_paid' => 10,
+            'discount_amount' => 0,
+            'progress_percentage' => 0,
+            'completed_lessons' => 0,
+            'total_lessons' => 1,
+        ]);
+
+        $exercise = PronunciationExercise::create([
+            'lesson_id' => $lesson->id,
+            'sentence_1' => 'Think about each option carefully',
+            'sentence_2' => 'The cake tastes sweet.',
+            'sentence_3' => 'In this case, the silent E makes the vowel before it long.',
+            'passing_score' => 70,
+            'max_duration_seconds' => 10,
+            'allow_retake' => true,
+        ]);
+
+        $response = $this->actingAs($user)
+            ->postJson(route('student.pronunciation.evaluate', $exercise), [
+                'sentence_number' => 1,
+                'transcript' => 'sink about each option',
+            ]);
+
+        $response->assertOk();
+        $response->assertJsonPath('success', true);
+        $response->assertJsonPath('coach.title', 'Complete the full sentence');
+        $response->assertJsonPath('coach.focus_word', 'think');
+        $response->assertJsonPath('coach.patterns.0', 'missing_words');
+        $response->assertJsonPath('coach.tip', 'Read the entire sentence without stopping early, especially the ending words.');
     }
 }

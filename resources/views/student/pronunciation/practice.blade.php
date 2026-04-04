@@ -219,6 +219,24 @@
                                 <p class="font-bold text-lg mb-1" :class="(results[{{ $num }}]?.score || 0) >= 70 ? 'text-emerald-500' : (results[{{ $num }}]?.score || 0) >= 50 ? 'text-amber-500' : 'text-rose-500'" x-text="scoreHeadline(results[{{ $num }}]?.score || 0)"></p>
                                 <p class="text-sm mb-3 text-slate-500 dark:text-slate-400" x-text="results[{{ $num }}]?.feedback || ''"></p>
 
+                                <div x-show="results[{{ $num }}]?.coach" x-cloak class="mb-4 rounded-xl border border-primary-200/70 dark:border-primary-500/20 bg-primary-50/70 dark:bg-primary-500/10 p-4 text-start">
+                                    <p class="text-xs font-black uppercase tracking-[0.24em] text-primary-600 dark:text-primary-300">
+                                        {{ $isArabic ? 'نصيحة المدرب' : 'Coach Tip' }}
+                                    </p>
+                                    <p class="mt-2 text-sm font-bold text-slate-900 dark:text-white" x-text="results[{{ $num }}]?.coach?.title || ''"></p>
+                                    <p class="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300" x-text="results[{{ $num }}]?.coach?.summary || ''"></p>
+                                    <div class="mt-3 grid gap-2 md:grid-cols-2">
+                                        <div class="rounded-lg bg-white/80 dark:bg-slate-900/30 px-3 py-2">
+                                            <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">{{ $isArabic ? 'ما الذي تحسنه الآن' : 'What to improve now' }}</p>
+                                            <p class="mt-1 text-sm text-slate-700 dark:text-slate-200" x-text="results[{{ $num }}]?.coach?.tip || ''"></p>
+                                        </div>
+                                        <div class="rounded-lg bg-white/80 dark:bg-slate-900/30 px-3 py-2">
+                                            <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">{{ $isArabic ? 'المحاولة التالية' : 'Next try' }}</p>
+                                            <p class="mt-1 text-sm text-slate-700 dark:text-slate-200" x-text="results[{{ $num }}]?.coach?.retry_instruction || ''"></p>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div class="space-y-2 max-w-sm mx-auto md:mx-0">
                                     <template x-for="(label, key) in scoreLabels" :key="key">
                                         <div class="flex items-center gap-3">
