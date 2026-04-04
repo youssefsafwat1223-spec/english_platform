@@ -51,6 +51,7 @@
         'try_again' => $isArabic ? 'حاول مرة أخرى. بقيت محاولة واحدة قبل تشغيل النطق الصحيح.' : 'Try again! 1 more attempt before hearing the correct pronunciation.',
         'network_error' => $isArabic ? 'حدث خطأ في الاتصال. حاول مرة أخرى.' : 'Network error. Please try again.',
         'tts_unsupported' => $isArabic ? 'المتصفح لا يدعم تشغيل النطق الآلي.' : 'Text-to-speech is not supported in this browser.',
+        'stream_unavailable' => $isArabic ? 'وضع البث المباشر غير متاح الآن، تم التحويل للوضع البديل.' : 'Realtime streaming is unavailable now, switched to fallback mode.',
         'excellent' => $isArabic ? 'ممتاز' : 'Excellent!',
         'great' => $isArabic ? 'أحسنت' : 'Great job!',
         'good' => $isArabic ? 'محاولة جيدة' : 'Good try!',
@@ -63,6 +64,7 @@
         'pronunciation' => $messages['accuracy'],
         'clarity' => $messages['clarity'],
         'fluency' => $messages['fluency'],
+        'completion' => $isArabic ? 'الإكمال' : 'Completion',
     ];
 @endphp
 
@@ -190,8 +192,24 @@
                             {{ $messages['ios_scoring'] }}
                         </div>
 
-                        <div x-show="activeSentence === {{ $num }} && liveTranscript" x-cloak dir="ltr" class="mx-4 w-[calc(100%-2rem)] p-3 rounded-xl text-left text-sm italic bg-slate-200 dark:bg-slate-900/50 border border-slate-300 dark:border-white/10 text-slate-600 dark:text-slate-300">
-                            <span x-text="liveTranscript"></span>
+                        <div x-show="activeSentence === {{ $num }} && liveTranscript" x-cloak dir="ltr" class="mx-4 w-[calc(100%-2rem)] p-3 rounded-xl text-left text-sm bg-slate-200 dark:bg-slate-900/50 border border-slate-300 dark:border-white/10 text-slate-600 dark:text-slate-300">
+                            <template x-if="liveWordDiff[{{ $num }}] && liveWordDiff[{{ $num }}].length">
+                                <div class="flex flex-wrap gap-1.5 leading-7">
+                                    <template x-for="(token, index) in liveWordDiff[{{ $num }}]" :key="index">
+                                        <span class="px-2 py-0.5 rounded-md border text-sm font-semibold"
+                                              :class="{
+                                                'bg-emerald-500/10 border-emerald-500/30 text-emerald-600 dark:text-emerald-300': token.status === 'correct',
+                                                'bg-amber-500/10 border-amber-500/30 text-amber-600 dark:text-amber-300': token.status === 'wrong',
+                                                'bg-rose-500/10 border-rose-500/30 text-rose-600 dark:text-rose-300 line-through': token.status === 'missing',
+                                                'bg-sky-500/10 border-sky-500/30 text-sky-600 dark:text-sky-300': token.status === 'extra'
+                                              }"
+                                              x-text="token.display"></span>
+                                    </template>
+                                </div>
+                            </template>
+                            <template x-if="!(liveWordDiff[{{ $num }}] && liveWordDiff[{{ $num }}].length)">
+                                <span class="italic" x-text="liveTranscript"></span>
+                            </template>
                         </div>
 
                         <div x-show="isEvaluating && activeSentence === {{ $num }}" x-cloak class="flex items-center gap-2">
@@ -299,11 +317,15 @@
 function pronunciationApp() {
     const userAgent = navigator.userAgent || navigator.vendor || window.opera || '';
     const recognitionSupported = 'webkitSpeechRecognition' in window || 'SpeechRecognition' in window;
-    const listenOnlyMode = /iPad|iPhone|iPod/.test(userAgent)
+    const mediaRecorderSupported = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.MediaRecorder);
+    const isIOS = /iPad|iPhone|iPod/.test(userAgent)
         || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    const listenOnlyMode = isIOS && !mediaRecorderSupported && !recognitionSupported;
 
     return {
         recognitionSupported,
+        mediaRecorderSupported,
+        isIOS,
         listenOnlyMode,
         isRecording: false,
         isEvaluating: false,
@@ -311,16 +333,34 @@ function pronunciationApp() {
         speakingSentence: null,
         activeSentence: null,
         liveTranscript: '',
+        liveWordDiff: {},
         results: {},
         failedAttempts: {},
         recognition: null,
+        mediaRecorder: null,
+        mediaStream: null,
+        streamSocket: null,
+        streamSessionId: null,
+        streamEnabled: false,
+        usingStream: false,
+        streamChunkMs: 1000,
+        compareInFlight: false,
+        pendingCompareTranscript: null,
+        latestLatencyMs: null,
         recordingStartedAt: null,
         recordingTimeoutId: null,
         manualStop: false,
         maxRecordMs: 12000,
+        csrfToken: document.querySelector('meta[name="csrf-token"]')?.content ?? '',
         passingScore: {{ $exercise->passing_score ?? 70 }},
         messages: @json($messages),
         scoreLabels: @json($scoreLabels),
+        endpoints: {
+            evaluate: @json(route('student.pronunciation.evaluate', $exercise)),
+            streamStart: @json(route('student.pronunciation.stream.start', $exercise)),
+            streamCompare: @json(route('student.pronunciation.stream.compare', $exercise)),
+            streamFinalize: @json(route('student.pronunciation.stream.finalize', $exercise)),
+        },
         sentences: {
             @foreach($exercise->sentences as $num => $sentence)
                 {{ $num }}: @json($sentence),
@@ -361,7 +401,11 @@ function pronunciationApp() {
                     }
                 }
 
-                this.liveTranscript = finalTranscript || interimTranscript;
+                const transcript = (finalTranscript || interimTranscript).trim();
+                this.liveTranscript = transcript;
+                if (this.activeSentence && transcript) {
+                    this.handleLiveTranscript(this.activeSentence, transcript);
+                }
             };
 
             recognition.onend = () => {
@@ -392,6 +436,7 @@ function pronunciationApp() {
 
                 this.isRecording = false;
                 this.recognition = null;
+                this.activeSentence = null;
                 this.recordingStartedAt = null;
                 if (this.recordingTimeoutId) {
                     clearTimeout(this.recordingTimeoutId);
@@ -406,6 +451,7 @@ function pronunciationApp() {
             recognition.onerror = (event) => {
                 this.isRecording = false;
                 this.recognition = null;
+                this.activeSentence = null;
                 this.recordingStartedAt = null;
                 if (this.recordingTimeoutId) {
                     clearTimeout(this.recordingTimeoutId);
@@ -428,25 +474,21 @@ function pronunciationApp() {
             return recognition;
         },
 
-        togglePractice(sentenceNumber) {
+        async togglePractice(sentenceNumber) {
             if (this.listenOnlyMode) {
                 this.playReferenceOrTts(sentenceNumber);
                 return;
             }
 
-            this.toggleRecording(sentenceNumber);
-        },
-
-        toggleRecording(sentenceNumber) {
             if (this.isRecording && this.activeSentence === sentenceNumber) {
                 this.stopRecording();
             } else {
-                this.startRecording(sentenceNumber);
+                await this.startRecording(sentenceNumber);
             }
         },
 
         async startRecording(sentenceNumber) {
-            if (!this.recognitionSupported || this.listenOnlyMode) {
+            if (this.listenOnlyMode) {
                 this.playReferenceOrTts(sentenceNumber);
                 return;
             }
@@ -462,6 +504,49 @@ function pronunciationApp() {
                 this.isSpeaking = false;
                 this.speakingSentence = null;
             }
+
+            this.activeSentence = sentenceNumber;
+            this.liveTranscript = '';
+            this.liveWordDiff[sentenceNumber] = [];
+            this.isRecording = true;
+            this.manualStop = false;
+            this.recordingStartedAt = Date.now();
+            if (this.recordingTimeoutId) {
+                clearTimeout(this.recordingTimeoutId);
+            }
+            this.recordingTimeoutId = setTimeout(() => {
+                if (this.isRecording) {
+                    this.stopRecording();
+                }
+            }, this.maxRecordMs);
+
+            const startedStreaming = await this.tryStartStreaming(sentenceNumber);
+            if (startedStreaming) {
+                return;
+            }
+
+            if (!this.recognitionSupported) {
+                this.stopRecording();
+                if (window.showNotification) window.showNotification(this.messages.browser_title, 'error');
+                return;
+            }
+
+            this.recognition = this.initRecognition();
+            if (!this.recognition) {
+                this.stopRecording();
+                if (window.showNotification) window.showNotification(this.messages.browser_title, 'error');
+                return;
+            }
+
+            try {
+                this.recognition.start();
+            } catch (e) {
+                console.error('Recognition start error:', e);
+                this.stopRecording();
+                if (window.showNotification) window.showNotification(this.messages.start_failed, 'error');
+            }
+
+            return;
 
             // Request mic permission first (required on most browsers)
             try {
@@ -509,11 +594,245 @@ function pronunciationApp() {
             }
         },
 
+        async tryStartStreaming(sentenceNumber) {
+            if (!this.mediaRecorderSupported) {
+                return false;
+            }
+
+            let streamSession = null;
+
+            try {
+                const startResponse = await fetch(this.endpoints.streamStart, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': this.csrfToken,
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        sentence_number: sentenceNumber,
+                    }),
+                });
+
+                streamSession = await startResponse.json();
+                if (!startResponse.ok || !streamSession.success) {
+                    return false;
+                }
+            } catch (error) {
+                console.error('Stream start failed:', error);
+                return false;
+            }
+
+            this.streamEnabled = !!streamSession.stream_enabled;
+            this.streamSessionId = streamSession.session_id || null;
+            this.streamChunkMs = Number(streamSession.chunk_ms || 1000);
+
+            if (!this.streamEnabled) {
+                this.streamSessionId = null;
+                if (window.showNotification) window.showNotification(this.messages.stream_unavailable, 'info');
+                return false;
+            }
+
+            try {
+                await this.startMediaStream(sentenceNumber, streamSession.ws_url, streamSession.ws_token);
+                return true;
+            } catch (error) {
+                console.error('Stream init failed:', error);
+                this.cleanupStreamingResources();
+                this.streamSessionId = null;
+                if (window.showNotification) window.showNotification(this.messages.stream_unavailable, 'warning');
+                return false;
+            }
+        },
+
+        async startMediaStream(sentenceNumber, wsUrl, wsToken) {
+            this.mediaStream = await navigator.mediaDevices.getUserMedia({
+                audio: {
+                    channelCount: 1,
+                    echoCancellation: true,
+                    noiseSuppression: true,
+                    autoGainControl: true,
+                },
+            });
+
+            const mimeType = this.getSupportedMimeType();
+            this.mediaRecorder = mimeType
+                ? new MediaRecorder(this.mediaStream, { mimeType })
+                : new MediaRecorder(this.mediaStream);
+            this.usingStream = true;
+
+            this.connectStreamSocket(wsUrl, wsToken, sentenceNumber);
+
+            this.mediaRecorder.ondataavailable = async (event) => {
+                if (!event.data || event.data.size === 0 || !this.usingStream) {
+                    return;
+                }
+
+                try {
+                    const audioBase64 = await this.blobToBase64(event.data);
+                    this.sendSocketPayload({
+                        type: 'audio_chunk',
+                        session_id: this.streamSessionId,
+                        sentence_number: sentenceNumber,
+                        mime_type: event.data.type || mimeType || 'audio/webm',
+                        chunk_ms: this.streamChunkMs,
+                        audio_base64: audioBase64,
+                        client_ts: Date.now(),
+                    });
+                } catch (error) {
+                    console.error('Chunk encode failed:', error);
+                }
+            };
+
+            this.mediaRecorder.start(this.streamChunkMs);
+        },
+
+        connectStreamSocket(wsUrl, wsToken, sentenceNumber) {
+            if (!wsUrl) {
+                return;
+            }
+
+            try {
+                const separator = wsUrl.includes('?') ? '&' : '?';
+                const socketUrl = wsToken ? `${wsUrl}${separator}token=${encodeURIComponent(wsToken)}` : wsUrl;
+                this.streamSocket = new WebSocket(socketUrl);
+            } catch (error) {
+                console.error('Socket creation failed:', error);
+                this.streamSocket = null;
+                return;
+            }
+
+            this.streamSocket.onopen = () => {
+                this.sendSocketPayload({
+                    type: 'start',
+                    session_id: this.streamSessionId,
+                    sentence_number: sentenceNumber,
+                    expected_text: this.sentences[sentenceNumber] || '',
+                });
+            };
+
+            this.streamSocket.onmessage = async (event) => {
+                try {
+                    const payload = JSON.parse(event.data);
+                    const transcript = (payload.partial_transcript ?? payload.transcript ?? '').trim();
+
+                    if (transcript) {
+                        await this.handleLiveTranscript(sentenceNumber, transcript, payload.word_diff || null);
+                    }
+
+                    if (typeof payload.latency_ms === 'number') {
+                        this.latestLatencyMs = payload.latency_ms;
+                    }
+                } catch (error) {
+                    console.error('Socket message parse failed:', error);
+                }
+            };
+
+            this.streamSocket.onerror = (error) => {
+                console.error('Socket error:', error);
+            };
+        },
+
+        sendSocketPayload(payload) {
+            if (!this.streamSocket || this.streamSocket.readyState !== WebSocket.OPEN) {
+                return;
+            }
+
+            this.streamSocket.send(JSON.stringify(payload));
+        },
+
+        getSupportedMimeType() {
+            const candidates = [
+                'audio/webm;codecs=opus',
+                'audio/webm',
+                'audio/mp4',
+                'audio/aac',
+            ];
+
+            for (const candidate of candidates) {
+                if (window.MediaRecorder && window.MediaRecorder.isTypeSupported(candidate)) {
+                    return candidate;
+                }
+            }
+
+            return '';
+        },
+
+        blobToBase64(blob) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    const result = String(reader.result || '');
+                    const commaIndex = result.indexOf(',');
+                    resolve(commaIndex >= 0 ? result.slice(commaIndex + 1) : result);
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(blob);
+            });
+        },
+
+        async handleLiveTranscript(sentenceNumber, transcript, providedDiff = null) {
+            if (this.activeSentence !== sentenceNumber || !transcript) {
+                return;
+            }
+
+            this.liveTranscript = transcript;
+
+            if (Array.isArray(providedDiff) && providedDiff.length) {
+                this.liveWordDiff[sentenceNumber] = providedDiff;
+                return;
+            }
+
+            if (this.compareInFlight) {
+                this.pendingCompareTranscript = transcript;
+                return;
+            }
+
+            this.compareInFlight = true;
+
+            try {
+                const response = await fetch(this.endpoints.streamCompare, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': this.csrfToken,
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        sentence_number: sentenceNumber,
+                        transcript: transcript,
+                    }),
+                });
+
+                const data = await response.json();
+                if (response.ok && data.success && Array.isArray(data.word_diff)) {
+                    this.liveWordDiff[sentenceNumber] = data.word_diff;
+                }
+            } catch (error) {
+                console.error('Live compare failed:', error);
+            } finally {
+                this.compareInFlight = false;
+            }
+
+            if (this.pendingCompareTranscript && this.pendingCompareTranscript !== transcript) {
+                const queuedTranscript = this.pendingCompareTranscript;
+                this.pendingCompareTranscript = null;
+                await this.handleLiveTranscript(sentenceNumber, queuedTranscript);
+            }
+        },
+
         stopRecording(force = false) {
             this.manualStop = true;
+
+            if (this.usingStream) {
+                this.stopStreamingMode();
+                return;
+            }
+
             if (this.recognition) {
                 this.recognition.stop();
             }
+
             this.isRecording = false;
             this.recordingStartedAt = null;
             if (this.recordingTimeoutId) {
@@ -522,15 +841,107 @@ function pronunciationApp() {
             }
         },
 
+        async stopStreamingMode() {
+            const sentenceNumber = this.activeSentence;
+            const transcript = this.liveTranscript.trim();
+            const durationSeconds = this.recordingStartedAt
+                ? Math.max(0, Math.round((Date.now() - this.recordingStartedAt) / 1000))
+                : 0;
+
+            if (this.mediaRecorder && this.mediaRecorder.state !== 'inactive') {
+                this.mediaRecorder.stop();
+            }
+
+            this.sendSocketPayload({
+                type: 'stop',
+                session_id: this.streamSessionId,
+            });
+
+            if (this.streamSocket) {
+                try {
+                    this.streamSocket.close();
+                } catch (error) {
+                    console.error('Socket close failed:', error);
+                }
+            }
+
+            this.cleanupStreamingResources();
+            this.isRecording = false;
+            this.activeSentence = null;
+            this.recordingStartedAt = null;
+            if (this.recordingTimeoutId) {
+                clearTimeout(this.recordingTimeoutId);
+                this.recordingTimeoutId = null;
+            }
+
+            if (sentenceNumber && transcript) {
+                await this.finalizeStreamTranscript(sentenceNumber, transcript, durationSeconds);
+            } else if (window.showNotification) {
+                window.showNotification(this.messages.no_speech, 'warning');
+            }
+        },
+
+        cleanupStreamingResources() {
+            if (this.mediaStream) {
+                this.mediaStream.getTracks().forEach((track) => track.stop());
+            }
+
+            this.mediaStream = null;
+            this.mediaRecorder = null;
+            this.streamSocket = null;
+            this.usingStream = false;
+            this.streamEnabled = false;
+        },
+
+        async finalizeStreamTranscript(sentenceNumber, transcript, durationSeconds) {
+            this.isEvaluating = true;
+
+            try {
+                const response = await fetch(this.endpoints.streamFinalize, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': this.csrfToken,
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        session_id: this.streamSessionId,
+                        sentence_number: sentenceNumber,
+                        transcript: transcript,
+                        duration_seconds: durationSeconds,
+                        latency_ms: this.latestLatencyMs,
+                        provider: 'streaming',
+                    }),
+                });
+
+                const data = await response.json();
+                if (!response.ok || !data.success) {
+                    if (window.showNotification) {
+                        window.showNotification(data.error || this.messages.evaluation_failed, 'error');
+                    }
+                    return;
+                }
+
+                this.applyResult(sentenceNumber, data);
+            } catch (error) {
+                console.error('Finalize stream failed:', error);
+                if (window.showNotification) window.showNotification(this.messages.network_error, 'error');
+            } finally {
+                this.isEvaluating = false;
+                this.streamSessionId = null;
+                this.latestLatencyMs = null;
+            }
+        },
+
         async submitTranscript(sentenceNumber, transcript) {
             this.isEvaluating = true;
 
             try {
-                const res = await fetch(`/student/pronunciation/{{ $exercise->id }}/evaluate`, {
+                const res = await fetch(this.endpoints.evaluate, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'X-CSRF-TOKEN': this.csrfToken,
                         'Accept': 'application/json',
                     },
                     body: JSON.stringify({
@@ -542,25 +953,7 @@ function pronunciationApp() {
                 const data = await res.json();
 
                 if (data.success) {
-                    this.results[sentenceNumber] = data;
-
-                    if (data.score >= this.passingScore) {
-                        this.failedAttempts[sentenceNumber] = 0;
-                        if (window.showNotification) window.showNotification(this.messages.great_prefix + data.score + '%', 'success');
-                    } else {
-                        if (!this.failedAttempts[sentenceNumber]) {
-                            this.failedAttempts[sentenceNumber] = 0;
-                        }
-
-                        this.failedAttempts[sentenceNumber]++;
-
-                        if (this.failedAttempts[sentenceNumber] >= 2) {
-                            if (window.showNotification) window.showNotification(this.messages.listen_below, 'info');
-                            setTimeout(() => this.speakCorrect(sentenceNumber, this.sentences[sentenceNumber]), 1500);
-                        } else {
-                            if (window.showNotification) window.showNotification(this.messages.try_again, 'warning');
-                        }
-                    }
+                    this.applyResult(sentenceNumber, data);
                 } else if (window.showNotification) {
                     window.showNotification(data.error || this.messages.evaluation_failed, 'error');
                 }
@@ -569,6 +962,30 @@ function pronunciationApp() {
             }
 
             this.isEvaluating = false;
+        },
+
+        applyResult(sentenceNumber, data) {
+            this.results[sentenceNumber] = data;
+            this.liveWordDiff[sentenceNumber] = Array.isArray(data.word_diff) ? data.word_diff : [];
+
+            if (data.score >= this.passingScore) {
+                this.failedAttempts[sentenceNumber] = 0;
+                if (window.showNotification) window.showNotification(this.messages.great_prefix + data.score + '%', 'success');
+                return;
+            }
+
+            if (!this.failedAttempts[sentenceNumber]) {
+                this.failedAttempts[sentenceNumber] = 0;
+            }
+
+            this.failedAttempts[sentenceNumber]++;
+
+            if (this.failedAttempts[sentenceNumber] >= 2) {
+                if (window.showNotification) window.showNotification(this.messages.listen_below, 'info');
+                setTimeout(() => this.speakCorrect(sentenceNumber, this.sentences[sentenceNumber]), 1500);
+            } else if (window.showNotification) {
+                window.showNotification(this.messages.try_again, 'warning');
+            }
         },
 
         playReferenceOrTts(sentenceNumber) {

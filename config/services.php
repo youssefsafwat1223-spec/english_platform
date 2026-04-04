@@ -81,4 +81,15 @@ return [
         'credentials_path' => env('GOOGLE_APPLICATION_CREDENTIALS'),
     ],
 
+    /*
+    |----------------------------------------------------------------------
+    | Realtime Pronunciation Streaming (Whisper Gateway)
+    |----------------------------------------------------------------------
+    */
+    'pronunciation_stream' => [
+        'enabled' => env('PRONUNCIATION_STREAM_ENABLED', false),
+        'ws_url' => env('PRONUNCIATION_STREAM_WS_URL', 'ws://127.0.0.1:8787/ws'),
+        'chunk_ms' => (int) env('PRONUNCIATION_STREAM_CHUNK_MS', 1000),
+    ],
+
 ];

@@ -114,13 +114,10 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-white/80 mb-2">{{ __('ui.onboarding.phone_number') }} <span class="text-red-500">*</span></label>
                             <div class="relative w-full text-left" dir="ltr">
-                                <input type="tel" id="phone_input" x-model="form.phone" required placeholder="+201012345678"
+                                <input type="tel" id="phone_input" x-model="form.phone" required placeholder="1012345678"
                                        @keydown.enter.prevent="saveAndConnect()"
                                        class="input-glass w-full !text-left text-xl tracking-wider font-mono bg-white/50 dark:bg-white/5 border-gray-200 dark:border-white/10 focus:border-[#0088cc] text-gray-900 dark:text-white">
                             </div>
-                            <p class="mt-2 text-sm text-gray-500 dark:text-white/60">
-                                {!! __('ui.onboarding.phone_examples', ['first' => '<code>+9665XXXXXXXX</code>', 'second' => '<code>+2010XXXXXXX</code>']) !!}
-                            </p>
                         </div>
 
                         <div class="flex gap-4">
@@ -178,7 +175,6 @@
                                     <span class="flex-shrink-0 w-8 h-8 rounded-full bg-[#0088cc]/20 text-[#0088cc] flex items-center justify-center font-bold">3</span>
                                     <div class="pt-1">
                                         <p class="font-medium">{{ __('ui.onboarding.waiting_step_3') }}</p>
-                                        <p class="mt-1 text-sm text-slate-500 dark:text-white/60">{!! __('ui.onboarding.phone_examples', ['first' => '<code>+9665XXXXXXXX</code>', 'second' => '<code>+2010XXXXXXX</code>']) !!}</p>
                                     </div>
                                 </li>
                             </ol>
@@ -306,14 +302,16 @@
                 this.errorMessage = '';
                 this.saving = true;
                 
-                // Get full phone number with country code before saving
-                if (this.iti && this.step === 3) {
-                    if (!this.iti.isValidNumber()) {
+                // Prefer full international number from plugin, then let backend normalize/validate.
+                if (this.step === 3) {
+                    const fullPhone = this.iti ? this.iti.getNumber() : this.form.phone;
+                    this.form.phone = (fullPhone || this.form.phone || '').trim();
+
+                    if (!this.form.phone) {
                         this.errorMessage = texts.phoneRequired;
                         this.saving = false;
                         return false;
                     }
-                    this.form.phone = this.iti.getNumber();
                 }
 
                 try {
@@ -360,7 +358,7 @@
             async skipTelegram() {
                 // Optionally save empty phone or whatever they typed, then just redirect
                 if(this.iti) {
-                   this.form.phone = this.iti.getNumber(); 
+                   this.form.phone = this.iti.getNumber() || this.form.phone;
                 }
                 
                 const success = await this.submitFormOnly();

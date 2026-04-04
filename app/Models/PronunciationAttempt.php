@@ -24,7 +24,22 @@ class PronunciationAttempt extends Model
         'fluency_score',
         'feedback_text',
         'ai_provider',
+        'transcript_text',
+        'expected_text',
+        'word_diff_json',
+        'completion_percent',
+        'recognition_latency_ms',
+        'stream_session_id',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'word_diff_json' => 'array',
+            'completion_percent' => 'integer',
+            'recognition_latency_ms' => 'integer',
+        ];
+    }
 
     // ==================== RELATIONSHIPS ====================
 

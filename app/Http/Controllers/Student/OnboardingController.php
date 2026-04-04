@@ -37,7 +37,9 @@ class OnboardingController extends Controller
         $normalizedPhone = $this->telegramService->normalizePhoneNumber($validated['phone']);
 
         if (!$normalizedPhone) {
-            $message = __('ui.onboarding.invalid_phone_server');
+            $message = app()->getLocale() === 'ar'
+                ? 'يرجى إدخال رقم هاتف صحيح مع كود الدولة.'
+                : 'Please enter a valid phone number with country code.';
 
             if ($request->wantsJson()) {
                 return response()->json([

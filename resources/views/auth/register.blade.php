@@ -3,6 +3,9 @@
 @section('title', __('Create Account') . ' — ' . config('app.name'))
 
 @section('content')
+@php
+    $isArabic = app()->getLocale() === 'ar';
+@endphp
 <div class="min-h-screen pt-24 lg:pt-28 flex relative overflow-hidden bg-slate-50 dark:bg-[#020617] transition-colors duration-500">
     
     {{-- Left Panel: Visual/Branding (Hidden on mobile) --}}
@@ -24,7 +27,7 @@
 
             <div>
                 <h2 class="text-5xl font-black text-white mb-6 leading-[1.1] tracking-tight">
-                    {{ __('Start mastering English today.') }}
+                    {{ __('Start with the right foundation.') }}
                 </h2>
                 <div class="space-y-4">
                     <div class="flex items-center gap-3">
@@ -43,7 +46,7 @@
                         <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center shrink-0 border border-white/10">
                             <span class="text-emerald-400">✓</span>
                         </div>
-                        <span class="text-slate-300 font-medium">{{ __('No credit card required to start') }}</span>
+                        <span class="text-slate-300 font-medium">{{ __('No credit card required to begin') }}</span>
                     </div>
                 </div>
             </div>
@@ -53,7 +56,7 @@
                     <img class="w-10 h-10 rounded-full border-2 border-slate-900 object-cover" src="https://i.pravatar.cc/100?img=1" alt="Avatar">
                     <img class="w-10 h-10 rounded-full border-2 border-slate-900 object-cover" src="https://i.pravatar.cc/100?img=2" alt="Avatar">
                     <img class="w-10 h-10 rounded-full border-2 border-slate-900 object-cover" src="https://i.pravatar.cc/100?img=3" alt="Avatar">
-                    <div class="w-10 h-10 rounded-full border-2 border-slate-900 bg-slate-800 flex items-center justify-center text-xs font-bold text-white">+10k</div>
+                    <div class="w-10 h-10 rounded-full border-2 border-slate-900 bg-slate-800 flex items-center justify-center text-xs font-bold text-white">{{ $isArabic ? 'طلاب' : 'Students' }}</div>
                 </div>
                 <div class="text-sm font-bold text-slate-400">
                     {{ __('Trusted by students worldwide') }}
@@ -208,3 +211,4 @@
     </div>
 </div>
 @endsection
+

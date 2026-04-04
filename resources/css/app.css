@@ -331,7 +331,7 @@
 
     /* ─── Navigation Links ─── */
     .nav-link {
-        @apply relative px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300;
+        @apply relative px-2.5 xl:px-3 py-2 rounded-lg text-[13px] xl:text-sm font-medium transition-all duration-300;
         color: var(--color-text-muted);
     }
 
@@ -348,6 +348,14 @@
     .nav-link.active::after {
         content: '';
         @apply absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary-500;
+    }
+
+    .desktop-nav-scroll {
+        scrollbar-width: none;
+    }
+
+    .desktop-nav-scroll::-webkit-scrollbar {
+        display: none;
     }
 
     /* ─── Badges ─── */

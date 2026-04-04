@@ -62,7 +62,8 @@ class QuizController extends Controller
 
         // Calculate time taken (elapsed, not remaining).
         $startedAt = \Carbon\Carbon::parse($request->started_at);
-        $completedAt = \Carbon\Carbon::parse($request->completed_at);
+        // Use server completion time to avoid zero/invalid elapsed values from client clocks.
+        $completedAt = now();
         $serverElapsed = max(0, (int) $completedAt->diffInSeconds($startedAt));
         $clientElapsed = max(0, (int) $request->input('time_taken', $serverElapsed));
         $timeTaken = $clientElapsed;
@@ -84,6 +85,10 @@ class QuizController extends Controller
             if ($clientElapsed > ($serverElapsed + 30)) {
                 $timeTaken = $serverElapsed;
             }
+        }
+
+        if ($timeTaken <= 0 && $totalQuestions > 0) {
+            $timeTaken = max(1, $serverElapsed);
         }
 
         // Create attempt

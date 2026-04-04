@@ -278,6 +278,12 @@
                             @php
                                 $progressValue = (int) round(min(100, max(0, $enrollment->progress_percentage ?? 0)));
                                 $expiresAt = $enrollment->expires_at;
+                                if (!$expiresAt && (int) ($enrollment->course->estimated_duration_weeks ?? 0) > 0) {
+                                    $baseDate = $enrollment->started_at ?? $enrollment->created_at;
+                                    if ($baseDate) {
+                                        $expiresAt = $baseDate->copy()->addWeeks((int) $enrollment->course->estimated_duration_weeks);
+                                    }
+                                }
                                 $daysLeftRaw = $expiresAt ? (now()->diffInSeconds($expiresAt, false) / 86400) : null;
                                 $daysLeft = $daysLeftRaw !== null ? (int) ($daysLeftRaw >= 0 ? ceil($daysLeftRaw) : floor($daysLeftRaw)) : null;
                             @endphp
@@ -316,11 +322,34 @@
                                         <span class="text-lg font-black text-primary-500 w-14 text-right">{{ $progressValue }}%</span>
                                     </div>
                                     @if($daysLeft !== null)
-                                        <div class="mt-2 text-xs font-bold text-slate-500 dark:text-slate-400">
+                                        <div class="mt-3 flex flex-wrap items-center gap-2 text-xs font-bold">
                                             @if($daysLeft >= 0)
-                                                {{ $isArabic ? 'ينتهي بعد' : 'Expires in' }} {{ $daysLeft }} {{ $isArabic ? 'يوم' : 'days' }}
+                                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-300">
+                                                    <svg class="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                                    </svg>
+                                                    <span>{{ $isArabic ? 'الوقت المتبقي' : 'Time left' }}</span>
+                                                </span>
+                                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary-500/10 border border-primary-500/20 text-primary-600 dark:text-primary-300">
+                                                    <svg class="w-3.5 h-3.5 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                                                    </svg>
+                                                    <span class="course-expiry-countdown"
+                                                          data-expires-at="{{ $expiresAt?->toIso8601String() }}"
+                                                          data-label-days="days"
+                                                          data-label-hours="hours"
+                                                          data-label-minutes="minutes"
+                                                          data-label-seconds="seconds">
+                                                        {{ $daysLeft }} {{ $isArabic ? 'يوم' : 'days' }}
+                                                    </span>
+                                                </span>
                                             @else
-                                                {{ $isArabic ? 'انتهت مدة الاشتراك' : 'Subscription expired' }}
+                                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-500">
+                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                                    </svg>
+                                                    {{ $isArabic ? 'انتهت مدة الاشتراك' : 'Subscription expired' }}
+                                                </span>
                                             @endif
                                         </div>
                                     @endif
@@ -468,6 +497,61 @@
         100% { background-position: 0% 50%; }
     }
 </style>
+@endpush
+
+@push('scripts')
+<script>
+    (function () {
+        const nodes = document.querySelectorAll('.course-expiry-countdown[data-expires-at]');
+        if (!nodes.length) return;
+
+        function pluralizeAr(number, one, two, many) {
+            if (number === 1) return one;
+            if (number === 2) return two;
+            return many;
+        }
+
+        function formatCountdown(node, diffMs) {
+            const isArabic = document.documentElement.lang === 'ar';
+            const total = Math.max(0, Math.floor(diffMs / 1000));
+            const days = Math.floor(total / 86400);
+            const hours = Math.floor((total % 86400) / 3600);
+            const minutes = Math.floor((total % 3600) / 60);
+            const seconds = total % 60;
+
+            if (isArabic) {
+                if (days > 0) return `${days} ${pluralizeAr(days, 'يوم', 'يومين', 'أيام')} ${hours} ${pluralizeAr(hours, 'ساعة', 'ساعتين', 'ساعات')}`;
+                if (hours > 0) return `${hours} ${pluralizeAr(hours, 'ساعة', 'ساعتين', 'ساعات')} ${minutes} ${pluralizeAr(minutes, 'دقيقة', 'دقيقتين', 'دقائق')}`;
+                return `${minutes} ${pluralizeAr(minutes, 'دقيقة', 'دقيقتين', 'دقائق')} ${seconds} ${pluralizeAr(seconds, 'ثانية', 'ثانيتين', 'ثوانٍ')}`;
+            }
+
+            if (days > 0) return `${days} ${node.dataset.labelDays} ${hours} ${node.dataset.labelHours}`;
+            if (hours > 0) return `${hours} ${node.dataset.labelHours} ${minutes} ${node.dataset.labelMinutes}`;
+            return `${minutes} ${node.dataset.labelMinutes} ${seconds} ${node.dataset.labelSeconds}`;
+        }
+
+        function tick() {
+            const now = Date.now();
+            nodes.forEach((node) => {
+                const expiresAt = Date.parse(node.dataset.expiresAt || '');
+                if (Number.isNaN(expiresAt)) return;
+
+                const diffMs = expiresAt - now;
+                if (diffMs <= 0) {
+                    node.textContent = document.documentElement.lang === 'ar' ? 'انتهت مدة الاشتراك' : 'Subscription expired';
+                    node.classList.remove('text-primary-500');
+                    node.classList.add('text-rose-500');
+                    return;
+                }
+
+                node.textContent = formatCountdown(node, diffMs);
+            });
+        }
+
+        tick();
+        setInterval(tick, 1000);
+    })();
+</script>
 @endpush
 
 

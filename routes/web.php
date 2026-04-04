@@ -474,6 +474,15 @@ Route::prefix('student')->name('student.')->middleware(['auth', 'student', 'acti
     Route::post('/pronunciation/{exercise}/evaluate', [PronunciationController::class, 'evaluate'])
         ->middleware('throttle:pronunciation')
         ->name('pronunciation.evaluate');
+    Route::post('/pronunciation/{exercise}/stream/start', [PronunciationController::class, 'startStream'])
+        ->middleware('throttle:pronunciation')
+        ->name('pronunciation.stream.start');
+    Route::post('/pronunciation/{exercise}/stream/compare', [PronunciationController::class, 'compareStream'])
+        ->middleware('throttle:pronunciation')
+        ->name('pronunciation.stream.compare');
+    Route::post('/pronunciation/{exercise}/stream/finalize', [PronunciationController::class, 'finalizeStream'])
+        ->middleware('throttle:pronunciation')
+        ->name('pronunciation.stream.finalize');
 
     // Certificates
     Route::get('/certificates', [StudentCertificateController::class, 'index'])->name('certificates.index');

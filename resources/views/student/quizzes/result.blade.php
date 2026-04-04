@@ -37,6 +37,10 @@
 
     $formattedElapsed = null;
     if (!is_null($elapsedSeconds)) {
+        if ($elapsedSeconds === 0 && (int) ($attempt->total_questions ?? 0) > 0) {
+            $elapsedSeconds = 1;
+        }
+
         $hours = intdiv($elapsedSeconds, 3600);
         $minutes = intdiv($elapsedSeconds % 3600, 60);
         $seconds = $elapsedSeconds % 60;

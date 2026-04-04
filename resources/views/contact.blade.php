@@ -39,7 +39,7 @@
                         </div>
                         <div>
                             <h3 class="font-bold text-sm" style="color: var(--color-text);">{{ __('Phone') }}</h3>
-                            <p class="text-sm mt-1" style="color: var(--color-text-muted);">+1 (555) 123-4567</p>
+                            <p class="text-sm mt-1" style="color: var(--color-text-muted);" dir="ltr">+966537191862</p>
                         </div>
                     </div>
                 </div>

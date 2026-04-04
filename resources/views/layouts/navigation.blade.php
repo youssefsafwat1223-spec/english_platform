@@ -45,21 +45,21 @@
             </div>
 
             {{-- ─── Desktop Header Items ─── --}}
-            <div class="hidden lg:flex items-center gap-2 sm:gap-4 lg:gap-8 shrink-0">
+            <div class="hidden lg:flex items-center gap-2 sm:gap-3 lg:gap-4 min-w-0 flex-1">
                 <a href="{{ route('home') }}" class="flex items-center gap-2 sm:gap-3 group shrink-0">
                     <img src="{{ asset('images/logo.png') }}" alt="Simple English Logo" class="h-7 sm:h-10 w-auto object-contain transition-all duration-300 group-hover:scale-110 group-hover:rotate-3">
                     <div class="hidden sm:flex flex-col">
-                        <span class="font-sans text-lg lg:text-2xl font-black tracking-tighter text-slate-900 dark:text-white whitespace-nowrap group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors leading-none">
+                        <span class="font-sans text-lg lg:text-xl 2xl:text-2xl font-black tracking-tighter text-slate-900 dark:text-white whitespace-nowrap group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors leading-none">
                             Simple English
                         </span>
-                        <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 tracking-wider uppercase mt-0.5 leading-none">
+                        <span class="hidden 2xl:block text-[10px] font-bold text-slate-500 dark:text-slate-400 tracking-wider uppercase mt-0.5 leading-none">
                             {{ __('The easiest way to learn English') }}
                         </span>
                     </div>
                 </a>
 
                 {{-- ─── Desktop Links ─── --}}
-                <div class="hidden lg:flex items-center gap-1">
+                <div class="hidden lg:flex items-center gap-1 min-w-0 overflow-x-auto whitespace-nowrap pe-2 desktop-nav-scroll">
 
                     @auth
                         @if(auth()->user()->is_student)
@@ -185,7 +185,7 @@
             </div>
 
             {{-- ─── Right Side ─── --}}
-            <div class="flex items-center gap-1 sm:gap-2 md:gap-3">
+            <div class="flex items-center gap-1 sm:gap-2 md:gap-3 shrink-0">
 
                 {{-- Theme Toggle --}}
                 <button type="button"
@@ -497,20 +497,10 @@
          class="lg:hidden">
         
         {{-- ─── Student Settings Drawer (Consolidated Scope) ─── --}}
-        <div x-data="{ 
-                notifications: @js(auth()->user()->notifications()->orderBy('created_at','desc')->take(5)->get()->map(fn($n) => ['id'=>$n->id,'title'=>$n->title,'message'=>\Illuminate\Support\Str::limit($n->message,60),'is_read'=>$n->is_read,'action_url'=>route('student.notifications.mark-as-read',$n->id),'time_ago'=>$n->created_at->diffForHumans()])),
-                async fetchNotifications() {
-                    try {
-                        const res = await fetch('{{ route("student.notifications.recent-json") }}');
-                        const data = await res.json();
-                        this.notifications = data.notifications;
-                    } catch(e) {}
-                }
-             }" 
+        <div
              x-show="isDrawerOpen" 
              x-cloak 
              @click.outside="isDrawerOpen = false"
-             x-effect="if(isDrawerOpen) fetchNotifications()"
              x-transition:enter="transition ease-out duration-400"
              x-transition:enter-start="opacity-0 translate-y-12 scale-90"
              x-transition:enter-end="opacity-100 translate-y-0 scale-100"
@@ -558,36 +548,23 @@
                     </a>
                 </div>
 
-                {{-- Notifications Section --}}
-                <div class="space-y-4">
-                    <div class="flex items-center justify-between px-2">
-                        <div class="text-[11px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em]">{{ __('Recent Notifications') }}</div>
-                        <a href="{{ route('student.notifications.index') }}" class="text-[11px] font-black text-primary-500 uppercase tracking-wider">{{ __('See All') }}</a>
-                    </div>
-                    
-                    <div class="space-y-2.5">
-                        <template x-if="notifications.length === 0">
-                            <div class="py-4 text-center text-sm text-slate-400">{{ __('No recent notifications') }}</div>
-                        </template>
-                        <template x-for="notif in notifications" :key="notif.id">
-                            <a :href="notif.action_url" class="flex items-start gap-4 p-4 rounded-2xl bg-white/40 dark:bg-white/5 border border-white/40 dark:border-white/5 hover:bg-white dark:hover:bg-white/10 transition-all group/notif active:scale-[0.98]">
-                                <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-colors" :class="!notif.is_read ? 'bg-primary-500 text-white' : 'bg-slate-100 dark:bg-white/10 text-slate-400'">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-                                </div>
-                                <div class="flex-1 min-w-0">
-                                    <h4 class="text-sm font-bold truncate transition-colors" :class="!notif.is_read ? 'text-slate-900 dark:text-white' : 'text-slate-500 dark:text-slate-400'" x-text="notif.title"></h4>
-                                    <p class="text-xs text-slate-400 line-clamp-1 mt-0.5" x-text="notif.message"></p>
-                                    <span class="text-[10px] font-bold text-primary-500/60 uppercase mt-1 block" x-text="notif.time_ago"></span>
-                                </div>
-                                <div x-show="!notif.is_read" class="w-2 h-2 rounded-full bg-primary-500 mt-2"></div>
-                            </a>
-                        </template>
-                    </div>
-                </div>
-
                 <div class="space-y-4">
                     <div class="text-[11px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] px-2">{{ __('Navigation') }}</div>
                     <div class="grid grid-cols-1 gap-2.5">
+                        <a href="{{ route('student.notifications.index') }}" class="flex items-center justify-between px-5 py-4 rounded-2xl bg-white/40 dark:bg-white/5 border border-white/40 dark:border-white/5 hover:bg-white dark:hover:bg-white/10 transition-all group/link active:scale-[0.98]">
+                            <div class="flex items-center gap-4">
+                                <span class="text-xl group-hover/link:scale-110 transition-transform">🔔</span>
+                                <span class="text-[15px] font-bold text-slate-700 dark:text-slate-200">{{ __('Notifications') }}</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <template x-if="unreadCount > 0">
+                                    <span class="inline-flex min-w-[24px] h-6 px-2 rounded-full bg-red-500 text-white text-xs font-black items-center justify-center" x-text="unreadCount > 99 ? '99+' : unreadCount"></span>
+                                </template>
+                                <svg class="w-4 h-4 text-slate-400 group-hover/link:translate-x-1 transition-transform ltr:block rtl:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                                <svg class="w-4 h-4 text-slate-400 group-hover/link:-translate-x-1 transition-transform rtl:block ltr:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                            </div>
+                        </a>
+
                         @php
                             $extraLinks = [
                                 ['route' => 'student.certificates.index', 'icon' => '📜', 'label' => __('Certificates')],
@@ -696,7 +673,8 @@
                     
                     {{-- Dynamic Unread Badge --}}
                     <template x-if="unreadCount > 0">
-                        <span class="absolute top-4 right-1/4 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white dark:border-[#020617] shadow-sm animate-pulse z-20"></span>
+                        <span class="absolute top-2 right-[18%] min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[9px] font-black flex items-center justify-center border border-white dark:border-[#020617] shadow-sm z-20"
+                              x-text="unreadCount > 9 ? '9+' : unreadCount"></span>
                     </template>
 
                     <div class="relative z-10 flex flex-col items-center gap-1">

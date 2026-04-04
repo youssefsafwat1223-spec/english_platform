@@ -4,10 +4,10 @@
     "Welcome back again": "أهلاً وسهلاً بك مرة أخرى",
     "Continue your learning journey with us.": "كمّل رحلتك التعليمية معنا.",
     "Start mastering English today.": "ابدأ إتقان الإنجليزية اليوم.",
-    "Free AI-powered pronunciation coaching": "تدريب النطق بالذكاء الاصطناعي مجاناً",
-    "Earn certificates for completed courses": "احصل على شهادات للكورسات المكتملة",
-    "No credit card required to start": "ما تحتاج بطاقة ائتمانية للبدء",
-    "Trusted by students worldwide": "موثوق من طلاب حول العالم",
+    "Free AI-powered pronunciation coaching": "تدريب نطق مدعوم بالذكاء الاصطناعي مجانًا",
+    "Earn certificates for completed courses": "احصل على شهادات عند إكمال الدورات",
+    "No credit card required to start": "لا تحتاج بطاقة ائتمانية للبدء",
+    "Trusted by students worldwide": "يشاركنا طلاب من دول مختلفة",
     "Students Online": "طلاب متصلين",
     "Register your account in seconds.": "سجّل حسابك في ثوانٍ.",
     "Subscribe to the comprehensive language course.": "اشترك في كورس اللغة الشامل.",
@@ -1513,5 +1513,7 @@
     "Review your past quiz attempts, scores, and progress.": "راجع محاولاتك السابقة، الدرجات، وتقدمك في الاختبارات.",
     "Course:": "الكورس:",
     "No Attempts Yet": "لا توجد محاولات بعد",
-    "You haven't taken any quizzes yet. Start learning and test your knowledge!": "لم تقم بإجراء أي اختبارات حتى الآن. ابدأ التعلم واختبر معلوماتك!"
+    "You haven't taken any quizzes yet. Start learning and test your knowledge!": "لم تقم بإجراء أي اختبارات حتى الآن. ابدأ التعلم واختبر معلوماتك!",
+  "Start with the right foundation.": "ابدأ بالتأسيس الصحيح.",
+  "No credit card required to begin": "لا تحتاج بطاقة ائتمانية للبدء"
 }

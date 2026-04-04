@@ -200,7 +200,7 @@
     "Free AI-powered pronunciation coaching": "Free AI-powered pronunciation coaching",
     "Earn certificates for completed courses": "Earn certificates for completed courses",
     "No credit card required to start": "No credit card required to start",
-    "Trusted by students worldwide": "Trusted by students worldwide",
+    "Trusted by students worldwide": "Learners from different places",
     "Creating account...": "Creating account...",
     "Sending...": "Sending...",
     "Resetting...": "Resetting...",
@@ -1590,4 +1590,7 @@
     "Manage students, subscriptions and payments": "Manage students, subscriptions, progress, payments, and refunds.",
     "Manage Certificates, Forum and Bot": "Manage certificates, forum, reports, games, bot, and general settings.",
     "Setup Security, Payment and Telegram": "Security, payment, Telegram, points, and competition settings."
+,
+  "Start with the right foundation.": "Start with the right foundation.",
+  "No credit card required to begin": "No credit card required to begin"
 }
