@@ -350,7 +350,7 @@ function pronunciationApp() {
         recordingStartedAt: null,
         recordingTimeoutId: null,
         manualStop: false,
-        maxRecordMs: 12000,
+        maxRecordMs: 20000,
         csrfToken: document.querySelector('meta[name="csrf-token"]')?.content ?? '',
         passingScore: {{ $exercise->passing_score ?? 70 }},
         messages: @json($messages),
@@ -982,7 +982,6 @@ function pronunciationApp() {
 
             if (this.failedAttempts[sentenceNumber] >= 2) {
                 if (window.showNotification) window.showNotification(this.messages.listen_below, 'info');
-                setTimeout(() => this.speakCorrect(sentenceNumber, this.sentences[sentenceNumber]), 1500);
             } else if (window.showNotification) {
                 window.showNotification(this.messages.try_again, 'warning');
             }
