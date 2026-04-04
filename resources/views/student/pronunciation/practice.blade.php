@@ -176,21 +176,15 @@
 
                 <div class="px-6 pb-6">
                     <div class="flex flex-col items-center gap-4 py-6 rounded-xl bg-slate-100 dark:bg-slate-800/50">
-                        <button type="button" @click="togglePractice({{ $num }})" :disabled="(!recognitionSupported && !mediaRecorderSupported && !listenOnlyMode) || (isRecording && activeSentence !== {{ $num }})" class="w-20 h-20 rounded-full flex items-center justify-center transition-all duration-300 disabled:opacity-40" :class="isRecording && activeSentence === {{ $num }} ? 'bg-rose-500 scale-110 animate-pulse shadow-lg shadow-rose-500/30' : 'bg-gradient-to-br from-primary-600 to-accent-500 hover:scale-105 shadow-lg shadow-primary-500/30'">
-                            <svg x-show="!listenOnlyMode && !(isRecording && activeSentence === {{ $num }})" class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
-                            <svg x-show="listenOnlyMode" x-cloak class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5L6 9H2v6h4l5 4V5zm8.5 7a6.5 6.5 0 01-3.5 5.76M16.5 8.24A6.5 6.5 0 0119.5 12"/></svg>
+                        <button type="button" @click="togglePractice({{ $num }})" :disabled="(!recognitionSupported && !mediaRecorderSupported) || (isRecording && activeSentence !== {{ $num }})" class="w-20 h-20 rounded-full flex items-center justify-center transition-all duration-300 disabled:opacity-40" :class="isRecording && activeSentence === {{ $num }} ? 'bg-rose-500 scale-110 animate-pulse shadow-lg shadow-rose-500/30' : 'bg-gradient-to-br from-primary-600 to-accent-500 hover:scale-105 shadow-lg shadow-primary-500/30'">
+                            <svg x-show="!(isRecording && activeSentence === {{ $num }})" class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
                             <svg x-show="isRecording && activeSentence === {{ $num }}" x-cloak class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"/></svg>
                         </button>
 
                         <p class="text-sm font-medium" :class="isRecording && activeSentence === {{ $num }} ? 'text-rose-500' : 'text-slate-500 dark:text-slate-400'">
-                            <span x-show="listenOnlyMode">{{ $messages['ios_cta'] }}</span>
-                            <span x-show="!listenOnlyMode && !(isRecording && activeSentence === {{ $num }})">{{ $messages['tap_start'] }}</span>
+                            <span x-show="!(isRecording && activeSentence === {{ $num }})">{{ $messages['tap_start'] }}</span>
                             <span x-show="isRecording && activeSentence === {{ $num }}" x-cloak>{{ $messages['listening'] }} {{ $messages['tap_stop'] }}</span>
                         </p>
-
-                        <div x-show="listenOnlyMode" x-cloak class="mx-4 w-[calc(100%-2rem)] p-3 rounded-xl text-center text-xs bg-sky-500/10 border border-sky-500/20 text-slate-500 dark:text-slate-400">
-                            {{ $messages['ios_scoring'] }}
-                        </div>
 
                         <div x-show="activeSentence === {{ $num }} && liveTranscript" x-cloak dir="ltr" class="mx-4 w-[calc(100%-2rem)] p-3 rounded-xl text-left text-sm bg-slate-200 dark:bg-slate-900/50 border border-slate-300 dark:border-white/10 text-slate-600 dark:text-slate-300">
                             <template x-if="liveWordDiff[{{ $num }}] && liveWordDiff[{{ $num }}].length">
@@ -536,53 +530,6 @@ function pronunciationApp() {
             } catch (e) {
                 console.error('Recognition start error:', e);
                 this.stopRecording();
-                if (window.showNotification) window.showNotification(this.messages.start_failed, 'error');
-            }
-
-            return;
-
-            // Request mic permission first (required on most browsers)
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                // Immediately stop the stream — we only needed it for the permission grant
-                stream.getTracks().forEach(t => t.stop());
-            } catch (permErr) {
-                console.error('Microphone permission error:', permErr);
-                if (window.showNotification) window.showNotification(this.messages.mic_denied, 'error');
-                return;
-            }
-
-            this.recognition = this.initRecognition();
-            if (!this.recognition) {
-                if (window.showNotification) window.showNotification(this.messages.browser_title, 'error');
-                return;
-            }
-
-            this.activeSentence = sentenceNumber;
-            this.liveTranscript = '';
-            this.isRecording = true;
-            this.manualStop = false;
-            this.recordingStartedAt = Date.now();
-            if (this.recordingTimeoutId) {
-                clearTimeout(this.recordingTimeoutId);
-            }
-            this.recordingTimeoutId = setTimeout(() => {
-                if (this.isRecording) {
-                    this.stopRecording(true);
-                }
-            }, this.maxRecordMs);
-
-            try {
-                this.recognition.start();
-            } catch (e) {
-                console.error('Recognition start error:', e);
-                this.isRecording = false;
-                this.recognition = null;
-                this.recordingStartedAt = null;
-                if (this.recordingTimeoutId) {
-                    clearTimeout(this.recordingTimeoutId);
-                    this.recordingTimeoutId = null;
-                }
                 if (window.showNotification) window.showNotification(this.messages.start_failed, 'error');
             }
         },
@@ -1054,6 +1001,7 @@ if ('speechSynthesis' in window) {
 </script>
 @endpush
 @endsection
+
 
 
 
