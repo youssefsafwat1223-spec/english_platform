@@ -82,16 +82,7 @@
             badgeIcon="<svg class='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M12 3a3 3 0 013 3v5a3 3 0 11-6 0V6a3 3 0 013-3zm6 8a6 6 0 01-12 0M8 21h8m-4-3v3'/></svg>"
         />
 
-        <div x-show="listenOnlyMode" x-cloak class="mb-8 p-5 rounded-2xl text-center" style="background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.18);">
-            <div class="flex justify-center mb-3">
-                <svg class="w-8 h-8 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5L6 9H2v6h4l5 4V5zm8.5 7a6.5 6.5 0 01-3.5 5.76M16.5 8.24A6.5 6.5 0 0119.5 12"/></svg>
-            </div>
-            <h3 class="font-bold text-base mb-1 text-sky-400">{{ $messages['ios_title'] }}</h3>
-            <p class="text-sm text-sky-200/80">{{ $messages['ios_body'] }}</p>
-            <p class="text-xs mt-2 text-sky-200/60">{{ $messages['ios_scoring'] }}</p>
-        </div>
-
-        <div x-show="!listenOnlyMode && !recognitionSupported" x-cloak class="mb-8 p-5 rounded-2xl text-center" style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.2);">
+        <div x-show="!recognitionSupported && !mediaRecorderSupported" x-cloak class="mb-8 p-5 rounded-2xl text-center" style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.2);">
             <div class="flex justify-center mb-3">
                 <svg class="w-8 h-8 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86l-7.38 12.8A2 2 0 004.62 20h14.76a2 2 0 001.71-3.34l-7.38-12.8a2 2 0 00-3.42 0z"/></svg>
             </div>
@@ -309,22 +300,17 @@
 @push('scripts')
 <script>
 function pronunciationApp() {
-    const userAgent = navigator.userAgent || navigator.vendor || window.opera || '';
     const recognitionSupported = 'webkitSpeechRecognition' in window || 'SpeechRecognition' in window;
     const mediaRecorderSupported = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.MediaRecorder);
-    const isIOS = /iPad|iPhone|iPod/.test(userAgent)
-        || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-    const listenOnlyMode = false;
 
     return {
         recognitionSupported,
         mediaRecorderSupported,
-        isIOS,
-        listenOnlyMode,
         isRecording: false,
         isEvaluating: false,
         isSpeaking: false,
         speakingSentence: null,
+        currentAudio: null,
         activeSentence: null,
         liveTranscript: '',
         liveWordDiff: {},
@@ -468,6 +454,21 @@ function pronunciationApp() {
             return recognition;
         },
 
+        stopExamplePlayback() {
+            if (this.currentAudio) {
+                this.currentAudio.pause();
+                this.currentAudio.currentTime = 0;
+                this.currentAudio = null;
+            }
+
+            if (this.isSpeaking && 'speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+            }
+
+            this.isSpeaking = false;
+            this.speakingSentence = null;
+        },
+
         async togglePractice(sentenceNumber) {
             if (this.isRecording && this.activeSentence === sentenceNumber) {
                 this.stopRecording();
@@ -482,12 +483,8 @@ function pronunciationApp() {
                 this.stopRecording();
                 await new Promise(r => setTimeout(r, 350));
             }
-            
-            if (this.isSpeaking) {
-                window.speechSynthesis.cancel();
-                this.isSpeaking = false;
-                this.speakingSentence = null;
-            }
+
+            this.stopExamplePlayback();
 
             this.activeSentence = sentenceNumber;
             this.liveTranscript = '';
@@ -928,6 +925,8 @@ function pronunciationApp() {
         },
 
         playReferenceOrTts(sentenceNumber) {
+            this.stopExamplePlayback();
+
             const url = this.referenceAudio[sentenceNumber];
             const text = this.sentences[sentenceNumber];
 
@@ -945,7 +944,7 @@ function pronunciationApp() {
                 return;
             }
 
-            window.speechSynthesis.cancel();
+            this.stopExamplePlayback();
 
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.lang = 'en-US';
@@ -978,14 +977,21 @@ function pronunciationApp() {
         },
 
         playAudio(url, fallbackText = null, sentenceNumber = null) {
-            if (this.isSpeaking && 'speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
-            }
+            this.stopExamplePlayback();
 
             const audio = new Audio(url);
             audio.preload = 'auto';
             audio.playsInline = true;
+            this.currentAudio = audio;
+            audio.onended = () => {
+                if (this.currentAudio === audio) {
+                    this.currentAudio = null;
+                }
+            };
             audio.play().catch(() => {
+                if (this.currentAudio === audio) {
+                    this.currentAudio = null;
+                }
                 if (fallbackText) {
                     this.speakCorrect(sentenceNumber, fallbackText);
                 }
