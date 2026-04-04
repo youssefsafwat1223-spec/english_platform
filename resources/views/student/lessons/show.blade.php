@@ -426,10 +426,20 @@
                                 </div>
                                 <div class="p-6 relative z-10">
                                     <p class="text-sm mb-5 text-slate-600 dark:text-slate-400 font-medium">{{ __('حسّن مهاراتك في النطق مع تقييم فوري بالذكاء الاصطناعي.') }}</p>
-                                    <a href="{{ route('student.pronunciation.show', $lesson->pronunciationExercise) }}" class="btn-primary ripple-btn w-full justify-center shadow-lg shadow-primary-500/25 bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-500 hover:to-primary-400 border-0 flex items-center gap-2">
+                                    @if($pronunciationExerciseCompleted)
+                                        <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                                            <span class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold border border-emerald-500/20 w-full sm:w-auto justify-center">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                                {{ __('Completed') }}
+                                            </span>
+                                            <a href="{{ route('student.pronunciation.show', $lesson->pronunciationExercise) }}" class="btn-ghost font-bold text-slate-600 dark:text-slate-300 w-full sm:w-auto text-center hover:text-primary-500">{{ __('Practice Again') }}</a>
+                                        </div>
+                                    @else
+                                        <a href="{{ route('student.pronunciation.show', $lesson->pronunciationExercise) }}" class="btn-primary ripple-btn w-full justify-center shadow-lg shadow-primary-500/25 bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-500 hover:to-primary-400 border-0 flex items-center gap-2">
                                         {{ __('ابدأ التمرين') }}
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
                                     </a>
+                                    @endif
                                 </div>
                             </x-student.card>
                         @endif

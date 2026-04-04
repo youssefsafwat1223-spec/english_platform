@@ -176,7 +176,7 @@
 
                 <div class="px-6 pb-6">
                     <div class="flex flex-col items-center gap-4 py-6 rounded-xl bg-slate-100 dark:bg-slate-800/50">
-                        <button type="button" @click="togglePractice({{ $num }})" :disabled="(!recognitionSupported && !listenOnlyMode) || (isRecording && activeSentence !== {{ $num }})" class="w-20 h-20 rounded-full flex items-center justify-center transition-all duration-300 disabled:opacity-40" :class="isRecording && activeSentence === {{ $num }} ? 'bg-rose-500 scale-110 animate-pulse shadow-lg shadow-rose-500/30' : 'bg-gradient-to-br from-primary-600 to-accent-500 hover:scale-105 shadow-lg shadow-primary-500/30'">
+                        <button type="button" @click="togglePractice({{ $num }})" :disabled="(!recognitionSupported && !mediaRecorderSupported && !listenOnlyMode) || (isRecording && activeSentence !== {{ $num }})" class="w-20 h-20 rounded-full flex items-center justify-center transition-all duration-300 disabled:opacity-40" :class="isRecording && activeSentence === {{ $num }} ? 'bg-rose-500 scale-110 animate-pulse shadow-lg shadow-rose-500/30' : 'bg-gradient-to-br from-primary-600 to-accent-500 hover:scale-105 shadow-lg shadow-primary-500/30'">
                             <svg x-show="!listenOnlyMode && !(isRecording && activeSentence === {{ $num }})" class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
                             <svg x-show="listenOnlyMode" x-cloak class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5L6 9H2v6h4l5 4V5zm8.5 7a6.5 6.5 0 01-3.5 5.76M16.5 8.24A6.5 6.5 0 0119.5 12"/></svg>
                             <svg x-show="isRecording && activeSentence === {{ $num }}" x-cloak class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"/></svg>
@@ -320,7 +320,7 @@ function pronunciationApp() {
     const mediaRecorderSupported = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.MediaRecorder);
     const isIOS = /iPad|iPhone|iPod/.test(userAgent)
         || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-    const listenOnlyMode = isIOS && !mediaRecorderSupported && !recognitionSupported;
+    const listenOnlyMode = false;
 
     return {
         recognitionSupported,
@@ -475,11 +475,6 @@ function pronunciationApp() {
         },
 
         async togglePractice(sentenceNumber) {
-            if (this.listenOnlyMode) {
-                this.playReferenceOrTts(sentenceNumber);
-                return;
-            }
-
             if (this.isRecording && this.activeSentence === sentenceNumber) {
                 this.stopRecording();
             } else {
@@ -488,11 +483,6 @@ function pronunciationApp() {
         },
 
         async startRecording(sentenceNumber) {
-            if (this.listenOnlyMode) {
-                this.playReferenceOrTts(sentenceNumber);
-                return;
-            }
-
             // Stop any existing recognition before starting new one
             if (this.isRecording) {
                 this.stopRecording();

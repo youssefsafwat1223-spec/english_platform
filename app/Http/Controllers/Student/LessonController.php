@@ -56,6 +56,24 @@ class LessonController extends Controller
         $requiresQuizPass = $completionQuiz !== null;
         $hasPassedCompletionQuiz = !$requiresQuizPass || $completionQuiz->hasUserPassed($user);
 
+        $pronunciationExerciseCompleted = false;
+        if ($lesson->pronunciationExercise) {
+            $exercise = $lesson->pronunciationExercise;
+            $requiredSentenceNumbers = array_map('intval', array_keys($exercise->sentences));
+
+            if (!empty($requiredSentenceNumbers)) {
+                $attemptedSentenceNumbers = $exercise->attempts()
+                    ->where('user_id', $user->id)
+                    ->whereIn('sentence_number', $requiredSentenceNumbers)
+                    ->distinct()
+                    ->pluck('sentence_number')
+                    ->map(fn ($number) => (int) $number)
+                    ->all();
+
+                $pronunciationExerciseCompleted = empty(array_diff($requiredSentenceNumbers, $attemptedSentenceNumbers));
+            }
+        }
+
         // Keep the latest note editable and treat older entries as history.
         $notes = $user->notes()
             ->where('lesson_id', $lesson->id)
@@ -96,6 +114,7 @@ class LessonController extends Controller
             'completionQuiz',
             'requiresQuizPass',
             'hasPassedCompletionQuiz',
+            'pronunciationExerciseCompleted',
             'notes',
             'currentNote',
             'noteHistory',
