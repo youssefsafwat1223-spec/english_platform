@@ -167,7 +167,7 @@
 
                 <div class="px-6 pb-6">
                     <div class="flex flex-col items-center gap-4 py-6 rounded-xl bg-slate-100 dark:bg-slate-800/50">
-                        <button type="button" @click="togglePractice({{ $num }})" :disabled="(!recognitionSupported && !mediaRecorderSupported) || (isRecording && activeSentence !== {{ $num }})" class="w-20 h-20 rounded-full flex items-center justify-center transition-all duration-300 disabled:opacity-40" :class="isRecording && activeSentence === {{ $num }} ? 'bg-rose-500 scale-110 animate-pulse shadow-lg shadow-rose-500/30' : 'bg-gradient-to-br from-primary-600 to-accent-500 hover:scale-105 shadow-lg shadow-primary-500/30'">
+                        <button type="button" @click.stop.prevent="togglePractice({{ $num }})" :disabled="isStartingRecording || (!recognitionSupported && !mediaRecorderSupported) || (isRecording && activeSentence !== {{ $num }})" class="w-20 h-20 rounded-full flex items-center justify-center transition-all duration-300 disabled:opacity-40" :class="isRecording && activeSentence === {{ $num }} ? 'bg-rose-500 scale-110 animate-pulse shadow-lg shadow-rose-500/30' : 'bg-gradient-to-br from-primary-600 to-accent-500 hover:scale-105 shadow-lg shadow-primary-500/30'">
                             <svg x-show="!(isRecording && activeSentence === {{ $num }})" class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
                             <svg x-show="isRecording && activeSentence === {{ $num }}" x-cloak class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"/></svg>
                         </button>
@@ -329,6 +329,8 @@ function pronunciationApp() {
         isSpeaking: false,
         speakingSentence: null,
         currentAudio: null,
+        isStartingRecording: false,
+        lastToggleAt: 0,
         activeSentence: null,
         liveTranscript: '',
         liveWordDiff: {},
@@ -425,6 +427,7 @@ function pronunciationApp() {
                             } catch (e) {
                                 console.error('Recognition restart error:', e);
                                 this.isRecording = false;
+                                this.isStartingRecording = false;
                                 this.recognition = null;
                             }
                         }, 200);
@@ -433,6 +436,7 @@ function pronunciationApp() {
                 }
 
                 this.isRecording = false;
+                this.isStartingRecording = false;
                 this.recognition = null;
                 this.activeSentence = null;
                 this.recordingStartedAt = null;
@@ -448,6 +452,7 @@ function pronunciationApp() {
 
             recognition.onerror = (event) => {
                 this.isRecording = false;
+                this.isStartingRecording = false;
                 this.recognition = null;
                 this.activeSentence = null;
                 this.recordingStartedAt = null;
@@ -488,6 +493,18 @@ function pronunciationApp() {
         },
 
         async togglePractice(sentenceNumber) {
+            const now = Date.now();
+
+            if (this.isStartingRecording) {
+                return;
+            }
+
+            if ((now - this.lastToggleAt) < 900) {
+                return;
+            }
+
+            this.lastToggleAt = now;
+
             if (this.isRecording && this.activeSentence === sentenceNumber) {
                 this.stopRecording();
             } else {
@@ -496,6 +513,8 @@ function pronunciationApp() {
         },
 
         async startRecording(sentenceNumber) {
+            this.isStartingRecording = true;
+
             // Stop any existing recognition before starting new one
             if (this.isRecording) {
                 this.stopRecording();
@@ -524,11 +543,13 @@ function pronunciationApp() {
 
             const startedStreaming = await this.tryStartStreaming(sentenceNumber);
             if (startedStreaming) {
+                this.isStartingRecording = false;
                 return;
             }
 
             if (!this.recognitionSupported) {
                 this.stopRecording();
+                this.isStartingRecording = false;
                 if (window.showNotification) window.showNotification(this.messages.browser_title, 'error');
                 return;
             }
@@ -536,15 +557,20 @@ function pronunciationApp() {
             this.recognition = this.initRecognition();
             if (!this.recognition) {
                 this.stopRecording();
+                this.isStartingRecording = false;
                 if (window.showNotification) window.showNotification(this.messages.browser_title, 'error');
                 return;
             }
 
             try {
                 this.recognition.start();
+                setTimeout(() => {
+                    this.isStartingRecording = false;
+                }, 500);
             } catch (e) {
                 console.error('Recognition start error:', e);
                 this.stopRecording();
+                this.isStartingRecording = false;
                 if (window.showNotification) window.showNotification(this.messages.start_failed, 'error');
             }
         },
@@ -789,6 +815,7 @@ function pronunciationApp() {
             }
 
             this.isRecording = false;
+            this.isStartingRecording = false;
             this.recordingStartedAt = null;
             if (this.recordingTimeoutId) {
                 clearTimeout(this.recordingTimeoutId);
@@ -822,6 +849,7 @@ function pronunciationApp() {
 
             this.cleanupStreamingResources();
             this.isRecording = false;
+            this.isStartingRecording = false;
             this.activeSentence = null;
             this.recordingStartedAt = null;
             if (this.recordingTimeoutId) {
