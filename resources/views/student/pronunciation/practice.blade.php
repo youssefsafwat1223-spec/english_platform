@@ -350,7 +350,7 @@ function pronunciationApp() {
         recordingStartedAt: null,
         recordingTimeoutId: null,
         manualStop: false,
-        maxRecordMs: 20000,
+        maxRecordMs: 0,
         csrfToken: document.querySelector('meta[name="csrf-token"]')?.content ?? '',
         passingScore: {{ $exercise->passing_score ?? 70 }},
         messages: @json($messages),
@@ -416,7 +416,7 @@ function pronunciationApp() {
                     && this.isRecording
                     && !transcript
                     && this.recordingStartedAt
-                    && elapsed < (this.maxRecordMs - 500);
+                    && (this.maxRecordMs <= 0 || elapsed < (this.maxRecordMs - 500));
 
                 if (shouldRestart) {
                     this.recognition = this.initRecognition();
@@ -513,12 +513,15 @@ function pronunciationApp() {
             this.recordingStartedAt = Date.now();
             if (this.recordingTimeoutId) {
                 clearTimeout(this.recordingTimeoutId);
+                this.recordingTimeoutId = null;
             }
-            this.recordingTimeoutId = setTimeout(() => {
-                if (this.isRecording) {
-                    this.stopRecording();
-                }
-            }, this.maxRecordMs);
+            if (this.maxRecordMs > 0) {
+                this.recordingTimeoutId = setTimeout(() => {
+                    if (this.isRecording) {
+                        this.stopRecording();
+                    }
+                }, this.maxRecordMs);
+            }
 
             const startedStreaming = await this.tryStartStreaming(sentenceNumber);
             if (startedStreaming) {
