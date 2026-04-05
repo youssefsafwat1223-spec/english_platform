@@ -179,7 +179,7 @@
 
                         <p class="text-sm font-medium" :class="isRecording && activeSentence === {{ $num }} ? 'text-rose-500' : 'text-slate-500 dark:text-slate-400'">
                             <span x-show="!(isRecording && activeSentence === {{ $num }})" x-text="safeRecordingMode ? '{{ $isArabic ? 'اضغط مرة للتسجيل' : 'Tap once to record' }}' : messages.tap_start"></span>
-                            <span x-show="isRecording && activeSentence === {{ $num }}" x-cloak x-text="safeRecordingMode ? '{{ $isArabic ? 'جارٍ التسجيل... اضغط مرة ثانية للإيقاف' : 'Recording... tap again to stop' }}' : (messages.listening + ' ' + messages.tap_stop)"></span>
+                            <span x-show="isRecording && activeSentence === {{ $num }}" x-cloak x-text="safeRecordingMode ? '{{ $isArabic ? 'جارٍ التسجيل... سيتوقف تلقائيًا عندما تنتهي' : 'Recording... it will stop automatically when you finish' }}' : '{{ $isArabic ? 'جارٍ الاستماع... سيتوقف تلقائيًا عندما تنتهي' : 'Listening... it will stop automatically when you finish' }}'"></span>
                         </p>
 
                         <div x-show="!safeRecordingMode && activeSentence === {{ $num }} && liveTranscript" x-cloak dir="ltr" class="mx-4 w-[calc(100%-2rem)] p-3 rounded-xl text-left text-sm bg-slate-200 dark:bg-slate-900/50 border border-slate-300 dark:border-white/10 text-slate-600 dark:text-slate-300">
@@ -362,11 +362,23 @@ function pronunciationApp() {
         recordingStartedAt: null,
         recordingTimeoutId: null,
         manualStop: false,
+        autoStopTriggered: false,
         minStopDelayMs: safeRecordingMode ? 1500 : 0,
         minStopAt: 0,
         maxRecordMs: {{ max(5, min(120, (int) ($exercise->max_duration_seconds ?? 20))) * 1000 }},
         streamLiveCompare: !safeRecordingMode,
         streamStopResolver: null,
+        audioContext: null,
+        analyserNode: null,
+        analyserData: null,
+        analyserSource: null,
+        silenceMonitorId: null,
+        speechDetectedAt: null,
+        silenceDetectedAt: null,
+        speechDetected: false,
+        autoStopSilenceMs: 1500,
+        autoStopThreshold: 0.028,
+        autoStopMinSpeechMs: 700,
         csrfToken: document.querySelector('meta[name="csrf-token"]')?.content ?? '',
         passingScore: {{ $exercise->passing_score ?? 70 }},
         messages: @json($messages),
@@ -569,6 +581,10 @@ function pronunciationApp() {
             this.recordingStartedAt = Date.now();
             this.minStopAt = this.recordingStartedAt + this.minStopDelayMs;
             this.pendingFinalTranscript = '';
+            this.autoStopTriggered = false;
+            this.speechDetectedAt = null;
+            this.silenceDetectedAt = null;
+            this.speechDetected = false;
             if (this.recordingTimeoutId) {
                 clearTimeout(this.recordingTimeoutId);
                 this.recordingTimeoutId = null;
@@ -690,6 +706,7 @@ function pronunciationApp() {
                 ? new MediaRecorder(this.mediaStream, { mimeType })
                 : new MediaRecorder(this.mediaStream);
             this.usingStream = true;
+            this.startSilenceMonitor(this.mediaStream, sentenceNumber);
 
             this.connectStreamSocket(wsUrl, wsToken, sentenceNumber);
 
@@ -715,6 +732,105 @@ function pronunciationApp() {
             };
 
             this.mediaRecorder.start(this.streamChunkMs);
+        },
+
+        startSilenceMonitor(stream, sentenceNumber) {
+            this.stopSilenceMonitor();
+
+            try {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContextClass) {
+                    return;
+                }
+
+                this.audioContext = new AudioContextClass();
+                this.analyserNode = this.audioContext.createAnalyser();
+                this.analyserNode.fftSize = 2048;
+                this.analyserNode.smoothingTimeConstant = 0.25;
+                this.analyserSource = this.audioContext.createMediaStreamSource(stream);
+                this.analyserSource.connect(this.analyserNode);
+                this.analyserData = new Uint8Array(this.analyserNode.fftSize);
+
+                const tick = () => {
+                    if (!this.isRecording || this.activeSentence !== sentenceNumber || !this.analyserNode || !this.analyserData) {
+                        this.silenceMonitorId = null;
+                        return;
+                    }
+
+                    this.analyserNode.getByteTimeDomainData(this.analyserData);
+
+                    let sumSquares = 0;
+                    for (let i = 0; i < this.analyserData.length; i++) {
+                        const normalized = (this.analyserData[i] - 128) / 128;
+                        sumSquares += normalized * normalized;
+                    }
+
+                    const volume = Math.sqrt(sumSquares / this.analyserData.length);
+                    const now = Date.now();
+
+                    if (volume >= this.autoStopThreshold) {
+                        this.speechDetected = true;
+                        this.speechDetectedAt ??= now;
+                        this.silenceDetectedAt = null;
+                    } else if (this.speechDetected) {
+                        this.silenceDetectedAt ??= now;
+
+                        const speechDuration = this.speechDetectedAt ? (now - this.speechDetectedAt) : 0;
+                        const silenceDuration = now - this.silenceDetectedAt;
+
+                        if (!this.autoStopTriggered
+                            && speechDuration >= this.autoStopMinSpeechMs
+                            && silenceDuration >= this.autoStopSilenceMs) {
+                            this.autoStopTriggered = true;
+                            this.stopRecording(true);
+                            this.silenceMonitorId = null;
+                            return;
+                        }
+                    }
+
+                    this.silenceMonitorId = window.requestAnimationFrame(tick);
+                };
+
+                this.silenceMonitorId = window.requestAnimationFrame(tick);
+            } catch (error) {
+                console.error('Silence monitor start failed:', error);
+                this.stopSilenceMonitor();
+            }
+        },
+
+        stopSilenceMonitor() {
+            if (this.silenceMonitorId) {
+                window.cancelAnimationFrame(this.silenceMonitorId);
+                this.silenceMonitorId = null;
+            }
+
+            if (this.analyserSource) {
+                try {
+                    this.analyserSource.disconnect();
+                } catch (error) {
+                    console.error('Analyser source disconnect failed:', error);
+                }
+            }
+
+            if (this.analyserNode) {
+                try {
+                    this.analyserNode.disconnect();
+                } catch (error) {
+                    console.error('Analyser disconnect failed:', error);
+                }
+            }
+
+            if (this.audioContext && this.audioContext.state !== 'closed') {
+                this.audioContext.close().catch(() => {});
+            }
+
+            this.audioContext = null;
+            this.analyserNode = null;
+            this.analyserData = null;
+            this.analyserSource = null;
+            this.speechDetectedAt = null;
+            this.silenceDetectedAt = null;
+            this.speechDetected = false;
         },
 
         connectStreamSocket(wsUrl, wsToken, sentenceNumber) {
@@ -872,6 +988,7 @@ function pronunciationApp() {
 
         stopRecording(force = false) {
             this.manualStop = true;
+            this.stopSilenceMonitor();
 
             if (this.usingStream) {
                 this.stopStreamingMode();
@@ -1005,6 +1122,8 @@ function pronunciationApp() {
         },
 
         cleanupStreamingResources() {
+            this.stopSilenceMonitor();
+
             if (this.mediaStream) {
                 this.mediaStream.getTracks().forEach((track) => track.stop());
             }
@@ -1194,7 +1313,3 @@ if ('speechSynthesis' in window) {
 </script>
 @endpush
 @endsection
-
-
-
-
