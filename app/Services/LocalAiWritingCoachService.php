@@ -71,13 +71,18 @@ class LocalAiWritingCoachService
 
     private function buildPrompt(WritingExercise $exercise, string $answer, int $wordCount, string $locale): string
     {
-        $feedbackLanguage = str_starts_with(strtolower($locale), 'ar') ? 'Arabic' : 'English';
+        $isArabic = str_starts_with(strtolower($locale), 'ar');
+        $feedbackLanguage = $isArabic ? 'Arabic' : 'English';
+        $languageRule = $isArabic
+            ? 'summary, strengths, and improvements MUST be written in Arabic only. rewrite_suggestion MUST stay in English.'
+            : 'summary, strengths, improvements, and rewrite_suggestion MUST be written in English.';
 
         return <<<PROMPT
 You are a writing coach for English learners.
 Evaluate the student's answer and return JSON only.
 
 Feedback language: {$feedbackLanguage}
+Language rule: {$languageRule}
 Prompt title: {$exercise->title}
 Task prompt: {$exercise->prompt}
 Instructions: {$exercise->instructions}
@@ -97,6 +102,7 @@ Rules:
 - strengths is an array with up to 3 short bullet-style strings
 - improvements is an array with up to 3 short bullet-style strings
 - rewrite_suggestion is an improved version of the student's answer, but keep it close to the original level
+- Follow the language rule strictly
 - Do not include markdown
 PROMPT;
     }

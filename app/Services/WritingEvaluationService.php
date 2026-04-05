@@ -18,8 +18,9 @@ class WritingEvaluationService
         $wordCount = $this->countWords($normalizedAnswer);
         $grammarIssues = $this->languageToolService->check($normalizedAnswer, 'en-US');
 
-        $baseScores = $this->buildBaseScores($exercise, $normalizedAnswer, $wordCount, $grammarIssues);
+        $baseScores = $this->buildBaseScores($exercise, $normalizedAnswer, $wordCount, $grammarIssues, $locale);
         $aiFeedback = $this->localAiWritingCoachService->evaluate($exercise, $normalizedAnswer, $wordCount, $locale);
+        $aiFeedback = $this->normalizeAiFeedbackLocale($aiFeedback, $locale);
 
         return [
             'word_count' => $wordCount,
@@ -37,7 +38,7 @@ class WritingEvaluationService
         ];
     }
 
-    private function buildBaseScores(WritingExercise $exercise, string $answer, int $wordCount, array $grammarIssues): array
+    private function buildBaseScores(WritingExercise $exercise, string $answer, int $wordCount, array $grammarIssues, string $locale): array
     {
         $lengthPenalty = 0;
         if ($wordCount < $exercise->min_words) {
@@ -61,9 +62,9 @@ class WritingEvaluationService
             'vocabulary_score' => $vocabularyScore,
             'coherence_score' => $coherenceScore,
             'task_score' => $taskScore,
-            'summary' => $this->buildFallbackSummary($wordCount, $exercise, count($grammarIssues)),
-            'strengths' => $this->buildStrengths($wordCount, $exercise, $grammarIssues),
-            'improvements' => $this->buildImprovements($wordCount, $exercise, $grammarIssues),
+            'summary' => $this->buildFallbackSummary($wordCount, $exercise, count($grammarIssues), $locale),
+            'strengths' => $this->buildStrengths($wordCount, $exercise, $grammarIssues, $locale),
+            'improvements' => $this->buildImprovements($wordCount, $exercise, $grammarIssues, $locale),
         ];
     }
 
@@ -94,49 +95,71 @@ class WritingEvaluationService
         return 78;
     }
 
-    private function buildFallbackSummary(int $wordCount, WritingExercise $exercise, int $grammarIssueCount): string
+    private function buildFallbackSummary(int $wordCount, WritingExercise $exercise, int $grammarIssueCount, string $locale): string
     {
+        $isArabic = $this->isArabicLocale($locale);
+
         if ($wordCount < $exercise->min_words) {
-            return 'Your answer is clear, but it needs more detail to fully complete the task.';
+            return $isArabic
+                ? 'إجابتك واضحة، لكنها تحتاج تفاصيل أكثر لإكمال المطلوب بالكامل.'
+                : 'Your answer is clear, but it needs more detail to fully complete the task.';
         }
 
         if ($grammarIssueCount > 5) {
-            return 'Your ideas are understandable, but the writing needs cleaner grammar and sentence control.';
+            return $isArabic
+                ? 'أفكارك مفهومة، لكن الكتابة تحتاج ضبطًا أفضل للقواعد وبناء الجمل.'
+                : 'Your ideas are understandable, but the writing needs cleaner grammar and sentence control.';
         }
 
-        return 'Your writing covers the task well. Focus on polishing grammar and vocabulary to make it stronger.';
+        return $isArabic
+            ? 'كتابتك تغطي المطلوب بشكل جيد. ركّز على تحسين القواعد والمفردات لتصبح أقوى.'
+            : 'Your writing covers the task well. Focus on polishing grammar and vocabulary to make it stronger.';
     }
 
-    private function buildStrengths(int $wordCount, WritingExercise $exercise, array $grammarIssues): array
+    private function buildStrengths(int $wordCount, WritingExercise $exercise, array $grammarIssues, string $locale): array
     {
+        $isArabic = $this->isArabicLocale($locale);
         $strengths = [];
 
         if ($wordCount >= $exercise->min_words) {
-            $strengths[] = 'You wrote enough to address the task.';
+            $strengths[] = $isArabic
+                ? 'كتبت عدد كلمات مناسب لتغطية المطلوب.'
+                : 'You wrote enough to address the task.';
         }
 
         if (count($grammarIssues) <= 3) {
-            $strengths[] = 'Most sentences are easy to follow.';
+            $strengths[] = $isArabic
+                ? 'معظم الجمل واضحة وسهلة المتابعة.'
+                : 'Most sentences are easy to follow.';
         }
 
-        $strengths[] = 'Your answer stays connected to the lesson prompt.';
+        $strengths[] = $isArabic
+            ? 'إجابتك مرتبطة بموضوع الدرس.'
+            : 'Your answer stays connected to the lesson prompt.';
 
         return array_slice($strengths, 0, 3);
     }
 
-    private function buildImprovements(int $wordCount, WritingExercise $exercise, array $grammarIssues): array
+    private function buildImprovements(int $wordCount, WritingExercise $exercise, array $grammarIssues, string $locale): array
     {
+        $isArabic = $this->isArabicLocale($locale);
         $items = [];
 
         if ($wordCount < $exercise->min_words) {
-            $items[] = 'Add more supporting details so your answer reaches the target length.';
+            $items[] = $isArabic
+                ? 'أضف تفاصيل داعمة أكثر حتى تصل للعدد المطلوب من الكلمات.'
+                : 'Add more supporting details so your answer reaches the target length.';
         }
 
         if (!empty($grammarIssues)) {
-            $items[] = 'Revise grammar and spelling errors before submitting again.';
+            $items[] = $isArabic
+                ? 'راجع أخطاء القواعد والإملاء قبل إعادة الإرسال.'
+                : 'Revise grammar and spelling errors before submitting again.';
         }
 
-        $items[] = 'Use a wider range of linking words and vocabulary in your next draft.';
+        $items[] = $isArabic
+            ? 'استخدم مجموعة أوسع من كلمات الربط والمفردات في المحاولة القادمة.'
+            : 'Use a wider range of linking words and vocabulary in your next draft.';
 
         return array_slice($items, 0, 3);
     }
@@ -146,5 +169,49 @@ class WritingEvaluationService
         return collect(preg_split('/\s+/', trim($text)) ?: [])
             ->filter(fn ($word) => $word !== '')
             ->count();
+    }
+
+    private function normalizeAiFeedbackLocale(?array $aiFeedback, string $locale): ?array
+    {
+        if ($aiFeedback === null) {
+            return null;
+        }
+
+        if (!$this->isArabicLocale($locale)) {
+            return $aiFeedback;
+        }
+
+        $textParts = array_filter([
+            $aiFeedback['summary'] ?? '',
+            ...($aiFeedback['strengths'] ?? []),
+            ...($aiFeedback['improvements'] ?? []),
+        ], fn ($item) => is_string($item) && trim($item) !== '');
+
+        if (empty($textParts)) {
+            return null;
+        }
+
+        $joined = implode(' ', $textParts);
+        if ($this->containsArabic($joined)) {
+            return $aiFeedback;
+        }
+
+        // If Arabic UI requested but model returned non-Arabic feedback,
+        // fallback text will be used from localized base scores.
+        $aiFeedback['summary'] = null;
+        $aiFeedback['strengths'] = null;
+        $aiFeedback['improvements'] = null;
+
+        return $aiFeedback;
+    }
+
+    private function isArabicLocale(string $locale): bool
+    {
+        return str_starts_with(strtolower($locale), 'ar');
+    }
+
+    private function containsArabic(string $text): bool
+    {
+        return preg_match('/\p{Arabic}/u', $text) === 1;
     }
 }
