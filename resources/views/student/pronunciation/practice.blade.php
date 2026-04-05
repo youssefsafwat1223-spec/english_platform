@@ -90,6 +90,11 @@
             <p class="text-sm text-amber-300/70">{{ $messages['browser_body'] }}</p>
         </div>
 
+        <div x-show="safeRecordingMode" x-cloak class="mb-8 rounded-2xl border border-primary-200/60 bg-primary-50/80 p-4 text-sm text-primary-700 shadow-sm dark:border-primary-500/20 dark:bg-primary-500/10 dark:text-primary-200">
+            <p class="font-bold">{{ $isArabic ? 'وضع تسجيل ثابت' : 'Stable Recording Mode' }}</p>
+            <p class="mt-1">{{ $isArabic ? 'على iPhone Safari يبدأ التسجيل بضغطة واحدة ويتوقف بضغطة ثانية، ثم يظهر التقييم بعد الإيقاف.' : 'On iPhone Safari, recording starts with one tap and stops with the next tap. Your score appears after you stop.' }}</p>
+        </div>
+
         @php
             try {
                 $vocabList = is_array($exercise->vocabulary_json) ? $exercise->vocabulary_json : [];
@@ -173,11 +178,11 @@
                         </button>
 
                         <p class="text-sm font-medium" :class="isRecording && activeSentence === {{ $num }} ? 'text-rose-500' : 'text-slate-500 dark:text-slate-400'">
-                            <span x-show="!(isRecording && activeSentence === {{ $num }})">{{ $messages['tap_start'] }}</span>
-                            <span x-show="isRecording && activeSentence === {{ $num }}" x-cloak>{{ $messages['listening'] }} {{ $messages['tap_stop'] }}</span>
+                            <span x-show="!(isRecording && activeSentence === {{ $num }})" x-text="safeRecordingMode ? '{{ $isArabic ? 'اضغط مرة للتسجيل' : 'Tap once to record' }}' : messages.tap_start"></span>
+                            <span x-show="isRecording && activeSentence === {{ $num }}" x-cloak x-text="safeRecordingMode ? '{{ $isArabic ? 'جارٍ التسجيل... اضغط مرة ثانية للإيقاف' : 'Recording... tap again to stop' }}' : (messages.listening + ' ' + messages.tap_stop)"></span>
                         </p>
 
-                        <div x-show="activeSentence === {{ $num }} && liveTranscript" x-cloak dir="ltr" class="mx-4 w-[calc(100%-2rem)] p-3 rounded-xl text-left text-sm bg-slate-200 dark:bg-slate-900/50 border border-slate-300 dark:border-white/10 text-slate-600 dark:text-slate-300">
+                        <div x-show="!safeRecordingMode && activeSentence === {{ $num }} && liveTranscript" x-cloak dir="ltr" class="mx-4 w-[calc(100%-2rem)] p-3 rounded-xl text-left text-sm bg-slate-200 dark:bg-slate-900/50 border border-slate-300 dark:border-white/10 text-slate-600 dark:text-slate-300">
                             <template x-if="liveWordDiff[{{ $num }}] && liveWordDiff[{{ $num }}].length">
                                 <div class="flex flex-wrap gap-1.5 leading-7">
                                     <template x-for="(token, index) in liveWordDiff[{{ $num }}]" :key="index">
@@ -318,12 +323,18 @@
 @push('scripts')
 <script>
 function pronunciationApp() {
+    const userAgent = navigator.userAgent || '';
+    const isIOS = /iPad|iPhone|iPod/.test(userAgent)
+        || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    const isSafari = /Safari/i.test(userAgent) && !/CriOS|Chrome|FxiOS|Firefox|EdgiOS|Edg|OPiOS|Opera|SamsungBrowser/i.test(userAgent);
     const recognitionSupported = 'webkitSpeechRecognition' in window || 'SpeechRecognition' in window;
     const mediaRecorderSupported = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.MediaRecorder);
+    const safeRecordingMode = isIOS && isSafari && mediaRecorderSupported;
 
     return {
         recognitionSupported,
         mediaRecorderSupported,
+        safeRecordingMode,
         isRecording: false,
         isEvaluating: false,
         isSpeaking: false,
@@ -347,10 +358,15 @@ function pronunciationApp() {
         compareInFlight: false,
         pendingCompareTranscript: null,
         latestLatencyMs: null,
+        pendingFinalTranscript: '',
         recordingStartedAt: null,
         recordingTimeoutId: null,
         manualStop: false,
-        maxRecordMs: 0,
+        minStopDelayMs: safeRecordingMode ? 1500 : 0,
+        minStopAt: 0,
+        maxRecordMs: {{ max(5, min(120, (int) ($exercise->max_duration_seconds ?? 20))) * 1000 }},
+        streamLiveCompare: !safeRecordingMode,
+        streamStopResolver: null,
         csrfToken: document.querySelector('meta[name="csrf-token"]')?.content ?? '',
         passingScore: {{ $exercise->passing_score ?? 70 }},
         messages: @json($messages),
@@ -525,6 +541,9 @@ function pronunciationApp() {
             this.lastToggleAt = now;
 
             if (this.isRecording && this.activeSentence === sentenceNumber) {
+                if (this.safeRecordingMode && now < this.minStopAt) {
+                    return;
+                }
                 this.stopRecording();
             } else {
                 await this.startRecording(sentenceNumber);
@@ -548,6 +567,8 @@ function pronunciationApp() {
             this.isRecording = true;
             this.manualStop = false;
             this.recordingStartedAt = Date.now();
+            this.minStopAt = this.recordingStartedAt + this.minStopDelayMs;
+            this.pendingFinalTranscript = '';
             if (this.recordingTimeoutId) {
                 clearTimeout(this.recordingTimeoutId);
                 this.recordingTimeoutId = null;
@@ -560,7 +581,9 @@ function pronunciationApp() {
                 }, this.maxRecordMs);
             }
 
-            const startedStreaming = await this.tryStartStreaming(sentenceNumber);
+            const startedStreaming = await this.tryStartStreaming(sentenceNumber, {
+                liveCompare: !this.safeRecordingMode,
+            });
             if (startedStreaming) {
                 this.isStartingRecording = false;
                 return;
@@ -594,10 +617,12 @@ function pronunciationApp() {
             }
         },
 
-        async tryStartStreaming(sentenceNumber) {
+        async tryStartStreaming(sentenceNumber, options = {}) {
             if (!this.mediaRecorderSupported) {
                 return false;
             }
+
+            this.streamLiveCompare = options.liveCompare !== false;
 
             let streamSession = null;
 
@@ -722,7 +747,19 @@ function pronunciationApp() {
                     const transcript = (payload.partial_transcript ?? payload.transcript ?? '').trim();
 
                     if (transcript) {
-                        await this.handleLiveTranscript(sentenceNumber, transcript, payload.word_diff || null);
+                        this.liveTranscript = transcript;
+
+                        if (payload.transcript) {
+                            this.pendingFinalTranscript = transcript;
+                            if (this.streamStopResolver) {
+                                this.streamStopResolver(payload);
+                                this.streamStopResolver = null;
+                            }
+                        }
+
+                        if (this.streamLiveCompare) {
+                            await this.handleLiveTranscript(sentenceNumber, transcript, payload.word_diff || null);
+                        }
                     }
 
                     if (typeof payload.latency_ms === 'number') {
@@ -735,6 +772,13 @@ function pronunciationApp() {
 
             this.streamSocket.onerror = (error) => {
                 console.error('Socket error:', error);
+            };
+
+            this.streamSocket.onclose = () => {
+                if (this.streamStopResolver) {
+                    this.streamStopResolver(null);
+                    this.streamStopResolver = null;
+                }
             };
         },
 
@@ -868,33 +912,20 @@ function pronunciationApp() {
 
         async stopStreamingMode() {
             const sentenceNumber = this.activeSentence;
-            const transcript = this.liveTranscript.trim();
             const durationSeconds = this.recordingStartedAt
                 ? Math.max(0, Math.round((Date.now() - this.recordingStartedAt) / 1000))
                 : 0;
 
-            if (this.mediaRecorder && this.mediaRecorder.state !== 'inactive') {
-                this.mediaRecorder.stop();
-            }
-
-            this.sendSocketPayload({
-                type: 'stop',
-                session_id: this.streamSessionId,
-            });
-
-            if (this.streamSocket) {
-                try {
-                    this.streamSocket.close();
-                } catch (error) {
-                    console.error('Socket close failed:', error);
-                }
-            }
+            await this.stopMediaRecorderGracefully();
+            const finalPayload = await this.requestFinalStreamPayload();
+            const transcript = String(finalPayload?.transcript || this.pendingFinalTranscript || this.liveTranscript || '').trim();
 
             this.cleanupStreamingResources();
             this.isRecording = false;
             this.isStartingRecording = false;
             this.activeSentence = null;
             this.recordingStartedAt = null;
+            this.minStopAt = 0;
             if (this.recordingTimeoutId) {
                 clearTimeout(this.recordingTimeoutId);
                 this.recordingTimeoutId = null;
@@ -904,6 +935,72 @@ function pronunciationApp() {
                 await this.finalizeStreamTranscript(sentenceNumber, transcript, durationSeconds);
             } else if (window.showNotification) {
                 window.showNotification(this.messages.no_speech, 'warning');
+            }
+        },
+
+        stopMediaRecorderGracefully() {
+            return new Promise((resolve) => {
+                if (!this.mediaRecorder || this.mediaRecorder.state === 'inactive') {
+                    resolve();
+                    return;
+                }
+
+                const recorder = this.mediaRecorder;
+                const finish = () => {
+                    recorder.onstop = null;
+                    resolve();
+                };
+
+                recorder.onstop = finish;
+
+                try {
+                    recorder.stop();
+                } catch (error) {
+                    console.error('MediaRecorder stop failed:', error);
+                    finish();
+                }
+            });
+        },
+
+        requestFinalStreamPayload() {
+            return new Promise((resolve) => {
+                let settled = false;
+                const finish = (payload = null) => {
+                    if (settled) {
+                        return;
+                    }
+                    settled = true;
+                    if (timeoutId) {
+                        clearTimeout(timeoutId);
+                    }
+                    this.streamStopResolver = null;
+                    this.closeStreamSocket();
+                    resolve(payload);
+                };
+
+                const timeoutId = setTimeout(() => finish(null), this.safeRecordingMode ? 3500 : 2000);
+                this.streamStopResolver = finish;
+
+                this.sendSocketPayload({
+                    type: 'stop',
+                    session_id: this.streamSessionId,
+                });
+
+                if (!this.streamSocket || this.streamSocket.readyState !== WebSocket.OPEN) {
+                    finish(null);
+                }
+            });
+        },
+
+        closeStreamSocket() {
+            if (!this.streamSocket) {
+                return;
+            }
+
+            try {
+                this.streamSocket.close();
+            } catch (error) {
+                console.error('Socket close failed:', error);
             }
         },
 
@@ -917,6 +1014,7 @@ function pronunciationApp() {
             this.streamSocket = null;
             this.usingStream = false;
             this.streamEnabled = false;
+            this.streamLiveCompare = !this.safeRecordingMode;
         },
 
         async finalizeStreamTranscript(sentenceNumber, transcript, durationSeconds) {
@@ -1096,8 +1194,6 @@ if ('speechSynthesis' in window) {
 </script>
 @endpush
 @endsection
-
-
 
 
 
