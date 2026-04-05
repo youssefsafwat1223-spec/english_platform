@@ -16,7 +16,7 @@ class WritingEvaluationService
     {
         $normalizedAnswer = trim(preg_replace('/\s+/', ' ', $answer) ?? '');
         $wordCount = $this->countWords($normalizedAnswer);
-        $grammarIssues = $this->languageToolService->check($normalizedAnswer, $locale);
+        $grammarIssues = $this->languageToolService->check($normalizedAnswer, 'en-US');
 
         $baseScores = $this->buildBaseScores($exercise, $normalizedAnswer, $wordCount, $grammarIssues);
         $aiFeedback = $this->localAiWritingCoachService->evaluate($exercise, $normalizedAnswer, $wordCount, $locale);
