@@ -76,3 +76,4 @@ class SendLiveSessionNotifications extends Command
         Notification::insert($payload);
     }
 }
+

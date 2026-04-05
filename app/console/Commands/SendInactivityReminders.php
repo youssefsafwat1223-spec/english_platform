@@ -23,7 +23,7 @@ class SendInactivityReminders extends Command
             ->where('is_active', true)
             ->where(function ($query) use ($days) {
                 $query->where('last_activity_at', '<=', now()->subDays($days))
-                      ->orWhereNull('last_activity_at');
+                    ->orWhereNull('last_activity_at');
             })
             ->get();
 
@@ -38,7 +38,6 @@ class SendInactivityReminders extends Command
                     ? $user->last_activity_at->diffInDays(now())
                     : $days;
 
-                // Get enrolled courses with progress
                 $enrolledCourses = $user->enrollments()
                     ->with('course')
                     ->where('status', '!=', 'completed')
@@ -60,3 +59,4 @@ class SendInactivityReminders extends Command
         return Command::SUCCESS;
     }
 }
+

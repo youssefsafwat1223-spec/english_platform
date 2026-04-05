@@ -2,26 +2,26 @@
 
 namespace App\Console\Commands;
 
-use App\Services\BattleRoomService;
+use App\Models\BattleRoom;
 use Illuminate\Console\Command;
 
 class CleanupBattleRooms extends Command
 {
-    protected $signature = 'battle:cleanup-stale-rooms';
+    protected $signature = 'battle:cleanup-rooms';
+    protected $description = 'Cleanup old battle rooms (finished or stale).';
 
-    protected $description = 'Close abandoned battle rooms and resolve expired lobbies';
-
-    public function handle(BattleRoomService $battleRoomService): int
+    public function handle(): int
     {
-        $result = $battleRoomService->cleanupStaleRooms();
+        $deleted = BattleRoom::where('status', 'finished')
+            ->orWhere(function ($query) {
+                $query->where('status', 'waiting')
+                    ->where('created_at', '<', now()->subHours(6));
+            })
+            ->delete();
 
-        $this->info(sprintf(
-            'Battle cleanup complete. Started: %d, Cancelled: %d, Abandoned: %d',
-            $result['started'],
-            $result['cancelled'],
-            $result['abandoned']
-        ));
+        $this->info("Deleted {$deleted} battle rooms.");
 
         return self::SUCCESS;
     }
 }
+
