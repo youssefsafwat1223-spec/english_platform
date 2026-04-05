@@ -178,10 +178,6 @@ class WritingEvaluationService
             return null;
         }
 
-        if (!$this->isArabicLocale($locale)) {
-            return $aiFeedback;
-        }
-
         $textParts = array_filter([
             $aiFeedback['summary'] ?? '',
             ...($aiFeedback['strengths'] ?? []),
@@ -193,12 +189,46 @@ class WritingEvaluationService
         }
 
         $joined = implode(' ', $textParts);
-        if ($this->containsArabic($joined)) {
+        $cleanSummary = $this->cleanFeedbackText((string) ($aiFeedback['summary'] ?? ''));
+        $cleanStrengths = collect($aiFeedback['strengths'] ?? [])
+            ->map(fn ($item) => $this->cleanFeedbackText((string) $item))
+            ->filter()
+            ->take(3)
+            ->values()
+            ->all();
+        $cleanImprovements = collect($aiFeedback['improvements'] ?? [])
+            ->map(fn ($item) => $this->cleanFeedbackText((string) $item))
+            ->filter()
+            ->take(3)
+            ->values()
+            ->all();
+
+        $isCorrupted = $this->containsCjk($joined) || $this->containsInstructionLeakage($joined);
+        $isArabic = $this->isArabicLocale($locale);
+        $letters = $this->countLetters($joined);
+        $arabicLetters = $this->countArabicLetters($joined);
+        $latinLetters = $this->countLatinLetters($joined);
+
+        if ($isArabic) {
+            if ($letters > 0 && $arabicLetters < max(8, (int) floor($letters * 0.35))) {
+                $isCorrupted = true;
+            }
+        } else {
+            if ($letters > 0 && $latinLetters < max(8, (int) floor($letters * 0.45))) {
+                $isCorrupted = true;
+            }
+        }
+
+        if (!$isCorrupted && $cleanSummary !== '' && mb_strlen($cleanSummary, 'UTF-8') >= 12) {
+            $aiFeedback['summary'] = $cleanSummary;
+            $aiFeedback['strengths'] = $cleanStrengths;
+            $aiFeedback['improvements'] = $cleanImprovements;
+
             return $aiFeedback;
         }
 
-        // If Arabic UI requested but model returned non-Arabic feedback,
-        // fallback text will be used from localized base scores.
+        // Corrupted or wrong-language AI text: keep numeric scores,
+        // but fallback to deterministic localized text for feedback blocks.
         $aiFeedback['summary'] = null;
         $aiFeedback['strengths'] = null;
         $aiFeedback['improvements'] = null;
@@ -214,6 +244,60 @@ class WritingEvaluationService
     private function containsArabic(string $text): bool
     {
         return preg_match('/\p{Arabic}/u', $text) === 1;
+    }
+
+    private function containsCjk(string $text): bool
+    {
+        return preg_match('/[\x{3040}-\x{30ff}\x{3400}-\x{4dbf}\x{4e00}-\x{9fff}\x{f900}-\x{faff}]/u', $text) === 1;
+    }
+
+    private function containsInstructionLeakage(string $text): bool
+    {
+        $lower = mb_strtolower($text, 'UTF-8');
+        $needles = [
+            'return strictly valid json',
+            'json only',
+            'keys:',
+            'student answer',
+            'feedback language',
+            'language rule',
+            'format',
+            'json格式',
+            '严格',
+            '键',
+            'must be written',
+        ];
+
+        foreach ($needles as $needle) {
+            if (str_contains($lower, $needle)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function cleanFeedbackText(string $text): string
+    {
+        $text = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/u', '', $text) ?? '';
+        $text = preg_replace('/\s+/u', ' ', trim($text)) ?? '';
+
+        return $text;
+    }
+
+    private function countLetters(string $text): int
+    {
+        return preg_match_all('/\p{L}/u', $text);
+    }
+
+    private function countArabicLetters(string $text): int
+    {
+        return preg_match_all('/\p{Arabic}/u', $text);
+    }
+
+    private function countLatinLetters(string $text): int
+    {
+        return preg_match_all('/[A-Za-z]/u', $text);
     }
 
     private function formatGrammarIssuesForUi(array $issues, string $answer, string $locale): array
