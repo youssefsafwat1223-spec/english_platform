@@ -33,11 +33,11 @@
                         <h2 class="text-xl font-extrabold text-slate-900 dark:text-white">{{ __('Task Prompt') }}</h2>
                     </div>
                     <div class="p-6 space-y-5">
-                        <p class="text-base leading-8 text-slate-700 dark:text-slate-300">{{ $writingExercise->prompt }}</p>
+                        <p class="text-base leading-8 text-slate-700 dark:text-slate-300 whitespace-pre-line">{{ $writingExercise->prompt }}</p>
                         @if($writingExercise->instructions)
                             <div class="rounded-2xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200/70 dark:border-white/10 p-4">
                                 <div class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">{{ __('Instructions') }}</div>
-                                <p class="text-sm leading-7 text-slate-600 dark:text-slate-400">{{ $writingExercise->instructions }}</p>
+                                <p class="text-sm leading-7 text-slate-600 dark:text-slate-400 whitespace-pre-line">{{ $writingExercise->instructions }}</p>
                             </div>
                         @endif
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
