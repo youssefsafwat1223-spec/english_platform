@@ -55,6 +55,7 @@ class LessonController extends Controller
 
         $this->syncLessonQuiz($request, $course, $lesson);
         $this->syncPronunciationExercise($request, $lesson);
+        $this->syncWritingExercise($request, $lesson);
 
         // Handle attachments
         if ($request->hasFile('attachments')) {
@@ -118,6 +119,7 @@ class LessonController extends Controller
             : [];
 
         $pronunciationExercise = $lesson->pronunciationExercise;
+        $writingExercise = $lesson->writingExercise;
 
         $levels = $course->levels()->ordered()->get();
 
@@ -138,6 +140,7 @@ class LessonController extends Controller
             'availableQuestions',
             'selectedQuestionIds',
             'pronunciationExercise',
+            'writingExercise',
             'levels',
             'previousLesson',
             'nextLesson'
@@ -157,6 +160,7 @@ class LessonController extends Controller
 
         $this->syncLessonQuiz($request, $course, $lesson);
         $this->syncPronunciationExercise($request, $lesson);
+        $this->syncWritingExercise($request, $lesson);
 
         // Delete selected attachments
         if ($request->has('delete_attachments')) {
@@ -344,6 +348,37 @@ class LessonController extends Controller
         }
 
         $this->replacePronunciationAudioFiles($request, $lesson, $exercise);
+    }
+
+    private function syncWritingExercise(StoreLessonRequest $request, Lesson $lesson): void
+    {
+        if (!$request->boolean('has_writing_exercise')) {
+            $lesson->writingExercise()?->delete();
+            return;
+        }
+
+        $exerciseData = [
+            'title' => $request->input('writing_title'),
+            'prompt' => $request->input('writing_prompt'),
+            'instructions' => $request->input('writing_instructions'),
+            'min_words' => (int) $request->input('writing_min_words', 30),
+            'max_words' => (int) $request->input('writing_max_words', 180),
+            'passing_score' => (int) $request->input('writing_passing_score', 70),
+            'model_answer' => $request->input('writing_model_answer'),
+            'rubric_json' => [
+                'grammar' => 25,
+                'vocabulary' => 25,
+                'coherence' => 25,
+                'task_completion' => 25,
+            ],
+        ];
+
+        if ($lesson->writingExercise) {
+            $lesson->writingExercise->update($exerciseData);
+            return;
+        }
+
+        $lesson->writingExercise()->create($exerciseData);
     }
 
     private function parseVocabularyLines(?string $lines): ?array

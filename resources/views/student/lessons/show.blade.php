@@ -410,7 +410,7 @@
                         </x-student.card>
                     @endif
 
-                    {{-- Actions (Quizzes / Pronunciation) --}}
+                    {{-- Actions (Quizzes / Pronunciation / Writing) --}}
                     <div class="space-y-6">
                         @if($lesson->pronunciationExercise)
                             <x-student.card padding="p-0" class="overflow-hidden relative group" data-aos="fade-up">
@@ -439,6 +439,38 @@
                                         {{ __('ابدأ التمرين') }}
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
                                     </a>
+                                    @endif
+                                </div>
+                            </x-student.card>
+                        @endif
+
+                        @if($lesson->writingExercise)
+                            <x-student.card padding="p-0" class="overflow-hidden relative group" data-aos="fade-up">
+                                <div class="absolute inset-0 bg-gradient-to-br from-sky-500/10 to-transparent pointer-events-none"></div>
+                                <div class="px-6 py-5 border-b border-slate-200/50 dark:border-white/5 flex items-center gap-3 relative z-10">
+                                    <div class="w-10 h-10 rounded-xl bg-sky-500/10 text-sky-500 flex items-center justify-center shrink-0">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 20h9"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16.5 3.5a2.121 2.121 0 113 3L7 19l-4 1 1-4 12.5-12.5z"></path>
+                                        </svg>
+                                    </div>
+                                    <h3 class="font-bold text-lg text-slate-900 dark:text-white">{{ __('Writing Practice') }}</h3>
+                                </div>
+                                <div class="p-6 relative z-10">
+                                    <p class="text-sm mb-5 text-slate-600 dark:text-slate-400 font-medium">{{ __('Write your answer, then get grammar, vocabulary, coherence, and task feedback in one place.') }}</p>
+                                    @if($writingExerciseCompleted)
+                                        <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                                            <span class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold border border-emerald-500/20 w-full sm:w-auto justify-center">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                                {{ __('Completed') }}
+                                            </span>
+                                            <a href="{{ route('student.writing.show', $lesson->writingExercise) }}" class="btn-ghost font-bold text-slate-600 dark:text-slate-300 w-full sm:w-auto text-center hover:text-sky-500">{{ __('Write Again') }}</a>
+                                        </div>
+                                    @else
+                                        <a href="{{ route('student.writing.show', $lesson->writingExercise) }}" class="btn-primary ripple-btn w-full justify-center shadow-lg shadow-sky-500/25 bg-gradient-to-r from-sky-600 to-sky-500 hover:from-sky-500 hover:to-sky-400 border-0 flex items-center gap-2">
+                                            {{ __('Start Writing') }}
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 20h9"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16.5 3.5a2.121 2.121 0 113 3L7 19l-4 1 1-4 12.5-12.5z"></path></svg>
+                                        </a>
                                     @endif
                                 </div>
                             </x-student.card>

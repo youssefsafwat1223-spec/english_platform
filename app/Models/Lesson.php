@@ -40,6 +40,7 @@ class Lesson extends Model
         'is_free',
         'has_quiz',
         'has_pronunciation_exercise',
+        'has_writing_exercise',
         'vdocipher_video_id',
     ];
 
@@ -49,6 +50,7 @@ class Lesson extends Model
             'is_free' => 'boolean',
             'has_quiz' => 'boolean',
             'has_pronunciation_exercise' => 'boolean',
+            'has_writing_exercise' => 'boolean',
         ];
     }
 
@@ -122,6 +124,14 @@ class Lesson extends Model
     public function pronunciationExercise()
     {
         return $this->hasOne(PronunciationExercise::class);
+    }
+
+    /**
+     * Writing exercise for this lesson
+     */
+    public function writingExercise()
+    {
+        return $this->hasOne(WritingExercise::class);
     }
 
     /**

@@ -92,4 +92,17 @@ return [
         'chunk_ms' => (int) env('PRONUNCIATION_STREAM_CHUNK_MS', 1000),
     ],
 
+    /*
+    |----------------------------------------------------------------------
+    | Writing AI (LanguageTool + Ollama)
+    |----------------------------------------------------------------------
+    */
+    'writing_ai' => [
+        'enabled' => env('WRITING_AI_ENABLED', false),
+        'languagetool_url' => env('LANGUAGETOOL_URL', 'http://127.0.0.1:8010'),
+        'ollama_url' => env('OLLAMA_BASE_URL', 'http://127.0.0.1:11434'),
+        'ollama_model' => env('OLLAMA_MODEL', 'qwen2.5:7b'),
+        'timeout_seconds' => (int) env('WRITING_AI_TIMEOUT_SECONDS', 45),
+    ],
+
 ];

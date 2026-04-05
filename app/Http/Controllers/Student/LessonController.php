@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\Lesson;
 use App\Models\LessonProgress;
+use App\Models\WritingSubmission;
 use App\Models\User;
 use App\Http\Requests\StoreLessonCommentRequest;
 use App\Http\Requests\StoreUserNoteRequest;
@@ -42,6 +43,7 @@ class LessonController extends Controller
             'audio',
             'quiz.questions',
             'pronunciationExercise',
+            'writingExercise',
             'comments.user',
         ]);
 
@@ -72,6 +74,15 @@ class LessonController extends Controller
 
                 $pronunciationExerciseCompleted = empty(array_diff($requiredSentenceNumbers, $attemptedSentenceNumbers));
             }
+        }
+
+        $writingExerciseCompleted = false;
+        if ($lesson->writingExercise) {
+            $writingExerciseCompleted = WritingSubmission::query()
+                ->where('writing_exercise_id', $lesson->writingExercise->id)
+                ->where('user_id', $user->id)
+                ->where('overall_score', '>=', $lesson->writingExercise->passing_score)
+                ->exists();
         }
 
         // Keep the latest note editable and treat older entries as history.
@@ -115,6 +126,7 @@ class LessonController extends Controller
             'requiresQuizPass',
             'hasPassedCompletionQuiz',
             'pronunciationExerciseCompleted',
+            'writingExerciseCompleted',
             'notes',
             'currentNote',
             'noteHistory',

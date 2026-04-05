@@ -17,11 +17,13 @@ class StoreLessonRequest extends FormRequest
 
         $hasQuiz = $this->boolean('has_quiz');
         $hasPronunciation = $this->boolean('has_pronunciation_exercise');
+        $hasWriting = $this->boolean('has_writing_exercise');
 
         $this->merge([
             'is_free' => $this->boolean('is_free'),
             'has_quiz' => $hasQuiz,
             'has_pronunciation_exercise' => $hasPronunciation,
+            'has_writing_exercise' => $hasWriting,
         ]);
 
         if (!$hasQuiz) {
@@ -40,6 +42,18 @@ class StoreLessonRequest extends FormRequest
                 'pronunciation_vocabulary_lines' => null,
                 'pronunciation_sentence_explanation' => null,
                 'pronunciation_passage_explanation' => null,
+            ]);
+        }
+
+        if (!$hasWriting) {
+            $this->merge([
+                'writing_title' => null,
+                'writing_prompt' => null,
+                'writing_instructions' => null,
+                'writing_min_words' => null,
+                'writing_max_words' => null,
+                'writing_passing_score' => null,
+                'writing_model_answer' => null,
             ]);
         }
     }
@@ -71,6 +85,7 @@ class StoreLessonRequest extends FormRequest
             'is_free' => 'boolean',
             'has_quiz' => 'boolean',
             'has_pronunciation_exercise' => 'boolean',
+            'has_writing_exercise' => 'boolean',
             'attachments.*' => 'nullable|file|max:102400|mimes:pdf,doc,docx,ppt,pptx,xls,xlsx,zip,rar,jpg,jpeg,png,gif,mp3,wav,mp4,webm', // 100MB, safe types only
             'quiz_mode' => 'nullable|required_if:has_quiz,1|in:existing,questions',
             'quiz_id' => 'nullable|required_if:quiz_mode,existing|exists:quizzes,id',
@@ -94,6 +109,13 @@ class StoreLessonRequest extends FormRequest
             'pronunciation_passing_score' => 'nullable|integer|min:0|max:100',
             'pronunciation_max_duration' => 'nullable|integer|min:1',
             'pronunciation_allow_retake' => 'boolean',
+            'writing_title' => 'nullable|required_if:has_writing_exercise,1|string|max:255',
+            'writing_prompt' => 'nullable|required_if:has_writing_exercise,1|string',
+            'writing_instructions' => 'nullable|string',
+            'writing_min_words' => 'nullable|integer|min:1|max:2000',
+            'writing_max_words' => 'nullable|integer|min:1|max:5000|gte:writing_min_words',
+            'writing_passing_score' => 'nullable|integer|min:0|max:100',
+            'writing_model_answer' => 'nullable|string',
         ];
     }
 

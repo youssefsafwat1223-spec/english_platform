@@ -47,6 +47,7 @@ use App\Http\Controllers\Student\LiveGameController;
 use App\Http\Controllers\Student\BattleController;
 use App\Http\Controllers\Student\OnboardingController;
 use App\Http\Controllers\Student\TestimonialController as StudentTestimonialController;
+use App\Http\Controllers\Student\WritingController as StudentWritingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -483,6 +484,13 @@ Route::prefix('student')->name('student.')->middleware(['auth', 'student', 'acti
     Route::post('/pronunciation/{exercise}/stream/finalize', [PronunciationController::class, 'finalizeStream'])
         ->middleware('throttle:pronunciation')
         ->name('pronunciation.stream.finalize');
+
+    // Writing
+    Route::get('/writing/{writingExercise}', [StudentWritingController::class, 'show'])
+        ->name('writing.show');
+    Route::post('/writing/{writingExercise}/submit', [StudentWritingController::class, 'submit'])
+        ->middleware('throttle:60,1')
+        ->name('writing.submit');
 
     // Certificates
     Route::get('/certificates', [StudentCertificateController::class, 'index'])->name('certificates.index');

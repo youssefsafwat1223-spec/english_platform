@@ -78,6 +78,10 @@
                             <input type="checkbox" id="has_pronunciation_exercise" name="has_pronunciation_exercise" value="1" {{ old('has_pronunciation_exercise') ? 'checked' : '' }} class="w-4 h-4 text-primary-500 focus:ring-primary-500 rounded" style="border-color: var(--color-border);">
                             <label for="has_pronunciation_exercise" class="ml-2 text-sm" style="color: var(--color-text);">{{ app()->getLocale() === 'ar' ? 'يتضمن تمرين نطق' : 'Has pronunciation exercise' }}</label>
                         </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" id="has_writing_exercise" name="has_writing_exercise" value="1" {{ old('has_writing_exercise') ? 'checked' : '' }} class="w-4 h-4 text-primary-500 focus:ring-primary-500 rounded" style="border-color: var(--color-border);">
+                            <label for="has_writing_exercise" class="ml-2 text-sm" style="color: var(--color-text);">{{ __('Has writing exercise') }}</label>
+                        </div>
                     </div>
 
                     @php $quizMode = old('quiz_mode', 'questions'); @endphp
@@ -349,6 +353,48 @@
                             </div>
                         </div>
                     </div>
+
+                    <div id="writingOptions" class="hidden">
+                        <div class="rounded-xl p-4 space-y-4" style="background: var(--color-surface-hover);">
+                            <div>
+                                <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('Writing Title *') }}</label>
+                                <input type="text" name="writing_title" class="input-glass" value="{{ old('writing_title') }}" placeholder="{{ __('Example: Daily Routine Writing Task') }}">
+                                @error('writing_title')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('Prompt *') }}</label>
+                                <textarea name="writing_prompt" rows="4" class="input-glass" placeholder="{{ __('Write 80 to 120 words about your daily routine.') }}">{{ old('writing_prompt') }}</textarea>
+                                @error('writing_prompt')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('Instructions') }}</label>
+                                <textarea name="writing_instructions" rows="3" class="input-glass" placeholder="{{ __('Use complete sentences and include clear supporting details.') }}">{{ old('writing_instructions') }}</textarea>
+                                @error('writing_instructions')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div>
+                                    <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('Minimum Words') }}</label>
+                                    <input type="number" name="writing_min_words" class="input-glass" min="1" value="{{ old('writing_min_words', 30) }}">
+                                    @error('writing_min_words')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('Maximum Words') }}</label>
+                                    <input type="number" name="writing_max_words" class="input-glass" min="1" value="{{ old('writing_max_words', 180) }}">
+                                    @error('writing_max_words')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('Passing Score (%)') }}</label>
+                                    <input type="number" name="writing_passing_score" class="input-glass" min="0" max="100" value="{{ old('writing_passing_score', 70) }}">
+                                    @error('writing_passing_score')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('Model Answer') }}</label>
+                                <textarea name="writing_model_answer" rows="5" class="input-glass" placeholder="{{ __('Optional: add a strong sample answer for internal guidance or future display.') }}">{{ old('writing_model_answer') }}</textarea>
+                                @error('writing_model_answer')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="glass-card-footer flex justify-between">
@@ -368,8 +414,10 @@
     document.addEventListener('DOMContentLoaded', function () {
         const hasQuiz = document.getElementById('has_quiz');
         const hasPronunciation = document.getElementById('has_pronunciation_exercise');
+        const hasWriting = document.getElementById('has_writing_exercise');
         const quizOptions = document.getElementById('quizOptions');
         const pronunciationOptions = document.getElementById('pronunciationOptions');
+        const writingOptions = document.getElementById('writingOptions');
         const quizModeInputs = document.querySelectorAll('input[name="quiz_mode"]');
         const existingQuizBlock = document.getElementById('existingQuizBlock');
         const questionQuizBlock = document.getElementById('questionQuizBlock');
@@ -383,11 +431,16 @@
         const togglePronunciationOptions = () => {
             pronunciationOptions.classList.toggle('hidden', !hasPronunciation.checked);
         };
+        const toggleWritingOptions = () => {
+            writingOptions.classList.toggle('hidden', !hasWriting.checked);
+        };
         hasQuiz.addEventListener('change', toggleQuizOptions);
         hasPronunciation.addEventListener('change', togglePronunciationOptions);
+        hasWriting.addEventListener('change', toggleWritingOptions);
         quizModeInputs.forEach(input => input.addEventListener('change', toggleQuizOptions));
         toggleQuizOptions();
         togglePronunciationOptions();
+        toggleWritingOptions();
     });
 
     function inlineQuestionCreator() {

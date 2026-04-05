@@ -1,0 +1,126 @@
+<?php
+
+namespace App\Services;
+
+use App\Models\WritingExercise;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+
+class LocalAiWritingCoachService
+{
+    public function evaluate(WritingExercise $exercise, string $answer, int $wordCount, string $locale = 'en'): ?array
+    {
+        if (!(bool) config('services.writing_ai.enabled')) {
+            return null;
+        }
+
+        $baseUrl = rtrim((string) config('services.writing_ai.ollama_url'), '/');
+        $model = (string) config('services.writing_ai.ollama_model');
+
+        if ($baseUrl === '' || $model === '' || trim($answer) === '') {
+            return null;
+        }
+
+        try {
+            $response = Http::timeout((int) config('services.writing_ai.timeout_seconds', 45))
+                ->post($baseUrl . '/api/generate', [
+                    'model' => $model,
+                    'stream' => false,
+                    'format' => 'json',
+                    'prompt' => $this->buildPrompt($exercise, $answer, $wordCount, $locale),
+                ]);
+
+            if (!$response->successful()) {
+                Log::warning('Ollama writing evaluation failed', [
+                    'status' => $response->status(),
+                    'body' => $response->body(),
+                ]);
+
+                return null;
+            }
+
+            $content = (string) ($response->json('response') ?? '');
+            if ($content === '') {
+                return null;
+            }
+
+            $decoded = json_decode($content, true);
+            if (!is_array($decoded)) {
+                return null;
+            }
+
+            return [
+                'overall_score' => $this->normalizeScore($decoded['overall_score'] ?? null),
+                'grammar_score' => $this->normalizeScore($decoded['grammar_score'] ?? null),
+                'vocabulary_score' => $this->normalizeScore($decoded['vocabulary_score'] ?? null),
+                'coherence_score' => $this->normalizeScore($decoded['coherence_score'] ?? null),
+                'task_score' => $this->normalizeScore($decoded['task_score'] ?? null),
+                'summary' => trim((string) ($decoded['summary'] ?? '')),
+                'strengths' => $this->normalizeStringList($decoded['strengths'] ?? []),
+                'improvements' => $this->normalizeStringList($decoded['improvements'] ?? []),
+                'rewrite_suggestion' => trim((string) ($decoded['rewrite_suggestion'] ?? '')),
+            ];
+        } catch (\Throwable $e) {
+            Log::warning('Ollama writing evaluation exception', [
+                'message' => $e->getMessage(),
+            ]);
+
+            return null;
+        }
+    }
+
+    private function buildPrompt(WritingExercise $exercise, string $answer, int $wordCount, string $locale): string
+    {
+        $feedbackLanguage = str_starts_with(strtolower($locale), 'ar') ? 'Arabic' : 'English';
+
+        return <<<PROMPT
+You are a writing coach for English learners.
+Evaluate the student's answer and return JSON only.
+
+Feedback language: {$feedbackLanguage}
+Prompt title: {$exercise->title}
+Task prompt: {$exercise->prompt}
+Instructions: {$exercise->instructions}
+Min words: {$exercise->min_words}
+Max words: {$exercise->max_words}
+Student word count: {$wordCount}
+Student answer:
+{$answer}
+
+Return strictly valid JSON with these keys:
+overall_score, grammar_score, vocabulary_score, coherence_score, task_score,
+summary, strengths, improvements, rewrite_suggestion
+
+Rules:
+- Scores are integers from 0 to 100
+- summary is a short paragraph
+- strengths is an array with up to 3 short bullet-style strings
+- improvements is an array with up to 3 short bullet-style strings
+- rewrite_suggestion is an improved version of the student's answer, but keep it close to the original level
+- Do not include markdown
+PROMPT;
+    }
+
+    private function normalizeScore(mixed $value): ?int
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        return max(0, min(100, (int) round((float) $value)));
+    }
+
+    private function normalizeStringList(mixed $value): array
+    {
+        if (!is_array($value)) {
+            return [];
+        }
+
+        return collect($value)
+            ->map(fn ($item) => trim((string) $item))
+            ->filter()
+            ->take(3)
+            ->values()
+            ->all();
+    }
+}
