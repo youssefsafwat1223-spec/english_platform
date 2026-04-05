@@ -3,20 +3,22 @@
 namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\Controller;
+use App\Services\PhoneNumberService;
 use App\Services\TelegramService;
 use Illuminate\Http\Request;
 
 class OnboardingController extends Controller
 {
-    public function __construct(private readonly TelegramService $telegramService)
-    {
+    public function __construct(
+        private readonly TelegramService $telegramService,
+        private readonly PhoneNumberService $phoneNumberService
+    ) {
     }
 
     public function show()
     {
         $user = auth()->user();
 
-        // If already completed onboarding, redirect to dashboard
         if ($user->onboarding_completed) {
             return redirect()->route('student.dashboard');
         }
@@ -34,12 +36,10 @@ class OnboardingController extends Controller
             'phone' => ['required', 'string', 'max:20', 'unique:users,phone,' . auth()->id()],
         ]);
 
-        $normalizedPhone = $this->telegramService->normalizePhoneNumber($validated['phone']);
+        $normalizedPhone = $this->phoneNumberService->normalize($validated['phone']);
 
         if (!$normalizedPhone) {
-            $message = app()->getLocale() === 'ar'
-                ? 'يرجى إدخال رقم هاتف صحيح مع كود الدولة.'
-                : 'Please enter a valid phone number with country code.';
+            $message = $this->phoneNumberService->exampleMessage(app()->getLocale());
 
             if ($request->wantsJson()) {
                 return response()->json([
@@ -63,7 +63,7 @@ class OnboardingController extends Controller
         if ($request->wantsJson()) {
             return response()->json(['success' => true]);
         }
-        
+
         return back()->with('profile_saved', true);
     }
 

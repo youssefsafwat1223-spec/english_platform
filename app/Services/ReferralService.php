@@ -172,16 +172,11 @@ class ReferralService
             $referral->markAsRegistered();
         }
 
-        $referee->update([
-            'referred_by' => $referrer->id,
-        ]);
-
-        $this->giveRefereeDiscount($referee);
-
         return [
             'success' => true,
             'referrer' => $referrer,
             'referral' => $referral,
+            'discount_type' => 'referee_referral',
         ];
     }
 

@@ -87,6 +87,30 @@ class PaymentSecurityTest extends TestCase
         ]);
     }
 
+    public function test_signed_callback_rejects_mismatched_payment_link_id(): void
+    {
+        Mail::fake();
+
+        $payment = $this->createPendingPayment([
+            'gateway_payment_id' => 'payment-link-expected',
+            'gateway_response' => ['payment_link_id' => 'payment-link-expected'],
+        ]);
+
+        $signedUrl = URL::temporarySignedRoute('payment.callback', now()->addMinutes(10), [
+            'payment' => $payment->id,
+        ]);
+        $signedUrl .= '&payment_id=stream-payment-1&payment_link_id=payment-link-wrong';
+
+        $this->get($signedUrl)
+            ->assertRedirect(route('student.courses.show', $payment->course))
+            ->assertSessionHas('error');
+
+        $this->assertSame('pending', $payment->fresh()->payment_status);
+        $this->assertDatabaseMissing('enrollments', [
+            'payment_id' => $payment->id,
+        ]);
+    }
+
     public function test_webhook_rejects_requests_without_signature(): void
     {
         config(['services.streampay.secret_key' => 'test-secret']);

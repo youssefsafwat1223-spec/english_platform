@@ -384,35 +384,7 @@ class TelegramService
 
     public function normalizePhoneNumber(?string $phone): ?string
     {
-        if (!is_string($phone) || trim($phone) === '') {
-            return null;
-        }
-
-        $cleaned = preg_replace('/[^\d+]/', '', $phone);
-
-        if (!$cleaned) {
-            return null;
-        }
-
-        if (str_starts_with($cleaned, '00')) {
-            $cleaned = '+' . substr($cleaned, 2);
-        } elseif (!str_starts_with($cleaned, '+')) {
-            $digits = preg_replace('/\D/', '', $cleaned);
-
-            if (str_starts_with($digits, '0') && strlen($digits) >= 10 && strlen($digits) <= 11) {
-                $cleaned = '+2' . $digits;
-            } else {
-                $cleaned = '+' . $digits;
-            }
-        }
-
-        $digits = preg_replace('/\D/', '', $cleaned);
-
-        if (strlen($digits) < 8 || strlen($digits) > 15) {
-            return null;
-        }
-
-        return '+' . $digits;
+        return app(PhoneNumberService::class)->normalize($phone);
     }
 
     public function linkUserAccount($chatId, $phone): array

@@ -183,6 +183,7 @@ class CourseController extends Controller
         $referralCode = $validated['referral_code'] ?? null;
         $promoCode = null;
         $discountCode = null;
+        $discountData = null;
 
         if (!empty($validated['promo_code_id'])) {
             $promoCode = PromoCode::find($validated['promo_code_id']);
@@ -202,10 +203,16 @@ class CourseController extends Controller
 
             session(['referral_code' => $referralCode]);
             $discountCode = strtoupper(trim($referralCode));
+            $discountAmount = $this->referralService->calculateDiscountAmount((float) $course->price);
+            $discountData = [
+                'discount_amount' => $discountAmount,
+                'discount_type' => $result['discount_type'] ?? 'referee_referral',
+                'final_amount' => max(0, (float) $course->price - $discountAmount),
+            ];
         }
 
         // Calculate discount
-        $discountData = $this->paymentService->calculateDiscount($user, $course, $promoCode);
+        $discountData ??= $this->paymentService->calculateDiscount($user, $course, $promoCode);
         $discountAmount = $discountData['discount_amount'];
         $finalAmount = $discountData['final_amount'];
 

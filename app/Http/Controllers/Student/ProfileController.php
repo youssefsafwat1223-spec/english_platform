@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\Controller;
+use App\Services\PhoneNumberService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -42,18 +43,39 @@ class ProfileController extends Controller
     public function update(Request $request)
     {
         $user = auth()->user();
+        $phoneNumberService = app(PhoneNumberService::class);
 
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $user->id,
-            'phone' => 'required|string|max:20|unique:users,phone,' . $user->id,
+            'phone' => 'required|string|max:30',
             'telegram_username' => 'nullable|string|max:255',
             'address' => 'nullable|string|max:500',
             'secondary_email' => 'nullable|email|max:255',
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
+        $normalizedPhone = $phoneNumberService->normalize($request->input('phone'));
+
+        if (!$normalizedPhone) {
+            return back()
+                ->withInput()
+                ->withErrors(['phone' => $phoneNumberService->exampleMessage(app()->getLocale())]);
+        }
+
+        $phoneTaken = \App\Models\User::query()
+            ->where('phone', $normalizedPhone)
+            ->where('id', '!=', $user->id)
+            ->exists();
+
+        if ($phoneTaken) {
+            return back()
+                ->withInput()
+                ->withErrors(['phone' => __('The phone has already been taken.')]);
+        }
+
         $data = $request->only(['name', 'email', 'phone', 'telegram_username', 'address', 'secondary_email']);
+        $data['phone'] = $normalizedPhone;
 
         // Handle avatar upload with compression
         if ($request->hasFile('avatar')) {

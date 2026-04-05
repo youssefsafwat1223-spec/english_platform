@@ -21,7 +21,7 @@ class PaymentService
     private string $secretKey;
     private string $apiUrl;
 
-    public function __construct()
+    public function __construct(private readonly PhoneNumberService $phoneNumberService)
     {
         $this->apiKey = trim((string) config('services.streampay.api_key'));
         $this->secretKey = trim((string) config('services.streampay.secret_key'));
@@ -93,7 +93,7 @@ class PaymentService
 
             $productId = $productResponse->json('id');
             $callbackUrl = $this->buildCallbackUrl($payment);
-            $consumerId = $this->resolveStreamPayConsumerId($user);
+            $consumerId = $this->resolveStreamPayConsumerIdSafely($user, $payment);
 
             $contactInformationType = strtoupper((string) $contactInformationType);
             if (!in_array($contactInformationType, ['EMAIL', 'PHONE'], true)) {
@@ -263,6 +263,13 @@ class PaymentService
             $paymentLinkId ??= $payment->getPaymentLinkId();
 
             if ($streamPaymentId) {
+                if (!$this->callbackIdentifiersMatch($payment, $streamPaymentId, $paymentLinkId)) {
+                    return [
+                        'success' => false,
+                        'message' => 'Payment verification failed',
+                    ];
+                }
+
                 $paymentResponse = $this->streamPayRequest('get', "/payments/{$streamPaymentId}");
 
                 if ($paymentResponse->successful()) {
@@ -275,7 +282,7 @@ class PaymentService
                         'status' => $status,
                     ]);
 
-                    if (!$this->paymentMatchesExpectedOrder($payment, $gatewayPayment)) {
+                    if (!$this->paymentMatchesExpectedOrder($payment, $gatewayPayment, $paymentLinkId)) {
                         return [
                             'success' => false,
                             'message' => 'Payment verification failed',
@@ -444,6 +451,7 @@ class PaymentService
     public function handleReferralDiscountUsage(Payment $payment): void
     {
         $user = $payment->user;
+        $referral = $this->resolveReferralForPayment($payment);
 
         if ($payment->discount_type === 'referral_free' && $user->has_free_enrollment) {
             $user->update(['has_free_enrollment' => false]);
@@ -451,10 +459,12 @@ class PaymentService
             return;
         }
 
-        if ($payment->discount_type === 'referee_referral' && $user->referred_by && !$user->referral_discount_used) {
-            $referral = Referral::where('referee_id', $user->id)->first();
-
+        if ($payment->discount_type === 'referee_referral' && !$user->referral_discount_used) {
             if ($referral) {
+                if ((int) $user->referred_by !== (int) $referral->referrer_id) {
+                    $user->update(['referred_by' => $referral->referrer_id]);
+                }
+
                 $referral->markRefereeDiscountUsed();
 
                 if ($referral->status !== 'purchased') {
@@ -468,14 +478,30 @@ class PaymentService
             }
         }
 
-        $referral = Referral::where('referrer_id', $user->id)
+        $referrerDiscountReferral = Referral::where('referrer_id', $user->id)
             ->where('referrer_discount_earned', true)
             ->where('referrer_discount_used', false)
             ->first();
 
-        if ($referral && $payment->discount_type === 'referrer_referral') {
-            $referral->markReferrerDiscountUsed();
+        if ($referrerDiscountReferral && $payment->discount_type === 'referrer_referral') {
+            $referrerDiscountReferral->markReferrerDiscountUsed();
         }
+    }
+
+    private function resolveReferralForPayment(Payment $payment): ?Referral
+    {
+        if ($payment->discount_type !== 'referee_referral') {
+            return null;
+        }
+
+        $query = Referral::query()
+            ->where('referee_id', $payment->user_id);
+
+        if ($payment->discount_code) {
+            $query->where('referral_code', strtoupper((string) $payment->discount_code));
+        }
+
+        return $query->latest('id')->first();
     }
 
     public function refund(
@@ -577,6 +603,29 @@ class PaymentService
         }
 
         return null;
+    }
+
+    private function resolveStreamPayConsumerIdSafely(User $user, ?Payment $payment = null): ?string
+    {
+        try {
+            return $this->resolveStreamPayConsumerId($user);
+        } catch (ConnectionException $e) {
+            Log::warning('StreamPay consumer lookup failed; continuing checkout without consumer', [
+                'user_id' => $user->id,
+                'payment_id' => $payment?->id,
+                'error' => $e->getMessage(),
+            ]);
+
+            return null;
+        } catch (\Throwable $e) {
+            Log::warning('StreamPay consumer creation failed; continuing checkout without consumer', [
+                'user_id' => $user->id,
+                'payment_id' => $payment?->id,
+                'error' => $e->getMessage(),
+            ]);
+
+            return null;
+        }
     }
 
     private function streamPayRequest(string $method, string $path, array $payload = []): Response
@@ -718,26 +767,7 @@ class PaymentService
 
     private function normalizePhone(?string $phone): ?string
     {
-        if (!$phone) {
-            return null;
-        }
-
-        $phone = trim($phone);
-        if ($phone === '') {
-            return null;
-        }
-
-        if (!str_starts_with($phone, '+')) {
-            return null;
-        }
-
-        $normalized = preg_replace('/\s+/', '', $phone);
-
-        if (!$normalized || !preg_match('/^\+\d{6,15}$/', $normalized)) {
-            return null;
-        }
-
-        return $normalized;
+        return $this->phoneNumberService->normalize($phone);
     }
 
     private function normalizeEmail(?string $email): ?string
@@ -795,15 +825,18 @@ class PaymentService
         return $status === 'REFUNDED';
     }
 
-    private function paymentMatchesExpectedOrder(Payment $payment, array $gatewayPayment): bool
+    private function paymentMatchesExpectedOrder(Payment $payment, array $gatewayPayment, ?string $callbackPaymentLinkId = null): bool
     {
         $gatewayAmount = (float) ($gatewayPayment['amount'] ?? 0);
         $gatewayCurrency = strtoupper((string) ($gatewayPayment['currency'] ?? ''));
+        $expectedPaymentLinkId = $payment->getPaymentLinkId();
+        $resolvedPaymentLinkId = $this->extractGatewayPaymentLinkId($gatewayPayment) ?: $callbackPaymentLinkId;
 
         $amountMatches = round($gatewayAmount, 2) === round((float) $payment->final_amount, 2);
         $currencyMatches = $gatewayCurrency === '' || $gatewayCurrency === strtoupper($payment->currency);
+        $paymentLinkMatches = !$expectedPaymentLinkId || !$resolvedPaymentLinkId || $expectedPaymentLinkId === $resolvedPaymentLinkId;
 
-        if ($amountMatches && $currencyMatches) {
+        if ($amountMatches && $currencyMatches && $paymentLinkMatches) {
             return true;
         }
 
@@ -813,9 +846,46 @@ class PaymentService
             'gateway_amount' => $gatewayAmount,
             'expected_currency' => strtoupper($payment->currency),
             'gateway_currency' => $gatewayCurrency,
+            'expected_payment_link_id' => $expectedPaymentLinkId,
+            'resolved_payment_link_id' => $resolvedPaymentLinkId,
         ]);
 
         return false;
+    }
+
+    private function callbackIdentifiersMatch(Payment $payment, ?string $streamPaymentId, ?string $paymentLinkId): bool
+    {
+        $expectedPaymentLinkId = $payment->getPaymentLinkId();
+        if ($paymentLinkId && $expectedPaymentLinkId && $paymentLinkId !== $expectedPaymentLinkId) {
+            Log::warning('Rejected payment callback due to mismatched payment link id', [
+                'payment_id' => $payment->id,
+                'expected_payment_link_id' => $expectedPaymentLinkId,
+                'received_payment_link_id' => $paymentLinkId,
+            ]);
+
+            return false;
+        }
+
+        $expectedStreamPaymentId = $payment->getStreamPaymentId();
+        if ($expectedStreamPaymentId && $streamPaymentId && $streamPaymentId !== $expectedStreamPaymentId) {
+            Log::warning('Rejected payment callback due to mismatched stream payment id', [
+                'payment_id' => $payment->id,
+                'expected_stream_payment_id' => $expectedStreamPaymentId,
+                'received_stream_payment_id' => $streamPaymentId,
+            ]);
+
+            return false;
+        }
+
+        return true;
+    }
+
+    private function extractGatewayPaymentLinkId(array $gatewayPayment): ?string
+    {
+        return data_get($gatewayPayment, 'payment_link_id')
+            ?? data_get($gatewayPayment, 'payment_link.id')
+            ?? data_get($gatewayPayment, 'metadata.payment_link_id')
+            ?? data_get($gatewayPayment, 'custom_metadata.payment_link_id');
     }
 
     private function enrichGatewayPayload(Payment $payment, array $gatewayPayload, array $extra = []): array

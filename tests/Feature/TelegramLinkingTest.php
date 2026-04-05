@@ -96,6 +96,28 @@ class TelegramLinkingTest extends TestCase
         );
     }
 
+    public function test_profile_update_normalizes_phone_before_saving(): void
+    {
+        $user = User::factory()->create([
+            'phone' => '+201111111111',
+        ]);
+
+        $response = $this->actingAs($user)
+            ->withUnencryptedCookie(DeviceAccessService::COOKIE_NAME, str_repeat('6', 40))
+            ->from(route('student.profile.edit'))
+            ->put(route('student.profile.update'), [
+                'name' => 'Updated Student',
+                'email' => $user->email,
+                'phone' => '01012345678',
+                'telegram_username' => 'updated_user',
+                'address' => 'Cairo',
+                'secondary_email' => 'backup@example.com',
+            ]);
+
+        $response->assertRedirect(route('student.profile.edit'));
+        $this->assertSame('+201012345678', $user->fresh()->phone);
+    }
+
     public function test_telegram_start_and_phone_linking_messages_use_arabic_and_country_code_examples(): void
     {
         config(['services.telegram.bot_token' => 'test-token']);

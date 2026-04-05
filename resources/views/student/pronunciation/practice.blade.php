@@ -429,8 +429,23 @@ function pronunciationApp() {
                                 this.isRecording = false;
                                 this.isStartingRecording = false;
                                 this.recognition = null;
+                                this.activeSentence = null;
+                                this.recordingStartedAt = null;
+                                if (this.recordingTimeoutId) {
+                                    clearTimeout(this.recordingTimeoutId);
+                                    this.recordingTimeoutId = null;
+                                }
                             }
                         }, 200);
+                    } else {
+                        this.isRecording = false;
+                        this.isStartingRecording = false;
+                        this.activeSentence = null;
+                        this.recordingStartedAt = null;
+                        if (this.recordingTimeoutId) {
+                            clearTimeout(this.recordingTimeoutId);
+                            this.recordingTimeoutId = null;
+                        }
                     }
                     return;
                 }
@@ -451,6 +466,13 @@ function pronunciationApp() {
             };
 
             recognition.onerror = (event) => {
+                // 'aborted' fires when we call .stop() — don't touch state,
+                // stopRecording() or onend already handles cleanup.
+                if (event.error === 'aborted') {
+                    return;
+                }
+
+                // For real errors, full cleanup
                 this.isRecording = false;
                 this.isStartingRecording = false;
                 this.recognition = null;
@@ -461,15 +483,12 @@ function pronunciationApp() {
                     this.recordingTimeoutId = null;
                 }
 
-                if (event.error === 'aborted') {
-                    return;
-                }
-
                 if (event.error === 'no-speech') {
                     if (window.showNotification) window.showNotification(this.messages.no_speech, 'warning');
                 } else if (event.error === 'not-allowed') {
                     if (window.showNotification) window.showNotification(this.messages.mic_denied, 'error');
                 } else {
+                    console.error('SpeechRecognition error:', event.error);
                     if (window.showNotification) window.showNotification(this.messages.start_failed, 'error');
                 }
             };
@@ -583,6 +602,9 @@ function pronunciationApp() {
             let streamSession = null;
 
             try {
+                const controller = new AbortController();
+                const timeout = setTimeout(() => controller.abort(), 5000);
+
                 const startResponse = await fetch(this.endpoints.streamStart, {
                     method: 'POST',
                     headers: {
@@ -593,8 +615,10 @@ function pronunciationApp() {
                     body: JSON.stringify({
                         sentence_number: sentenceNumber,
                     }),
+                    signal: controller.signal,
                 });
 
+                clearTimeout(timeout);
                 streamSession = await startResponse.json();
                 if (!startResponse.ok || !streamSession.success) {
                     return false;
@@ -610,7 +634,7 @@ function pronunciationApp() {
 
             if (!this.streamEnabled) {
                 this.streamSessionId = null;
-                if (window.showNotification) window.showNotification(this.messages.stream_unavailable, 'info');
+                // Don't show notification here — silently fall back to SpeechRecognition
                 return false;
             }
 
@@ -621,7 +645,7 @@ function pronunciationApp() {
                 console.error('Stream init failed:', error);
                 this.cleanupStreamingResources();
                 this.streamSessionId = null;
-                if (window.showNotification) window.showNotification(this.messages.stream_unavailable, 'warning');
+                // Silently fall back — don't show confusing notification
                 return false;
             }
         },
@@ -810,17 +834,36 @@ function pronunciationApp() {
                 return;
             }
 
+            const hadRecognition = !!this.recognition;
+            const finishedSentence = this.activeSentence;
+
             if (this.recognition) {
-                this.recognition.stop();
+                try {
+                    this.recognition.stop();
+                } catch (e) {
+                    console.error('Recognition stop error:', e);
+                }
             }
 
+            // Always clean up state even if recognition.stop() throws
             this.isRecording = false;
             this.isStartingRecording = false;
+            this.recognition = null;
+            this.activeSentence = null;
             this.recordingStartedAt = null;
             if (this.recordingTimeoutId) {
                 clearTimeout(this.recordingTimeoutId);
                 this.recordingTimeoutId = null;
             }
+
+            // If there was no recognition (e.g., failed to start), submit whatever we have
+            if (!hadRecognition && finishedSentence) {
+                const transcript = this.liveTranscript.trim();
+                if (transcript) {
+                    this.submitTranscript(finishedSentence, transcript);
+                }
+            }
+            // If there was recognition, onend handler will handle transcript submission
         },
 
         async stopStreamingMode() {
