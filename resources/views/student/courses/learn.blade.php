@@ -14,6 +14,23 @@
         $diffSeconds = now()->diffInSeconds($expiresAt, false);
         $remainingDays = (int) max(0, ceil($diffSeconds / 86400));
     }
+
+    $levels = $course->levels()
+        ->active()
+        ->ordered()
+        ->with([
+            'lessons' => fn ($query) => $query->orderBy('order_index'),
+            'lessons.quiz',
+            'lessons.pronunciationExercise',
+            'lessons.writingExercise',
+        ])
+        ->get();
+
+    $orphanLessons = $course->lessons()
+        ->whereNull('course_level_id')
+        ->orderBy('order_index')
+        ->with(['quiz', 'pronunciationExercise', 'writingExercise'])
+        ->get();
 @endphp
 
 <div class="min-h-screen bg-slate-50 dark:bg-[#020617]">
@@ -42,7 +59,7 @@
                     icon='<svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>'
                 >
                     <div class="space-y-4">
-                        @forelse($course->levels()->active()->ordered()->with('lessons')->get() as $levelIndex => $level)
+                        @forelse($levels as $levelIndex => $level)
                             @php
                                 $completionPercent = $level->getCompletionPercentageFor(auth()->user());
                                 $isCompleted = $completionPercent === 100;
@@ -91,6 +108,29 @@
                                                 $lessonProgress = collect($enrollment->lessonProgress)->firstWhere('lesson_id', $lesson->id);
                                                 $isLessonCompleted = $lessonProgress && $lessonProgress->is_completed;
                                                 $isCurrent = $currentLesson && $currentLesson->id === $lesson->id;
+                                                $titleForMatch = mb_strtolower((string) $lesson->title, 'UTF-8');
+                                                $hasQuizFeature = (bool) (
+                                                    $lesson->has_quiz
+                                                    || $lesson->quiz
+                                                    || str_contains($titleForMatch, 'quiz')
+                                                    || str_contains($titleForMatch, 'test')
+                                                    || str_contains($titleForMatch, 'exam')
+                                                    || str_contains($titleForMatch, 'اختبار')
+                                                    || str_contains($titleForMatch, 'امتحان')
+                                                );
+                                                $hasWritingFeature = (bool) (
+                                                    $lesson->has_writing_exercise
+                                                    || $lesson->writingExercise
+                                                    || str_contains($titleForMatch, 'writing')
+                                                    || str_contains($titleForMatch, 'كتابة')
+                                                );
+                                                $hasPronunciationFeature = (bool) (
+                                                    $lesson->has_pronunciation_exercise
+                                                    || $lesson->pronunciationExercise
+                                                    || str_contains($titleForMatch, 'pronunciation')
+                                                    || str_contains($titleForMatch, 'speaking')
+                                                    || str_contains($titleForMatch, 'نطق')
+                                                );
                                             @endphp
                                             <a href="{{ route('student.lessons.show', [$course, $lesson]) }}" class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-5 py-4 hover:bg-white/80 dark:hover:bg-slate-900 transition-colors">
                                                 <div class="flex items-center gap-3 min-w-0">
@@ -105,9 +145,19 @@
                                                             @if($lesson->video_duration)
                                                                 <span>{{ $lesson->formatted_duration }}</span>
                                                             @endif
-                                                            @if($lesson->has_quiz)
+                                                            @if($hasQuizFeature)
                                                                 <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary-50 text-primary-600 dark:bg-primary-500/10 dark:text-primary-400">
-                                                                    {{ __('ui.learn.quiz_badge') }}
+                                                                    {{ $isArabic ? 'اختبار' : 'Quiz' }}
+                                                                </span>
+                                                            @endif
+                                                            @if($hasWritingFeature)
+                                                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-sky-50 text-sky-600 dark:bg-sky-500/10 dark:text-sky-400">
+                                                                    {{ $isArabic ? 'كتابة' : 'Writing' }}
+                                                                </span>
+                                                            @endif
+                                                            @if($hasPronunciationFeature)
+                                                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400">
+                                                                    {{ $isArabic ? 'نطق' : 'Speaking' }}
                                                                 </span>
                                                             @endif
                                                             @if($isCurrent)
@@ -139,9 +189,6 @@
                             </x-student.empty-state>
                         @endforelse
 
-                        @php
-                            $orphanLessons = $course->lessons->whereNull('course_level_id');
-                        @endphp
                         @if($orphanLessons->count() > 0)
                             <div x-data="{ openOrphan: false }" class="rounded-2xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-slate-900/40 overflow-hidden">
                                 <button type="button" @click="openOrphan = !openOrphan" class="w-full flex items-start sm:items-center justify-between gap-4 px-5 py-4 text-left">
@@ -175,6 +222,29 @@
                                             @php
                                                 $lessonProgress = collect($enrollment->lessonProgress)->firstWhere('lesson_id', $lesson->id);
                                                 $isLessonCompleted = $lessonProgress && $lessonProgress->is_completed;
+                                                $titleForMatch = mb_strtolower((string) $lesson->title, 'UTF-8');
+                                                $hasQuizFeature = (bool) (
+                                                    $lesson->has_quiz
+                                                    || $lesson->quiz
+                                                    || str_contains($titleForMatch, 'quiz')
+                                                    || str_contains($titleForMatch, 'test')
+                                                    || str_contains($titleForMatch, 'exam')
+                                                    || str_contains($titleForMatch, 'اختبار')
+                                                    || str_contains($titleForMatch, 'امتحان')
+                                                );
+                                                $hasWritingFeature = (bool) (
+                                                    $lesson->has_writing_exercise
+                                                    || $lesson->writingExercise
+                                                    || str_contains($titleForMatch, 'writing')
+                                                    || str_contains($titleForMatch, 'كتابة')
+                                                );
+                                                $hasPronunciationFeature = (bool) (
+                                                    $lesson->has_pronunciation_exercise
+                                                    || $lesson->pronunciationExercise
+                                                    || str_contains($titleForMatch, 'pronunciation')
+                                                    || str_contains($titleForMatch, 'speaking')
+                                                    || str_contains($titleForMatch, 'نطق')
+                                                );
                                             @endphp
                                             <a href="{{ route('student.lessons.show', [$course, $lesson]) }}" class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-5 py-4 hover:bg-white/80 dark:hover:bg-slate-900 transition-colors">
                                                 <div class="flex items-center gap-3 min-w-0">
@@ -184,6 +254,26 @@
                                                     <div class="min-w-0">
                                                         <div class="font-bold text-sm sm:text-base text-slate-900 dark:text-white line-clamp-2">
                                                             {{ $lesson->title }}
+                                                        </div>
+                                                        <div class="mt-1 flex flex-wrap items-center gap-2 text-xs font-bold text-slate-500 dark:text-slate-400">
+                                                            @if($lesson->video_duration)
+                                                                <span>{{ $lesson->formatted_duration }}</span>
+                                                            @endif
+                                                            @if($hasQuizFeature)
+                                                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary-50 text-primary-600 dark:bg-primary-500/10 dark:text-primary-400">
+                                                                    {{ $isArabic ? 'اختبار' : 'Quiz' }}
+                                                                </span>
+                                                            @endif
+                                                            @if($hasWritingFeature)
+                                                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-sky-50 text-sky-600 dark:bg-sky-500/10 dark:text-sky-400">
+                                                                    {{ $isArabic ? 'كتابة' : 'Writing' }}
+                                                                </span>
+                                                            @endif
+                                                            @if($hasPronunciationFeature)
+                                                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400">
+                                                                    {{ $isArabic ? 'نطق' : 'Speaking' }}
+                                                                </span>
+                                                            @endif
                                                         </div>
                                                     </div>
                                                 </div>
