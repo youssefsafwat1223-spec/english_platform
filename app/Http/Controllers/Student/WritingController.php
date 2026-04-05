@@ -67,6 +67,10 @@ class WritingController extends Controller
                 'summary' => $evaluation['summary'],
                 'strengths' => $evaluation['strengths'],
                 'improvements' => $evaluation['improvements'],
+                'required_vocabulary_usage' => $evaluation['required_vocabulary_usage'] ?? 0,
+                'used_vocabulary_count' => $evaluation['used_vocabulary_count'] ?? 0,
+                'vocabulary_target_met' => $evaluation['vocabulary_target_met'] ?? true,
+                'missing_vocabulary_words' => $evaluation['missing_vocabulary_words'] ?? [],
             ],
             'rewrite_text' => $evaluation['rewrite_suggestion'],
             'submitted_at' => now(),
@@ -87,6 +91,10 @@ class WritingController extends Controller
             'rewrite_suggestion' => $evaluation['rewrite_suggestion'],
             'grammar_issues' => $evaluation['grammar_issues'],
             'passed' => $evaluation['passed'],
+            'required_vocabulary_usage' => $evaluation['required_vocabulary_usage'] ?? 0,
+            'used_vocabulary_count' => $evaluation['used_vocabulary_count'] ?? 0,
+            'vocabulary_target_met' => $evaluation['vocabulary_target_met'] ?? true,
+            'missing_vocabulary_words' => $evaluation['missing_vocabulary_words'] ?? [],
         ]);
     }
 }

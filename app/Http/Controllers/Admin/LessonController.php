@@ -357,6 +357,24 @@ class LessonController extends Controller
             return;
         }
 
+        $existingRubric = is_array($lesson->writingExercise?->rubric_json)
+            ? $lesson->writingExercise->rubric_json
+            : [];
+        $rubric = [
+            'grammar' => 25,
+            'vocabulary' => 25,
+            'coherence' => 25,
+            'task_completion' => 25,
+        ];
+
+        if (isset($existingRubric['required_vocabulary_usage'])) {
+            $rubric['required_vocabulary_usage'] = max(0, (int) $existingRubric['required_vocabulary_usage']);
+        }
+
+        if (isset($existingRubric['lesson_vocabulary']) && is_array($existingRubric['lesson_vocabulary'])) {
+            $rubric['lesson_vocabulary'] = array_values($existingRubric['lesson_vocabulary']);
+        }
+
         $exerciseData = [
             'title' => $request->input('writing_title'),
             'prompt' => $request->input('writing_prompt'),
@@ -365,12 +383,7 @@ class LessonController extends Controller
             'max_words' => (int) $request->input('writing_max_words', 180),
             'passing_score' => (int) $request->input('writing_passing_score', 70),
             'model_answer' => $request->input('writing_model_answer'),
-            'rubric_json' => [
-                'grammar' => 25,
-                'vocabulary' => 25,
-                'coherence' => 25,
-                'task_completion' => 25,
-            ],
+            'rubric_json' => $rubric,
         ];
 
         if ($lesson->writingExercise) {

@@ -23,19 +23,92 @@ class WritingEvaluationService
         $aiFeedback = $this->localAiWritingCoachService->evaluate($exercise, $normalizedAnswer, $wordCount, $locale);
         $aiFeedback = $this->normalizeAiFeedbackLocale($aiFeedback, $locale);
 
+        $overallScore = $aiFeedback['overall_score'] ?? $baseScores['overall_score'];
+        $grammarScore = $aiFeedback['grammar_score'] ?? $baseScores['grammar_score'];
+        $vocabularyScore = $aiFeedback['vocabulary_score'] ?? $baseScores['vocabulary_score'];
+        $coherenceScore = $aiFeedback['coherence_score'] ?? $baseScores['coherence_score'];
+        $taskScore = $aiFeedback['task_score'] ?? $baseScores['task_score'];
+        $summary = $this->pickFeedbackText($aiFeedback['summary'] ?? null, $baseScores['summary']);
+        $strengths = $this->pickFeedbackList($aiFeedback['strengths'] ?? null, $baseScores['strengths']);
+        $improvements = $this->pickFeedbackList($aiFeedback['improvements'] ?? null, $baseScores['improvements']);
+
+        $rubric = is_array($exercise->rubric_json) ? $exercise->rubric_json : [];
+        $targetVocabularyWords = $this->lessonVocabularyWords($exercise);
+        $requiredVocabularyUsage = max(0, (int) ($rubric['required_vocabulary_usage'] ?? 0));
+        $usedVocabularyCount = $this->countVocabularyMatches($normalizedAnswer, $targetVocabularyWords);
+        $vocabularyTargetMet = $requiredVocabularyUsage <= 0 || $usedVocabularyCount >= $requiredVocabularyUsage;
+        $missingVocabularyWords = [];
+
+        if ($requiredVocabularyUsage > 0 && !empty($targetVocabularyWords) && !$vocabularyTargetMet) {
+            $missingCount = max(0, $requiredVocabularyUsage - $usedVocabularyCount);
+
+            $vocabularyScore = max(35, (int) $vocabularyScore - min(20, $missingCount * 4));
+            $taskScore = max(35, (int) $taskScore - min(16, $missingCount * 3));
+            $overallScore = (int) round(($grammarScore + $taskScore + $vocabularyScore + $coherenceScore) / 4);
+
+            $answerWordSet = $this->extractAnswerWordSet($normalizedAnswer);
+            $missingVocabularyWords = collect($targetVocabularyWords)
+                ->reject(fn (string $word) => in_array($word, $answerWordSet, true))
+                ->take(6)
+                ->values()
+                ->all();
+
+            $summary = $this->isArabicLocale($locale)
+                ? 'إجابتك واضحة، لكنك تحتاج استخدام عدد أكبر من مفردات الدرس المطلوبة.'
+                : 'Your answer is clear, but you need to use more of the required lesson vocabulary.';
+
+            $improvements = $this->prependImprovement(
+                $improvements,
+                $this->isArabicLocale($locale)
+                    ? "استخدم على الأقل {$requiredVocabularyUsage} كلمات من قائمة الدرس (استخدمت {$usedVocabularyCount})."
+                    : "Use at least {$requiredVocabularyUsage} words from the lesson list (you used {$usedVocabularyCount})."
+            );
+        }
+
+        if ($requiredVocabularyUsage > 0 && !empty($targetVocabularyWords) && $vocabularyTargetMet) {
+            $strengths = $this->prependStrength(
+                $strengths,
+                $this->isArabicLocale($locale)
+                    ? "استخدمت مفردات الدرس بشكل جيد ({$usedVocabularyCount} كلمات)."
+                    : "You used the lesson vocabulary well ({$usedVocabularyCount} words)."
+            );
+        }
+
+        $belowMinWords = $wordCount < (int) $exercise->min_words;
+        if ($belowMinWords) {
+            $taskScore = min($taskScore, 55);
+            $overallScore = min($overallScore, max(45, ((int) $exercise->passing_score) - 8));
+            $summary = $this->isArabicLocale($locale)
+                ? 'إجابتك قصيرة جدًا مقارنة بالحد الأدنى المطلوب، لذلك تحتاج إضافة تفاصيل أكثر قبل اعتبارها مكتملة.'
+                : 'Your answer is too short for the required minimum length, so it needs more detail before it can be considered complete.';
+
+            $improvements = $this->prependImprovement(
+                $improvements,
+                $this->isArabicLocale($locale)
+                    ? "اكتب على الأقل {$exercise->min_words} كلمة حتى يتم تقييم المهمة بشكل كامل."
+                    : "Write at least {$exercise->min_words} words so the task can be evaluated as complete."
+            );
+        }
+
+        $passed = !$belowMinWords && ((int) $overallScore >= (int) $exercise->passing_score);
+
         return [
             'word_count' => $wordCount,
-            'overall_score' => $aiFeedback['overall_score'] ?? $baseScores['overall_score'],
-            'grammar_score' => $aiFeedback['grammar_score'] ?? $baseScores['grammar_score'],
-            'vocabulary_score' => $aiFeedback['vocabulary_score'] ?? $baseScores['vocabulary_score'],
-            'coherence_score' => $aiFeedback['coherence_score'] ?? $baseScores['coherence_score'],
-            'task_score' => $aiFeedback['task_score'] ?? $baseScores['task_score'],
-            'summary' => $aiFeedback['summary'] ?? $baseScores['summary'],
-            'strengths' => $aiFeedback['strengths'] ?? $baseScores['strengths'],
-            'improvements' => $aiFeedback['improvements'] ?? $baseScores['improvements'],
+            'overall_score' => (int) $overallScore,
+            'grammar_score' => (int) $grammarScore,
+            'vocabulary_score' => (int) $vocabularyScore,
+            'coherence_score' => (int) $coherenceScore,
+            'task_score' => (int) $taskScore,
+            'summary' => (string) $summary,
+            'strengths' => $strengths,
+            'improvements' => $improvements,
             'rewrite_suggestion' => $aiFeedback['rewrite_suggestion'] ?? '',
             'grammar_issues' => $grammarIssues,
-            'passed' => ($aiFeedback['overall_score'] ?? $baseScores['overall_score']) >= $exercise->passing_score,
+            'passed' => $passed,
+            'required_vocabulary_usage' => $requiredVocabularyUsage,
+            'used_vocabulary_count' => $usedVocabularyCount,
+            'vocabulary_target_met' => $vocabularyTargetMet,
+            'missing_vocabulary_words' => $missingVocabularyWords,
         ];
     }
 
@@ -172,6 +245,75 @@ class WritingEvaluationService
             ->count();
     }
 
+    private function pickFeedbackText(mixed $candidate, string $fallback): string
+    {
+        $value = trim((string) ($candidate ?? ''));
+        return $value !== '' ? $value : $fallback;
+    }
+
+    private function pickFeedbackList(mixed $candidate, array $fallback): array
+    {
+        if (!is_array($candidate)) {
+            return $fallback;
+        }
+
+        $clean = collect($candidate)
+            ->map(fn ($item) => trim((string) $item))
+            ->filter()
+            ->take(3)
+            ->values()
+            ->all();
+
+        return !empty($clean) ? $clean : $fallback;
+    }
+
+    private function lessonVocabularyWords(WritingExercise $exercise): array
+    {
+        $rubric = is_array($exercise->rubric_json) ? $exercise->rubric_json : [];
+        $list = is_array($rubric['lesson_vocabulary'] ?? null) ? $rubric['lesson_vocabulary'] : [];
+
+        return collect($list)
+            ->map(function (mixed $item): string {
+                if (is_array($item)) {
+                    return strtolower(trim((string) ($item['word'] ?? '')));
+                }
+
+                return strtolower(trim((string) $item));
+            })
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
+    }
+
+    private function extractAnswerWordSet(string $answer): array
+    {
+        preg_match_all("/[a-z]+(?:['-][a-z]+)*/i", strtolower($answer), $matches);
+
+        return collect($matches[0] ?? [])
+            ->map(fn ($word) => trim((string) $word))
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
+    }
+
+    private function countVocabularyMatches(string $answer, array $targetWords): int
+    {
+        if (empty($targetWords)) {
+            return 0;
+        }
+
+        $answerWordSet = $this->extractAnswerWordSet($answer);
+        if (empty($answerWordSet)) {
+            return 0;
+        }
+
+        return collect($targetWords)
+            ->filter(fn ($word) => in_array($word, $answerWordSet, true))
+            ->count();
+    }
+
     private function normalizeAiFeedbackLocale(?array $aiFeedback, string $locale): ?array
     {
         if ($aiFeedback === null) {
@@ -202,12 +344,23 @@ class WritingEvaluationService
             ->take(3)
             ->values()
             ->all();
+        $cleanRewrite = $this->cleanFeedbackText((string) ($aiFeedback['rewrite_suggestion'] ?? ''));
 
         $isCorrupted = $this->containsCjk($joined) || $this->containsInstructionLeakage($joined);
         $isArabic = $this->isArabicLocale($locale);
         $letters = $this->countLetters($joined);
         $arabicLetters = $this->countArabicLetters($joined);
         $latinLetters = $this->countLatinLetters($joined);
+
+        if ($cleanRewrite !== '') {
+            $rewriteLetters = $this->countLetters($cleanRewrite);
+            $rewriteLatinLetters = $this->countLatinLetters($cleanRewrite);
+            $rewriteLooksCorrupted = $this->containsCjk($cleanRewrite) || $this->containsInstructionLeakage($cleanRewrite);
+
+            if ($rewriteLooksCorrupted || ($rewriteLetters > 0 && $rewriteLatinLetters < max(8, (int) floor($rewriteLetters * 0.45)))) {
+                $cleanRewrite = '';
+            }
+        }
 
         if ($isArabic) {
             if ($letters > 0 && $arabicLetters < max(8, (int) floor($letters * 0.35))) {
@@ -223,6 +376,7 @@ class WritingEvaluationService
             $aiFeedback['summary'] = $cleanSummary;
             $aiFeedback['strengths'] = $cleanStrengths;
             $aiFeedback['improvements'] = $cleanImprovements;
+            $aiFeedback['rewrite_suggestion'] = $cleanRewrite;
 
             return $aiFeedback;
         }
@@ -232,6 +386,7 @@ class WritingEvaluationService
         $aiFeedback['summary'] = null;
         $aiFeedback['strengths'] = null;
         $aiFeedback['improvements'] = null;
+        $aiFeedback['rewrite_suggestion'] = $cleanRewrite;
 
         return $aiFeedback;
     }
@@ -298,6 +453,40 @@ class WritingEvaluationService
     private function countLatinLetters(string $text): int
     {
         return preg_match_all('/[A-Za-z]/u', $text);
+    }
+
+    private function prependImprovement(array $improvements, string $required): array
+    {
+        $clean = collect($improvements)
+            ->map(fn ($item) => trim((string) $item))
+            ->filter()
+            ->values()
+            ->all();
+
+        array_unshift($clean, $required);
+
+        return collect($clean)
+            ->unique(fn ($item) => mb_strtolower($item, 'UTF-8'))
+            ->take(3)
+            ->values()
+            ->all();
+    }
+
+    private function prependStrength(array $strengths, string $extra): array
+    {
+        $clean = collect($strengths)
+            ->map(fn ($item) => trim((string) $item))
+            ->filter()
+            ->values()
+            ->all();
+
+        array_unshift($clean, $extra);
+
+        return collect($clean)
+            ->unique(fn ($item) => mb_strtolower($item, 'UTF-8'))
+            ->take(3)
+            ->values()
+            ->all();
     }
 
     private function formatGrammarIssuesForUi(array $issues, string $answer, string $locale): array

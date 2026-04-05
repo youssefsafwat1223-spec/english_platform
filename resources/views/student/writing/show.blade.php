@@ -7,6 +7,7 @@
     <div class="student-container space-y-8">
         @php
             $isArabic = app()->getLocale() === 'ar';
+            $rubric = is_array($writingExercise->rubric_json) ? $writingExercise->rubric_json : [];
 
             $promptText = (string) $writingExercise->prompt;
             $instructionsText = (string) ($writingExercise->instructions ?? '');
@@ -20,6 +21,31 @@
             if (preg_match('/AR:\s*(.*?)\s*EN:\s*(.*)$/su', $instructionsText, $matches) === 1) {
                 $localizedInstructions = $isArabic ? trim($matches[1]) : trim($matches[2]);
             }
+
+            $lessonVocabulary = collect($rubric['lesson_vocabulary'] ?? [])
+                ->map(function ($item) {
+                    if (!is_array($item)) {
+                        return null;
+                    }
+
+                    $word = strtolower(trim((string) ($item['word'] ?? '')));
+                    if ($word === '') {
+                        return null;
+                    }
+
+                    return [
+                        'word' => $word,
+                        'meaning_ar' => trim((string) ($item['meaning_ar'] ?? '')),
+                        'explanation_en' => trim((string) ($item['explanation_en'] ?? '')),
+                        'explanation_ar' => trim((string) ($item['explanation_ar'] ?? '')),
+                        'example' => trim((string) ($item['example'] ?? '')),
+                    ];
+                })
+                ->filter()
+                ->take(15)
+                ->values();
+
+            $requiredVocabularyUsage = max(0, (int) ($rubric['required_vocabulary_usage'] ?? 0));
         @endphp
 
         <x-student.page-header
@@ -43,6 +69,8 @@
             'minWords' => $writingExercise->min_words,
             'maxWords' => $writingExercise->max_words,
             'initialText' => old('answer_text', ''),
+            'lessonVocabularyWords' => $lessonVocabulary->pluck('word')->values()->all(),
+            'requiredVocabularyUsage' => $requiredVocabularyUsage,
         ]))">
             <div class="xl:col-span-2 space-y-6">
                 <x-student.card padding="p-0" class="overflow-hidden border border-slate-200/50 dark:border-white/10">
@@ -77,13 +105,59 @@
                     </div>
                 </x-student.card>
 
+                @if($lessonVocabulary->isNotEmpty())
+                    <x-student.card padding="p-0" class="overflow-hidden border border-slate-200/50 dark:border-white/10">
+                        <div class="px-6 py-5 border-b border-slate-200/50 dark:border-white/5 bg-slate-50/50 dark:bg-slate-900/20 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                            <h2 class="text-xl font-extrabold text-slate-900 dark:text-white">{{ $isArabic ? 'مفردات الدرس المطلوبة' : 'Required Lesson Vocabulary' }}</h2>
+                            @if($requiredVocabularyUsage > 0)
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-primary-500/10 text-primary-600 dark:text-primary-400">
+                                    {{ $isArabic ? "استخدم {$requiredVocabularyUsage} كلمات على الأقل" : "Use at least {$requiredVocabularyUsage} words" }}
+                                </span>
+                            @endif
+                        </div>
+                        <div class="p-6">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+                                @foreach($lessonVocabulary as $wordItem)
+                                    @php
+                                        $localizedExplanation = $isArabic
+                                            ? ($wordItem['explanation_ar'] !== '' ? $wordItem['explanation_ar'] : 'كلمة مفيدة للكتابة في هذا الدرس.')
+                                            : ($wordItem['explanation_en'] !== '' ? $wordItem['explanation_en'] : 'Useful vocabulary for this lesson writing task.');
+                                        $exampleText = $wordItem['example'] !== '' ? $wordItem['example'] : ($isArabic ? 'استخدم الكلمة داخل جملة صحيحة.' : 'Use the word in one correct sentence.');
+                                    @endphp
+                                    <div class="rounded-2xl border border-slate-200/70 dark:border-white/10 p-4 bg-white/70 dark:bg-white/[0.02] space-y-2">
+                                        <div class="flex items-center justify-between gap-2">
+                                            <div class="text-base font-black text-slate-900 dark:text-white">{{ $wordItem['word'] }}</div>
+                                            <span class="text-xs font-bold text-slate-500 dark:text-slate-400">{{ $wordItem['meaning_ar'] }}</span>
+                                        </div>
+                                        <p class="text-sm text-slate-600 dark:text-slate-400 leading-6">{{ $localizedExplanation }}</p>
+                                        <p class="text-xs text-slate-500 dark:text-slate-400 leading-5">
+                                            <span class="font-bold">{{ $isArabic ? 'مثال:' : 'Example:' }}</span>
+                                            {{ $exampleText }}
+                                        </p>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </x-student.card>
+                @endif
+
                 <x-student.card padding="p-0" class="overflow-hidden border border-slate-200/50 dark:border-white/10">
                     <div class="px-6 py-5 border-b border-slate-200/50 dark:border-white/5 bg-slate-50/50 dark:bg-slate-900/20 flex items-center justify-between gap-4">
                         <h2 class="text-xl font-extrabold text-slate-900 dark:text-white">{{ $isArabic ? 'كتابتك' : 'Your Writing' }}</h2>
-                        <div class="inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-bold"
-                             :class="wordCount < minWords ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400' : wordCount > maxWords ? 'bg-red-500/10 text-red-600 dark:text-red-400' : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'">
-                            <span x-text="wordCount"></span>
-                            <span>{{ $isArabic ? 'كلمة' : 'words' }}</span>
+                        <div class="flex items-center gap-2">
+                            <div class="inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-bold"
+                                :class="wordCount < minWords ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400' : wordCount > maxWords ? 'bg-red-500/10 text-red-600 dark:text-red-400' : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'">
+                                <span x-text="wordCount"></span>
+                                <span>{{ $isArabic ? 'كلمة' : 'words' }}</span>
+                            </div>
+                            <div x-show="requiredVocabularyUsage > 0" x-cloak
+                                class="inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-bold"
+                                :class="vocabularyTargetMet ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-primary-500/10 text-primary-600 dark:text-primary-400'">
+                                <span x-text="usedVocabularyCount"></span>
+                                <span>/</span>
+                                <span x-text="requiredVocabularyUsage"></span>
+                                <span>{{ $isArabic ? 'مفردات' : 'vocab' }}</span>
+                            </div>
                         </div>
                     </div>
                     <div class="p-6 space-y-4">
@@ -97,8 +171,14 @@
                             <p class="text-sm text-slate-500 dark:text-slate-400">
                                 @if($isArabic)
                                     استهدف {{ $writingExercise->min_words }} إلى {{ $writingExercise->max_words }} كلمة، وخلي إجابتك مرتبطة بالمطلوب.
+                                    @if($requiredVocabularyUsage > 0 && $lessonVocabulary->isNotEmpty())
+                                        استخدم على الأقل {{ $requiredVocabularyUsage }} كلمات من قائمة مفردات الدرس.
+                                    @endif
                                 @else
                                     Aim for {{ $writingExercise->min_words }}-{{ $writingExercise->max_words }} words and keep your answer focused on the prompt.
+                                    @if($requiredVocabularyUsage > 0 && $lessonVocabulary->isNotEmpty())
+                                        Use at least {{ $requiredVocabularyUsage }} words from the lesson vocabulary list.
+                                    @endif
                                 @endif
                             </p>
                             <div class="flex gap-3">
@@ -139,6 +219,26 @@
                                     <div class="text-2xl font-black text-slate-900 dark:text-white" x-text="result ? result[metric.key] + '%' : ''"></div>
                                 </div>
                             </template>
+                        </div>
+
+                        <div x-show="result && result.required_vocabulary_usage > 0" x-cloak class="rounded-2xl border border-slate-200/70 dark:border-white/10 p-5 bg-slate-50/80 dark:bg-white/[0.02] space-y-3">
+                            <div class="flex items-center justify-between gap-3">
+                                <h3 class="font-extrabold text-slate-900 dark:text-white">{{ $isArabic ? 'استخدام مفردات الدرس' : 'Lesson Vocabulary Usage' }}</h3>
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold"
+                                      :class="result && result.vocabulary_target_met ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-amber-500/10 text-amber-600 dark:text-amber-400'"
+                                      x-text="result && result.vocabulary_target_met ? '{{ $isArabic ? 'محقق' : 'Met' }}' : '{{ $isArabic ? 'غير مكتمل' : 'Not met' }}'"></span>
+                            </div>
+                            <p class="text-sm text-slate-600 dark:text-slate-400">
+                                <span x-text="result ? result.used_vocabulary_count : 0"></span>
+                                <span>{{ $isArabic ? 'من' : 'of' }}</span>
+                                <span x-text="result ? result.required_vocabulary_usage : 0"></span>
+                                <span>{{ $isArabic ? 'كلمات مطلوبة من قائمة الدرس' : 'required words from the lesson list' }}</span>
+                            </p>
+                            <div x-show="result && result.missing_vocabulary_words && result.missing_vocabulary_words.length" class="flex flex-wrap gap-2">
+                                <template x-for="missingWord in (result ? result.missing_vocabulary_words : [])" :key="missingWord">
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-primary-500/10 text-primary-600 dark:text-primary-400" x-text="missingWord"></span>
+                                </template>
+                            </div>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -228,6 +328,10 @@ function writingPractice(config) {
         result: null,
         minWords: config.minWords,
         maxWords: config.maxWords,
+        lessonVocabularyWords: (config.lessonVocabularyWords || [])
+            .map((word) => String(word || '').trim().toLowerCase())
+            .filter(Boolean),
+        requiredVocabularyUsage: Number(config.requiredVocabularyUsage || 0),
         metrics: [
             { key: 'grammar_score', label: @js($isArabic ? 'القواعد' : 'Grammar') },
             { key: 'vocabulary_score', label: @js($isArabic ? 'المفردات' : 'Vocabulary') },
@@ -238,6 +342,30 @@ function writingPractice(config) {
             return (this.answerText || '').trim()
                 ? (this.answerText || '').trim().split(/\s+/).filter(Boolean).length
                 : 0;
+        },
+        get usedVocabularyCount() {
+            if (!this.lessonVocabularyWords.length || !(this.answerText || '').trim()) {
+                return 0;
+            }
+
+            const matches = (this.answerText || '').toLowerCase().match(/[a-z]+(?:['-][a-z]+)*/g) || [];
+            const answerWords = new Set(matches);
+            let used = 0;
+
+            for (const word of this.lessonVocabularyWords) {
+                if (answerWords.has(word)) {
+                    used += 1;
+                }
+            }
+
+            return used;
+        },
+        get vocabularyTargetMet() {
+            if (this.requiredVocabularyUsage <= 0) {
+                return true;
+            }
+
+            return this.usedVocabularyCount >= this.requiredVocabularyUsage;
         },
         resetDraft() {
             this.answerText = '';

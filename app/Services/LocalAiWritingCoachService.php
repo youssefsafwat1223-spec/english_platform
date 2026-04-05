@@ -76,6 +76,25 @@ class LocalAiWritingCoachService
         $languageRule = $isArabic
             ? 'summary, strengths, and improvements MUST be written in Arabic only. rewrite_suggestion MUST stay in English.'
             : 'summary, strengths, improvements, and rewrite_suggestion MUST be written in English.';
+        $rubric = is_array($exercise->rubric_json) ? $exercise->rubric_json : [];
+        $requiredVocabularyUsage = max(0, (int) ($rubric['required_vocabulary_usage'] ?? 0));
+        $targetVocabularyWords = collect($rubric['lesson_vocabulary'] ?? [])
+            ->map(function (mixed $item): string {
+                if (is_array($item)) {
+                    return strtolower(trim((string) ($item['word'] ?? '')));
+                }
+
+                return strtolower(trim((string) $item));
+            })
+            ->filter()
+            ->unique()
+            ->take(15)
+            ->values()
+            ->all();
+        $targetVocabularyLine = empty($targetVocabularyWords) ? 'None' : implode(', ', $targetVocabularyWords);
+        $vocabularyRule = $requiredVocabularyUsage > 0 && !empty($targetVocabularyWords)
+            ? "The student should naturally use at least {$requiredVocabularyUsage} words from this list when possible."
+            : 'Evaluate vocabulary naturally based on range and appropriateness.';
 
         return <<<PROMPT
 You are a writing coach for English learners.
@@ -88,6 +107,8 @@ Task prompt: {$exercise->prompt}
 Instructions: {$exercise->instructions}
 Min words: {$exercise->min_words}
 Max words: {$exercise->max_words}
+Target lesson vocabulary: {$targetVocabularyLine}
+Vocabulary rule: {$vocabularyRule}
 Student word count: {$wordCount}
 Student answer:
 {$answer}
