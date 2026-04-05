@@ -33,7 +33,7 @@
                 <div data-aos="fade-up" data-aos-delay="100">
                     <h3 class="text-xs font-bold uppercase tracking-widest mb-6 text-gradient">{{ __('Product') }}</h3>
                     <ul class="space-y-3">
-                        <li><a href="{{ route('student.courses.index') }}" class="text-sm transition-colors duration-200 hover:text-primary-500" style="color: var(--color-text-muted);">{{ __('Footer Courses') }}</a></li>
+                        <li><a href="{{ route('courses.index') }}" class="text-sm transition-colors duration-200 hover:text-primary-500" style="color: var(--color-text-muted);">{{ __('Footer Courses') }}</a></li>
                     </ul>
                 </div>
 

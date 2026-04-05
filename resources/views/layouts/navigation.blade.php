@@ -181,6 +181,25 @@
                             </div>
                         @endif
                     @endauth
+
+                    @guest
+                        <a href="{{ route('courses.index') }}"
+                           class="nav-link {{ request()->routeIs('courses.*') ? 'active' : '' }}">
+                            {{ __('Courses') }}
+                        </a>
+                        <a href="{{ route('pricing') }}"
+                           class="nav-link {{ request()->routeIs('pricing') ? 'active' : '' }}">
+                            {{ __('Pricing') }}
+                        </a>
+                        <a href="{{ route('about') }}"
+                           class="nav-link {{ request()->routeIs('about') ? 'active' : '' }}">
+                            {{ __('About') }}
+                        </a>
+                        <a href="{{ route('contact') }}"
+                           class="nav-link {{ request()->routeIs('contact') ? 'active' : '' }}">
+                            {{ __('Contact') }}
+                        </a>
+                    @endguest
                 </div>
             </div>
 
@@ -407,6 +426,13 @@
                     <a href="{{ route('admin.email-campaigns.index') }}" class="block px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-primary-500/5" style="color: var(--color-text);">📧 {{ __('Email Campaigns') }}</a>
                 @endif
             @endauth
+
+            @guest
+                <a href="{{ route('courses.index') }}" class="block px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-primary-500/5" style="color: var(--color-text);">{{ __('Courses') }}</a>
+                <a href="{{ route('pricing') }}" class="block px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-primary-500/5" style="color: var(--color-text);">{{ __('Pricing') }}</a>
+                <a href="{{ route('about') }}" class="block px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-primary-500/5" style="color: var(--color-text);">{{ __('About') }}</a>
+                <a href="{{ route('contact') }}" class="block px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-primary-500/5" style="color: var(--color-text);">{{ __('Contact') }}</a>
+            @endguest
         </div>
         @auth
             <div class="border-t p-4" style="border-color: var(--glass-border);">

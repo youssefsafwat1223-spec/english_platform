@@ -12,7 +12,9 @@
 
 @php
     $isArabic = app()->getLocale() === 'ar';
-    $primaryCtaUrl = auth()->check() ? route('student.courses.index') : route('home') . '#featured-courses';
+    $primaryCtaUrl = auth()->check() && auth()->user()->is_student
+        ? route('student.courses.index')
+        : route('courses.index');
     $primaryCtaLabel = $isArabic ? 'ابدأ البرنامج' : 'Start the program';
     $secondaryCtaUrl = route('home') . '#how-it-works';
     $secondaryCtaLabel = $isArabic ? 'اعرف كيف تتعلم' : 'See how you learn';
@@ -179,6 +181,19 @@
 
                 </div>
 
+                {{-- Feature 5B: AI Writing Coach --}}
+                <div class="glass-card p-8 tilt-card group" data-aos="fade-up" data-aos-delay="150">
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-sky-500/20 to-sky-500/5 flex items-center justify-center mb-6 group-hover:shadow-lg transition-all duration-500">
+                        <svg class="w-7 h-7 text-sky-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-8-8h8m-8 4h8m-8 4h4m5-8l2-2 2 2-8 8H9v-2l8-8z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3" style="color: var(--color-text);">{{ $isArabic ? 'مدرب كتابة ذكي' : 'AI Writing Coach' }}</h3>
+                    <p class="text-sm leading-relaxed" style="color: var(--color-text-muted);">
+                        {{ $isArabic ? 'تطبيقات كتابة مرتبطة بكل درس مع ملاحظات ذكية على القواعد والمفردات والترابط، واقتراحات عملية للتحسين.' : 'Practice lesson-based writing tasks with AI feedback for grammar, vocabulary, coherence, and actionable improvements.' }}
+                    </p>
+                </div>
+
                 {{-- Feature 6: Certificates --}}
                 <div class="glass-card p-8 tilt-card group" data-aos="fade-up" data-aos-delay="200">
                     <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500/20 to-indigo-500/5 flex items-center justify-center mb-6 group-hover:shadow-lg transition-all duration-500">
@@ -266,7 +281,7 @@
                             <div class="text-lg font-bold text-primary-500">
                                 {{ $course->price > 0 ? $course->price . ' ' . ($isArabic ? 'ر.س' : 'SAR') : __('Free') }}
                             </div>
-                            <a href="{{ route('student.courses.show', $course) }}" class="btn-primary btn-sm rounded-lg">
+                            <a href="{{ auth()->check() && auth()->user()->is_student ? route('student.courses.show', $course) : route('courses.show', $course) }}" class="btn-primary btn-sm rounded-lg">
                                 {{ $isArabic ? 'تفاصيل الكورس' : 'View course details' }}
                             </a>
                         </div>

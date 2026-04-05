@@ -66,6 +66,8 @@ Route::get('/blog', [HomeController::class, 'blog'])->name('blog');
 Route::get('/careers', [HomeController::class, 'careers'])->name('careers');
 Route::get('/privacy', [HomeController::class, 'privacy'])->name('privacy');
 Route::get('/terms', [HomeController::class, 'terms'])->name('terms');
+Route::get('/courses', [HomeController::class, 'courses'])->name('courses.index');
+Route::get('/courses/{course}', [HomeController::class, 'courseShow'])->name('courses.show');
 
 // Dynamic Sitemap
 Route::get('/sitemap.xml', function () {
@@ -95,7 +97,7 @@ Route::get('/sitemap.xml', function () {
     // Course pages
     foreach ($courses as $course) {
         $content .= '<url>';
-        $content .= '<loc>' . htmlspecialchars(route('student.courses.show', $course)) . '</loc>';
+        $content .= '<loc>' . htmlspecialchars(route('courses.show', $course)) . '</loc>';
         $content .= '<lastmod>' . $course->updated_at->toW3cString() . '</lastmod>';
         $content .= '<changefreq>weekly</changefreq>';
         $content .= '<priority>0.9</priority>';

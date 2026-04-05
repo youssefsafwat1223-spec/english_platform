@@ -60,7 +60,7 @@
                 <div class="glass-card p-6">
                     <h3 class="font-bold text-sm mb-4" style="color: var(--color-text);">{{ __('Quick Links') }}</h3>
                     <div class="space-y-3">
-                        <a href="{{ route('student.courses.index') }}" class="flex items-center gap-2 text-sm transition-colors hover:text-primary-500" style="color: var(--color-text-muted);">
+                        <a href="{{ route('courses.index') }}" class="flex items-center gap-2 text-sm transition-colors hover:text-primary-500" style="color: var(--color-text-muted);">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
                             {{ __('Browse Courses') }}
                         </a>

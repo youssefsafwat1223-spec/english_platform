@@ -22,6 +22,9 @@
         <p class="text-lg max-w-3xl mx-auto mb-6" style="color: var(--color-text-muted);" data-aos="fade-up" data-aos-delay="200">
             {{ $isArabic ? 'اختر المسار المناسب لمستواك. كل كورس يشمل المنهج، التدريب العملي، الاختبارات، والشهادة القابلة للتحقق.' : 'Choose the course that matches your level. Each course includes curriculum, practical training, quizzes, and a verifiable certificate.' }}
         </p>
+        <p class="text-sm max-w-3xl mx-auto mb-3" style="color: var(--color-text-muted);" data-aos="fade-up" data-aos-delay="220">
+            {{ $isArabic ? 'كل المسارات تشمل تطبيقات كتابة بتغذية راجعة ذكية لتحسين القواعد، المفردات، وترابط الأفكار.' : 'All tracks include writing exercises with AI-assisted feedback for grammar, vocabulary, and coherence.' }}
+        </p>
         <p class="text-sm max-w-3xl mx-auto mb-2" style="color: var(--color-text-muted);" data-aos="fade-up" data-aos-delay="250">
             {{ __('Any course duration shown on the site is a suggested study pace, not an access expiry.') }}
         </p>
@@ -101,6 +104,10 @@
                         <ul class="space-y-2 mb-6">
                             <li class="text-sm flex items-center gap-2" style="color: var(--color-text-muted);">
                                 <svg class="w-4 h-4 text-emerald-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                {{ $isArabic ? 'تدريبات كتابة مع تغذية راجعة ذكية' : 'Writing exercises with AI-assisted feedback' }}
+                            </li>
+                            <li class="text-sm flex items-center gap-2" style="color: var(--color-text-muted);">
+                                <svg class="w-4 h-4 text-emerald-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                                 {{ $isArabic ? 'منهج تأسيسي واضح' : 'Clear foundation curriculum' }}
                             </li>
                             <li class="text-sm flex items-center gap-2" style="color: var(--color-text-muted);">
@@ -113,7 +120,7 @@
                             </li>
                         </ul>
 
-                        <a href="{{ route('student.courses.show', $course) }}" class="block w-full text-center py-3 rounded-xl font-bold transition-all {{ $course->price == 0 ? 'btn-primary' : 'btn-secondary' }}">
+                        <a href="{{ auth()->check() && auth()->user()->is_student ? route('student.courses.show', $course) : route('courses.show', $course) }}" class="block w-full text-center py-3 rounded-xl font-bold transition-all {{ $course->price == 0 ? 'btn-primary' : 'btn-secondary' }}">
                             {{ $course->price == 0 ? ($isArabic ? 'ابدأ مجانًا' : 'Start Free') : ($isArabic ? 'عرض تفاصيل الكورس' : 'View Course Details') }}
                         </a>
                     </div>

@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Testimonial;
 use App\Models\PromoVideo;
 use App\Mail\ContactMessage;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
@@ -72,6 +73,99 @@ class HomeController extends Controller
     public function terms()
     {
         return view('terms');
+    }
+
+    public function courses(Request $request)
+    {
+        $query = Course::active()->withCount(['lessons', 'students']);
+
+        if ($request->filled('q')) {
+            $search = trim((string) $request->input('q'));
+            $query->where(function (Builder $subQuery) use ($search) {
+                $subQuery->where('title', 'like', "%{$search}%")
+                    ->orWhere('short_description', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        switch ($request->input('sort')) {
+            case 'popular':
+                $query->orderBy('total_students', 'desc');
+                break;
+            case 'rating':
+                $query->orderBy('average_rating', 'desc');
+                break;
+            case 'price_low':
+                $query->orderBy('price', 'asc');
+                break;
+            case 'price_high':
+                $query->orderBy('price', 'desc');
+                break;
+            case 'newest':
+                $query->orderBy('created_at', 'desc');
+                break;
+            default:
+                $query->orderBy('order_index');
+                break;
+        }
+
+        $courses = $query->paginate(12)->appends($request->query());
+
+        return view('courses.index', compact('courses'));
+    }
+
+    public function courseShow(Course $course)
+    {
+        if (!$course->is_active) {
+            abort(404);
+        }
+
+        $course->loadCount(['lessons', 'students']);
+
+        $previewLessons = $course->lessons()
+            ->orderBy('order_index')
+            ->select([
+                'id',
+                'course_id',
+                'title',
+                'is_free',
+                'has_quiz',
+                'has_pronunciation_exercise',
+                'has_writing_exercise',
+            ])
+            ->take(12)
+            ->get();
+
+        $hasQuizFeature = $course->lessons()
+            ->where(function (Builder $query) {
+                $query->where('has_quiz', true)
+                    ->orWhereHas('quiz', function (Builder $quizQuery) {
+                        $quizQuery->where('is_active', true);
+                    });
+            })
+            ->exists();
+
+        $hasWritingFeature = $course->lessons()
+            ->where(function (Builder $query) {
+                $query->where('has_writing_exercise', true)
+                    ->orWhereHas('writingExercise');
+            })
+            ->exists();
+
+        $hasPronunciationFeature = $course->lessons()
+            ->where(function (Builder $query) {
+                $query->where('has_pronunciation_exercise', true)
+                    ->orWhereHas('pronunciationExercise');
+            })
+            ->exists();
+
+        return view('courses.show', compact(
+            'course',
+            'previewLessons',
+            'hasQuizFeature',
+            'hasWritingFeature',
+            'hasPronunciationFeature'
+        ));
     }
 
     public function sendContact(Request $request)
