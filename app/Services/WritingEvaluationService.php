@@ -16,9 +16,10 @@ class WritingEvaluationService
     {
         $normalizedAnswer = trim(preg_replace('/\s+/', ' ', $answer) ?? '');
         $wordCount = $this->countWords($normalizedAnswer);
-        $grammarIssues = $this->languageToolService->check($normalizedAnswer, 'en-US');
+        $rawGrammarIssues = $this->languageToolService->check($normalizedAnswer, 'en-US');
+        $grammarIssues = $this->formatGrammarIssuesForUi($rawGrammarIssues, $normalizedAnswer, $locale);
 
-        $baseScores = $this->buildBaseScores($exercise, $normalizedAnswer, $wordCount, $grammarIssues, $locale);
+        $baseScores = $this->buildBaseScores($exercise, $normalizedAnswer, $wordCount, $rawGrammarIssues, $locale);
         $aiFeedback = $this->localAiWritingCoachService->evaluate($exercise, $normalizedAnswer, $wordCount, $locale);
         $aiFeedback = $this->normalizeAiFeedbackLocale($aiFeedback, $locale);
 
@@ -213,5 +214,124 @@ class WritingEvaluationService
     private function containsArabic(string $text): bool
     {
         return preg_match('/\p{Arabic}/u', $text) === 1;
+    }
+
+    private function formatGrammarIssuesForUi(array $issues, string $answer, string $locale): array
+    {
+        $isArabic = $this->isArabicLocale($locale);
+
+        return collect($issues)
+            ->map(function (array $issue) use ($answer, $isArabic): ?array {
+                $offset = max(0, (int) ($issue['offset'] ?? 0));
+                $length = max(0, (int) ($issue['length'] ?? 0));
+
+                $fragment = $this->safeSubstr($answer, $offset, max(1, $length));
+                $context = $this->extractContext($answer, $offset, max(1, $length));
+                $replacements = $this->sanitizeReplacements((array) ($issue['replacements'] ?? []), $fragment);
+
+                $message = (string) ($issue['message'] ?? '');
+                if ($message === '') {
+                    return null;
+                }
+
+                $category = strtolower((string) ($issue['category'] ?? ''));
+                $ruleId = strtolower((string) ($issue['rule_id'] ?? ''));
+                $messageOut = $isArabic
+                    ? $this->localizedGrammarMessage($category, $ruleId)
+                    : $message;
+
+                return [
+                    'message' => $messageOut,
+                    'offset' => $offset,
+                    'length' => $length,
+                    'context' => $context !== '' ? $context : $fragment,
+                    'replacements' => $replacements,
+                ];
+            })
+            ->filter()
+            ->take(6)
+            ->values()
+            ->all();
+    }
+
+    private function localizedGrammarMessage(string $category, string $ruleId): string
+    {
+        if (str_contains($category, 'typo') || str_contains($ruleId, 'spell') || str_contains($ruleId, 'typo')) {
+            return 'يوجد خطأ إملائي محتمل في هذا الجزء.';
+        }
+
+        if (str_contains($category, 'punct')) {
+            return 'تحقق من علامة الترقيم في هذا الجزء.';
+        }
+
+        if (str_contains($category, 'grammar') || str_contains($ruleId, 'grammar')) {
+            return 'يوجد خطأ نحوي محتمل في هذا الجزء.';
+        }
+
+        return 'يوجد تنبيه لغوي يحتاج مراجعة.';
+    }
+
+    private function sanitizeReplacements(array $replacements, string $source): array
+    {
+        $sourceNorm = mb_strtolower(trim($source), 'UTF-8');
+
+        return collect($replacements)
+            ->map(fn ($item) => trim((string) $item))
+            ->filter(function (string $candidate) use ($sourceNorm): bool {
+                if ($candidate === '') {
+                    return false;
+                }
+
+                if (mb_strlen($candidate, 'UTF-8') > 32) {
+                    return false;
+                }
+
+                if (preg_match('/\d/u', $candidate) === 1) {
+                    return false;
+                }
+
+                if (preg_match('/^[A-Z]{2,3}$/', $candidate) === 1) {
+                    return false;
+                }
+
+                if (preg_match('/^[\p{L}\s\'-]+$/u', $candidate) !== 1) {
+                    return false;
+                }
+
+                return mb_strtolower($candidate, 'UTF-8') !== $sourceNorm;
+            })
+            ->unique(fn ($item) => mb_strtolower($item, 'UTF-8'))
+            ->take(3)
+            ->values()
+            ->all();
+    }
+
+    private function extractContext(string $text, int $offset, int $length): string
+    {
+        $textLength = mb_strlen($text, 'UTF-8');
+        if ($textLength === 0) {
+            return '';
+        }
+
+        $safeOffset = min(max(0, $offset), $textLength);
+        $safeLength = min(max(1, $length), max(1, $textLength - $safeOffset));
+
+        $start = max(0, $safeOffset - 20);
+        $end = min($textLength, $safeOffset + $safeLength + 20);
+
+        return trim(mb_substr($text, $start, $end - $start, 'UTF-8'));
+    }
+
+    private function safeSubstr(string $text, int $offset, int $length): string
+    {
+        $textLength = mb_strlen($text, 'UTF-8');
+        if ($textLength === 0) {
+            return '';
+        }
+
+        $safeOffset = min(max(0, $offset), $textLength);
+        $safeLength = min(max(1, $length), max(1, $textLength - $safeOffset));
+
+        return trim(mb_substr($text, $safeOffset, $safeLength, 'UTF-8'));
     }
 }
