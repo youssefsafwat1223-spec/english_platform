@@ -446,6 +446,8 @@ function pronunciationApp() {
         usingDirectUpload: false,
         uploadChunks: [],
         uploadMimeType: '',
+        parallelRecognition: null,
+        parallelTranscript: '',
         streamChunkMs: 1000,
         compareInFlight: false,
         pendingCompareTranscript: null,
@@ -778,6 +780,7 @@ function pronunciationApp() {
                 this.uploadMimeType = mimeType || this.mediaRecorder.mimeType || 'audio/webm';
                 this.usingDirectUpload = true;
                 this.usingStream = false;
+                this.parallelTranscript = '';
 
                 this.mediaRecorder.ondataavailable = (event) => {
                     if (!event.data || event.data.size === 0 || !this.usingDirectUpload) {
@@ -789,11 +792,95 @@ function pronunciationApp() {
                 this.startSilenceMonitor(this.mediaStream, sentenceNumber);
                 this.mediaRecorder.start(500);
 
+                // Start Web Speech API in parallel for free transcription
+                this.startParallelRecognition(sentenceNumber);
+
                 return true;
             } catch (error) {
                 console.error('Direct upload recorder start failed:', error);
                 this.cleanupStreamingResources();
                 return false;
+            }
+        },
+
+        startParallelRecognition(sentenceNumber) {
+            if (!this.recognitionSupported) {
+                return;
+            }
+
+            try {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                if (!SpeechRecognition) {
+                    return;
+                }
+
+                const recognition = new SpeechRecognition();
+                recognition.lang = 'en-US';
+                recognition.interimResults = true;
+                recognition.continuous = true;
+                recognition.maxAlternatives = 1;
+
+                recognition.onresult = (event) => {
+                    let finalTranscript = '';
+                    let interimTranscript = '';
+
+                    for (let i = event.resultIndex; i < event.results.length; i++) {
+                        if (event.results[i].isFinal) {
+                            finalTranscript += event.results[i][0].transcript;
+                        } else {
+                            interimTranscript += event.results[i][0].transcript;
+                        }
+                    }
+
+                    const transcript = (finalTranscript || interimTranscript).trim();
+                    if (transcript) {
+                        this.parallelTranscript = transcript;
+                        this.liveTranscript = transcript;
+
+                        // Update live word diff for visual feedback
+                        if (this.activeSentence === sentenceNumber && !this.compareInFlight) {
+                            this.handleLiveTranscript(sentenceNumber, transcript);
+                        }
+                    }
+                };
+
+                recognition.onend = () => {
+                    // If still recording and no transcript yet, try to restart
+                    if (this.usingDirectUpload && this.isRecording && !this.manualStop) {
+                        const elapsed = this.recordingStartedAt ? (Date.now() - this.recordingStartedAt) : 0;
+                        if (this.maxRecordMs <= 0 || elapsed < (this.maxRecordMs - 500)) {
+                            try {
+                                recognition.start();
+                            } catch (e) {
+                                // Ignore restart errors
+                            }
+                        }
+                    }
+                };
+
+                recognition.onerror = (event) => {
+                    // Silently ignore errors - we have the audio file as backup
+                    if (event.error !== 'aborted' && event.error !== 'no-speech') {
+                        console.warn('Parallel recognition error (non-fatal):', event.error);
+                    }
+                };
+
+                this.parallelRecognition = recognition;
+                recognition.start();
+            } catch (error) {
+                console.warn('Could not start parallel recognition:', error);
+                this.parallelRecognition = null;
+            }
+        },
+
+        stopParallelRecognition() {
+            if (this.parallelRecognition) {
+                try {
+                    this.parallelRecognition.stop();
+                } catch (e) {
+                    // Ignore stop errors
+                }
+                this.parallelRecognition = null;
             }
         },
 
@@ -1307,6 +1394,10 @@ function pronunciationApp() {
                 ? Math.max(0, Math.round((Date.now() - this.recordingStartedAt) / 1000))
                 : 0;
 
+            // Stop parallel recognition and capture final transcript
+            this.stopParallelRecognition();
+            const capturedTranscript = String(this.parallelTranscript || this.liveTranscript || '').trim();
+
             await this.stopMediaRecorderGracefully();
 
             const audioChunks = this.uploadChunks.slice();
@@ -1325,7 +1416,7 @@ function pronunciationApp() {
 
             if (sentenceNumber && audioChunks.length) {
                 const audioBlob = new Blob(audioChunks, { type: audioMimeType });
-                await this.submitUploadedAudio(sentenceNumber, audioBlob, durationSeconds);
+                await this.submitUploadedAudio(sentenceNumber, audioBlob, durationSeconds, capturedTranscript);
                 return;
             }
 
@@ -1334,7 +1425,7 @@ function pronunciationApp() {
             }
         },
 
-        async submitUploadedAudio(sentenceNumber, audioBlob, durationSeconds) {
+        async submitUploadedAudio(sentenceNumber, audioBlob, durationSeconds, capturedTranscript = null) {
             this.isEvaluating = true;
             this.evaluatingSentence = sentenceNumber;
 
@@ -1345,7 +1436,8 @@ function pronunciationApp() {
                 formData.append('duration_seconds', String(durationSeconds || 0));
                 formData.append('provider', 'media_upload');
 
-                const transcript = String(this.liveTranscript || '').trim();
+                // Use captured transcript from parallel recognition, or fallback to liveTranscript
+                const transcript = String(capturedTranscript || this.liveTranscript || '').trim();
                 if (transcript) {
                     formData.append('client_transcript', transcript);
                 }
@@ -1460,6 +1552,7 @@ function pronunciationApp() {
 
         cleanupStreamingResources() {
             this.stopSilenceMonitor();
+            this.stopParallelRecognition();
 
             if (this.mediaStream) {
                 this.mediaStream.getTracks().forEach((track) => track.stop());
@@ -1474,6 +1567,7 @@ function pronunciationApp() {
             this.uploadMimeType = '';
             this.streamEnabled = false;
             this.streamLiveCompare = !this.safeRecordingMode;
+            this.parallelTranscript = '';
         },
 
         async finalizeStreamTranscript(sentenceNumber, transcript, durationSeconds) {
