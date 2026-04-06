@@ -433,7 +433,7 @@ function pronunciationApp() {
         autoStopTriggered: false,
         minStopDelayMs: safeRecordingMode ? 1500 : 0,
         minStopAt: 0,
-        maxRecordMs: {{ max(30, min(120, (int) ($exercise->max_duration_seconds ?? 30))) * 1000 }},
+        maxRecordMs: {{ max(30, min(300, (int) ($exercise->max_duration_seconds ?? 30))) * 1000 }},
         streamLiveCompare: !safeRecordingMode,
         streamStopResolver: null,
         audioContext: null,
@@ -444,9 +444,12 @@ function pronunciationApp() {
         speechDetectedAt: null,
         silenceDetectedAt: null,
         speechDetected: false,
-        autoStopSilenceMs: 2500,
-        autoStopThreshold: 0.02,
-        autoStopMinSpeechMs: 900,
+        autoStopSilenceMs: 4500,
+        autoStopSilenceMsLong: 6500,
+        autoStopThreshold: 0.012,
+        autoStopMinSpeechMs: 1200,
+        autoStopMinSpeechMsLong: 2200,
+        stopPayloadTimeoutMs: 9000,
         csrfToken: document.querySelector('meta[name="csrf-token"]')?.content ?? '',
         passingScore: {{ $exercise->passing_score ?? 70 }},
         messages: @json($messages),
@@ -473,6 +476,32 @@ function pronunciationApp() {
             if (score >= 70) return this.messages.great;
             if (score >= 50) return this.messages.good;
             return this.messages.keep;
+        },
+
+        getAutoStopConfig(sentenceNumber) {
+            const text = String(this.sentences?.[sentenceNumber] || '').trim();
+            const words = text ? text.split(/\s+/).filter(Boolean).length : 0;
+            const isLongAnswer = words >= 15;
+            const isVeryLongAnswer = words >= 35;
+
+            const silenceMs = isVeryLongAnswer
+                ? Math.max(this.autoStopSilenceMsLong, 12000)
+                : (isLongAnswer ? this.autoStopSilenceMsLong : this.autoStopSilenceMs);
+            const minSpeechMs = isVeryLongAnswer
+                ? Math.max(this.autoStopMinSpeechMsLong, 5000)
+                : (isLongAnswer ? this.autoStopMinSpeechMsLong : this.autoStopMinSpeechMs);
+
+            // For long prompts, don't auto-stop unless enough words were captured.
+            const minSpokenWordsBeforeStop = words > 0
+                ? (isVeryLongAnswer ? Math.max(12, Math.floor(words * 0.5)) : Math.max(6, Math.floor(words * 0.35)))
+                : 0;
+
+            return {
+                expectedWords: words,
+                silenceMs,
+                minSpeechMs,
+                minSpokenWordsBeforeStop,
+            };
         },
 
         initRecognition() {
@@ -804,6 +833,7 @@ function pronunciationApp() {
 
         startSilenceMonitor(stream, sentenceNumber) {
             this.stopSilenceMonitor();
+            const autoStopConfig = this.getAutoStopConfig(sentenceNumber);
 
             try {
                 const AudioContextClass = window.AudioContext || window.webkitAudioContext;
@@ -845,10 +875,18 @@ function pronunciationApp() {
 
                         const speechDuration = this.speechDetectedAt ? (now - this.speechDetectedAt) : 0;
                         const silenceDuration = now - this.silenceDetectedAt;
+                        const spokenWords = String(this.liveTranscript || '')
+                            .trim()
+                            .split(/\s+/)
+                            .filter(Boolean)
+                            .length;
+                        const enoughContent = autoStopConfig.minSpokenWordsBeforeStop <= 0
+                            || spokenWords >= autoStopConfig.minSpokenWordsBeforeStop;
 
                         if (!this.autoStopTriggered
-                            && speechDuration >= this.autoStopMinSpeechMs
-                            && silenceDuration >= this.autoStopSilenceMs) {
+                            && speechDuration >= autoStopConfig.minSpeechMs
+                            && silenceDuration >= autoStopConfig.silenceMs
+                            && enoughContent) {
                             this.autoStopTriggered = true;
                             this.stopRecording(true);
                             this.silenceMonitorId = null;
@@ -1163,7 +1201,10 @@ function pronunciationApp() {
                     resolve(payload);
                 };
 
-                const timeoutId = setTimeout(() => finish(null), this.safeRecordingMode ? 3500 : 2000);
+                const timeoutMs = this.safeRecordingMode
+                    ? Math.max(this.stopPayloadTimeoutMs, 12000)
+                    : this.stopPayloadTimeoutMs;
+                const timeoutId = setTimeout(() => finish(null), timeoutMs);
                 this.streamStopResolver = finish;
 
                 this.sendSocketPayload({
