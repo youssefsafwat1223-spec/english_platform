@@ -154,7 +154,7 @@
                 <x-student.card padding="p-6 md:p-8">
                     <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4">{{ $isArabic ? 'مميزات الكورس' : 'Course highlights' }}</h3>
                     <ul class="space-y-3 text-sm text-slate-600 dark:text-slate-300">
-                        <li class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>{{ $lessonTitleCount }} {{ $isArabic ? 'درس فيديو عالي الجودة' : 'high-quality video lessons' }}</li>
+                        <li class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>{{ $headingCount }} {{ $isArabic ? 'عنوان رئيسي' : 'main headings' }}</li>
                         <li class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>{{ $isArabic ? 'وصول خلال مدة الاشتراك' : 'Access during subscription period' }}</li>
                         <li class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>{{ $isArabic ? 'شهادة حضور' : 'Attendance certificate' }}</li>
                         <li class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>{{ $isArabic ? 'يدعم الجوال والكمبيوتر' : 'Mobile and desktop friendly' }}</li>
