@@ -766,12 +766,7 @@ function pronunciationApp() {
 
             try {
                 this.mediaStream = await navigator.mediaDevices.getUserMedia({
-                    audio: {
-                        channelCount: 1,
-                        echoCancellation: true,
-                        noiseSuppression: true,
-                        autoGainControl: true,
-                    },
+                    audio: this.getRecordingAudioConstraints(),
                 });
 
                 const mimeType = this.getSupportedMimeType();
@@ -947,12 +942,7 @@ function pronunciationApp() {
 
         async startMediaStream(sentenceNumber, wsUrl, wsToken) {
             this.mediaStream = await navigator.mediaDevices.getUserMedia({
-                audio: {
-                    channelCount: 1,
-                    echoCancellation: true,
-                    noiseSuppression: true,
-                    autoGainControl: true,
-                },
+                audio: this.getRecordingAudioConstraints(),
             });
 
             const mimeType = this.getSupportedMimeType();
@@ -1168,6 +1158,15 @@ function pronunciationApp() {
             }
 
             this.streamSocket.send(JSON.stringify(payload));
+        },
+
+        getRecordingAudioConstraints() {
+            return {
+                channelCount: 1,
+                echoCancellation: false,
+                noiseSuppression: false,
+                autoGainControl: false,
+            };
         },
 
         getSupportedMimeType() {
@@ -1461,8 +1460,6 @@ function pronunciationApp() {
 
             // Stop parallel recognition and capture final transcript
             this.stopParallelRecognition();
-            const capturedTranscript = String(this.parallelTranscript || this.liveTranscript || '').trim();
-
             await this.stopMediaRecorderGracefully();
 
             const audioChunks = this.uploadChunks.slice();
@@ -1481,7 +1478,7 @@ function pronunciationApp() {
 
             if (sentenceNumber && audioChunks.length) {
                 const audioBlob = new Blob(audioChunks, { type: audioMimeType });
-                await this.submitUploadedAudio(sentenceNumber, audioBlob, durationSeconds, capturedTranscript);
+                await this.submitUploadedAudio(sentenceNumber, audioBlob, durationSeconds);
                 return;
             }
 
@@ -1490,7 +1487,7 @@ function pronunciationApp() {
             }
         },
 
-        async submitUploadedAudio(sentenceNumber, audioBlob, durationSeconds, capturedTranscript = null) {
+        async submitUploadedAudio(sentenceNumber, audioBlob, durationSeconds) {
             this.isEvaluating = true;
             this.evaluatingSentence = sentenceNumber;
             let shouldKeepEvaluating = false;
@@ -1502,11 +1499,8 @@ function pronunciationApp() {
                 formData.append('duration_seconds', String(durationSeconds || 0));
                 formData.append('provider', 'media_upload');
 
-                // Use captured transcript from parallel recognition, or fallback to liveTranscript
-                const transcript = String(capturedTranscript || this.liveTranscript || '').trim();
-                if (transcript) {
-                    formData.append('client_transcript', transcript);
-                }
+                // Final scoring should use server-side transcription for better accuracy.
+                // Browser transcript stays only for live visual hints while recording.
 
                 const extension = this.fileExtensionFromMime(audioBlob.type || this.uploadMimeType || '');
                 const fileName = `pronunciation-${Date.now()}.${extension}`;

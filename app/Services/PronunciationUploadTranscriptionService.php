@@ -7,7 +7,7 @@ use Symfony\Component\Process\Process;
 
 class PronunciationUploadTranscriptionService
 {
-    public function transcribe(string $absoluteAudioPath, ?string $mimeType = null): ?string
+    public function transcribe(string $absoluteAudioPath, ?string $mimeType = null, ?string $expectedText = null): ?string
     {
         if (!(bool) config('services.pronunciation_upload.enabled', true)) {
             return null;
@@ -35,6 +35,8 @@ class PronunciationUploadTranscriptionService
             $absoluteAudioPath,
             '--mime-type',
             (string) ($mimeType ?: 'audio/webm'),
+            '--expected-text',
+            trim((string) $expectedText),
             '--timeout-seconds',
             (string) max(10, $timeout),
         ]);
@@ -65,4 +67,3 @@ class PronunciationUploadTranscriptionService
         return $transcript !== '' ? $transcript : null;
     }
 }
-

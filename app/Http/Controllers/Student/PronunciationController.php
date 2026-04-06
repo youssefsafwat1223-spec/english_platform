@@ -320,9 +320,9 @@ class PronunciationController extends Controller
         $absoluteAudioPath = Storage::disk('local')->path($audioPath);
         $mimeType = (string) ($audioFile->getClientMimeType() ?: 'audio/webm');
 
-        $transcript = trim((string) $request->input('client_transcript', ''));
+        $transcript = trim((string) $this->uploadTranscriptionService->transcribe($absoluteAudioPath, $mimeType, $expectedText));
         if ($transcript === '') {
-            $transcript = trim((string) $this->uploadTranscriptionService->transcribe($absoluteAudioPath, $mimeType));
+            $transcript = trim((string) $request->input('client_transcript', ''));
         }
 
         if ($transcript === '') {

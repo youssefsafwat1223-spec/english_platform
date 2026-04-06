@@ -14,7 +14,7 @@ import sys
 import uuid
 
 
-async def run(ws_url: str, audio_file: str, mime_type: str, timeout_seconds: int) -> dict:
+async def run(ws_url: str, audio_file: str, mime_type: str, expected_text: str, timeout_seconds: int) -> dict:
     try:
         import websockets  # type: ignore
     except Exception as exc:  # pragma: no cover
@@ -37,7 +37,7 @@ async def run(ws_url: str, audio_file: str, mime_type: str, timeout_seconds: int
             "type": "start",
             "session_id": session_id,
             "sentence_number": 1,
-            "expected_text": "",
+            "expected_text": expected_text or "",
         }))
 
         await ws.send(json.dumps({
@@ -75,11 +75,18 @@ def main() -> int:
     parser.add_argument("--ws-url", required=True)
     parser.add_argument("--audio-file", required=True)
     parser.add_argument("--mime-type", default="audio/webm")
+    parser.add_argument("--expected-text", default="")
     parser.add_argument("--timeout-seconds", type=int, default=90)
     args = parser.parse_args()
 
     try:
-        result = asyncio.run(run(args.ws_url, args.audio_file, args.mime_type, args.timeout_seconds))
+        result = asyncio.run(run(
+            args.ws_url,
+            args.audio_file,
+            args.mime_type,
+            args.expected_text,
+            args.timeout_seconds,
+        ))
     except Exception as exc:  # pragma: no cover
         result = {"success": False, "error": str(exc)}
 

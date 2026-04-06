@@ -54,6 +54,7 @@ class PronunciationUploadController extends Controller
             'audio_path' => $audioPath,
             'duration_seconds' => (int) $request->input('duration_seconds', 0),
             'client_transcript' => trim((string) $request->input('client_transcript', '')),
+            'expected_text' => trim((string) $expectedText),
             'locale' => app()->getLocale(),
             'provider' => (string) $request->input('provider', 'media_upload'),
         ]);

@@ -24,23 +24,24 @@ class PronunciationUploadAnalysisService
         string $audioPath,
         int $durationSeconds = 0,
         ?string $clientTranscript = null,
+        ?string $expectedText = null,
         string $locale = 'en',
         string $provider = 'media_upload'
     ): array {
         $exercise = PronunciationExercise::query()->with('lesson')->findOrFail($exerciseId);
         $lesson = $exercise->lesson;
-        $expectedText = $this->getExpectedSentence($exercise, $sentenceNumber);
+        $expectedText = trim((string) ($expectedText ?: $this->getExpectedSentence($exercise, $sentenceNumber)));
 
-        if ($expectedText === null) {
+        if ($expectedText === '') {
             throw new \RuntimeException('Invalid sentence number.');
         }
 
         $absoluteAudioPath = Storage::disk('local')->path($audioPath);
         $mimeType = $this->guessMimeTypeFromPath($audioPath);
-        $transcript = trim((string) $clientTranscript);
+        $transcript = trim((string) $this->uploadTranscriptionService->transcribe($absoluteAudioPath, $mimeType, $expectedText));
 
         if ($transcript === '') {
-            $transcript = trim((string) $this->uploadTranscriptionService->transcribe($absoluteAudioPath, $mimeType));
+            $transcript = trim((string) $clientTranscript);
         }
 
         if ($transcript === '') {

@@ -32,6 +32,7 @@ class ProcessPronunciationUpload
                 audioPath: (string) $this->payload['audio_path'],
                 durationSeconds: (int) ($this->payload['duration_seconds'] ?? 0),
                 clientTranscript: $this->payload['client_transcript'] ?? null,
+                expectedText: $this->payload['expected_text'] ?? null,
                 locale: (string) ($this->payload['locale'] ?? 'en'),
                 provider: (string) ($this->payload['provider'] ?? 'media_upload')
             );
