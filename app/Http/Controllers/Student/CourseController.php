@@ -87,23 +87,18 @@ class CourseController extends Controller
             $query->orderBy('order_index');
         }])->loadCount('students');
 
-        $headingCount = (int) $course->levels()
+        $activeHeadingIds = $course->levels()
             ->where('is_active', true)
-            ->count();
+            ->pluck('id');
 
-        $lessonTitleCount = $course->lessons
-            ->pluck('title')
-            ->map(fn ($title) => trim((string) $title))
-            ->filter()
-            ->map(fn ($title) => mb_strtolower($title, 'UTF-8'))
-            ->unique()
+        $headingCount = (int) $activeHeadingIds
             ->count();
 
         $user = auth()->user();
         $isEnrolled = $user->isEnrolledIn($course->id);
         $enrollment = null;
         $progress = 0;
-        $completedLessonTitleCount = 0;
+        $completedHeadingCount = 0;
 
         if ($isEnrolled) {
             $enrollment = $user->getEnrollment($course->id);
@@ -114,17 +109,16 @@ class CourseController extends Controller
                 ->pluck('lesson_id')
                 ->all();
 
-            $completedLessonTitleCount = $course->lessons
+            $completedHeadingCount = $course->lessons
                 ->whereIn('id', $completedLessonIds)
-                ->pluck('title')
-                ->map(fn ($title) => trim((string) $title))
-                ->filter()
-                ->map(fn ($title) => mb_strtolower($title, 'UTF-8'))
+                ->pluck('course_level_id')
+                ->filter(fn ($levelId) => !is_null($levelId))
+                ->filter(fn ($levelId) => $activeHeadingIds->contains($levelId))
                 ->unique()
                 ->count();
 
-            $progress = $lessonTitleCount > 0
-                ? ($completedLessonTitleCount / $lessonTitleCount) * 100
+            $progress = $headingCount > 0
+                ? ($completedHeadingCount / $headingCount) * 100
                 : 0;
         }
 
@@ -138,8 +132,7 @@ class CourseController extends Controller
             'discount',
             'progress',
             'headingCount',
-            'lessonTitleCount',
-            'completedLessonTitleCount'
+            'completedHeadingCount'
         ));
     }
 
