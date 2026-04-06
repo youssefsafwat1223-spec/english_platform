@@ -122,6 +122,26 @@
             badgeIcon="<svg class='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M12 3a3 3 0 013 3v5a3 3 0 11-6 0V6a3 3 0 013-3zm6 8a6 6 0 01-12 0M8 21h8m-4-3v3'/></svg>"
         />
 
+        <div x-show="isEvaluating" x-cloak x-transition class="mb-6 rounded-2xl border border-primary-200/70 bg-primary-50/90 p-4 shadow-sm dark:border-primary-500/20 dark:bg-primary-500/10">
+            <div class="flex items-center gap-3">
+                <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary-500/15 text-primary-500">
+                    <div class="h-5 w-5 rounded-full border-2 border-current border-t-transparent animate-spin"></div>
+                </div>
+                <div class="min-w-0 flex-1">
+                    <p class="text-sm font-black text-slate-900 dark:text-white">
+                        {{ $isArabic ? 'الذكاء الاصطناعي يحلل النطق الآن' : 'AI is analyzing your pronunciation now' }}
+                    </p>
+                    <p class="mt-1 text-xs text-slate-600 dark:text-slate-300">
+                        {{ $isArabic ? 'انتظر ثوانٍ قليلة حتى يظهر التقييم والتصحيح.' : 'Please wait a few seconds for the score and corrections to appear.' }}
+                    </p>
+                </div>
+                <div x-show="evaluatingSentence" x-cloak class="rounded-xl bg-white/80 px-3 py-2 text-xs font-bold text-primary-600 dark:bg-slate-900/40 dark:text-primary-300">
+                    <span>{{ $isArabic ? 'العنصر' : 'Item' }}</span>
+                    <span x-text="evaluatingSentence"></span>
+                </div>
+            </div>
+        </div>
+
         <div x-show="!recognitionSupported && !mediaRecorderSupported" x-cloak class="mb-8 p-5 rounded-2xl text-center" style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.2);">
             <div class="flex justify-center mb-3">
                 <svg class="w-8 h-8 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86l-7.38 12.8A2 2 0 004.62 20h14.76a2 2 0 001.71-3.34l-7.38-12.8a2 2 0 00-3.42 0z"/></svg>
@@ -407,6 +427,7 @@ function pronunciationApp() {
         isEvaluating: false,
         isSpeaking: false,
         speakingSentence: null,
+        evaluatingSentence: null,
         currentAudio: null,
         isStartingRecording: false,
         lastToggleAt: 0,
@@ -1260,6 +1281,7 @@ function pronunciationApp() {
 
         async submitUploadedAudio(sentenceNumber, audioBlob, durationSeconds) {
             this.isEvaluating = true;
+            this.evaluatingSentence = sentenceNumber;
 
             try {
                 const formData = new FormData();
@@ -1302,6 +1324,7 @@ function pronunciationApp() {
                 }
             } finally {
                 this.isEvaluating = false;
+                this.evaluatingSentence = null;
             }
         },
 
@@ -1394,6 +1417,7 @@ function pronunciationApp() {
 
         async finalizeStreamTranscript(sentenceNumber, transcript, durationSeconds) {
             this.isEvaluating = true;
+            this.evaluatingSentence = sentenceNumber;
 
             try {
                 const response = await fetch(this.endpoints.streamFinalize, {
@@ -1427,6 +1451,7 @@ function pronunciationApp() {
                 if (window.showNotification) window.showNotification(this.messages.network_error, 'error');
             } finally {
                 this.isEvaluating = false;
+                this.evaluatingSentence = null;
                 this.streamSessionId = null;
                 this.latestLatencyMs = null;
             }
@@ -1434,6 +1459,7 @@ function pronunciationApp() {
 
         async submitTranscript(sentenceNumber, transcript) {
             this.isEvaluating = true;
+            this.evaluatingSentence = sentenceNumber;
 
             try {
                 const res = await fetch(this.endpoints.evaluate, {
@@ -1461,6 +1487,7 @@ function pronunciationApp() {
             }
 
             this.isEvaluating = false;
+            this.evaluatingSentence = null;
         },
 
         applyResult(sentenceNumber, data) {
