@@ -97,7 +97,7 @@
                         <div class="grid grid-cols-3 gap-2 text-xs font-bold">
                             <div class="rounded-lg px-3 py-2 bg-slate-100 dark:bg-white/5 text-center" style="color: var(--color-text-muted);">
                                 <div>{{ $isArabic ? 'الدروس' : 'Lessons' }}</div>
-                                <div class="text-slate-900 dark:text-white text-sm">{{ $course->lessons_count }}</div>
+                                <div class="text-slate-900 dark:text-white text-sm">{{ $course->lesson_titles_count ?? 0 }}</div>
                             </div>
                             <div class="rounded-lg px-3 py-2 bg-slate-100 dark:bg-white/5 text-center" style="color: var(--color-text-muted);">
                                 <div>{{ $isArabic ? 'الطلاب' : 'Students' }}</div>
@@ -144,4 +144,3 @@
     </div>
 </div>
 @endsection
-

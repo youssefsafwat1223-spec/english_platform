@@ -31,7 +31,8 @@ class CourseController extends Controller
     public function index(Request $request)
     {
         $query = Course::active()
-            ->withCount(['students', 'lessons']);
+            ->withCount(['students'])
+            ->withLessonTitlesCount();
 
         if ($request->filled('q')) {
             $search = $request->input('q');

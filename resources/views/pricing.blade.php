@@ -26,7 +26,7 @@
             {{ $isArabic ? 'كل المسارات تشمل تطبيقات كتابة بتغذية راجعة ذكية لتحسين القواعد، المفردات، وترابط الأفكار.' : 'All tracks include writing exercises with AI-assisted feedback for grammar, vocabulary, and coherence.' }}
         </p>
         <p class="text-sm max-w-3xl mx-auto mb-2" style="color: var(--color-text-muted);" data-aos="fade-up" data-aos-delay="250">
-            {{ __('Any course duration shown on the site is a suggested study pace, not an access expiry.') }}
+            {{ $isArabic ? 'مدة الكورس المعروضة هي مدة الاشتراك الفعلية، وينتهي الوصول بانتهاء هذه المدة.' : 'Displayed course duration is the actual subscription period, and access ends when that period ends.' }}
         </p>
     </div>
 </section>
@@ -92,6 +92,13 @@
                                 <span class="text-3xl font-extrabold text-emerald-500">{{ __('Free') }}</span>
                             @endif
                         </div>
+                        <p class="text-xs mb-2" style="color: var(--color-text-muted);">
+                            {{ $course->estimated_duration_weeks
+                                ? ($isArabic
+                                    ? 'مدة الاشتراك: ' . $course->estimated_duration_weeks . ' أسبوع'
+                                    : 'Subscription duration: ' . $course->estimated_duration_weeks . ' weeks')
+                                : ($isArabic ? 'بدون مدة محددة' : 'No fixed duration') }}
+                        </p>
                         @if($course->price > 0)
                             <p class="text-xs mb-5" style="color: var(--color-text-muted);">
                                 {{ $isArabic ? 'قد تتوفر خيارات تقسيط حسب وسيلة الدفع.' : 'Installment options may be available depending on payment method.' }}
@@ -157,7 +164,7 @@
                     ],
                     [
                         'q' => $isArabic ? 'هل ينتهي الوصول بعد مدة الكورس؟' : 'Does access expire after course duration?',
-                        'a' => $isArabic ? 'لا. مدة الكورس المعروضة هي مدة مقترحة للدراسة، وليست تاريخ انتهاء للوصول.' : 'No. Course duration is a suggested study timeline, not an access expiration date.'
+                        'a' => $isArabic ? 'نعم. مدة الكورس المعروضة هي مدة الاشتراك الفعلية، وينتهي الوصول بعدها.' : 'Yes. The displayed course duration is the actual subscription period, and access expires after it ends.'
                     ],
                     [
                         'q' => $isArabic ? 'ما نوع الشهادة؟' : 'What type of certificate is provided?',

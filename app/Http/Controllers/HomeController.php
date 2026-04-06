@@ -51,7 +51,10 @@ class HomeController extends Controller
 
     public function pricing()
     {
-        $courses = Course::active()->orderBy('price')->get();
+        $courses = Course::active()
+            ->withLessonTitlesCount()
+            ->orderBy('price')
+            ->get();
         return view('pricing', compact('courses'));
     }
 
@@ -77,7 +80,9 @@ class HomeController extends Controller
 
     public function courses(Request $request)
     {
-        $query = Course::active()->withCount(['lessons', 'students']);
+        $query = Course::active()
+            ->withCount(['students'])
+            ->withLessonTitlesCount();
 
         if ($request->filled('q')) {
             $search = trim((string) $request->input('q'));

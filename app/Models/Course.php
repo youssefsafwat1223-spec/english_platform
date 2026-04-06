@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class Course extends Model
 {
@@ -174,6 +175,21 @@ class Course extends Model
     public function scopeTopRated($query)
     {
         return $query->orderBy('average_rating', 'desc');
+    }
+
+    /**
+     * Add distinct lesson titles count to course query results.
+     */
+    public function scopeWithLessonTitlesCount($query)
+    {
+        return $query->withCount([
+            'lessons as lesson_titles_count' => function ($lessonQuery) {
+                $lessonQuery
+                    ->select(DB::raw("COUNT(DISTINCT TRIM(title))"))
+                    ->whereNotNull('title')
+                    ->whereRaw("TRIM(title) <> ''");
+            },
+        ]);
     }
 
     // ==================== ACCESSORS ====================
