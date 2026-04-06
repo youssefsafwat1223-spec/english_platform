@@ -23,6 +23,7 @@ class DashboardController extends Controller
                 ->where('last_activity_at', '>=', now()->subDays(7))
                 ->count(),
             'new_students_this_month' => User::students()
+                ->whereYear('created_at', now()->year)
                 ->whereMonth('created_at', now()->month)
                 ->count(),
             'total_courses' => Course::count(),
@@ -33,6 +34,7 @@ class DashboardController extends Controller
                 ->whereDate('paid_at', today())
                 ->sum('final_amount'),
             'revenue_this_month' => Payment::completed()
+                ->whereYear('paid_at', now()->year)
                 ->whereMonth('paid_at', now()->month)
                 ->sum('final_amount'),
             'total_revenue' => Payment::completed()->sum('final_amount'),

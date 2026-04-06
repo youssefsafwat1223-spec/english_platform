@@ -50,6 +50,7 @@ class PaymentController extends Controller
                 ->whereDate('paid_at', today())
                 ->sum('final_amount'),
             'revenue_this_month' => Payment::completed()
+                ->whereYear('paid_at', now()->year)
                 ->whereMonth('paid_at', now()->month)
                 ->sum('final_amount'),
             'pending_amount' => Payment::pending()->sum('final_amount'),

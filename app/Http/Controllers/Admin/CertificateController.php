@@ -17,10 +17,12 @@ class CertificateController extends Controller
         // Search
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where('certificate_id', 'like', "%{$search}%")
-                  ->orWhereHas('user', function ($q) use ($search) {
-                      $q->where('name', 'like', "%{$search}%");
-                  });
+            $query->where(function ($q) use ($search) {
+                $q->where('certificate_id', 'like', "%{$search}%")
+                    ->orWhereHas('user', function ($userQuery) use ($search) {
+                        $userQuery->where('name', 'like', "%{$search}%");
+                    });
+            });
         }
 
         // Filter by course
@@ -35,7 +37,9 @@ class CertificateController extends Controller
 
         $stats = [
             'total_issued' => Certificate::count(),
-            'issued_this_month' => Certificate::whereMonth('issued_at', now()->month)->count(),
+            'issued_this_month' => Certificate::whereYear('issued_at', now()->year)
+                ->whereMonth('issued_at', now()->month)
+                ->count(),
             'average_score' => Certificate::avg('final_score'),
             'total_downloads' => Certificate::sum('download_count'),
             'total_views' => Certificate::sum('view_count'),

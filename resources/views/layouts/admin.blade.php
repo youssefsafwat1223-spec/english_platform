@@ -139,6 +139,11 @@
                 <span class="font-medium text-sm">{{ __('General') }}</span>
             </a>
 
+            <a href="{{ route('admin.settings.security') }}" class="admin-sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-all group {{ request()->routeIs('admin.settings.security*') ? 'active' : '' }}">
+                <span class="text-xl group-hover:scale-110 transition-transform">🛡️</span>
+                <span class="font-medium text-sm">{{ __('Security') }}</span>
+            </a>
+
             <a href="{{ route('admin.settings.telegram') }}" class="admin-sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-all group {{ request()->routeIs('admin.settings.telegram') ? 'active' : '' }}">
                 <span class="text-xl group-hover:scale-110 transition-transform">🤖</span>
                 <span class="font-medium text-sm">{{ __('Telegram Bot') }}</span>

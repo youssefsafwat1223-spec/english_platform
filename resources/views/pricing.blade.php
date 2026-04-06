@@ -148,8 +148,8 @@
             @php
                 $faqs = [
                     [
-                        'q' => $isArabic ? 'هل يمكنني التجربة قبل الشراء؟' : 'Can I try courses before buying?',
-                        'a' => $isArabic ? 'نعم، لدينا كورسات مجانية يمكنك البدء بها مباشرة.' : 'Yes. We offer free courses that you can start immediately.'
+                        'q' => $isArabic ? 'هل أقدر أطلع على تفاصيل الكورس قبل الشراء؟' : 'Can I preview course details before buying?',
+                        'a' => $isArabic ? 'نعم، تقدر تشوف تفاصيل الكورس والمحتوى قبل الاشتراك.' : 'Yes, you can review course details and content before enrollment.'
                     ],
                     [
                         'q' => $isArabic ? 'هل يوجد استرداد؟' : 'Is there a refund policy?',
