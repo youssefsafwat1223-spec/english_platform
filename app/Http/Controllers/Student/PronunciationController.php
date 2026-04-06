@@ -6,10 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Models\PronunciationAttempt;
 use App\Models\PronunciationExercise;
 use App\Services\LocalAiSpeakingCoachService;
+use App\Services\PronunciationUploadTranscriptionService;
 use App\Services\PronunciationRuleCoachService;
 use App\Services\RealtimePronunciationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class PronunciationController extends Controller
@@ -17,7 +19,8 @@ class PronunciationController extends Controller
     public function __construct(
         private readonly RealtimePronunciationService $realtimeService,
         private readonly PronunciationRuleCoachService $ruleCoachService,
-        private readonly LocalAiSpeakingCoachService $aiSpeakingCoachService
+        private readonly LocalAiSpeakingCoachService $aiSpeakingCoachService,
+        private readonly PronunciationUploadTranscriptionService $uploadTranscriptionService
     )
     {
     }
@@ -288,7 +291,85 @@ class PronunciationController extends Controller
     public function upload(Request $request)
     {
         // Legacy endpoint — redirect to evaluate
-        return response()->json(['error' => 'Please use the updated pronunciation interface.'], 400);
+        $request->validate([
+            'exercise_id' => 'required|integer|exists:pronunciation_exercises,id',
+            'sentence_number' => 'required|integer|min:1|max:3',
+            'audio' => 'required|file|max:30720',
+            'duration_seconds' => 'nullable|integer|min:0|max:300',
+            'client_transcript' => 'nullable|string|max:5000',
+            'provider' => 'nullable|string|max:50',
+        ]);
+
+        $user = auth()->user();
+        $exercise = PronunciationExercise::query()->with('lesson')->findOrFail((int) $request->exercise_id);
+        $lesson = $exercise->lesson;
+
+        if (!$user->isEnrolledIn($lesson->course_id)) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $sentenceNumber = (int) $request->sentence_number;
+        $expectedText = $this->getExpectedSentence($exercise, $sentenceNumber);
+
+        if (!$expectedText) {
+            return response()->json(['error' => 'Invalid sentence number'], 400);
+        }
+
+        $audioFile = $request->file('audio');
+        $audioPath = $audioFile->store('pronunciation/records', 'local');
+        $absoluteAudioPath = Storage::disk('local')->path($audioPath);
+        $mimeType = (string) ($audioFile->getClientMimeType() ?: 'audio/webm');
+
+        $transcript = trim((string) $request->input('client_transcript', ''));
+        if ($transcript === '') {
+            $transcript = trim((string) $this->uploadTranscriptionService->transcribe($absoluteAudioPath, $mimeType));
+        }
+
+        if ($transcript === '') {
+            return response()->json([
+                'error' => app()->getLocale() === 'ar'
+                    ? 'لم نتمكن من تحويل الصوت إلى نص. حاول مرة أخرى.'
+                    : 'Could not transcribe audio. Please try again.',
+            ], 422);
+        }
+
+        [$comparison, $coach, $provider] = $this->buildComparisonAndCoach(
+            $expectedText,
+            $transcript,
+            app()->getLocale(),
+            (string) $request->input('provider', 'media_upload')
+        );
+
+        $analysis = $this->saveAttemptFromComparison(
+            $user->id,
+            $exercise->id,
+            $lesson->id,
+            $sentenceNumber,
+            $transcript,
+            $expectedText,
+            $comparison,
+            $coach,
+            $provider,
+            null,
+            null,
+            $request->input('duration_seconds'),
+            $audioPath
+        );
+
+        return response()->json([
+            'success' => true,
+            'score' => $analysis['overall_score'],
+            'clarity' => $analysis['clarity_score'],
+            'pronunciation' => $analysis['pronunciation_score'],
+            'fluency' => $analysis['fluency_score'],
+            'completion' => $analysis['completion_percent'],
+            'feedback' => $analysis['feedback'],
+            'coach' => $analysis['coach'],
+            'word_diff' => $comparison['word_diff'],
+            'counts' => $comparison['counts'],
+            'transcript' => $transcript,
+            'expected' => $expectedText,
+        ]);
     }
 
     public function myAttempts()
@@ -418,7 +499,8 @@ class PronunciationController extends Controller
         string $provider,
         ?string $sessionId,
         ?int $latencyMs,
-        ?int $durationSeconds
+        ?int $durationSeconds,
+        ?string $audioPath = null
     ): array {
         $attemptNumber = PronunciationAttempt::query()
             ->where('user_id', $userId)
@@ -434,7 +516,7 @@ class PronunciationController extends Controller
             'lesson_id' => $lessonId,
             'attempt_number' => $attemptNumber,
             'sentence_number' => $sentenceNumber,
-            'audio_recording_path' => null,
+            'audio_recording_path' => $audioPath,
             'recording_duration' => max(0, (int) ($durationSeconds ?? 0)),
             'overall_score' => $scores['overall'],
             'clarity_score' => $scores['clarity'],

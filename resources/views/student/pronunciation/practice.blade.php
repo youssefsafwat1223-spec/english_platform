@@ -422,6 +422,9 @@ function pronunciationApp() {
         streamSessionId: null,
         streamEnabled: false,
         usingStream: false,
+        usingDirectUpload: false,
+        uploadChunks: [],
+        uploadMimeType: '',
         streamChunkMs: 1000,
         compareInFlight: false,
         pendingCompareTranscript: null,
@@ -455,11 +458,13 @@ function pronunciationApp() {
         messages: @json($messages),
         scoreLabels: @json($scoreLabels),
         endpoints: {
+            upload: @json(route('student.pronunciation.upload')),
             evaluate: @json(route('student.pronunciation.evaluate', $exercise)),
             streamStart: @json(route('student.pronunciation.stream.start', $exercise)),
             streamCompare: @json(route('student.pronunciation.stream.compare', $exercise)),
             streamFinalize: @json(route('student.pronunciation.stream.finalize', $exercise)),
         },
+        exerciseId: {{ (int) $exercise->id }},
         sentences: {
             @foreach($exercise->sentences as $num => $sentence)
                 {{ $num }}: @json($sentence),
@@ -694,10 +699,8 @@ function pronunciationApp() {
                 }, this.maxRecordMs);
             }
 
-            const startedStreaming = await this.tryStartStreaming(sentenceNumber, {
-                liveCompare: !this.safeRecordingMode,
-            });
-            if (startedStreaming) {
+            const startedDirectUpload = await this.tryStartDirectUpload(sentenceNumber);
+            if (startedDirectUpload) {
                 this.isStartingRecording = false;
                 return;
             }
@@ -727,6 +730,49 @@ function pronunciationApp() {
                 this.stopRecording();
                 this.isStartingRecording = false;
                 if (window.showNotification) window.showNotification(this.messages.start_failed, 'error');
+            }
+        },
+
+        async tryStartDirectUpload(sentenceNumber) {
+            if (!this.mediaRecorderSupported) {
+                return false;
+            }
+
+            try {
+                this.mediaStream = await navigator.mediaDevices.getUserMedia({
+                    audio: {
+                        channelCount: 1,
+                        echoCancellation: true,
+                        noiseSuppression: true,
+                        autoGainControl: true,
+                    },
+                });
+
+                const mimeType = this.getSupportedMimeType();
+                this.mediaRecorder = mimeType
+                    ? new MediaRecorder(this.mediaStream, { mimeType })
+                    : new MediaRecorder(this.mediaStream);
+
+                this.uploadChunks = [];
+                this.uploadMimeType = mimeType || this.mediaRecorder.mimeType || 'audio/webm';
+                this.usingDirectUpload = true;
+                this.usingStream = false;
+
+                this.mediaRecorder.ondataavailable = (event) => {
+                    if (!event.data || event.data.size === 0 || !this.usingDirectUpload) {
+                        return;
+                    }
+                    this.uploadChunks.push(event.data);
+                };
+
+                this.startSilenceMonitor(this.mediaStream, sentenceNumber);
+                this.mediaRecorder.start(500);
+
+                return true;
+            } catch (error) {
+                console.error('Direct upload recorder start failed:', error);
+                this.cleanupStreamingResources();
+                return false;
             }
         },
 
@@ -1029,6 +1075,18 @@ function pronunciationApp() {
             return '';
         },
 
+        fileExtensionFromMime(mimeType) {
+            const type = String(mimeType || '').toLowerCase();
+
+            if (type.includes('webm')) return 'webm';
+            if (type.includes('mp4') || type.includes('m4a')) return 'm4a';
+            if (type.includes('wav')) return 'wav';
+            if (type.includes('mpeg') || type.includes('mp3')) return 'mp3';
+            if (type.includes('ogg')) return 'ogg';
+
+            return 'webm';
+        },
+
         blobToBase64(blob) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -1096,6 +1154,11 @@ function pronunciationApp() {
             this.manualStop = true;
             this.stopSilenceMonitor();
 
+            if (this.usingDirectUpload) {
+                this.stopDirectUploadMode();
+                return;
+            }
+
             if (this.usingStream) {
                 this.stopStreamingMode();
                 return;
@@ -1158,6 +1221,86 @@ function pronunciationApp() {
                 await this.finalizeStreamTranscript(sentenceNumber, transcript, durationSeconds);
             } else if (window.showNotification) {
                 window.showNotification(this.messages.no_speech, 'warning');
+            }
+        },
+
+        async stopDirectUploadMode() {
+            const sentenceNumber = this.activeSentence;
+            const durationSeconds = this.recordingStartedAt
+                ? Math.max(0, Math.round((Date.now() - this.recordingStartedAt) / 1000))
+                : 0;
+
+            await this.stopMediaRecorderGracefully();
+
+            const audioChunks = this.uploadChunks.slice();
+            const audioMimeType = this.uploadMimeType || this.getSupportedMimeType() || 'audio/webm';
+
+            this.cleanupStreamingResources();
+            this.isRecording = false;
+            this.isStartingRecording = false;
+            this.activeSentence = null;
+            this.recordingStartedAt = null;
+            this.minStopAt = 0;
+            if (this.recordingTimeoutId) {
+                clearTimeout(this.recordingTimeoutId);
+                this.recordingTimeoutId = null;
+            }
+
+            if (sentenceNumber && audioChunks.length) {
+                const audioBlob = new Blob(audioChunks, { type: audioMimeType });
+                await this.submitUploadedAudio(sentenceNumber, audioBlob, durationSeconds);
+                return;
+            }
+
+            if (window.showNotification) {
+                window.showNotification(this.messages.no_speech, 'warning');
+            }
+        },
+
+        async submitUploadedAudio(sentenceNumber, audioBlob, durationSeconds) {
+            this.isEvaluating = true;
+
+            try {
+                const formData = new FormData();
+                formData.append('exercise_id', String(this.exerciseId));
+                formData.append('sentence_number', String(sentenceNumber));
+                formData.append('duration_seconds', String(durationSeconds || 0));
+                formData.append('provider', 'media_upload');
+
+                const transcript = String(this.liveTranscript || '').trim();
+                if (transcript) {
+                    formData.append('client_transcript', transcript);
+                }
+
+                const extension = this.fileExtensionFromMime(audioBlob.type || this.uploadMimeType || '');
+                const fileName = `pronunciation-${Date.now()}.${extension}`;
+                formData.append('audio', audioBlob, fileName);
+
+                const response = await fetch(this.endpoints.upload, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': this.csrfToken,
+                        'Accept': 'application/json',
+                    },
+                    body: formData,
+                });
+
+                const data = await response.json();
+                if (!response.ok || !data.success) {
+                    if (window.showNotification) {
+                        window.showNotification(data.error || this.messages.evaluation_failed, 'error');
+                    }
+                    return;
+                }
+
+                this.applyResult(sentenceNumber, data);
+            } catch (error) {
+                console.error('Upload pronunciation failed:', error);
+                if (window.showNotification) {
+                    window.showNotification(this.messages.network_error, 'error');
+                }
+            } finally {
+                this.isEvaluating = false;
             }
         },
 
@@ -1241,6 +1384,9 @@ function pronunciationApp() {
             this.mediaRecorder = null;
             this.streamSocket = null;
             this.usingStream = false;
+            this.usingDirectUpload = false;
+            this.uploadChunks = [];
+            this.uploadMimeType = '';
             this.streamEnabled = false;
             this.streamLiveCompare = !this.safeRecordingMode;
         },

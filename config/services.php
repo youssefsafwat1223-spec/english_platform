@@ -94,6 +94,18 @@ return [
 
     /*
     |----------------------------------------------------------------------
+    | Pronunciation Upload Transcription (MediaRecorder -> Laravel -> Gateway)
+    |----------------------------------------------------------------------
+    */
+    'pronunciation_upload' => [
+        'enabled' => env('PRONUNCIATION_UPLOAD_ENABLED', true),
+        'python_bin' => env('PRONUNCIATION_UPLOAD_PYTHON_BIN', 'python3'),
+        'gateway_ws_url' => env('PRONUNCIATION_UPLOAD_GATEWAY_WS_URL', env('PRONUNCIATION_STREAM_WS_URL', 'ws://127.0.0.1:8787/ws')),
+        'timeout_seconds' => (int) env('PRONUNCIATION_UPLOAD_TIMEOUT_SECONDS', 90),
+    ],
+
+    /*
+    |----------------------------------------------------------------------
     | Writing AI (LanguageTool + Ollama)
     |----------------------------------------------------------------------
     */
