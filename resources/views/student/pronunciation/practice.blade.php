@@ -1109,6 +1109,61 @@ function pronunciationApp() {
             return 'webm';
         },
 
+        async parseResponsePayload(response) {
+            const contentType = String(response.headers.get('content-type') || '').toLowerCase();
+            const rawText = await response.text();
+
+            if (!rawText) {
+                return { data: null, rawText: '', isJson: false };
+            }
+
+            if (contentType.includes('application/json')) {
+                try {
+                    return {
+                        data: JSON.parse(rawText),
+                        rawText,
+                        isJson: true,
+                    };
+                } catch (error) {
+                    console.error('JSON parse failed:', error);
+                }
+            }
+
+            return {
+                data: null,
+                rawText,
+                isJson: false,
+            };
+        },
+
+        responseErrorMessage(response, payload) {
+            const bodyError = payload?.data?.error
+                || payload?.data?.message
+                || '';
+
+            if (bodyError) {
+                return bodyError;
+            }
+
+            if (response.status === 413) {
+                return this.messages.upload_too_large || 'Uploaded audio is too large. Please record a shorter answer.';
+            }
+
+            if (response.status === 419) {
+                return this.messages.session_expired || 'Your session expired. Refresh the page and try again.';
+            }
+
+            if (response.status >= 500) {
+                return this.messages.server_error || 'Server error while analyzing the audio.';
+            }
+
+            if (payload?.rawText) {
+                return payload.rawText.slice(0, 180);
+            }
+
+            return this.messages.evaluation_failed;
+        },
+
         blobToBase64(blob) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -1308,10 +1363,16 @@ function pronunciationApp() {
                     body: formData,
                 });
 
-                const data = await response.json();
-                if (!response.ok || !data.success) {
+                const payload = await this.parseResponsePayload(response);
+                const data = payload.data;
+                if (!response.ok || !data?.success) {
+                    const errorMessage = this.responseErrorMessage(response, payload);
+                    console.error('Upload pronunciation request failed:', {
+                        status: response.status,
+                        payload: payload.rawText,
+                    });
                     if (window.showNotification) {
-                        window.showNotification(data.error || this.messages.evaluation_failed, 'error');
+                        window.showNotification(errorMessage, 'error');
                     }
                     return;
                 }
@@ -1437,10 +1498,12 @@ function pronunciationApp() {
                     }),
                 });
 
-                const data = await response.json();
-                if (!response.ok || !data.success) {
+                const payload = await this.parseResponsePayload(response);
+                const data = payload.data;
+                if (!response.ok || !data?.success) {
+                    const errorMessage = this.responseErrorMessage(response, payload);
                     if (window.showNotification) {
-                        window.showNotification(data.error || this.messages.evaluation_failed, 'error');
+                        window.showNotification(errorMessage, 'error');
                     }
                     return;
                 }
@@ -1475,12 +1538,13 @@ function pronunciationApp() {
                     }),
                 });
 
-                const data = await res.json();
+                const payload = await this.parseResponsePayload(res);
+                const data = payload.data;
 
-                if (data.success) {
+                if (data?.success) {
                     this.applyResult(sentenceNumber, data);
                 } else if (window.showNotification) {
-                    window.showNotification(data.error || this.messages.evaluation_failed, 'error');
+                    window.showNotification(this.responseErrorMessage(res, payload), 'error');
                 }
             } catch {
                 if (window.showNotification) window.showNotification(this.messages.network_error, 'error');
