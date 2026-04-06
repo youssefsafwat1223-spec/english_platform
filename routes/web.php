@@ -36,6 +36,7 @@ use App\Http\Controllers\Student\CourseController as StudentCourseController;
 use App\Http\Controllers\Student\LessonController as StudentLessonController;
 use App\Http\Controllers\Student\QuizController as StudentQuizController;
 use App\Http\Controllers\Student\PronunciationController;
+use App\Http\Controllers\Student\PronunciationUploadController;
 use App\Http\Controllers\Student\CertificateController as StudentCertificateController;
 use App\Http\Controllers\Student\ForumController as StudentForumController;
 use App\Http\Controllers\Student\ReferralController as StudentReferralController;
@@ -469,9 +470,12 @@ Route::prefix('student')->name('student.')->middleware(['auth', 'student', 'acti
     // Pronunciation
     Route::get('/pronunciation/{exercise}', [PronunciationController::class, 'show'])
         ->name('pronunciation.show');
-    Route::post('/pronunciation/upload', [PronunciationController::class, 'upload'])
+    Route::post('/pronunciation/upload', [PronunciationUploadController::class, 'upload'])
         ->middleware('throttle:pronunciation')
         ->name('pronunciation.upload');
+    Route::get('/pronunciation/status/{token}', [PronunciationUploadController::class, 'status'])
+        ->middleware('throttle:120,1')
+        ->name('pronunciation.upload-status');
     Route::get('/my-pronunciation', [PronunciationController::class, 'myAttempts'])
         ->name('pronunciation.my-attempts');
     Route::post('/pronunciation/{exercise}/evaluate', [PronunciationController::class, 'evaluate'])

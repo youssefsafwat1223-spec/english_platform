@@ -428,6 +428,8 @@ function pronunciationApp() {
         isSpeaking: false,
         speakingSentence: null,
         evaluatingSentence: null,
+        processingToken: null,
+        processingPollTimeoutId: null,
         currentAudio: null,
         isStartingRecording: false,
         lastToggleAt: 0,
@@ -482,6 +484,7 @@ function pronunciationApp() {
         scoreLabels: @json($scoreLabels),
         endpoints: {
             upload: @json(route('student.pronunciation.upload')),
+            uploadStatusBase: @json(url('/student/pronunciation/status')),
             evaluate: @json(route('student.pronunciation.evaluate', $exercise)),
             streamStart: @json(route('student.pronunciation.stream.start', $exercise)),
             streamCompare: @json(route('student.pronunciation.stream.compare', $exercise)),
@@ -1251,6 +1254,68 @@ function pronunciationApp() {
             return this.messages.evaluation_failed;
         },
 
+        uploadStatusUrl(token) {
+            return `${this.endpoints.uploadStatusBase}/${encodeURIComponent(String(token || '').trim())}`;
+        },
+
+        clearProcessingPoll() {
+            if (this.processingPollTimeoutId) {
+                clearTimeout(this.processingPollTimeoutId);
+                this.processingPollTimeoutId = null;
+            }
+
+            this.processingToken = null;
+        },
+
+        startProcessingPoll(sentenceNumber, token) {
+            this.clearProcessingPoll();
+            this.processingToken = token;
+            this.isEvaluating = true;
+            this.evaluatingSentence = sentenceNumber;
+
+            const poll = async () => {
+                try {
+                    const response = await fetch(this.uploadStatusUrl(token), {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                        },
+                    });
+
+                    const payload = await this.parseResponsePayload(response);
+                    const data = payload.data;
+
+                    if (response.ok && data?.status === 'processing') {
+                        this.processingPollTimeoutId = window.setTimeout(poll, 2000);
+                        return;
+                    }
+
+                    this.clearProcessingPoll();
+
+                    if (response.ok && data?.status === 'completed' && data?.success) {
+                        this.applyResult(sentenceNumber, data);
+                        this.isEvaluating = false;
+                        this.evaluatingSentence = null;
+                        return;
+                    }
+
+                    const errorMessage = this.responseErrorMessage(response, payload);
+                    if (window.showNotification) {
+                        window.showNotification(errorMessage, 'error');
+                    }
+                } catch (error) {
+                    console.error('Pronunciation status poll failed:', error);
+                    this.processingPollTimeoutId = window.setTimeout(poll, 2500);
+                    return;
+                }
+
+                this.isEvaluating = false;
+                this.evaluatingSentence = null;
+            };
+
+            this.processingPollTimeoutId = window.setTimeout(poll, 1500);
+        },
+
         blobToBase64(blob) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -1428,6 +1493,7 @@ function pronunciationApp() {
         async submitUploadedAudio(sentenceNumber, audioBlob, durationSeconds, capturedTranscript = null) {
             this.isEvaluating = true;
             this.evaluatingSentence = sentenceNumber;
+            let shouldKeepEvaluating = false;
 
             try {
                 const formData = new FormData();
@@ -1469,6 +1535,12 @@ function pronunciationApp() {
                     return;
                 }
 
+                if (data?.status === 'processing' && data?.upload_token) {
+                    shouldKeepEvaluating = true;
+                    this.startProcessingPoll(sentenceNumber, data.upload_token);
+                    return;
+                }
+
                 this.applyResult(sentenceNumber, data);
             } catch (error) {
                 console.error('Upload pronunciation failed:', error);
@@ -1476,8 +1548,10 @@ function pronunciationApp() {
                     window.showNotification(this.messages.network_error, 'error');
                 }
             } finally {
-                this.isEvaluating = false;
-                this.evaluatingSentence = null;
+                if (!shouldKeepEvaluating) {
+                    this.isEvaluating = false;
+                    this.evaluatingSentence = null;
+                }
             }
         },
 
