@@ -121,6 +121,11 @@ class HomeController extends Controller
         }
 
         $course->loadCount(['lessons', 'students']);
+        $distinctLessonTitlesCount = $course->lessons()
+            ->whereNotNull('title')
+            ->whereRaw("TRIM(title) <> ''")
+            ->distinct()
+            ->count('title');
 
         $previewLessons = $course->lessons()
             ->orderBy('order_index')
@@ -161,6 +166,7 @@ class HomeController extends Controller
 
         return view('courses.show', compact(
             'course',
+            'distinctLessonTitlesCount',
             'previewLessons',
             'hasQuizFeature',
             'hasWritingFeature',

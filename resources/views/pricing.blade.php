@@ -20,16 +20,13 @@
             <span class="text-gradient">{{ $isArabic ? 'لتقدم واضح' : 'for clear progress' }}</span>
         </h1>
         <p class="text-lg max-w-3xl mx-auto mb-6" style="color: var(--color-text-muted);" data-aos="fade-up" data-aos-delay="200">
-            {{ $isArabic ? 'اختر المسار المناسب لمستواك. كل كورس يشمل المنهج، التدريب العملي، الاختبارات، والشهادة القابلة للتحقق.' : 'Choose the course that matches your level. Each course includes curriculum, practical training, quizzes, and a verifiable certificate.' }}
+            {{ $isArabic ? 'اختر المسار المناسب لمستواك. كل كورس يشمل المنهج، التدريب العملي، الاختبارات، وشهادة حضور.' : 'Choose the course that matches your level. Each course includes curriculum, practical training, quizzes, and an attendance certificate.' }}
         </p>
         <p class="text-sm max-w-3xl mx-auto mb-3" style="color: var(--color-text-muted);" data-aos="fade-up" data-aos-delay="220">
             {{ $isArabic ? 'كل المسارات تشمل تطبيقات كتابة بتغذية راجعة ذكية لتحسين القواعد، المفردات، وترابط الأفكار.' : 'All tracks include writing exercises with AI-assisted feedback for grammar, vocabulary, and coherence.' }}
         </p>
         <p class="text-sm max-w-3xl mx-auto mb-2" style="color: var(--color-text-muted);" data-aos="fade-up" data-aos-delay="250">
             {{ __('Any course duration shown on the site is a suggested study pace, not an access expiry.') }}
-        </p>
-        <p class="text-sm max-w-3xl mx-auto font-bold text-amber-600 dark:text-amber-400" data-aos="fade-up" data-aos-delay="300">
-            {{ $isArabic ? 'سياسة الاسترداد: يوجد استرداد بشروط.' : 'Refund policy: Refunds are available under conditions.' }}
         </p>
     </div>
 </section>
@@ -63,8 +60,8 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
                     </svg>
                 </div>
-                <h3 class="font-bold mb-2" style="color: var(--color-text);">{{ $isArabic ? 'شهادة قابلة للتحقق' : 'Verifiable certificate' }}</h3>
-                <p class="text-sm" style="color: var(--color-text-muted);">{{ $isArabic ? 'بعد الإكمال تحصل على شهادة يمكن التحقق منها.' : 'Earn a certificate that can be verified online after completion.' }}</p>
+                <h3 class="font-bold mb-2" style="color: var(--color-text);">{{ $isArabic ? 'شهادة حضور' : 'Attendance certificate' }}</h3>
+                <p class="text-sm" style="color: var(--color-text-muted);">{{ $isArabic ? 'بعد الإكمال تحصل على شهادة حضور.' : 'After completion, you receive an attendance certificate.' }}</p>
             </div>
         </div>
 
@@ -116,7 +113,7 @@
                             </li>
                             <li class="text-sm flex items-center gap-2" style="color: var(--color-text-muted);">
                                 <svg class="w-4 h-4 text-emerald-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                                {{ $isArabic ? 'شهادة قابلة للتحقق' : 'Verifiable completion certificate' }}
+                                {{ $isArabic ? 'شهادة حضور' : 'Attendance certificate' }}
                             </li>
                         </ul>
 
@@ -156,15 +153,15 @@
                     ],
                     [
                         'q' => $isArabic ? 'هل يوجد استرداد؟' : 'Is there a refund policy?',
-                        'a' => $isArabic ? 'يمكن تقديم طلب استرداد خلال أول 7 أيام إذا لم تتجاوز نسبة مشاهدة كبيرة من المحتوى.' : 'You can request a refund within the first 7 days if only a limited portion of content has been consumed.'
+                        'a' => $isArabic ? 'نعم، يوجد استرداد لكن بشروط.' : 'Yes, refunds are available but with conditions.'
                     ],
                     [
                         'q' => $isArabic ? 'هل ينتهي الوصول بعد مدة الكورس؟' : 'Does access expire after course duration?',
                         'a' => $isArabic ? 'لا. مدة الكورس المعروضة هي مدة مقترحة للدراسة، وليست تاريخ انتهاء للوصول.' : 'No. Course duration is a suggested study timeline, not an access expiration date.'
                     ],
                     [
-                        'q' => $isArabic ? 'هل الشهادة لها صلاحية انتهاء؟' : 'Do certificates expire?',
-                        'a' => $isArabic ? 'لا، الشهادة تظل متاحة ويمكن التحقق منها إلكترونيًا.' : 'No. Certificates remain available and can be verified online.'
+                        'q' => $isArabic ? 'ما نوع الشهادة؟' : 'What type of certificate is provided?',
+                        'a' => $isArabic ? 'شهادة حضور.' : 'Attendance certificate.'
                     ],
                     [
                         'q' => $isArabic ? 'هل تعمل المنصة على الجوال؟' : 'Can I use the platform on mobile?',

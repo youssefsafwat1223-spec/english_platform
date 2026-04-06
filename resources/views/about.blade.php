@@ -53,7 +53,7 @@
                 <div class="flex items-start gap-3"><span class="text-emerald-500">✓</span>{{ $isArabic ? 'تدريب نطق وتطبيقات عملية.' : 'Pronunciation and real practice.' }}</div>
                 <div class="flex items-start gap-3"><span class="text-emerald-500">✓</span>{{ $isArabic ? 'اختبارات قصيرة لقياس التقدم.' : 'Short quizzes to track progress.' }}</div>
                 <div class="flex items-start gap-3"><span class="text-emerald-500">✓</span>{{ $isArabic ? 'جلسات مباشرة دورية للمراجعة.' : 'Periodic live sessions for review.' }}</div>
-                <div class="flex items-start gap-3"><span class="text-emerald-500">✓</span>{{ $isArabic ? 'شهادة قابلة للتحقق بعد الإكمال.' : 'Verified certificate after completion.' }}</div>
+                <div class="flex items-start gap-3"><span class="text-emerald-500">✓</span>{{ $isArabic ? 'شهادة حضور بعد الإكمال.' : 'Attendance certificate after completion.' }}</div>
                 <div class="flex items-start gap-3"><span class="text-emerald-500">✓</span>{{ $isArabic ? 'مجتمع داعم وأسئلة ونقاش.' : 'Supportive community and Q&A.' }}</div>
             </div>
         </div>

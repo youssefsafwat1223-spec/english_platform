@@ -22,11 +22,11 @@
     $heroTitle = $isArabic ? 'اترك الترجمة الحرفية' : 'Stop translating word by word';
     $heroSubtitle = $isArabic ? 'وتعلّم بناء الجملة بثقة' : 'Build real sentences with confidence';
     $heroDescription = $isArabic
-        ? 'منهج تأسيسي واضح يقودك خطوة بخطوة للتحدث بثقة، مع تدريب عملي، اختبارات، وشهادة قابلة للتحقق.'
-        : 'A clear foundation path that takes you step by step to confident English, with practice, assessment, and a verified certificate.';
+        ? 'منهج تأسيسي واضح يقودك خطوة بخطوة للتحدث بثقة، مع تدريب عملي، اختبارات، وشهادة حضور.'
+        : 'A clear foundation path that takes you step by step to confident English, with practice, assessment, and an attendance certificate.';
     $heroHighlights = $isArabic
-        ? ['منهج تأسيسي واضح', 'تدريب عملي بالذكاء الاصطناعي وجلسات مباشرة', 'اختبارات + شهادة قابلة للتحقق']
-        : ['Clear foundation curriculum', 'Practical AI practice + live sessions', 'Quizzes + verified certificate'];
+        ? ['منهج تأسيسي واضح', 'تدريب عملي بالذكاء الاصطناعي وجلسات مباشرة', 'اختبارات + شهادة حضور']
+        : ['Clear foundation curriculum', 'Practical AI practice + live sessions', 'Quizzes + attendance certificate'];
 @endphp
 
 {{-- Splash screen removed --}}
@@ -201,9 +201,9 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
                         </svg>
                     </div>
-                    <h3 class="text-xl font-bold mb-3" style="color: var(--color-text);">{{ $isArabic ? 'شهادات قابلة للتحقق' : 'Verified Certificates' }}</h3>
+                    <h3 class="text-xl font-bold mb-3" style="color: var(--color-text);">{{ $isArabic ? 'شهادة حضور' : 'Attendance certificate' }}</h3>
                     <p class="text-sm leading-relaxed" style="color: var(--color-text-muted);">
-                        {{ $isArabic ? 'بعد إنهاء الكورس يمكنك الحصول على شهادة موثوقة تضيفها لملفاتك المهنية وتشاركها بثقة.' : 'Earn verifiable certificates you can share professionally after completing your course.' }}
+                        {{ $isArabic ? 'بعد إنهاء الكورس يمكنك الحصول على شهادة حضور.' : 'After completing the course, you receive an attendance certificate.' }}
                     </p>
 
                 </div>
@@ -272,7 +272,7 @@
                             </div>
                             <div class="flex items-center gap-1.5">
                                 <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
-                                {{ $isArabic ? 'شهادة موثوقة' : 'Verified certificate' }}
+                                {{ $isArabic ? 'شهادة حضور' : 'Attendance certificate' }}
                             </div>
                         </div>
 
@@ -614,7 +614,7 @@
                 </div>
                 <div class="glass-card p-6" data-aos="fade-up" data-aos-delay="200">
                     <h3 class="text-base font-bold mb-2" style="color: var(--color-text);">{{ $isArabic ? 'هل أحصل على شهادة؟' : 'Will I get a certificate?' }}</h3>
-                    <p class="text-sm" style="color: var(--color-text-muted);">{{ $isArabic ? 'بعد إكمال الكورس ستحصل على شهادة قابلة للتحقق.' : 'After completing the course, you receive a verified certificate.' }}</p>
+                    <p class="text-sm" style="color: var(--color-text-muted);">{{ $isArabic ? 'بعد إكمال الكورس ستحصل على شهادة حضور.' : 'After completing the course, you receive an attendance certificate.' }}</p>
                 </div>
                 <div class="glass-card p-6" data-aos="fade-up" data-aos-delay="250">
                     <h3 class="text-base font-bold mb-2" style="color: var(--color-text);">{{ $isArabic ? 'هل أحتاج التزامًا يوميًا؟' : 'Do I need daily commitment?' }}</h3>

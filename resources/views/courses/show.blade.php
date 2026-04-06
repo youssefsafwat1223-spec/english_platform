@@ -34,7 +34,7 @@
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
                         <div class="rounded-xl border border-slate-200 dark:border-white/10 px-4 py-3 bg-white/70 dark:bg-white/5">
                             <div class="text-xs text-slate-500 dark:text-slate-400">{{ $isArabic ? 'الدروس' : 'Lessons' }}</div>
-                            <div class="text-lg font-black text-slate-900 dark:text-white">{{ $course->lessons_count }}</div>
+                            <div class="text-lg font-black text-slate-900 dark:text-white">{{ $distinctLessonTitlesCount }}</div>
                         </div>
                         <div class="rounded-xl border border-slate-200 dark:border-white/10 px-4 py-3 bg-white/70 dark:bg-white/5">
                             <div class="text-xs text-slate-500 dark:text-slate-400">{{ $isArabic ? 'الطلاب' : 'Students' }}</div>
@@ -120,7 +120,7 @@
                     @endif
                     <li class="flex items-start gap-2">
                         <span class="w-2 h-2 mt-2 rounded-full bg-indigo-500"></span>
-                        <span>{{ $isArabic ? 'شهادة قابلة للتحقق بعد الإكمال.' : 'A verifiable certificate after completion.' }}</span>
+                        <span>{{ $isArabic ? 'شهادة حضور.' : 'Attendance certificate.' }}</span>
                     </li>
                 </ul>
             </div>
@@ -162,7 +162,7 @@
                     @endforelse
                 </div>
 
-                @if($course->lessons_count > $previewLessons->count())
+                @if($distinctLessonTitlesCount > $previewLessons->count())
                     <p class="text-xs mt-4" style="color: var(--color-text-muted);">
                         {{ $isArabic ? 'هذه معاينة فقط. بقية الدروس تظهر بعد الاشتراك.' : 'This is a preview only. Full lesson list appears after enrollment.' }}
                     </p>
@@ -172,4 +172,3 @@
     </div>
 </div>
 @endsection
-

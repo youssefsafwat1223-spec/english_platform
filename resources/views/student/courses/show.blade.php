@@ -26,6 +26,13 @@
     $isArabic = app()->getLocale() === 'ar';
     $currencyLabel = $isArabic ? 'ر.س' : 'SAR';
     $durationWeeks = $course->estimated_duration_weeks;
+    $lessonTitleCount = $course->lessons
+        ->pluck('title')
+        ->map(fn ($title) => trim((string) $title))
+        ->filter()
+        ->map(fn ($title) => mb_strtolower($title, 'UTF-8'))
+        ->unique()
+        ->count();
     $expiresAt = $isEnrolled && isset($enrollment) ? $enrollment->expires_at : null;
     $remainingDays = null;
     if ($expiresAt) {
@@ -84,7 +91,7 @@
                                 </div>
                                 <div class="rounded-xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-white/5 px-4 py-3">
                                     <div class="text-xs text-slate-500 dark:text-slate-400">{{ $isArabic ? 'الدروس' : 'Lessons' }}</div>
-                                    <div class="font-bold text-slate-900 dark:text-white">{{ $course->lessons->count() }}</div>
+                                    <div class="font-bold text-slate-900 dark:text-white">{{ $lessonTitleCount }}</div>
                                 </div>
                                 <div class="rounded-xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-white/5 px-4 py-3">
                                     <div class="text-xs text-slate-500 dark:text-slate-400">{{ $isArabic ? 'الطلاب' : 'Students' }}</div>
@@ -158,9 +165,9 @@
                 <x-student.card padding="p-6 md:p-8">
                     <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4">{{ $isArabic ? 'مميزات الكورس' : 'Course highlights' }}</h3>
                     <ul class="space-y-3 text-sm text-slate-600 dark:text-slate-300">
-                        <li class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>{{ $course->lessons->count() }} {{ $isArabic ? 'درس فيديو عالي الجودة' : 'high-quality video lessons' }}</li>
+                        <li class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>{{ $lessonTitleCount }} {{ $isArabic ? 'درس فيديو عالي الجودة' : 'high-quality video lessons' }}</li>
                         <li class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>{{ $isArabic ? 'وصول خلال مدة الاشتراك' : 'Access during subscription period' }}</li>
-                        <li class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>{{ $isArabic ? 'شهادة إتمام معتمدة' : 'Certificate on completion' }}</li>
+                        <li class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>{{ $isArabic ? 'شهادة حضور' : 'Attendance certificate' }}</li>
                         <li class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>{{ $isArabic ? 'يدعم الجوال والكمبيوتر' : 'Mobile and desktop friendly' }}</li>
                     </ul>
                 </x-student.card>
