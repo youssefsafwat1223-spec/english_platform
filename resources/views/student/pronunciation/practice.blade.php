@@ -926,7 +926,8 @@ function pronunciationApp() {
                             .split(/\s+/)
                             .filter(Boolean)
                             .length;
-                        const enoughContent = autoStopConfig.minSpokenWordsBeforeStop <= 0
+                        const enoughContent = this.usingDirectUpload
+                            || autoStopConfig.minSpokenWordsBeforeStop <= 0
                             || spokenWords >= autoStopConfig.minSpokenWordsBeforeStop;
 
                         if (!this.autoStopTriggered
