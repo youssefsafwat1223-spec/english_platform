@@ -86,7 +86,6 @@
                     {{ __('Already have an account?') }} 
                     <a href="{{ route('login') }}" class="text-primary-600 dark:text-primary-400 font-bold hover:underline underline-offset-4 transition-all">{{ __('Log In') }}</a>
                 </p>
-                </p>
             </div>
 
             @if(session('referral_info'))
