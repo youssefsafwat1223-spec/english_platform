@@ -52,7 +52,7 @@ class HomeController extends Controller
     public function pricing()
     {
         $courses = Course::active()
-            ->withLessonTitlesCount()
+            ->withHeadingsCount()
             ->orderBy('price')
             ->get();
         return view('pricing', compact('courses'));
@@ -82,7 +82,7 @@ class HomeController extends Controller
     {
         $query = Course::active()
             ->withCount(['students'])
-            ->withLessonTitlesCount();
+            ->withHeadingsCount();
 
         if ($request->filled('q')) {
             $search = trim((string) $request->input('q'));
@@ -126,6 +126,11 @@ class HomeController extends Controller
         }
 
         $course->loadCount(['lessons', 'students']);
+        $headingsCount = $course->levels()
+            ->where('is_active', true)
+            ->count();
+
+        $totalLessonsCount = (int) $course->lessons()->count();
         $distinctLessonTitlesCount = $course->lessons()
             ->whereNotNull('title')
             ->whereRaw("TRIM(title) <> ''")
@@ -171,6 +176,8 @@ class HomeController extends Controller
 
         return view('courses.show', compact(
             'course',
+            'headingsCount',
+            'totalLessonsCount',
             'distinctLessonTitlesCount',
             'previewLessons',
             'hasQuizFeature',

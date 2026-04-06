@@ -33,8 +33,8 @@
 
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
                         <div class="rounded-xl border border-slate-200 dark:border-white/10 px-4 py-3 bg-white/70 dark:bg-white/5">
-                            <div class="text-xs text-slate-500 dark:text-slate-400">{{ $isArabic ? 'الدروس' : 'Lessons' }}</div>
-                            <div class="text-lg font-black text-slate-900 dark:text-white">{{ $distinctLessonTitlesCount }}</div>
+                            <div class="text-xs text-slate-500 dark:text-slate-400">{{ $isArabic ? 'العناوين' : 'Headings' }}</div>
+                            <div class="text-lg font-black text-slate-900 dark:text-white">{{ (int) ($headingsCount ?? 0) }}</div>
                         </div>
                         <div class="rounded-xl border border-slate-200 dark:border-white/10 px-4 py-3 bg-white/70 dark:bg-white/5">
                             <div class="text-xs text-slate-500 dark:text-slate-400">{{ $isArabic ? 'الطلاب' : 'Students' }}</div>
@@ -159,7 +159,7 @@
                     @endforelse
                 </div>
 
-                @if($distinctLessonTitlesCount > $previewLessons->count())
+                @if(($totalLessonsCount ?? 0) > $previewLessons->count())
                     <p class="text-xs mt-4" style="color: var(--color-text-muted);">
                         {{ $isArabic ? 'هذه معاينة فقط. بقية الدروس تظهر بعد الاشتراك.' : 'This is a preview only. Full lesson list appears after enrollment.' }}
                     </p>

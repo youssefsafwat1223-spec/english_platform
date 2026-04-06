@@ -192,6 +192,18 @@ class Course extends Model
         ]);
     }
 
+    /**
+     * Add active course headings (levels) count to query results.
+     */
+    public function scopeWithHeadingsCount($query)
+    {
+        return $query->withCount([
+            'levels as headings_count' => function ($levelQuery) {
+                $levelQuery->where('is_active', true);
+            },
+        ]);
+    }
+
     // ==================== ACCESSORS ====================
 
     /**

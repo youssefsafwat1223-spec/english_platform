@@ -26,6 +26,7 @@
     $isArabic = app()->getLocale() === 'ar';
     $currencyLabel = $isArabic ? 'ر.س' : 'SAR';
     $durationWeeks = $course->estimated_duration_weeks;
+    $headingCount = (int) ($headingCount ?? 0);
     $lessonTitleCount = (int) ($lessonTitleCount ?? 0);
     $completedLessonTitleCount = (int) ($completedLessonTitleCount ?? 0);
     $expiresAt = $isEnrolled && isset($enrollment) ? $enrollment->expires_at : null;
@@ -81,25 +82,18 @@
                         <div class="md:col-span-3 p-6 md:p-8 space-y-5">
                             <div class="grid grid-cols-2 md:grid-cols-3 gap-3 text-sm">
                                 <div class="rounded-xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-white/5 px-4 py-3">
-                                    <div class="text-xs text-slate-500 dark:text-slate-400">{{ $isArabic ? 'المستويات' : 'Levels' }}</div>
-                                    <div class="font-bold text-slate-900 dark:text-white">{{ $course->levels()->active()->count() }}</div>
-                                </div>
-                                <div class="rounded-xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-white/5 px-4 py-3">
-                                    <div class="text-xs text-slate-500 dark:text-slate-400">{{ $isArabic ? 'الدروس' : 'Lessons' }}</div>
-                                    <div class="font-bold text-slate-900 dark:text-white">{{ $lessonTitleCount }}</div>
+                                    <div class="text-xs text-slate-500 dark:text-slate-400">{{ $isArabic ? 'العناوين' : 'Headings' }}</div>
+                                    <div class="font-bold text-slate-900 dark:text-white">{{ $headingCount }}</div>
                                 </div>
                                 <div class="rounded-xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-white/5 px-4 py-3">
                                     <div class="text-xs text-slate-500 dark:text-slate-400">{{ $isArabic ? 'الطلاب' : 'Students' }}</div>
                                     <div class="font-bold text-slate-900 dark:text-white">{{ (int) ($course->students_count ?? 0) }}</div>
                                 </div>
-                            </div>
-
-                            @if($durationWeeks)
-                                <div class="inline-flex items-center gap-2 text-sm font-bold text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 px-4 py-2 rounded-xl">
-                                    <svg class="w-4 h-4 text-accent-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                    {{ $isArabic ? 'مدة الاشتراك: ' . $durationWeeks . ' أسبوع' : 'Subscription duration: ' . $durationWeeks . ' weeks' }}
+                                <div class="rounded-xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-white/5 px-4 py-3">
+                                    <div class="text-xs text-slate-500 dark:text-slate-400">{{ $isArabic ? 'المدة' : 'Duration' }}</div>
+                                    <div class="font-bold text-slate-900 dark:text-white">{{ $durationWeeks ? ($durationWeeks . ($isArabic ? ' أسبوع' : ' weeks')) : '-' }}</div>
                                 </div>
-                            @endif
+                            </div>
 
                             @if($isEnrolled ?? false)
                                 <div class="pt-2">
@@ -140,7 +134,7 @@
                     @if($isEnrolled ?? false)
                             <div class="mt-4 space-y-2 text-sm text-slate-600 dark:text-slate-300">
                                 <div class="flex justify-between">
-                                    <span>{{ $isArabic ? 'الدروس المكتملة' : 'Completed lessons' }}</span>
+                                    <span>{{ $isArabic ? 'العناوين المكتملة' : 'Completed headings' }}</span>
                                     <span class="font-bold text-slate-900 dark:text-white">{{ $completedLessonTitleCount }}/{{ $lessonTitleCount }}</span>
                                 </div>
                             <div class="flex justify-between">

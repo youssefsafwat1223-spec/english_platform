@@ -32,7 +32,7 @@ class CourseController extends Controller
     {
         $query = Course::active()
             ->withCount(['students'])
-            ->withLessonTitlesCount();
+            ->withHeadingsCount();
 
         if ($request->filled('q')) {
             $search = $request->input('q');
@@ -87,6 +87,10 @@ class CourseController extends Controller
             $query->orderBy('order_index');
         }])->loadCount('students');
 
+        $headingCount = (int) $course->levels()
+            ->where('is_active', true)
+            ->count();
+
         $lessonTitleCount = $course->lessons
             ->pluck('title')
             ->map(fn ($title) => trim((string) $title))
@@ -133,6 +137,7 @@ class CourseController extends Controller
             'enrollment',
             'discount',
             'progress',
+            'headingCount',
             'lessonTitleCount',
             'completedLessonTitleCount'
         ));
