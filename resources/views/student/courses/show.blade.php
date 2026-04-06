@@ -26,13 +26,8 @@
     $isArabic = app()->getLocale() === 'ar';
     $currencyLabel = $isArabic ? 'ر.س' : 'SAR';
     $durationWeeks = $course->estimated_duration_weeks;
-    $lessonTitleCount = $course->lessons
-        ->pluck('title')
-        ->map(fn ($title) => trim((string) $title))
-        ->filter()
-        ->map(fn ($title) => mb_strtolower($title, 'UTF-8'))
-        ->unique()
-        ->count();
+    $lessonTitleCount = (int) ($lessonTitleCount ?? 0);
+    $completedLessonTitleCount = (int) ($completedLessonTitleCount ?? 0);
     $expiresAt = $isEnrolled && isset($enrollment) ? $enrollment->expires_at : null;
     $remainingDays = null;
     if ($expiresAt) {
@@ -95,7 +90,7 @@
                                 </div>
                                 <div class="rounded-xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-white/5 px-4 py-3">
                                     <div class="text-xs text-slate-500 dark:text-slate-400">{{ $isArabic ? 'الطلاب' : 'Students' }}</div>
-                                    <div class="font-bold text-slate-900 dark:text-white">{{ $course->students_count }}</div>
+                                    <div class="font-bold text-slate-900 dark:text-white">{{ (int) ($course->students_count ?? 0) }}</div>
                                 </div>
                             </div>
 
@@ -143,11 +138,11 @@
                     @endif
 
                     @if($isEnrolled ?? false)
-                        <div class="mt-4 space-y-2 text-sm text-slate-600 dark:text-slate-300">
-                            <div class="flex justify-between">
-                                <span>{{ $isArabic ? 'الدروس المكتملة' : 'Completed lessons' }}</span>
-                                <span class="font-bold text-slate-900 dark:text-white">{{ $enrollment->completed_lessons ?? 0 }}/{{ $enrollment->total_lessons ?? $course->lessons->count() }}</span>
-                            </div>
+                            <div class="mt-4 space-y-2 text-sm text-slate-600 dark:text-slate-300">
+                                <div class="flex justify-between">
+                                    <span>{{ $isArabic ? 'الدروس المكتملة' : 'Completed lessons' }}</span>
+                                    <span class="font-bold text-slate-900 dark:text-white">{{ $completedLessonTitleCount }}/{{ $lessonTitleCount }}</span>
+                                </div>
                             <div class="flex justify-between">
                                 <span>{{ $isArabic ? 'تاريخ البدء' : 'Started at' }}</span>
                                 <span class="font-bold text-slate-900 dark:text-white">{{ $enrollment->started_at ? $enrollment->started_at->format('M d, Y') : '-' }}</span>

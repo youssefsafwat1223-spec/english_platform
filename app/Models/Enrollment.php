@@ -126,11 +126,30 @@ class Enrollment extends Model
      */
     public function updateProgress()
     {
-        $this->completed_lessons = $this->lessonProgress()
-            ->where('is_completed', true)
-            ->count();
+        $totalLessons = (int) $this->course->lessons()
+            ->whereNotNull('title')
+            ->whereRaw("TRIM(title) <> ''")
+            ->selectRaw("COUNT(DISTINCT LOWER(TRIM(title))) as aggregate")
+            ->value('aggregate');
 
-        $totalLessons = (int) $this->total_lessons;
+        $completedLessons = (int) $this->lessonProgress()
+            ->where('is_completed', true)
+            ->join('lessons', 'lesson_progress.lesson_id', '=', 'lessons.id')
+            ->where('lessons.course_id', $this->course_id)
+            ->whereNotNull('lessons.title')
+            ->whereRaw("TRIM(lessons.title) <> ''")
+            ->selectRaw("COUNT(DISTINCT LOWER(TRIM(lessons.title))) as aggregate")
+            ->value('aggregate');
+
+        if ($totalLessons <= 0) {
+            $totalLessons = (int) $this->course->lessons()->count();
+            $completedLessons = (int) $this->lessonProgress()
+                ->where('is_completed', true)
+                ->count();
+        }
+
+        $this->completed_lessons = $completedLessons;
+        $this->total_lessons = $totalLessons;
         $this->progress_percentage = $totalLessons > 0
             ? ($this->completed_lessons / $totalLessons) * 100
             : 0;

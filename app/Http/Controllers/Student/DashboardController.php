@@ -30,7 +30,10 @@ class DashboardController extends Controller
         // Get active enrollments
         $activeEnrollments = $user->enrollments()
             ->active()
-            ->with(['course', 'lessonProgress'])
+            ->with([
+                'course.lessons:id,course_id,title',
+                'lessonProgress',
+            ])
             ->orderBy('last_accessed_at', 'desc')
             ->get();
 

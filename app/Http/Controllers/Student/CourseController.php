@@ -85,17 +85,43 @@ class CourseController extends Controller
 
         $course->load(['lessons' => function ($query) {
             $query->orderBy('order_index');
-        }]);
+        }])->loadCount('students');
+
+        $lessonTitleCount = $course->lessons
+            ->pluck('title')
+            ->map(fn ($title) => trim((string) $title))
+            ->filter()
+            ->map(fn ($title) => mb_strtolower($title, 'UTF-8'))
+            ->unique()
+            ->count();
 
         $user = auth()->user();
         $isEnrolled = $user->isEnrolledIn($course->id);
         $enrollment = null;
         $progress = 0;
+        $completedLessonTitleCount = 0;
 
         if ($isEnrolled) {
             $enrollment = $user->getEnrollment($course->id);
             $enrollment->load(['lessonProgress', 'quizAttempts']);
-            $progress = (float) ($enrollment->progress_percentage ?? 0);
+
+            $completedLessonIds = $enrollment->lessonProgress
+                ->where('is_completed', true)
+                ->pluck('lesson_id')
+                ->all();
+
+            $completedLessonTitleCount = $course->lessons
+                ->whereIn('id', $completedLessonIds)
+                ->pluck('title')
+                ->map(fn ($title) => trim((string) $title))
+                ->filter()
+                ->map(fn ($title) => mb_strtolower($title, 'UTF-8'))
+                ->unique()
+                ->count();
+
+            $progress = $lessonTitleCount > 0
+                ? ($completedLessonTitleCount / $lessonTitleCount) * 100
+                : 0;
         }
 
         // Calculate discount if applicable
@@ -106,7 +132,9 @@ class CourseController extends Controller
             'isEnrolled',
             'enrollment',
             'discount',
-            'progress'
+            'progress',
+            'lessonTitleCount',
+            'completedLessonTitleCount'
         ));
     }
 

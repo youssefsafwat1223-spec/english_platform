@@ -276,7 +276,37 @@
                     <div class="space-y-5">
                         @forelse($activeEnrollments->take(3) as $enrollment)
                             @php
-                                $progressValue = (int) round(min(100, max(0, $enrollment->progress_percentage ?? 0)));
+                                $courseLessons = $enrollment->course->lessons ?? collect();
+                                $totalLessonTitles = $courseLessons
+                                    ->pluck('title')
+                                    ->map(fn ($title) => trim((string) $title))
+                                    ->filter()
+                                    ->map(fn ($title) => mb_strtolower($title, 'UTF-8'))
+                                    ->unique()
+                                    ->count();
+
+                                $completedLessonIds = $enrollment->lessonProgress
+                                    ->where('is_completed', true)
+                                    ->pluck('lesson_id')
+                                    ->all();
+
+                                $completedLessonTitles = $courseLessons
+                                    ->whereIn('id', $completedLessonIds)
+                                    ->pluck('title')
+                                    ->map(fn ($title) => trim((string) $title))
+                                    ->filter()
+                                    ->map(fn ($title) => mb_strtolower($title, 'UTF-8'))
+                                    ->unique()
+                                    ->count();
+
+                                if ($totalLessonTitles === 0) {
+                                    $completedLessonTitles = (int) ($enrollment->completed_lessons ?? 0);
+                                    $totalLessonTitles = (int) ($enrollment->total_lessons ?? 0);
+                                }
+
+                                $progressValue = $totalLessonTitles > 0
+                                    ? (int) round(min(100, max(0, ($completedLessonTitles / $totalLessonTitles) * 100)))
+                                    : 0;
                                 $expiresAt = $enrollment->expires_at;
                                 if (!$expiresAt && (int) ($enrollment->course->estimated_duration_weeks ?? 0) > 0) {
                                     $baseDate = $enrollment->started_at ?? $enrollment->created_at;
@@ -310,7 +340,7 @@
                                         </span>
                                         <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-100 dark:bg-white/5">
                                             <svg class="w-4 h-4 text-accent-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
-                                            {{ $enrollment->completed_lessons }}/{{ $enrollment->total_lessons }} {{ __('Lessons') }}
+                                            {{ $completedLessonTitles }}/{{ $totalLessonTitles }} {{ __('Lessons') }}
                                         </span>
                                     </div>
                                     

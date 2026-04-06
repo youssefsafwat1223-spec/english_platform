@@ -7,7 +7,33 @@
     $isArabic = app()->getLocale() === 'ar';
     $startedAt = $enrollment->started_at ? $enrollment->started_at->format('M d, Y') : '-';
     $lastAccessed = $enrollment->last_accessed_at ? $enrollment->last_accessed_at->diffForHumans() : __('ui.learn.not_started');
-    $progress = (float) ($enrollment->progress_percentage ?? 0);
+    $courseLessons = $enrollment->course->lessons ?? collect();
+    $totalLessonTitles = $courseLessons
+        ->pluck('title')
+        ->map(fn ($title) => trim((string) $title))
+        ->filter()
+        ->map(fn ($title) => mb_strtolower($title, 'UTF-8'))
+        ->unique()
+        ->count();
+    $completedLessonIds = collect($enrollment->lessonProgress ?? [])
+        ->where('is_completed', true)
+        ->pluck('lesson_id')
+        ->all();
+    $completedLessonTitles = $courseLessons
+        ->whereIn('id', $completedLessonIds)
+        ->pluck('title')
+        ->map(fn ($title) => trim((string) $title))
+        ->filter()
+        ->map(fn ($title) => mb_strtolower($title, 'UTF-8'))
+        ->unique()
+        ->count();
+    if ($totalLessonTitles === 0) {
+        $completedLessonTitles = (int) ($enrollment->completed_lessons ?? 0);
+        $totalLessonTitles = (int) ($enrollment->total_lessons ?? 0);
+    }
+    $progress = $totalLessonTitles > 0
+        ? ($completedLessonTitles / $totalLessonTitles) * 100
+        : (float) ($enrollment->progress_percentage ?? 0);
     $expiresAt = $enrollment->expires_at;
     $remainingDays = null;
     if ($expiresAt) {
@@ -307,7 +333,7 @@
                             <div class="grid grid-cols-1 gap-3 text-sm">
                                 <div class="flex items-center justify-between px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-white/10">
                                     <span class="text-slate-500 dark:text-slate-400">{{ __('ui.learn.completed_lessons') }}</span>
-                                    <span class="font-black text-slate-900 dark:text-white">{{ $enrollment->completed_lessons }}/{{ $enrollment->total_lessons }}</span>
+                                    <span class="font-black text-slate-900 dark:text-white">{{ $completedLessonTitles }}/{{ $totalLessonTitles }}</span>
                                 </div>
                                 <div class="flex items-center justify-between px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-white/10">
                                     <span class="text-slate-500 dark:text-slate-400">{{ __('ui.learn.start_date') }}</span>
@@ -325,7 +351,7 @@
                                 @endif
                             </div>
 
-                            @if($enrollment->completed_at || $enrollment->progress_percentage >= 100)
+                            @if($enrollment->completed_at || $progress >= 100)
                                 <form action="{{ route('student.courses.certificate', $course) }}" method="POST">
                                     @csrf
                                     <button type="submit" class="btn-primary w-full">

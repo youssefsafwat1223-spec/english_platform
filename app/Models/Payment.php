@@ -246,7 +246,15 @@ class Payment extends Model
             return $this->enrollment;
         }
 
-        $totalLessons = $this->course->lessons()->count();
+        $totalLessons = (int) $this->course->lessons()
+            ->whereNotNull('title')
+            ->whereRaw("TRIM(title) <> ''")
+            ->selectRaw("COUNT(DISTINCT LOWER(TRIM(title))) as aggregate")
+            ->value('aggregate');
+
+        if ($totalLessons <= 0) {
+            $totalLessons = (int) $this->course->lessons()->count();
+        }
 
         $expiresAt = null;
         if ($this->course?->estimated_duration_weeks) {
