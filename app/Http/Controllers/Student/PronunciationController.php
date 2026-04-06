@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Student;
 use App\Http\Controllers\Controller;
 use App\Models\PronunciationAttempt;
 use App\Models\PronunciationExercise;
+use App\Services\LocalAiSpeakingCoachService;
 use App\Services\PronunciationRuleCoachService;
 use App\Services\RealtimePronunciationService;
 use Illuminate\Http\Request;
@@ -15,7 +16,8 @@ class PronunciationController extends Controller
 {
     public function __construct(
         private readonly RealtimePronunciationService $realtimeService,
-        private readonly PronunciationRuleCoachService $ruleCoachService
+        private readonly PronunciationRuleCoachService $ruleCoachService,
+        private readonly LocalAiSpeakingCoachService $aiSpeakingCoachService
     )
     {
     }
@@ -68,8 +70,12 @@ class PronunciationController extends Controller
         }
 
         $transcript = trim((string) $request->transcript);
-        $comparison = $this->realtimeService->compare($expectedText, $transcript);
-        $coach = $this->ruleCoachService->build($expectedText, $transcript, $comparison, app()->getLocale());
+        [$comparison, $coach, $provider] = $this->buildComparisonAndCoach(
+            $expectedText,
+            $transcript,
+            app()->getLocale(),
+            'web_speech_fallback'
+        );
         $analysis = $this->saveAttemptFromComparison(
             $user->id,
             $exercise->id,
@@ -79,7 +85,7 @@ class PronunciationController extends Controller
             $expectedText,
             $comparison,
             $coach,
-            'web_speech_fallback',
+            $provider,
             null,
             null,
             null
@@ -237,8 +243,12 @@ class PronunciationController extends Controller
         }
 
         $transcript = trim((string) $request->transcript);
-        $comparison = $this->realtimeService->compare($expectedText, $transcript);
-        $coach = $this->ruleCoachService->build($expectedText, $transcript, $comparison, app()->getLocale());
+        [$comparison, $coach, $provider] = $this->buildComparisonAndCoach(
+            $expectedText,
+            $transcript,
+            app()->getLocale(),
+            (string) $request->input('provider', 'streaming')
+        );
 
         $analysis = $this->saveAttemptFromComparison(
             $user->id,
@@ -249,7 +259,7 @@ class PronunciationController extends Controller
             $expectedText,
             $comparison,
             $coach,
-            (string) $request->input('provider', 'streaming'),
+            $provider,
             $sessionId,
             $request->input('latency_ms'),
             $request->input('duration_seconds')
@@ -301,6 +311,99 @@ class PronunciationController extends Controller
     {
         $expectedText = $exercise->{"sentence_{$sentenceNumber}"} ?? null;
         return $expectedText ? trim((string) $expectedText) : null;
+    }
+
+    /**
+     * Build deterministic comparison + rule coach, then merge optional AI coach feedback.
+     *
+     * @return array{0: array, 1: array, 2: string}
+     */
+    private function buildComparisonAndCoach(string $expectedText, string $transcript, string $locale, string $baseProvider): array
+    {
+        $comparison = $this->realtimeService->compare($expectedText, $transcript);
+        $ruleCoach = $this->ruleCoachService->build($expectedText, $transcript, $comparison, $locale);
+        $aiCoach = $this->aiSpeakingCoachService->evaluate($expectedText, $transcript, $comparison, $locale);
+
+        if (!$aiCoach) {
+            return [$comparison, $ruleCoach, $baseProvider];
+        }
+
+        $comparison['scores'] = $this->blendScores($comparison['scores'] ?? [], $aiCoach['scores'] ?? []);
+
+        $coach = array_merge($ruleCoach, array_filter([
+            'title' => $aiCoach['title'] ?? null,
+            'summary' => $aiCoach['summary'] ?? null,
+            'tip' => $aiCoach['tip'] ?? null,
+            'retry_instruction' => $aiCoach['retry_instruction'] ?? null,
+            'focus_word' => $aiCoach['focus_word'] ?? null,
+            'strengths' => $aiCoach['strengths'] ?? null,
+            'improvements' => $aiCoach['improvements'] ?? null,
+            'corrected_sentence' => $aiCoach['corrected_sentence'] ?? null,
+            'short_coach_reply' => $aiCoach['short_coach_reply'] ?? null,
+            'ai_scores' => $aiCoach['scores'] ?? null,
+        ], static fn ($value) => $value !== null && $value !== '' && $value !== []));
+
+        if (!empty($coach['summary'])) {
+            $comparison['feedback'] = (string) $coach['summary'];
+        }
+
+        return [$comparison, $coach, $baseProvider . '+ollama'];
+    }
+
+    private function blendScores(array $baseScores, array $aiScores): array
+    {
+        $ratio = (float) config('services.speaking_ai.score_blend_ratio', 0.35);
+        $ratio = max(0.0, min(1.0, $ratio));
+
+        if ($ratio <= 0.0) {
+            return $baseScores;
+        }
+
+        $blend = function (?int $base, ?int $ai) use ($ratio): ?int {
+            if ($base === null) {
+                return $ai;
+            }
+
+            if ($ai === null) {
+                return $base;
+            }
+
+            return max(0, min(100, (int) round(($base * (1 - $ratio)) + ($ai * $ratio))));
+        };
+
+        $baseOverall = $this->normalizeScore($baseScores['overall'] ?? null);
+        $basePronunciation = $this->normalizeScore($baseScores['pronunciation'] ?? null);
+        $baseFluency = $this->normalizeScore($baseScores['fluency'] ?? null);
+        $baseClarity = $this->normalizeScore($baseScores['clarity'] ?? null);
+        $baseCompletion = $this->normalizeScore($baseScores['completion'] ?? null);
+        $baseAccuracy = $this->normalizeScore($baseScores['accuracy'] ?? null);
+
+        $aiOverall = $this->normalizeScore($aiScores['overall'] ?? null);
+        $aiPronunciation = $this->normalizeScore($aiScores['pronunciation'] ?? null);
+        $aiFluency = $this->normalizeScore($aiScores['fluency'] ?? null);
+        $aiGrammar = $this->normalizeScore($aiScores['grammar'] ?? null);
+
+        $blendedPronunciation = $blend($basePronunciation, $aiPronunciation);
+        $blendedFluency = $blend($baseFluency, $aiFluency);
+        $blendedClarity = $blend($baseClarity, $aiGrammar);
+
+        return [
+            'overall' => $blend($baseOverall, $aiOverall) ?? ($baseOverall ?? 0),
+            'pronunciation' => $blendedPronunciation ?? ($basePronunciation ?? 0),
+            'fluency' => $blendedFluency ?? ($baseFluency ?? 0),
+            'clarity' => $blendedClarity ?? ($baseClarity ?? 0),
+            'completion' => $baseCompletion ?? 0,
+            'accuracy' => $baseAccuracy ?? ($blendedClarity ?? 0),
+        ];
+    }
+
+    private function normalizeScore(mixed $value): ?int
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        return max(0, min(100, (int) round((float) $value)));
     }
 
     private function saveAttemptFromComparison(

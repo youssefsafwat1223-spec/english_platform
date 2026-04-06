@@ -2,6 +2,38 @@
 
 @php
     $isArabic = app()->getLocale() === 'ar';
+    $localizedTitle = function (?string $title) use ($isArabic): string {
+        $value = trim((string) $title);
+        if ($value === '') {
+            return $value;
+        }
+
+        $segments = preg_split('/\s+(?:-|\x{2013}|\x{2014})\s+/u', $value);
+        if (!is_array($segments) || count($segments) < 2) {
+            return $value;
+        }
+
+        $segments = array_values(array_filter(array_map(static fn ($part) => trim((string) $part), $segments)));
+        if ($segments === []) {
+            return $value;
+        }
+
+        if ($isArabic) {
+            foreach ($segments as $segment) {
+                if (preg_match('/\p{Arabic}/u', $segment) === 1) {
+                    return $segment;
+                }
+            }
+        } else {
+            foreach ($segments as $segment) {
+                if (preg_match('/[A-Za-z]/', $segment) === 1) {
+                    return $segment;
+                }
+            }
+        }
+
+        return $segments[0];
+    };
     $pageTitle = $isArabic ? 'تمرين النطق' : 'Pronunciation Practice';
     $exerciseLabels = [
         1 => $isArabic ? 'الكلمة' : 'Word',
@@ -60,12 +92,20 @@
         'clarity' => $isArabic ? 'الوضوح' : 'Clarity',
         'fluency' => $isArabic ? 'السلاسة' : 'Fluency',
     ];
+    $messages = array_merge($messages, [
+        'strengths_title' => $isArabic ? 'نقاط القوة' : 'Strengths',
+        'improvements_title' => $isArabic ? 'ما الذي يحتاج تحسين' : 'Needs Improvement',
+        'corrected_sentence_title' => $isArabic ? 'جملة مصححة' : 'Corrected Sentence',
+        'coach_reply_title' => $isArabic ? 'رد المدرب' : 'Coach Reply',
+    ]);
+
     $scoreLabels = [
         'pronunciation' => $messages['accuracy'],
         'clarity' => $messages['clarity'],
         'fluency' => $messages['fluency'],
         'completion' => $isArabic ? 'الإكمال' : 'Completion',
     ];
+    $lessonSubtitle = $localizedTitle($exercise->lesson->title ?? '') ?: $messages['subtitle'];
 @endphp
 
 @section('title', $pageTitle . ' - ' . config('app.name'))
@@ -76,7 +116,7 @@
     <div class="student-container max-w-3xl relative z-10">
         <x-student.page-header
             title="{{ $pageTitle }}"
-            subtitle="{{ $exercise->lesson->title ?? $messages['subtitle'] }}"
+            subtitle="{{ $lessonSubtitle }}"
             badge="{{ $messages['badge'] }}"
             badgeColor="primary"
             badgeIcon="<svg class='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M12 3a3 3 0 013 3v5a3 3 0 11-6 0V6a3 3 0 013-3zm6 8a6 6 0 01-12 0M8 21h8m-4-3v3'/></svg>"
@@ -240,6 +280,34 @@
                                             <p class="mt-1 text-sm text-slate-700 dark:text-slate-200" x-text="results[{{ $num }}]?.coach?.retry_instruction || ''"></p>
                                         </div>
                                     </div>
+                                </div>
+
+                                <div x-show="(results[{{ $num }}]?.coach?.strengths || []).length" x-cloak class="mt-3 rounded-lg bg-white/80 dark:bg-slate-900/30 px-3 py-2">
+                                    <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">{{ $messages['strengths_title'] }}</p>
+                                    <div class="mt-2 space-y-1.5">
+                                        <template x-for="(item, index) in (results[{{ $num }}]?.coach?.strengths || [])" :key="'strength-' + index">
+                                            <p class="text-sm text-slate-700 dark:text-slate-200" x-text="'- ' + item"></p>
+                                        </template>
+                                    </div>
+                                </div>
+
+                                <div x-show="(results[{{ $num }}]?.coach?.improvements || []).length" x-cloak class="mt-3 rounded-lg bg-white/80 dark:bg-slate-900/30 px-3 py-2">
+                                    <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">{{ $messages['improvements_title'] }}</p>
+                                    <div class="mt-2 space-y-1.5">
+                                        <template x-for="(item, index) in (results[{{ $num }}]?.coach?.improvements || [])" :key="'improvement-' + index">
+                                            <p class="text-sm text-slate-700 dark:text-slate-200" x-text="'- ' + item"></p>
+                                        </template>
+                                    </div>
+                                </div>
+
+                                <div x-show="results[{{ $num }}]?.coach?.corrected_sentence" x-cloak dir="ltr" class="mt-3 rounded-lg bg-white/80 dark:bg-slate-900/30 px-3 py-2">
+                                    <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400 text-start">{{ $messages['corrected_sentence_title'] }}</p>
+                                    <p class="mt-1 text-sm text-slate-700 dark:text-slate-200 text-start" x-text="results[{{ $num }}]?.coach?.corrected_sentence || ''"></p>
+                                </div>
+
+                                <div x-show="results[{{ $num }}]?.coach?.short_coach_reply" x-cloak class="mt-3 rounded-lg bg-white/80 dark:bg-slate-900/30 px-3 py-2">
+                                    <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">{{ $messages['coach_reply_title'] }}</p>
+                                    <p class="mt-1 text-sm text-slate-700 dark:text-slate-200" x-text="results[{{ $num }}]?.coach?.short_coach_reply || ''"></p>
                                 </div>
 
                                 <div class="space-y-2 max-w-sm mx-auto md:mx-0">

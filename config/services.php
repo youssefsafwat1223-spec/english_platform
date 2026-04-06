@@ -105,4 +105,17 @@ return [
         'timeout_seconds' => (int) env('WRITING_AI_TIMEOUT_SECONDS', 45),
     ],
 
+    /*
+    |----------------------------------------------------------------------
+    | Speaking AI (Ollama)
+    |----------------------------------------------------------------------
+    */
+    'speaking_ai' => [
+        'enabled' => env('SPEAKING_AI_ENABLED', false),
+        'ollama_url' => env('SPEAKING_AI_OLLAMA_URL', env('OLLAMA_BASE_URL', 'http://127.0.0.1:11434')),
+        'ollama_model' => env('SPEAKING_AI_OLLAMA_MODEL', env('OLLAMA_MODEL', 'qwen2.5:7b')),
+        'timeout_seconds' => (int) env('SPEAKING_AI_TIMEOUT_SECONDS', 30),
+        'score_blend_ratio' => (float) env('SPEAKING_AI_SCORE_BLEND_RATIO', 0.35),
+    ],
+
 ];

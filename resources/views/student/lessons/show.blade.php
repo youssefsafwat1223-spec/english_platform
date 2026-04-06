@@ -5,12 +5,47 @@
 @section('content')
 @php
     $isArabic = app()->getLocale() === 'ar';
+    $localizedTitle = function (?string $title) use ($isArabic): string {
+        $value = trim((string) $title);
+        if ($value === '') {
+            return $value;
+        }
+
+        $segments = preg_split('/\s+[—–-]\s+/u', $value);
+        if (!is_array($segments) || count($segments) < 2) {
+            return $value;
+        }
+
+        $segments = array_values(array_filter(array_map(static fn ($part) => trim((string) $part), $segments)));
+        if ($segments === []) {
+            return $value;
+        }
+
+        if ($isArabic) {
+            foreach ($segments as $segment) {
+                if (preg_match('/\p{Arabic}/u', $segment) === 1) {
+                    return $segment;
+                }
+            }
+        } else {
+            foreach ($segments as $segment) {
+                if (preg_match('/[A-Za-z]/', $segment) === 1) {
+                    return $segment;
+                }
+            }
+        }
+
+        return $segments[0];
+    };
+
+    $courseDisplayTitle = $localizedTitle($course->title);
+    $lessonDisplayTitle = $localizedTitle($lesson->title);
 @endphp
 <div class="py-12 relative min-h-screen z-10">
     <div class="student-container space-y-8">
         <x-student.page-header
-            title="{{ $lesson->title }}"
-            subtitle="{{ $course->title }}"
+            title="{{ $lessonDisplayTitle }}"
+            subtitle="{{ $courseDisplayTitle }}"
             badge="{{ $isArabic ? 'الدرس' : 'Lesson' }}"
             badgeColor="primary"
             badgeIcon='<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5.586a1 1 0 0 1 .707.293l5.414 5.414a1 1 0 0 1 .293.707V19a2 2 0 0 1-2 2z"/></svg>'
@@ -35,12 +70,12 @@
                 <li class="opacity-50">/</li>
                 <li>
                     <a href="{{ route('student.courses.learn', $course) }}" class="hover:text-primary-500 transition-colors truncate max-w-[200px] sm:max-w-[250px] md:max-w-none inline-block align-bottom">
-                        {{ $course->title }}
+                        {{ $courseDisplayTitle }}
                     </a>
                 </li>
                 <li class="opacity-50">/</li>
                 <li class="text-slate-900 dark:text-white font-bold truncate max-w-[200px] sm:max-w-[400px] md:max-w-none inline-block align-bottom">
-                    {{ $lesson->title }}
+                    {{ $lessonDisplayTitle }}
                 </li>
             </ol>
         </nav>
@@ -53,7 +88,7 @@
                 <x-student.card padding="p-0" class="overflow-hidden border border-slate-200/50 dark:border-white/10" data-aos="fade-up">
                     <div class="p-6 md:p-8 md:pb-6 bg-slate-50/50 dark:bg-slate-900/20 border-b border-slate-200/50 dark:border-white/5">
                         <h1 class="text-2xl md:text-4xl font-black text-slate-900 dark:text-white leading-tight mb-2 tracking-tight">
-                            {{ $lesson->title }}
+                            {{ $lessonDisplayTitle }}
                         </h1>
                     </div>
                     
@@ -134,7 +169,7 @@
                                     @endphp
                                     <div class="relative w-full h-full rounded-[1.5rem] overflow-hidden">
                                         {{-- Store the encoded URL in data-esrc instead of the iframe src --}}
-                                        <iframe id="protected-iframe" class="w-full h-full absolute inset-0 bg-slate-900" title="{{ $lesson->title }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen data-esrc="{{ $encodedUrl }}"></iframe>
+                                        <iframe id="protected-iframe" class="w-full h-full absolute inset-0 bg-slate-900" title="{{ $lessonDisplayTitle }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen data-esrc="{{ $encodedUrl }}"></iframe>
                                         
                                         {{-- Decode and assign the URL after a short delay to discourage simple scraping --}}
                                         <script>
@@ -640,7 +675,7 @@
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                                 <div>
                                     <div class="text-[10px] uppercase tracking-wider text-slate-400 font-bold mb-0.5">{{ __('السابق') }}</div>
-                                    <div class="text-sm line-clamp-1 max-w-[150px]">{{ $previousLesson->title }}</div>
+                                    <div class="text-sm line-clamp-1 max-w-[150px]">{{ $localizedTitle($previousLesson->title) }}</div>
                                 </div>
                             </a>
                         @endif
@@ -675,7 +710,7 @@
                             <a href="{{ route('student.lessons.show', [$course, $nextLesson]) }}" class="btn-primary ripple-btn flex items-center justify-center gap-2 px-6 py-3 font-bold rounded-xl w-full sm:w-auto shadow-md">
                                 <div class="text-right">
                                     <div class="text-[10px] uppercase tracking-wider text-white/70 font-bold mb-0.5">{{ __('التالي') }}</div>
-                                    <div class="text-sm line-clamp-1 max-w-[150px]">{{ $nextLesson->title }}</div>
+                                    <div class="text-sm line-clamp-1 max-w-[150px]">{{ $localizedTitle($nextLesson->title) }}</div>
                                 </div>
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                             </a>
