@@ -100,7 +100,13 @@ return [
     'pronunciation_upload' => [
         'enabled' => env('PRONUNCIATION_UPLOAD_ENABLED', true),
         'python_bin' => env('PRONUNCIATION_UPLOAD_PYTHON_BIN', 'python3'),
+        'engine' => env('PRONUNCIATION_UPLOAD_ENGINE', 'faster_whisper'),
+        'fallback_engine' => env('PRONUNCIATION_UPLOAD_FALLBACK_ENGINE', 'gateway'),
         'gateway_ws_url' => env('PRONUNCIATION_UPLOAD_GATEWAY_WS_URL', env('PRONUNCIATION_STREAM_WS_URL', 'ws://127.0.0.1:8787/ws')),
+        'faster_whisper_model' => env('PRONUNCIATION_UPLOAD_FASTER_WHISPER_MODEL', 'large-v3'),
+        'faster_whisper_device' => env('PRONUNCIATION_UPLOAD_FASTER_WHISPER_DEVICE', 'cpu'),
+        'faster_whisper_compute_type' => env('PRONUNCIATION_UPLOAD_FASTER_WHISPER_COMPUTE_TYPE', 'int8'),
+        'faster_whisper_beam_size' => (int) env('PRONUNCIATION_UPLOAD_FASTER_WHISPER_BEAM_SIZE', 5),
         'timeout_seconds' => (int) env('PRONUNCIATION_UPLOAD_TIMEOUT_SECONDS', 90),
     ],
 
@@ -113,7 +119,7 @@ return [
         'enabled' => env('WRITING_AI_ENABLED', false),
         'languagetool_url' => env('LANGUAGETOOL_URL', 'http://127.0.0.1:8010'),
         'ollama_url' => env('OLLAMA_BASE_URL', 'http://127.0.0.1:11434'),
-        'ollama_model' => env('OLLAMA_MODEL', 'qwen2.5:7b'),
+        'ollama_model' => env('WRITING_AI_OLLAMA_MODEL', env('OLLAMA_MODEL', 'qwen2.5:14b')),
         'timeout_seconds' => (int) env('WRITING_AI_TIMEOUT_SECONDS', 45),
     ],
 
