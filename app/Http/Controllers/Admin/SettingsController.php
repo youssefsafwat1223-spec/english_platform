@@ -5,16 +5,19 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\SystemSetting;
 use App\Models\TelegramBotSetting;
+use App\Services\PlatformFeatureService;
 use App\Services\TelegramService;
 use Illuminate\Http\Request;
 
 class SettingsController extends Controller
 {
     private TelegramService $telegramService;
+    private PlatformFeatureService $platformFeatureService;
 
-    public function __construct(TelegramService $telegramService)
+    public function __construct(TelegramService $telegramService, PlatformFeatureService $platformFeatureService)
     {
         $this->telegramService = $telegramService;
+        $this->platformFeatureService = $platformFeatureService;
     }
 
     public function index()
@@ -25,6 +28,7 @@ class SettingsController extends Controller
     public function general()
     {
         $settings = SystemSetting::getByGroup('general');
+        $settings['live_sessions_enabled'] = $this->platformFeatureService->liveSessionsEnabled();
 
         return view('admin.settings.general', compact('settings'));
     }
@@ -39,6 +43,7 @@ class SettingsController extends Controller
             'dashboard_promo_title' => 'nullable|string|max:255',
             'dashboard_promo_message' => 'nullable|string|max:500',
             'dashboard_promo_url' => 'nullable|url',
+            'live_sessions_enabled' => 'sometimes|boolean',
         ]);
 
         SystemSetting::set('site_name', $request->site_name, 'string', 'general', true);
@@ -48,6 +53,7 @@ class SettingsController extends Controller
         SystemSetting::set('dashboard_promo_title', $request->dashboard_promo_title, 'string', 'general');
         SystemSetting::set('dashboard_promo_message', $request->dashboard_promo_message, 'string', 'general');
         SystemSetting::set('dashboard_promo_url', $request->dashboard_promo_url, 'string', 'general');
+        $this->platformFeatureService->set(PlatformFeatureService::LIVE_SESSIONS_KEY, $request->boolean('live_sessions_enabled'));
 
         return back()->with('success', 'General settings updated successfully!');
     }

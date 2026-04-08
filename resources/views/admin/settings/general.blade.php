@@ -50,6 +50,26 @@
                             </div>
                         </div>
                     </div>
+                    <div class="pt-4 border-t" style="border-color: var(--color-border);">
+                        <h2 class="text-lg font-extrabold mb-4" style="color: var(--color-text);">{{ __('Live Sessions Visibility') }}</h2>
+                        <div class="rounded-2xl border p-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between" style="border-color: var(--color-border); background: var(--color-surface);">
+                            <div>
+                                <p class="font-bold" style="color: var(--color-text);">{{ __('Show live sessions to students') }}</p>
+                                <p class="text-sm mt-1" style="color: var(--color-text-muted);">
+                                    {{ __('When disabled, live sessions disappear from the student navbar, dashboard banner, public mentions, and direct student links.') }}
+                                </p>
+                            </div>
+                            <label class="inline-flex items-center cursor-pointer gap-3">
+                                <input type="hidden" name="live_sessions_enabled" value="0">
+                                <input type="checkbox" name="live_sessions_enabled" value="1" class="sr-only peer"
+                                       {{ old('live_sessions_enabled', $settings['live_sessions_enabled'] ?? true) ? 'checked' : '' }}>
+                                <div class="relative w-14 h-8 rounded-full transition-colors bg-slate-300 peer-checked:bg-emerald-500 after:content-[''] after:absolute after:top-1 after:start-1 after:h-6 after:w-6 after:rounded-full after:bg-white after:transition-all peer-checked:after:translate-x-6 rtl:peer-checked:after:-translate-x-6"></div>
+                                <span class="text-sm font-bold" style="color: var(--color-text);">
+                                    {{ __('Enabled') }}
+                                </span>
+                            </label>
+                        </div>
+                    </div>
                 </div>
                 <div class="glass-card-footer">
                     <button type="submit" class="btn-primary ripple-btn" :class="{ 'opacity-50': loading }" :disabled="loading">

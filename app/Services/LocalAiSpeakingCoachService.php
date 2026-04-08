@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Log;
 
 class LocalAiSpeakingCoachService
 {
-    public function evaluate(string $expectedText, string $spokenText, array $comparison, string $locale = 'en'): ?array
+    public function evaluate(string $expectedText, string $spokenText, array $comparison, string $locale = 'en', array $speechMetrics = []): ?array
     {
         if (!(bool) config('services.speaking_ai.enabled')) {
             return null;
@@ -26,7 +26,7 @@ class LocalAiSpeakingCoachService
                     'model' => $model,
                     'stream' => false,
                     'format' => 'json',
-                    'prompt' => $this->buildPrompt($expectedText, $spokenText, $comparison, $locale),
+                    'prompt' => $this->buildPrompt($expectedText, $spokenText, $comparison, $locale, $speechMetrics),
                 ]);
 
             if (!$response->successful()) {
@@ -83,7 +83,7 @@ class LocalAiSpeakingCoachService
         }
     }
 
-    private function buildPrompt(string $expectedText, string $spokenText, array $comparison, string $locale): string
+    private function buildPrompt(string $expectedText, string $spokenText, array $comparison, string $locale, array $speechMetrics = []): string
     {
         $isArabic = str_starts_with(strtolower($locale), 'ar');
         $feedbackLanguage = $isArabic ? 'Arabic' : 'English';
@@ -93,6 +93,13 @@ class LocalAiSpeakingCoachService
 
         $scores = $comparison['scores'] ?? [];
         $counts = $comparison['counts'] ?? [];
+        $speechProvider = trim((string) ($speechMetrics['provider'] ?? 'local'));
+        $speechConfidence = $this->safeInt($speechMetrics['confidence'] ?? null);
+        $engineAccuracy = $this->safeInt($speechMetrics['accuracy_score'] ?? null);
+        $engineFluency = $this->safeInt($speechMetrics['fluency_score'] ?? null);
+        $engineCompleteness = $this->safeInt($speechMetrics['completeness_score'] ?? null);
+        $enginePronunciation = $this->safeInt($speechMetrics['pronunciation_score'] ?? null);
+        $engineProsody = $this->safeInt($speechMetrics['prosody_score'] ?? null);
 
         $wordDiffCompact = collect($comparison['word_diff'] ?? [])
             ->take(80)
@@ -132,6 +139,15 @@ Deterministic base scores:
 - accuracy: {$this->safeInt($scores['accuracy'] ?? null)}
 - completion: {$this->safeInt($scores['completion'] ?? null)}
 
+Speech engine metrics:
+- provider: {$speechProvider}
+- confidence: {$speechConfidence}
+- accuracy: {$engineAccuracy}
+- fluency: {$engineFluency}
+- completeness: {$engineCompleteness}
+- pronunciation: {$enginePronunciation}
+- prosody: {$engineProsody}
+
 Word counts:
 - expected: {$this->safeInt($counts['expected'] ?? null)}
 - spoken: {$this->safeInt($counts['spoken'] ?? null)}
@@ -153,6 +169,9 @@ Rules:
 - strengths and improvements are arrays with 1-3 short items each
 - corrected_sentence should be a corrected/clean spoken sentence in English
 - short_coach_reply should be one short motivating line
+- If the provider supplies true pronunciation metrics (for example accuracy or pronunciation scores), use them as the primary scoring signal
+- If only confidence is available, treat confidence as a weak hint and not as a pronunciation score
+- Mention the most important wrong or missing word when possible
 - Do not include markdown
 PROMPT;
     }
@@ -267,4 +286,3 @@ PROMPT;
         return false;
     }
 }
-

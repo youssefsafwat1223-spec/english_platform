@@ -93,6 +93,19 @@
         'fluency' => $isArabic ? 'السلاسة' : 'Fluency',
     ];
     $messages = array_merge($messages, [
+        'azure_scores_title' => $isArabic ? 'تقييم Azure' : 'Azure Assessment',
+        'azure_accuracy' => $isArabic ? 'دقة النطق' : 'Azure Accuracy',
+        'azure_fluency' => $isArabic ? 'الطلاقة' : 'Azure Fluency',
+        'azure_completeness' => $isArabic ? 'الاكتمال' : 'Azure Completeness',
+        'azure_pronunciation' => $isArabic ? 'درجة النطق' : 'Azure Pronunciation',
+        'correct_words_title' => $isArabic ? 'كلمات صحيحة' : 'Correct Words',
+        'wrong_words_title' => $isArabic ? 'كلمات تحتاج تصحيح' : 'Wrong Words',
+        'missing_words_title' => $isArabic ? 'كلمات ناقصة' : 'Missing Words',
+        'speak_feedback' => $isArabic ? 'استمع للملاحظات' : 'Speak Feedback',
+        'feedback_spoken' => $isArabic ? 'جارٍ قراءة الملاحظات' : 'Reading feedback aloud',
+        'session_expired' => $isArabic ? 'انتهت جلستك. حدّث الصفحة وحاول مرة أخرى.' : 'Your session expired. Refresh the page and try again.',
+        'server_error' => $isArabic ? 'حدث خطأ في الخادم أثناء تحليل الصوت.' : 'Server error while analyzing the audio.',
+        'upload_too_large' => $isArabic ? 'ملف الصوت كبير جدًا. حاول تسجيل إجابة أقصر.' : 'Uploaded audio is too large. Please record a shorter answer.',
         'strengths_title' => $isArabic ? 'نقاط القوة' : 'Strengths',
         'improvements_title' => $isArabic ? 'ما الذي يحتاج تحسين' : 'Needs Improvement',
         'corrected_sentence_title' => $isArabic ? 'جملة مصححة' : 'Corrected Sentence',
@@ -104,6 +117,12 @@
         'clarity' => $messages['clarity'],
         'fluency' => $messages['fluency'],
         'completion' => $isArabic ? 'الإكمال' : 'Completion',
+    ];
+    $azureScoreLabels = [
+        'azure_accuracy' => $messages['azure_accuracy'],
+        'azure_fluency' => $messages['azure_fluency'],
+        'azure_completeness' => $messages['azure_completeness'],
+        'azure_pronunciation' => $messages['azure_pronunciation'],
     ];
     $lessonSubtitle = $localizedTitle($exercise->lesson->title ?? '') ?: $messages['subtitle'];
 @endphp
@@ -330,6 +349,13 @@
                                     <p class="mt-1 text-sm text-slate-700 dark:text-slate-200" x-text="results[{{ $num }}]?.coach?.short_coach_reply || ''"></p>
                                 </div>
 
+                                <div class="mt-3 flex flex-wrap gap-2">
+                                    <button type="button" @click="speakFeedback({{ $num }})" class="inline-flex items-center gap-2 rounded-lg border border-primary-200 bg-white/80 px-3 py-2 text-xs font-bold text-primary-600 transition hover:scale-[1.02] dark:border-primary-500/20 dark:bg-slate-900/30 dark:text-primary-300">
+                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5L6 9H2v6h4l5 4V5zm5.54 3.46a5 5 0 010 7.08m2.83-9.91a9 9 0 010 12.74"/></svg>
+                                        {{ $messages['speak_feedback'] }}
+                                    </button>
+                                </div>
+
                                 <div class="space-y-2 max-w-sm mx-auto md:mx-0">
                                     <template x-for="(label, key) in scoreLabels" :key="key">
                                         <div class="flex items-center gap-3">
@@ -340,6 +366,53 @@
                                             <span class="text-xs font-bold w-8 text-slate-900 dark:text-white text-end" x-text="(results[{{ $num }}]?.[key] || 0) + '%'"></span>
                                         </div>
                                     </template>
+                                </div>
+
+                                <div x-show="results[{{ $num }}]?.azure_accuracy !== null || results[{{ $num }}]?.azure_fluency !== null || results[{{ $num }}]?.azure_completeness !== null || results[{{ $num }}]?.azure_pronunciation !== null" x-cloak class="mt-4 rounded-xl border border-sky-200/70 bg-sky-50/70 p-4 dark:border-sky-500/20 dark:bg-sky-500/10">
+                                    <p class="text-xs font-black uppercase tracking-[0.24em] text-sky-600 dark:text-sky-300">{{ $messages['azure_scores_title'] }}</p>
+                                    <div class="mt-3 space-y-2">
+                                        <template x-for="(label, key) in azureScoreLabels" :key="'azure-' + key">
+                                            <div class="flex items-center gap-3">
+                                                <span class="text-xs font-medium w-28 text-slate-500 dark:text-slate-400 text-start" x-text="label"></span>
+                                                <div class="flex-1 h-2 rounded-full overflow-hidden bg-slate-200 dark:bg-slate-700">
+                                                    <div class="h-full rounded-full bg-gradient-to-r from-sky-500 to-cyan-400 transition-all duration-1000" :style="'width: ' + (results[{{ $num }}]?.[key] || 0) + '%'"></div>
+                                                </div>
+                                                <span class="text-xs font-bold w-8 text-slate-900 dark:text-white text-end" x-text="((results[{{ $num }}]?.[key] ?? 0)) + '%'"></span>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+
+                                <div class="mt-4 grid gap-3 lg:grid-cols-3">
+                                    <div x-show="resultWords({{ $num }}, 'correct').length" x-cloak class="rounded-xl border border-emerald-200/70 bg-emerald-50/70 p-3 dark:border-emerald-500/20 dark:bg-emerald-500/10">
+                                        <p class="text-xs font-black uppercase tracking-[0.18em] text-emerald-600 dark:text-emerald-300">{{ $messages['correct_words_title'] }}</p>
+                                        <div class="mt-2 flex flex-wrap gap-2">
+                                            <template x-for="(item, index) in resultWords({{ $num }}, 'correct')" :key="'correct-' + index">
+                                                <span class="rounded-full bg-emerald-500/15 px-2.5 py-1 text-xs font-bold text-emerald-700 dark:text-emerald-200" x-text="item.text"></span>
+                                            </template>
+                                        </div>
+                                    </div>
+
+                                    <div x-show="resultWords({{ $num }}, 'wrong').length" x-cloak class="rounded-xl border border-amber-200/70 bg-amber-50/70 p-3 dark:border-amber-500/20 dark:bg-amber-500/10">
+                                        <p class="text-xs font-black uppercase tracking-[0.18em] text-amber-600 dark:text-amber-300">{{ $messages['wrong_words_title'] }}</p>
+                                        <div class="mt-2 space-y-2">
+                                            <template x-for="(item, index) in resultWords({{ $num }}, 'wrong')" :key="'wrong-' + index">
+                                                <div class="rounded-lg bg-white/80 px-2.5 py-2 text-xs dark:bg-slate-900/30">
+                                                    <p class="font-bold text-amber-700 dark:text-amber-200" x-text="item.text"></p>
+                                                    <p x-show="item.hint" class="mt-1 text-slate-500 dark:text-slate-300" x-text="item.hint"></p>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </div>
+
+                                    <div x-show="resultWords({{ $num }}, 'missing').length" x-cloak class="rounded-xl border border-rose-200/70 bg-rose-50/70 p-3 dark:border-rose-500/20 dark:bg-rose-500/10">
+                                        <p class="text-xs font-black uppercase tracking-[0.18em] text-rose-600 dark:text-rose-300">{{ $messages['missing_words_title'] }}</p>
+                                        <div class="mt-2 flex flex-wrap gap-2">
+                                            <template x-for="(item, index) in resultWords({{ $num }}, 'missing')" :key="'missing-' + index">
+                                                <span class="rounded-full bg-rose-500/15 px-2.5 py-1 text-xs font-bold text-rose-700 dark:text-rose-200" x-text="item.text"></span>
+                                            </template>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div dir="ltr" class="mt-3 text-xs text-start text-slate-500">
@@ -482,6 +555,7 @@ function pronunciationApp() {
         passingScore: {{ $exercise->passing_score ?? 70 }},
         messages: @json($messages),
         scoreLabels: @json($scoreLabels),
+        azureScoreLabels: @json($azureScoreLabels),
         endpoints: {
             upload: @json(route('student.pronunciation.upload')),
             uploadStatusBase: @json(url('/student/pronunciation/status')),
@@ -507,6 +581,60 @@ function pronunciationApp() {
             if (score >= 70) return this.messages.great;
             if (score >= 50) return this.messages.good;
             return this.messages.keep;
+        },
+
+        resultWords(sentenceNumber, status) {
+            const tokens = Array.isArray(this.results?.[sentenceNumber]?.word_diff)
+                ? this.results[sentenceNumber].word_diff
+                : [];
+
+            return tokens
+                .filter((token) => token?.status === status)
+                .map((token) => {
+                    if (status === 'wrong') {
+                        return {
+                            text: token.actual || token.expected || '',
+                            hint: token.expected && token.actual && token.expected !== token.actual
+                                ? `→ ${token.expected}`
+                                : '',
+                        };
+                    }
+
+                    return {
+                        text: token.display || token.expected || token.actual || '',
+                        hint: '',
+                    };
+                })
+                .filter((item) => item.text);
+        },
+
+        feedbackText(sentenceNumber) {
+            const result = this.results?.[sentenceNumber] || {};
+            const coach = result.coach || {};
+
+            return [
+                coach.summary || '',
+                coach.tip || '',
+                coach.retry_instruction || '',
+                result.feedback || '',
+            ].filter(Boolean).join('. ');
+        },
+
+        speakFeedback(sentenceNumber) {
+            const feedback = this.feedbackText(sentenceNumber);
+            if (!feedback) {
+                return;
+            }
+
+            this.speakCorrect(sentenceNumber, feedback, this.isArabicLocale() ? 'ar-SA' : 'en-US');
+
+            if (window.showNotification) {
+                window.showNotification(this.messages.feedback_spoken, 'info');
+            }
+        },
+
+        isArabicLocale() {
+            return document.documentElement.lang === 'ar' || document.documentElement.dir === 'rtl';
         },
 
         getAutoStopConfig(sentenceNumber) {
@@ -1719,6 +1847,7 @@ function pronunciationApp() {
         applyResult(sentenceNumber, data) {
             this.results[sentenceNumber] = data;
             this.liveWordDiff[sentenceNumber] = Array.isArray(data.word_diff) ? data.word_diff : [];
+            window.setTimeout(() => this.speakFeedback(sentenceNumber), 150);
 
             if (data.score >= this.passingScore) {
                 this.failedAttempts[sentenceNumber] = 0;
@@ -1753,7 +1882,7 @@ function pronunciationApp() {
             this.speakCorrect(sentenceNumber, text);
         },
 
-        speakCorrect(sentenceNumber, text) {
+        speakCorrect(sentenceNumber, text, lang = 'en-US') {
             if (!('speechSynthesis' in window)) {
                 if (window.showNotification) window.showNotification(this.messages.tts_unsupported, 'error');
                 return;
@@ -1762,18 +1891,18 @@ function pronunciationApp() {
             this.stopExamplePlayback();
 
             const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'en-US';
+            utterance.lang = lang;
             utterance.rate = 0.85;
             utterance.pitch = 1;
             utterance.volume = 1;
 
             const voices = window.speechSynthesis.getVoices();
-            const englishVoice = voices.find((voice) => voice.lang === 'en-US' && voice.name.includes('Google'))
-                || voices.find((voice) => voice.lang === 'en-US' && voice.name.includes('Microsoft'))
-                || voices.find((voice) => voice.lang === 'en-US')
-                || voices.find((voice) => voice.lang.startsWith('en'));
+            const preferredVoice = voices.find((voice) => voice.lang === lang && voice.name.includes('Google'))
+                || voices.find((voice) => voice.lang === lang && voice.name.includes('Microsoft'))
+                || voices.find((voice) => voice.lang === lang)
+                || voices.find((voice) => voice.lang.startsWith(lang.split('-')[0]));
 
-            if (englishVoice) utterance.voice = englishVoice;
+            if (preferredVoice) utterance.voice = preferredVoice;
 
             this.isSpeaking = true;
             this.speakingSentence = sentenceNumber;

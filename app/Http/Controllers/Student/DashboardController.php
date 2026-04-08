@@ -8,10 +8,15 @@ use App\Models\Payment;
 use App\Models\SystemSetting;
 use App\Models\User;
 use App\Services\AchievementService;
+use App\Services\PlatformFeatureService;
 
 class DashboardController extends Controller
 {
     private const PENDING_PAYMENT_VISIBILITY_MINUTES = 30;
+
+    public function __construct(private readonly PlatformFeatureService $platformFeatureService)
+    {
+    }
 
     public function index(AchievementService $achievementService)
     {
@@ -113,21 +118,25 @@ class DashboardController extends Controller
 
     private function getFeaturedBanner(User $user): ?array
     {
-        $session = LiveSession::with('courses')
-            ->visibleToStudent($user)
-            ->where('banner_enabled', true)
-            ->get()
-            ->sortBy(function (LiveSession $liveSession) {
-                return match ($liveSession->display_status) {
-                    LiveSession::STATUS_LIVE => 0,
-                    LiveSession::STATUS_SCHEDULED => 1,
-                    default => 2,
-                };
-            })
-            ->first(function (LiveSession $liveSession) {
-                return $liveSession->display_status === LiveSession::STATUS_LIVE
-                    || ($liveSession->display_status === LiveSession::STATUS_SCHEDULED && $liveSession->startsWithinHours(24));
-            });
+        $session = null;
+
+        if ($this->platformFeatureService->liveSessionsEnabled()) {
+            $session = LiveSession::with('courses')
+                ->visibleToStudent($user)
+                ->where('banner_enabled', true)
+                ->get()
+                ->sortBy(function (LiveSession $liveSession) {
+                    return match ($liveSession->display_status) {
+                        LiveSession::STATUS_LIVE => 0,
+                        LiveSession::STATUS_SCHEDULED => 1,
+                        default => 2,
+                    };
+                })
+                ->first(function (LiveSession $liveSession) {
+                    return $liveSession->display_status === LiveSession::STATUS_LIVE
+                        || ($liveSession->display_status === LiveSession::STATUS_SCHEDULED && $liveSession->startsWithinHours(24));
+                });
+        }
 
         if ($session) {
             $isLive = $session->display_status === LiveSession::STATUS_LIVE;

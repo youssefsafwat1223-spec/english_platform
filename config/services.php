@@ -112,6 +112,38 @@ return [
 
     /*
     |----------------------------------------------------------------------
+    | Azure Speech Pronunciation Assessment
+    |----------------------------------------------------------------------
+    */
+    'azure_speech' => [
+        'enabled' => env('AZURE_SPEECH_ENABLED', false),
+        'key' => env('AZURE_SPEECH_KEY'),
+        'region' => env('AZURE_SPEECH_REGION'),
+        'language' => env('AZURE_SPEECH_LANGUAGE', 'en-US'),
+        'python_bin' => env('AZURE_SPEECH_PYTHON_BIN', env('PRONUNCIATION_UPLOAD_PYTHON_BIN', 'python3')),
+        'timeout_seconds' => (int) env('AZURE_SPEECH_TIMEOUT_SECONDS', 60),
+        'grading_system' => env('AZURE_SPEECH_GRADING_SYSTEM', 'HundredMark'),
+        'granularity' => env('AZURE_SPEECH_GRANULARITY', 'Phoneme'),
+        'enable_miscue' => filter_var(env('AZURE_SPEECH_ENABLE_MISCUE', true), FILTER_VALIDATE_BOOL),
+        'enable_prosody' => filter_var(env('AZURE_SPEECH_ENABLE_PROSODY', false), FILTER_VALIDATE_BOOL),
+    ],
+
+    /*
+    |----------------------------------------------------------------------
+    | Google Cloud Speech-to-Text
+    |----------------------------------------------------------------------
+    */
+    'google_speech' => [
+        'enabled' => env('GOOGLE_SPEECH_ENABLED', false),
+        'api_key' => env('GOOGLE_SPEECH_API_KEY'),
+        'language' => env('GOOGLE_SPEECH_LANGUAGE', 'en-US'),
+        'timeout_seconds' => (int) env('GOOGLE_SPEECH_TIMEOUT_SECONDS', 45),
+        'endpoint' => env('GOOGLE_SPEECH_ENDPOINT', 'https://speech.googleapis.com/v1/speech:recognize'),
+        'ffmpeg_bin' => env('GOOGLE_SPEECH_FFMPEG_BIN', 'ffmpeg'),
+    ],
+
+    /*
+    |----------------------------------------------------------------------
     | Writing AI (LanguageTool + Ollama)
     |----------------------------------------------------------------------
     */

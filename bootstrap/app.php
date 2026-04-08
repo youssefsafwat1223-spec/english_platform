@@ -28,6 +28,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'approved.device' => \App\Http\Middleware\EnsureApprovedDevice::class,
             'track.activity' => \App\Http\Middleware\TrackUserActivity::class,
             'enrolled' => \App\Http\Middleware\CheckCourseEnrollment::class,
+            'onboarding' => \App\Http\Middleware\EnsureOnboardingCompleted::class,
+            'feature' => \App\Http\Middleware\EnsureFeatureEnabled::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

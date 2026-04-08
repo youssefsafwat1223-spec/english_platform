@@ -30,12 +30,19 @@ class PronunciationAttempt extends Model
         'completion_percent',
         'recognition_latency_ms',
         'stream_session_id',
+        'azure_accuracy_score',
+        'azure_fluency_score',
+        'azure_completeness_score',
+        'azure_pronunciation_score',
+        'azure_prosody_score',
+        'azure_response_json',
     ];
 
     protected function casts(): array
     {
         return [
             'word_diff_json' => 'array',
+            'azure_response_json' => 'array',
             'completion_percent' => 'integer',
             'recognition_latency_ms' => 'integer',
         ];

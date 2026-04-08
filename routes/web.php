@@ -395,7 +395,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin', 'active', '
 |--------------------------------------------------------------------------
 */
 
-Route::prefix('student')->name('student.')->middleware(['auth', 'student', 'active', 'approved.device', 'track.activity'])->group(function () {
+Route::prefix('student')->name('student.')->middleware(['auth', 'student', 'active', 'approved.device', 'onboarding', 'track.activity'])->group(function () {
 
     // Dashboard
     Route::get('/dashboard', [StudentDashboardController::class, 'index'])->name('dashboard');
@@ -567,8 +567,10 @@ Route::prefix('student')->name('student.')->middleware(['auth', 'student', 'acti
         ->name('notifications.recent-json');
 
     // Live Sessions
-    Route::get('/live-sessions', [StudentLiveSessionController::class, 'index'])->name('live-sessions.index');
-    Route::get('/live-sessions/{liveSession}', [StudentLiveSessionController::class, 'show'])->name('live-sessions.show');
+    Route::middleware('feature:live-sessions')->group(function () {
+        Route::get('/live-sessions', [StudentLiveSessionController::class, 'index'])->name('live-sessions.index');
+        Route::get('/live-sessions/{liveSession}', [StudentLiveSessionController::class, 'show'])->name('live-sessions.show');
+    });
 
     // Game Arena
     Route::prefix('games')->name('games.')->group(function () {

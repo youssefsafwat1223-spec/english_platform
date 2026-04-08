@@ -89,6 +89,7 @@
     <body class="font-sans antialiased min-h-screen flex flex-col">
 
         <!-- Premium Ambient Background -->
+        @if(!request()->routeIs('student.onboarding*'))
         <div class="fixed inset-0 z-0 pointer-events-none overflow-hidden bg-slate-50 dark:bg-[#020617] transition-colors duration-500">
             {{-- Glowing Modern Orbs --}}
             <div class="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-gradient-to-br from-primary-400/30 to-blue-300/30 dark:from-primary-600/20 dark:to-blue-600/20 blur-[100px] sm:blur-[150px] mix-blend-multiply dark:mix-blend-screen opacity-80"></div>
@@ -102,9 +103,12 @@
             {{-- Soft Vignette Mask to blend edges nicely --}}
             <div class="absolute inset-0 bg-gradient-to-b from-transparent via-slate-50/20 to-slate-50/80 dark:via-[#020617]/20 dark:to-[#020617]/90"></div>
         </div>
+        @endif
 
         <!-- Navigation -->
-        @include('layouts.navigation')
+        @if(!request()->routeIs('student.onboarding*'))
+            @include('layouts.navigation')
+        @endif
 
         <!-- Flash Messages -->
         @if(session('success'))
@@ -131,6 +135,7 @@
             $noTopPaddingRoute = request()->routeIs('home')
                 || request()->routeIs('login')
                 || request()->routeIs('register')
+                || request()->routeIs('student.onboarding*')
                 || request()->routeIs('password.*');
         @endphp
 
@@ -144,7 +149,7 @@
         </main>
 
         <!-- Footer -->
-        @if(!request()->routeIs('student.quizzes.start'))
+        @if(!request()->routeIs('student.quizzes.start') && !request()->routeIs('student.onboarding*'))
             @include('layouts.footer')
         @endif
 

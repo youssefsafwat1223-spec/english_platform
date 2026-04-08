@@ -27,7 +27,7 @@
             {{-- Progress Bar --}}
             <div class="h-2 bg-white/10 w-full relative">
                 <div class="absolute top-0 left-0 h-full bg-gradient-to-r from-primary-500 to-accent-500 transition-all duration-500 ease-out"
-                     :style="{ width: ((step / 4) * 100) + '%' }"></div>
+                     :style="{ width: (((step - 1) / 3) * 100) + '%' }"></div>
             </div>
 
             <div class="p-8 sm:p-12">
@@ -56,7 +56,7 @@
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-white/80 mb-2">{{ __('ui.onboarding.age') }}</label>
-                            <input type="number" x-model="form.age" min="5" max="120" required placeholder="25"
+                            <input type="number" x-model="form.age" min="5" max="120" required placeholder="{{ __('ui.onboarding.age_placeholder') }}"
                                    @keydown.enter.prevent="goNext(2)"
                                    class="input-glass text-center text-xl bg-white/50 dark:bg-white/5 border-gray-200 dark:border-white/10 focus:border-primary-500 text-gray-900 dark:text-white">
                         </div>
@@ -114,7 +114,7 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-white/80 mb-2">{{ __('ui.onboarding.phone_number') }} <span class="text-red-500">*</span></label>
                             <div class="relative w-full text-left" dir="ltr">
-                                <input type="tel" id="phone_input" x-model="form.phone" required placeholder="1012345678"
+                                <input type="tel" id="phone_input" x-model="form.phone" required
                                        @keydown.enter.prevent="saveAndConnect()"
                                        class="input-glass w-full !text-left text-xl tracking-wider font-mono bg-white/50 dark:bg-white/5 border-gray-200 dark:border-white/10 focus:border-[#0088cc] text-gray-900 dark:text-white">
                             </div>
@@ -225,18 +225,25 @@
     @media (min-resolution: 2x) {
       .iti__flag {background-image: url("https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/img/flags@2x.png");}
     }
-    .iti__country-list { z-index: 50 !important; background-color: var(--tw-colors-slate-900) !important; color: white !important; border: 1px solid rgba(255,255,255,0.1); border-radius: 0.75rem; }
+    .iti__country-list { z-index: 9999 !important; background-color: var(--tw-colors-slate-900) !important; color: white !important; border: 1px solid rgba(255,255,255,0.1); border-radius: 0.75rem; white-space: normal !important; text-align: left !important; direction: ltr !important; }
     .iti__country:hover { background-color: rgba(255,255,255,0.1) !important; }
     .iti__divider { border-bottom: 1px solid rgba(255,255,255,0.1) !important; }
     
     html:not(.dark) .iti__country-list { background-color: white !important; color: #1e293b !important; border-color: #e2e8f0; }
     html:not(.dark) .iti__country:hover { background-color: #f1f5f9 !important; }
     html:not(.dark) .iti__divider { border-bottom-color: #e2e8f0 !important; }
+    
+    /* Override RTL glitches */
+    .iti { direction: ltr !important; }
+    .iti__flag-container { right: auto !important; left: 0 !important; }
+    .iti input { padding-left: 52px !important; padding-right: 16px !important; direction: ltr !important; }
+    .iti--container { z-index: 9999 !important; }
 </style>
 @endpush
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/js/intlTelInput.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 <script>
     function onboardingFlow() {
         const texts = @js([
@@ -273,11 +280,21 @@
                         this.iti = window.intlTelInput(input, {
                             utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/js/utils.js",
                             initialCountry: "auto",
+                            dropdownContainer: document.body,
                             geoIpLookup: function(callback) {
-                                fetch("https://ipapi.co/json")
+                                const controller = new AbortController();
+                                const timeoutId = setTimeout(() => controller.abort(), 3000);
+                                
+                                fetch("https://ipapi.co/json", { signal: controller.signal })
                                     .then(function(res) { return res.json(); })
-                                    .then(function(data) { callback(data.country_code); })
-                                    .catch(function() { callback("eg"); });
+                                    .then(function(data) { 
+                                        clearTimeout(timeoutId);
+                                        callback(data.country_code); 
+                                    })
+                                    .catch(function() { 
+                                        clearTimeout(timeoutId);
+                                        callback("sa"); 
+                                    });
                             },
                         });
                         
@@ -356,9 +373,14 @@
             },
 
             async skipTelegram() {
-                // Optionally save empty phone or whatever they typed, then just redirect
+                const phoneInput = this.iti ? this.iti.getNumber() : this.form.phone;
+                if (!phoneInput || phoneInput.trim() === '') {
+                    this.errorMessage = texts.phoneRequired;
+                    return;
+                }
+                
                 if(this.iti) {
-                   this.form.phone = this.iti.getNumber() || this.form.phone;
+                   this.form.phone = phoneInput;
                 }
                 
                 const success = await this.submitFormOnly();

@@ -2,9 +2,12 @@
 
 namespace App\Providers;
 
+use App\Services\PlatformFeatureService;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 
@@ -23,6 +26,18 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        $liveSessionsEnabled = true;
+
+        try {
+            if (Schema::hasTable('system_settings')) {
+                $liveSessionsEnabled = app(PlatformFeatureService::class)->liveSessionsEnabled();
+            }
+        } catch (\Throwable) {
+            $liveSessionsEnabled = true;
+        }
+
+        View::share('liveSessionsEnabled', $liveSessionsEnabled);
+
         RateLimiter::for('contact-form', fn (Request $request) => $this->withWebThrottleResponse(
             Limit::perMinute(5)->by($this->guestThrottleKey($request, 'contact', [
                 $request->input('email'),

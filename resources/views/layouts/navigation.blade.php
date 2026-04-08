@@ -71,10 +71,12 @@
                                class="nav-link {{ request()->routeIs('student.courses.my-courses') ? 'active' : '' }}">
                                 {{ __('My Courses') }}
                             </a>
-                            <a href="{{ route('student.live-sessions.index') }}"
-                               class="nav-link {{ request()->routeIs('student.live-sessions.*') ? 'active' : '' }}">
-                                {{ __('live_sessions.navigation') }}
-                            </a>
+                            @if($liveSessionsEnabled)
+                                <a href="{{ route('student.live-sessions.index') }}"
+                                   class="nav-link {{ request()->routeIs('student.live-sessions.*') ? 'active' : '' }}">
+                                    {{ __('live_sessions.navigation') }}
+                                </a>
+                            @endif
                             <a href="{{ route('student.quizzes.my-attempts') }}"
                                class="nav-link {{ request()->routeIs('student.quizzes.my-attempts') ? 'active' : '' }}">
                                 {{ __('All Attempts') }}
@@ -596,7 +598,6 @@
                                 ['route' => 'student.certificates.index', 'icon' => '📜', 'label' => __('Certificates')],
                                 ['route' => 'student.profile.achievements', 'icon' => '🌟', 'label' => __('Achievements')],
                                 ['route' => 'student.quizzes.my-attempts', 'icon' => '📝', 'label' => __('All Attempts')],
-                                ['route' => 'student.live-sessions.index', 'icon' => '🎥', 'label' => __('live_sessions.navigation')],
                                 ['route' => 'student.games.index', 'icon' => '🎮', 'label' => __('Games')],
                                 ['route' => 'student.battle.index', 'icon' => '⚔️', 'label' => __('Battle')],
                                 ['route' => 'student.leaderboard', 'icon' => '🏆', 'label' => __('Leaderboard')],
@@ -604,6 +605,15 @@
                                 ['route' => 'student.telegram.guide', 'icon' => '🤖', 'label' => __('Telegram Bot')],
                             ];
                         @endphp
+                        @if($liveSessionsEnabled)
+                            @php
+                                array_splice($extraLinks, 3, 0, [[
+                                    'route' => 'student.live-sessions.index',
+                                    'icon' => '🎥',
+                                    'label' => __('live_sessions.navigation'),
+                                ]]);
+                            @endphp
+                        @endif
                         @foreach($extraLinks as $link)
                             <a href="{{ route($link['route']) }}" class="flex items-center justify-between px-5 py-4 rounded-2xl bg-white/40 dark:bg-white/5 border border-white/40 dark:border-white/5 hover:bg-white dark:hover:bg-white/10 transition-all group/link active:scale-[0.98]">
                                 <div class="flex items-center gap-4">

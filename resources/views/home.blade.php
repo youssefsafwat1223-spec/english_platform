@@ -25,8 +25,8 @@
         ? 'منهج تأسيسي واضح يقودك خطوة بخطوة للتحدث بثقة، مع تدريب عملي، اختبارات، وشهادة حضور.'
         : 'A clear foundation path that takes you step by step to confident English, with practice, assessment, and an attendance certificate.';
     $heroHighlights = $isArabic
-        ? ['منهج تأسيسي واضح', 'تدريب عملي بالذكاء الاصطناعي وجلسات مباشرة', 'اختبارات + شهادة حضور']
-        : ['Clear foundation curriculum', 'Practical AI practice + live sessions', 'Quizzes + attendance certificate'];
+        ? ['منهج تأسيسي واضح', $liveSessionsEnabled ? 'تدريب عملي بالذكاء الاصطناعي وجلسات مباشرة' : 'تدريب عملي بالذكاء الاصطناعي', 'اختبارات + شهادة حضور']
+        : ['Clear foundation curriculum', $liveSessionsEnabled ? 'Practical AI practice + live sessions' : 'Practical AI practice', 'Quizzes + attendance certificate'];
 @endphp
 
 {{-- Splash screen removed --}}
@@ -363,7 +363,7 @@
                         4
                     </div>
                     <h3 class="text-lg font-bold mb-2" style="color: var(--color-text);">{{ $isArabic ? 'تمرّن على المهارات' : 'Practice the skills' }}</h3>
-                    <p class="text-sm" style="color: var(--color-text-muted);">{{ $isArabic ? 'تدريب نطق وتطبيقات عملية وجلسات مباشرة للمراجعة.' : 'Pronunciation practice, real usage, and live sessions for review.' }}</p>
+                    <p class="text-sm" style="color: var(--color-text-muted);">{{ $liveSessionsEnabled ? ($isArabic ? 'تدريب نطق وتطبيقات عملية وجلسات مباشرة للمراجعة.' : 'Pronunciation practice, real usage, and live sessions for review.') : ($isArabic ? 'تدريب نطق وتطبيقات عملية للمراجعة.' : 'Pronunciation practice and real usage for review.') }}</p>
                 </div>
             </div>
         </div>
@@ -608,10 +608,12 @@
                     <h3 class="text-base font-bold mb-2" style="color: var(--color-text);">{{ $isArabic ? 'هل يوجد تقسيط؟' : 'Do you offer installment payments?' }}</h3>
                     <p class="text-sm" style="color: var(--color-text-muted);">{{ $isArabic ? 'نعم، ستجد تفاصيل التقسيط في صفحة التسعير عند توفره.' : 'Yes. Installment details are available on the pricing page when offered.' }}</p>
                 </div>
-                <div class="glass-card p-6" data-aos="fade-up" data-aos-delay="150">
-                    <h3 class="text-base font-bold mb-2" style="color: var(--color-text);">{{ $isArabic ? 'هل توجد جلسات مباشرة؟' : 'Are there live sessions?' }}</h3>
-                    <p class="text-sm" style="color: var(--color-text-muted);">{{ $isArabic ? 'نعم، جلسات مباشرة دورية للمراجعة والتطبيق والإجابة عن الأسئلة.' : 'Yes. Periodic live sessions for review, practice, and Q&A.' }}</p>
-                </div>
+                @if($liveSessionsEnabled)
+                    <div class="glass-card p-6" data-aos="fade-up" data-aos-delay="150">
+                        <h3 class="text-base font-bold mb-2" style="color: var(--color-text);">{{ $isArabic ? 'هل توجد جلسات مباشرة؟' : 'Are there live sessions?' }}</h3>
+                        <p class="text-sm" style="color: var(--color-text-muted);">{{ $isArabic ? 'نعم، جلسات مباشرة دورية للمراجعة والتطبيق والإجابة عن الأسئلة.' : 'Yes. Periodic live sessions for review, practice, and Q&A.' }}</p>
+                    </div>
+                @endif
                 <div class="glass-card p-6" data-aos="fade-up" data-aos-delay="200">
                     <h3 class="text-base font-bold mb-2" style="color: var(--color-text);">{{ $isArabic ? 'هل أحصل على شهادة؟' : 'Will I get a certificate?' }}</h3>
                     <p class="text-sm" style="color: var(--color-text-muted);">{{ $isArabic ? 'بعد إكمال الكورس ستحصل على شهادة حضور.' : 'After completing the course, you receive an attendance certificate.' }}</p>

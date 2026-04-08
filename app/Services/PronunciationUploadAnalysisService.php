@@ -12,7 +12,9 @@ class PronunciationUploadAnalysisService
         private readonly RealtimePronunciationService $realtimeService,
         private readonly PronunciationRuleCoachService $ruleCoachService,
         private readonly LocalAiSpeakingCoachService $aiSpeakingCoachService,
-        private readonly PronunciationUploadTranscriptionService $uploadTranscriptionService
+        private readonly PronunciationUploadTranscriptionService $uploadTranscriptionService,
+        private readonly GoogleSpeechTranscriptionService $googleSpeechTranscriptionService,
+        private readonly AzurePronunciationAssessmentService $azurePronunciationAssessmentService
     )
     {
     }
@@ -38,7 +40,25 @@ class PronunciationUploadAnalysisService
 
         $absoluteAudioPath = Storage::disk('local')->path($audioPath);
         $mimeType = $this->guessMimeTypeFromPath($audioPath);
-        $transcript = trim((string) $this->uploadTranscriptionService->transcribe($absoluteAudioPath, $mimeType, $expectedText));
+        $googleTranscription = $this->googleSpeechTranscriptionService->transcribe(
+            $absoluteAudioPath,
+            $mimeType,
+            $expectedText,
+            $locale
+        );
+        $transcript = trim((string) ($googleTranscription['recognized_text'] ?? ''));
+        $speechMetrics = $this->speechMetricsFromGoogle($googleTranscription);
+        $azureAssessment = null;
+
+        if ($transcript === '') {
+            $azureAssessment = $this->azurePronunciationAssessmentService->assess($absoluteAudioPath, $expectedText, $locale);
+            $transcript = trim((string) ($azureAssessment['recognized_text'] ?? ''));
+            $speechMetrics = $this->speechMetricsFromAzure($azureAssessment);
+        }
+
+        if ($transcript === '') {
+            $transcript = trim((string) $this->uploadTranscriptionService->transcribe($absoluteAudioPath, $mimeType, $expectedText));
+        }
 
         if ($transcript === '') {
             $transcript = trim((string) $clientTranscript);
@@ -54,7 +74,9 @@ class PronunciationUploadAnalysisService
             $expectedText,
             $transcript,
             $locale,
-            $provider
+            $provider,
+            $speechMetrics,
+            $azureAssessment
         );
 
         $analysis = $this->saveAttemptFromComparison(
@@ -68,7 +90,9 @@ class PronunciationUploadAnalysisService
             $coach,
             $resolvedProvider,
             $durationSeconds,
-            $audioPath
+            $audioPath,
+            $azureAssessment,
+            $speechMetrics
         );
 
         return [
@@ -85,6 +109,12 @@ class PronunciationUploadAnalysisService
             'transcript' => $transcript,
             'expected' => $expectedText,
             'attempt_id' => $analysis['attempt_id'],
+            'azure_accuracy' => $analysis['azure_accuracy_score'],
+            'azure_fluency' => $analysis['azure_fluency_score'],
+            'azure_completeness' => $analysis['azure_completeness_score'],
+            'azure_pronunciation' => $analysis['azure_pronunciation_score'],
+            'azure_prosody' => $analysis['azure_prosody_score'],
+            'google_confidence' => $analysis['google_confidence'],
         ];
     }
 
@@ -107,14 +137,15 @@ class PronunciationUploadAnalysisService
         };
     }
 
-    private function buildComparisonAndCoach(string $expectedText, string $transcript, string $locale, string $baseProvider): array
+    private function buildComparisonAndCoach(string $expectedText, string $transcript, string $locale, string $baseProvider, array $speechMetrics = [], ?array $azureAssessment = null): array
     {
         $comparison = $this->realtimeService->compare($expectedText, $transcript);
+        $comparison['scores'] = $this->mergeAzureScores($comparison['scores'] ?? [], $azureAssessment);
         $ruleCoach = $this->ruleCoachService->build($expectedText, $transcript, $comparison, $locale);
-        $aiCoach = $this->aiSpeakingCoachService->evaluate($expectedText, $transcript, $comparison, $locale);
+        $aiCoach = $this->aiSpeakingCoachService->evaluate($expectedText, $transcript, $comparison, $locale, $speechMetrics);
 
         if (!$aiCoach) {
-            return [$comparison, $ruleCoach, $baseProvider];
+            return [$comparison, $ruleCoach, $this->providerWithSpeechEngine($baseProvider, $speechMetrics, $azureAssessment)];
         }
 
         $comparison['scores'] = $this->blendScores($comparison['scores'] ?? [], $aiCoach['scores'] ?? []);
@@ -136,7 +167,48 @@ class PronunciationUploadAnalysisService
             $comparison['feedback'] = (string) $coach['summary'];
         }
 
-        return [$comparison, $coach, $baseProvider . '+ollama'];
+        return [$comparison, $coach, $this->providerWithSpeechEngine($baseProvider, $speechMetrics, $azureAssessment) . '+ollama'];
+    }
+
+    private function mergeAzureScores(array $baseScores, ?array $azureAssessment): array
+    {
+        if (!is_array($azureAssessment) || empty($azureAssessment)) {
+            return $baseScores;
+        }
+
+        $accuracy = $this->normalizeScore($azureAssessment['accuracy_score'] ?? null);
+        $fluency = $this->normalizeScore($azureAssessment['fluency_score'] ?? null);
+        $completeness = $this->normalizeScore($azureAssessment['completeness_score'] ?? null);
+        $pronunciation = $this->normalizeScore($azureAssessment['pronunciation_score'] ?? null);
+
+        $overallCandidates = array_filter([
+            $pronunciation,
+            $accuracy,
+            $fluency,
+            $completeness,
+        ], static fn ($value) => $value !== null);
+
+        return [
+            'overall' => !empty($overallCandidates) ? (int) round(array_sum($overallCandidates) / count($overallCandidates)) : ($baseScores['overall'] ?? 0),
+            'pronunciation' => $pronunciation ?? ($accuracy ?? ($baseScores['pronunciation'] ?? 0)),
+            'fluency' => $fluency ?? ($baseScores['fluency'] ?? 0),
+            'clarity' => $accuracy ?? ($baseScores['clarity'] ?? 0),
+            'completion' => $completeness ?? ($baseScores['completion'] ?? 0),
+            'accuracy' => $accuracy ?? ($baseScores['accuracy'] ?? 0),
+        ];
+    }
+
+    private function providerWithSpeechEngine(string $baseProvider, array $speechMetrics = [], ?array $azureAssessment = null): string
+    {
+        if (($speechMetrics['provider'] ?? null) === 'google' && !empty($speechMetrics['recognized_text'] ?? null)) {
+            return $baseProvider . '+google';
+        }
+
+        if (is_array($azureAssessment) && !empty($azureAssessment['recognized_text'])) {
+            return $baseProvider . '+azure';
+        }
+
+        return $baseProvider;
     }
 
     private function blendScores(array $baseScores, array $aiScores): array
@@ -206,7 +278,9 @@ class PronunciationUploadAnalysisService
         array $coach,
         string $provider,
         int $durationSeconds,
-        ?string $audioPath = null
+        ?string $audioPath = null,
+        ?array $azureAssessment = null,
+        array $speechMetrics = []
     ): array {
         $attemptNumber = PronunciationAttempt::query()
             ->where('user_id', $userId)
@@ -236,6 +310,12 @@ class PronunciationUploadAnalysisService
             'completion_percent' => $scores['completion'],
             'recognition_latency_ms' => null,
             'stream_session_id' => null,
+            'azure_accuracy_score' => $this->normalizeScore($azureAssessment['accuracy_score'] ?? null),
+            'azure_fluency_score' => $this->normalizeScore($azureAssessment['fluency_score'] ?? null),
+            'azure_completeness_score' => $this->normalizeScore($azureAssessment['completeness_score'] ?? null),
+            'azure_pronunciation_score' => $this->normalizeScore($azureAssessment['pronunciation_score'] ?? null),
+            'azure_prosody_score' => $this->normalizeScore($azureAssessment['prosody_score'] ?? null),
+            'azure_response_json' => is_array($azureAssessment['raw_result'] ?? null) ? $azureAssessment['raw_result'] : null,
         ]);
 
         $attempt->awardPoints();
@@ -249,6 +329,42 @@ class PronunciationUploadAnalysisService
             'completion_percent' => (int) $attempt->completion_percent,
             'feedback' => (string) $attempt->feedback_text,
             'coach' => $coach,
+            'azure_accuracy_score' => $attempt->azure_accuracy_score !== null ? (int) $attempt->azure_accuracy_score : null,
+            'azure_fluency_score' => $attempt->azure_fluency_score !== null ? (int) $attempt->azure_fluency_score : null,
+            'azure_completeness_score' => $attempt->azure_completeness_score !== null ? (int) $attempt->azure_completeness_score : null,
+            'azure_pronunciation_score' => $attempt->azure_pronunciation_score !== null ? (int) $attempt->azure_pronunciation_score : null,
+            'azure_prosody_score' => $attempt->azure_prosody_score !== null ? (int) $attempt->azure_prosody_score : null,
+            'google_confidence' => $this->normalizeScore($speechMetrics['confidence'] ?? null),
+        ];
+    }
+
+    private function speechMetricsFromGoogle(?array $googleTranscription): array
+    {
+        if (!is_array($googleTranscription) || empty($googleTranscription['recognized_text'])) {
+            return [];
+        }
+
+        return [
+            'provider' => 'google',
+            'recognized_text' => trim((string) ($googleTranscription['recognized_text'] ?? '')),
+            'confidence' => $this->normalizeScore($googleTranscription['confidence'] ?? null),
+        ];
+    }
+
+    private function speechMetricsFromAzure(?array $azureAssessment): array
+    {
+        if (!is_array($azureAssessment) || empty($azureAssessment['recognized_text'])) {
+            return [];
+        }
+
+        return [
+            'provider' => 'azure',
+            'recognized_text' => trim((string) ($azureAssessment['recognized_text'] ?? '')),
+            'accuracy_score' => $this->normalizeScore($azureAssessment['accuracy_score'] ?? null),
+            'fluency_score' => $this->normalizeScore($azureAssessment['fluency_score'] ?? null),
+            'completeness_score' => $this->normalizeScore($azureAssessment['completeness_score'] ?? null),
+            'pronunciation_score' => $this->normalizeScore($azureAssessment['pronunciation_score'] ?? null),
+            'prosody_score' => $this->normalizeScore($azureAssessment['prosody_score'] ?? null),
         ];
     }
 }
