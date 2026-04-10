@@ -20,13 +20,16 @@
             <span class="text-gradient">{{ $isArabic ? 'لتقدم واضح' : 'for clear progress' }}</span>
         </h1>
         <p class="text-lg max-w-3xl mx-auto mb-6" style="color: var(--color-text-muted);" data-aos="fade-up" data-aos-delay="200">
-            {{ $isArabic ? 'اختر المسار المناسب لمستواك. كل كورس يشمل المنهج، التدريب العملي، الاختبارات، وشهادة حضور.' : 'Choose the course that matches your level. Each course includes curriculum, practical training, quizzes, and an attendance certificate.' }}
+            {{ $isArabic ? 'هذه الصفحة تعرض سعر البرنامج الكامل وما يشمله من منهج وتدريب واختبارات وشهادة حضور.' : 'This page shows the full program price and what it includes: curriculum, practice, quizzes, and an attendance certificate.' }}
         </p>
         <p class="text-sm max-w-3xl mx-auto mb-3" style="color: var(--color-text-muted);" data-aos="fade-up" data-aos-delay="220">
-            {{ $isArabic ? 'كل المسارات تشمل تطبيقات كتابة بتغذية راجعة ذكية لتحسين القواعد، المفردات، وترابط الأفكار.' : 'All tracks include writing exercises with AI-assisted feedback for grammar, vocabulary, and coherence.' }}
+            {{ $isArabic ? 'البرنامج يشمل تطبيقات كتابة بتغذية راجعة ذكية لتحسين القواعد، المفردات، وترابط الأفكار.' : 'The program includes writing exercises with AI-assisted feedback for grammar, vocabulary, and coherence.' }}
         </p>
         <p class="text-sm max-w-3xl mx-auto mb-2" style="color: var(--color-text-muted);" data-aos="fade-up" data-aos-delay="250">
             {{ $isArabic ? 'مدة الكورس المعروضة هي مدة الاشتراك الفعلية، وينتهي الوصول بانتهاء هذه المدة.' : 'Displayed course duration is the actual subscription period, and access ends when that period ends.' }}
+        </p>
+        <p class="text-sm max-w-3xl mx-auto font-bold text-primary-600 dark:text-primary-400" data-aos="fade-up" data-aos-delay="280">
+            {{ $isArabic ? 'يتوفر التقسيط عبر بوابة الدفع عند ظهور خيار التقسيط أثناء إتمام الدفع.' : 'Installments are available through the payment gateway when the installment option appears at checkout.' }}
         </p>
     </div>
 </section>
@@ -66,11 +69,11 @@
         </div>
 
         <div class="text-center mb-10" data-aos="fade-up">
-            <h2 class="text-3xl font-extrabold" style="color: var(--color-text);">{{ $isArabic ? 'الكورسات المتاحة' : 'Available courses' }}</h2>
-            <p class="text-sm mt-2" style="color: var(--color-text-muted);">{{ $isArabic ? 'اختر الكورس المناسب وابدأ بخطة واضحة.' : 'Pick a course and start with a clear plan.' }}</p>
+            <h2 class="text-3xl font-extrabold" style="color: var(--color-text);">{{ $isArabic ? 'تفاصيل البرنامج' : 'Program details' }}</h2>
+            <p class="text-sm mt-2" style="color: var(--color-text-muted);">{{ $isArabic ? 'برنامج واحد بمسار تدريجي واضح من البداية حتى الإتقان العملي.' : 'One program with a clear, step-by-step path from foundation to practical confidence.' }}</p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="grid grid-cols-1 max-w-2xl mx-auto gap-8">
             @forelse($courses as $course)
                 <div class="glass-card overflow-hidden group relative" data-aos="fade-up" data-aos-delay="{{ $loop->index * 100 }}">
                     @if($course->price == 0)
@@ -125,7 +128,7 @@
                         </ul>
 
                         <a href="{{ auth()->check() && auth()->user()->is_student ? route('student.courses.show', $course) : route('courses.show', $course) }}" class="block w-full text-center py-3 rounded-xl font-bold transition-all {{ $course->price == 0 ? 'btn-primary' : 'btn-secondary' }}">
-                            {{ $course->price == 0 ? ($isArabic ? 'ابدأ مجانًا' : 'Start Free') : ($isArabic ? 'عرض تفاصيل الكورس' : 'View Course Details') }}
+                            {{ $course->price == 0 ? ($isArabic ? 'ابدأ مجانًا' : 'Start Free') : ($isArabic ? 'عرض تفاصيل البرنامج' : 'View Program Details') }}
                         </a>
                     </div>
                 </div>
@@ -137,7 +140,7 @@
                         </svg>
                     </div>
                     <h3 class="text-xl font-bold mb-2" style="color: var(--color-text);">{{ $isArabic ? 'قريبًا' : 'Coming soon' }}</h3>
-                    <p class="text-sm" style="color: var(--color-text-muted);">{{ $isArabic ? 'نعمل حاليًا على تجهيز كورسات جديدة.' : 'New courses are currently being prepared.' }}</p>
+                    <p class="text-sm" style="color: var(--color-text-muted);">{{ $isArabic ? 'نعمل حاليًا على تجهيز البرنامج.' : 'The program is currently being prepared.' }}</p>
                 </div>
             @endforelse
         </div>

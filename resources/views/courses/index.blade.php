@@ -94,15 +94,17 @@
                             {{ \Illuminate\Support\Str::limit($course->short_description ?: $course->description, 140) }}
                         </p>
 
-                        <div class="grid grid-cols-3 gap-2 text-xs font-bold">
+                        <div class="grid {{ ($showCourseStudentCount ?? true) ? 'grid-cols-3' : 'grid-cols-2' }} gap-2 text-xs font-bold">
                             <div class="rounded-lg px-3 py-2 bg-slate-100 dark:bg-white/5 text-center" style="color: var(--color-text-muted);">
                                 <div>{{ $isArabic ? 'العناوين' : 'Headings' }}</div>
                                 <div class="text-slate-900 dark:text-white text-sm">{{ $course->headings_count ?? 0 }}</div>
                             </div>
+                            @if($showCourseStudentCount ?? true)
                             <div class="rounded-lg px-3 py-2 bg-slate-100 dark:bg-white/5 text-center" style="color: var(--color-text-muted);">
                                 <div>{{ $isArabic ? 'الطلاب' : 'Students' }}</div>
                                 <div class="text-slate-900 dark:text-white text-sm">{{ $course->students_count }}</div>
                             </div>
+                            @endif
                             <div class="rounded-lg px-3 py-2 bg-slate-100 dark:bg-white/5 text-center" style="color: var(--color-text-muted);">
                                 <div>{{ $isArabic ? 'المدة' : 'Duration' }}</div>
                                 <div class="text-slate-900 dark:text-white text-sm">{{ $course->estimated_duration_weeks ? ($course->estimated_duration_weeks . ($isArabic ? ' أ' : 'w')) : '-' }}</div>

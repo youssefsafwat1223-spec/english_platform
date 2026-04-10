@@ -41,7 +41,6 @@
                     <li>{{ $isArabic ? 'للمبتدئ الذي يريد أساسًا واضحًا.' : 'Beginners who want a clear foundation.' }}</li>
                     <li>{{ $isArabic ? 'لمن يفهم الإنجليزية لكنه لا يتحدث بثقة.' : 'Those who understand but do not speak confidently.' }}</li>
                     <li>{{ $isArabic ? 'لمن يريد خطة وممارسة منتظمة.' : 'Anyone seeking structure and consistent practice.' }}</li>
-                    <li>{{ $isArabic ? 'غير مناسب لمن يريد نتيجة بلا التزام.' : 'Not for instant results without commitment.' }}</li>
                 </ul>
             </div>
         </div>
@@ -65,14 +64,14 @@
                 {{ $isArabic ? 'جاهز تبدأ التأسيس الصحيح؟' : 'Ready to start with the right foundation?' }}
             </h2>
             <p class="text-base md:text-lg max-w-3xl mx-auto mb-6" style="color: var(--color-text-muted);">
-                {{ $isArabic ? 'اطّلع على الأسعار وخيارات التقسيط إن كانت متاحة، ثم اختر المسار المناسب لك.' : 'See pricing and installment options (if available), then pick the right path for you.' }}
+                {{ $isArabic ? 'اطّلع على سعر البرنامج وخيارات التقسيط المتاحة، ثم ابدأ مباشرة.' : 'Check the program price and available installment options, then start immediately.' }}
             </p>
             <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <a href="{{ route('pricing') }}" class="btn-primary ripple-btn px-8 py-4 rounded-2xl shadow-lg shadow-primary-500/25 inline-flex items-center gap-2 font-black">
                     {{ $isArabic ? 'اطّلع على الأسعار' : 'View pricing' }}
                 </a>
                 <a href="{{ route('home') }}#featured-courses" class="px-8 py-4 rounded-2xl border border-white/10 bg-white/5 hover:bg-white/10 transition-colors inline-flex items-center gap-2 font-black" style="color: var(--color-text);">
-                    {{ $isArabic ? 'اختر الكورس المناسب' : 'Choose your course' }}
+                    {{ $isArabic ? 'تفاصيل البرنامج' : 'Program details' }}
                 </a>
             </div>
         </div>

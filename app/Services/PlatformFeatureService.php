@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Cache;
 class PlatformFeatureService
 {
     public const LIVE_SESSIONS_KEY = 'live_sessions_enabled';
+    public const COURSE_STUDENT_COUNT_VISIBLE_KEY = 'course_student_count_visible';
 
     public function enabled(string $key, bool $default = true): bool
     {
@@ -19,6 +20,11 @@ class PlatformFeatureService
     public function liveSessionsEnabled(): bool
     {
         return $this->enabled(self::LIVE_SESSIONS_KEY, true);
+    }
+
+    public function courseStudentCountVisible(): bool
+    {
+        return $this->enabled(self::COURSE_STUDENT_COUNT_VISIBLE_KEY, true);
     }
 
     public function set(string $key, bool $enabled, string $group = 'features'): void

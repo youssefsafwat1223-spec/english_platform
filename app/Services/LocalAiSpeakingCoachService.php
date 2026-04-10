@@ -88,7 +88,7 @@ class LocalAiSpeakingCoachService
         $isArabic = str_starts_with(strtolower($locale), 'ar');
         $feedbackLanguage = $isArabic ? 'Arabic' : 'English';
         $languageRule = $isArabic
-            ? 'All feedback text fields MUST be in Arabic. corrected_sentence MUST stay in English.'
+            ? 'All feedback text fields MUST be in Modern Standard Arabic (Fusha) only, without dialect. corrected_sentence MUST stay in English.'
             : 'All feedback text fields MUST be in English. corrected_sentence MUST stay in English.';
 
         $scores = $comparison['scores'] ?? [];

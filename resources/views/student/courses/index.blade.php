@@ -124,18 +124,22 @@
                     <div class="p-6 md:p-8 flex flex-col flex-1 relative z-10 bg-white dark:bg-transparent">
                         <h3 class="text-xl font-bold mb-3 text-slate-900 dark:text-white group-hover:text-primary-500 transition-colors leading-snug line-clamp-2">{{ $course->title }}</h3>
                         <p class="text-sm mb-6 text-slate-600 dark:text-slate-400 line-clamp-3 leading-relaxed flex-1">{{ $course->short_description ?: Str::limit($course->description, 120) }}</p>
-                        <div class="flex items-center justify-between text-xs font-medium text-slate-500 dark:text-slate-400 mb-6 bg-slate-50 dark:bg-white/5 py-2 px-3 rounded-lg border border-slate-200 dark:border-white/5">
-                            <span class="flex items-center gap-1.5">
-                                <svg class="w-4 h-4 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354l-5.646 2.353A2 2 0 005 8.562V14a10 10 0 007 9.878 10 10 0 007-9.878V8.561a2 2 0 00-1.354-1.854L12 4.354z"/></svg>
-                                {{ $course->students_count }} {{ __('Students') }}
-                            </span>
-                            @if($course->estimated_duration_weeks)
+                        @if(($showCourseStudentCount ?? true) || $course->estimated_duration_weeks)
+                            <div class="flex items-center justify-between text-xs font-medium text-slate-500 dark:text-slate-400 mb-6 bg-slate-50 dark:bg-white/5 py-2 px-3 rounded-lg border border-slate-200 dark:border-white/5">
+                                @if($showCourseStudentCount ?? true)
                                 <span class="flex items-center gap-1.5">
-                                    <svg class="w-4 h-4 text-accent-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                    {{ $isArabic ? 'مدة الاشتراك: ' . $course->estimated_duration_weeks . ' أسبوع' : 'Subscription duration: ' . $course->estimated_duration_weeks . ' weeks' }}
+                                    <svg class="w-4 h-4 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354l-5.646 2.353A2 2 0 005 8.562V14a10 10 0 007 9.878 10 10 0 007-9.878V8.561a2 2 0 00-1.354-1.854L12 4.354z"/></svg>
+                                    {{ $course->students_count }} {{ __('Students') }}
                                 </span>
-                            @endif
-                        </div>
+                                @endif
+                                @if($course->estimated_duration_weeks)
+                                    <span class="flex items-center gap-1.5">
+                                        <svg class="w-4 h-4 text-accent-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                        {{ $isArabic ? 'مدة الاشتراك: ' . $course->estimated_duration_weeks . ' أسبوع' : 'Subscription duration: ' . $course->estimated_duration_weeks . ' weeks' }}
+                                    </span>
+                                @endif
+                            </div>
+                        @endif
 
                         <div class="flex items-center justify-between pt-4 mt-auto border-t border-slate-200 dark:border-white/10">
                             <span class="text-3xl font-black text-slate-900 dark:text-white filter drop-shadow-sm">
@@ -176,6 +180,4 @@
     </div>
 </div>
 @endsection
-
-
 

@@ -79,15 +79,17 @@
                             </div>
                         </div>
                         <div class="md:col-span-3 p-6 md:p-8 space-y-5">
-                            <div class="grid grid-cols-2 md:grid-cols-3 gap-3 text-sm">
+                            <div class="grid grid-cols-2 {{ ($showCourseStudentCount ?? true) ? 'md:grid-cols-3' : 'md:grid-cols-2' }} gap-3 text-sm">
                                 <div class="rounded-xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-white/5 px-4 py-3">
                                     <div class="text-xs text-slate-500 dark:text-slate-400">{{ $isArabic ? 'العناوين' : 'Headings' }}</div>
                                     <div class="font-bold text-slate-900 dark:text-white">{{ $headingCount }}</div>
                                 </div>
+                                @if($showCourseStudentCount ?? true)
                                 <div class="rounded-xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-white/5 px-4 py-3">
                                     <div class="text-xs text-slate-500 dark:text-slate-400">{{ $isArabic ? 'الطلاب' : 'Students' }}</div>
                                     <div class="font-bold text-slate-900 dark:text-white">{{ (int) ($course->students_count ?? 0) }}</div>
                                 </div>
+                                @endif
                                 <div class="rounded-xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-white/5 px-4 py-3">
                                     <div class="text-xs text-slate-500 dark:text-slate-400">{{ $isArabic ? 'المدة' : 'Duration' }}</div>
                                     <div class="font-bold text-slate-900 dark:text-white">{{ $durationWeeks ? ($durationWeeks . ($isArabic ? ' أسبوع' : ' weeks')) : '-' }}</div>

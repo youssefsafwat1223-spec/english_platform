@@ -29,6 +29,7 @@ class SettingsController extends Controller
     {
         $settings = SystemSetting::getByGroup('general');
         $settings['live_sessions_enabled'] = $this->platformFeatureService->liveSessionsEnabled();
+        $settings['course_student_count_visible'] = $this->platformFeatureService->courseStudentCountVisible();
 
         return view('admin.settings.general', compact('settings'));
     }
@@ -44,6 +45,7 @@ class SettingsController extends Controller
             'dashboard_promo_message' => 'nullable|string|max:500',
             'dashboard_promo_url' => 'nullable|url',
             'live_sessions_enabled' => 'sometimes|boolean',
+            'course_student_count_visible' => 'sometimes|boolean',
         ]);
 
         SystemSetting::set('site_name', $request->site_name, 'string', 'general', true);
@@ -54,6 +56,7 @@ class SettingsController extends Controller
         SystemSetting::set('dashboard_promo_message', $request->dashboard_promo_message, 'string', 'general');
         SystemSetting::set('dashboard_promo_url', $request->dashboard_promo_url, 'string', 'general');
         $this->platformFeatureService->set(PlatformFeatureService::LIVE_SESSIONS_KEY, $request->boolean('live_sessions_enabled'));
+        $this->platformFeatureService->set(PlatformFeatureService::COURSE_STUDENT_COUNT_VISIBLE_KEY, $request->boolean('course_student_count_visible'));
 
         return back()->with('success', 'General settings updated successfully!');
     }

@@ -62,6 +62,11 @@
                             {{ __('ui.checkout.payment_details') }}
                         </h3>
                     </div>
+
+                    <div class="mx-8 mt-6 rounded-xl border border-primary-200 bg-primary-50 px-4 py-3 text-sm text-primary-700 dark:border-primary-500/20 dark:bg-primary-500/10 dark:text-primary-200">
+                        <p class="font-bold">{{ $isArabic ? 'يتوفر التقسيط عند ظهور خيار التقسيط داخل بوابة الدفع.' : 'Installments are available when the installment option appears in the payment gateway.' }}</p>
+                        <p class="mt-1 text-xs opacity-90">{{ $isArabic ? 'إذا كانت وسيلة الدفع تدعم التقسيط، ستراه مباشرة أثناء إتمام الدفع.' : 'If your payment method supports installments, you will see it directly during checkout.' }}</p>
+                    </div>
                     
                     <div class="p-8 space-y-6">
                         <form action="{{ route('student.courses.payment', $course) }}" method="POST" id="paymentForm" x-data="{ loading: false }" x-init="window.addEventListener('pageshow', () => { loading = false })" @submit="loading = true">
@@ -225,6 +230,9 @@
                                             <p class="text-xs text-slate-500 mt-1 font-medium">{{ __('ui.checkout.price_note') }}</p>
                                         </div>
                                     </div>
+                                    <p class="mt-3 text-xs font-semibold text-primary-600 dark:text-primary-300">
+                                        {{ $isArabic ? 'ملاحظة: خيار التقسيط يعتمد على وسيلة الدفع المتاحة وقت الإتمام.' : 'Note: Installment availability depends on the payment method available at checkout.' }}
+                                    </p>
                                 </div>
                             </div>
                         </div>

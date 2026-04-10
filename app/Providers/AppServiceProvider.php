@@ -27,16 +27,21 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $liveSessionsEnabled = true;
+        $showCourseStudentCount = true;
 
         try {
             if (Schema::hasTable('system_settings')) {
-                $liveSessionsEnabled = app(PlatformFeatureService::class)->liveSessionsEnabled();
+                $platformFeatureService = app(PlatformFeatureService::class);
+                $liveSessionsEnabled = $platformFeatureService->liveSessionsEnabled();
+                $showCourseStudentCount = $platformFeatureService->courseStudentCountVisible();
             }
         } catch (\Throwable) {
             $liveSessionsEnabled = true;
+            $showCourseStudentCount = true;
         }
 
         View::share('liveSessionsEnabled', $liveSessionsEnabled);
+        View::share('showCourseStudentCount', $showCourseStudentCount);
 
         RateLimiter::for('contact-form', fn (Request $request) => $this->withWebThrottleResponse(
             Limit::perMinute(5)->by($this->guestThrottleKey($request, 'contact', [

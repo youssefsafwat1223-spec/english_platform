@@ -74,7 +74,7 @@ class LocalAiWritingCoachService
         $isArabic = str_starts_with(strtolower($locale), 'ar');
         $feedbackLanguage = $isArabic ? 'Arabic' : 'English';
         $languageRule = $isArabic
-            ? 'summary, strengths, and improvements MUST be written in Arabic only. rewrite_suggestion MUST stay in English.'
+            ? 'summary, strengths, and improvements MUST be written in Modern Standard Arabic (Fusha) only, without dialect. rewrite_suggestion MUST stay in English.'
             : 'summary, strengths, improvements, and rewrite_suggestion MUST be written in English.';
         $rubric = is_array($exercise->rubric_json) ? $exercise->rubric_json : [];
         $requiredVocabularyUsage = max(0, (int) ($rubric['required_vocabulary_usage'] ?? 0));

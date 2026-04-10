@@ -70,6 +70,26 @@
                             </label>
                         </div>
                     </div>
+                    <div class="pt-4 border-t" style="border-color: var(--color-border);">
+                        <h2 class="text-lg font-extrabold mb-4" style="color: var(--color-text);">{{ __('Course Student Count Visibility') }}</h2>
+                        <div class="rounded-2xl border p-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between" style="border-color: var(--color-border); background: var(--color-surface);">
+                            <div>
+                                <p class="font-bold" style="color: var(--color-text);">{{ __('Show enrolled students count in course pages') }}</p>
+                                <p class="text-sm mt-1" style="color: var(--color-text-muted);">
+                                    {{ __('When disabled, student count will be hidden from public and student course listings/details.') }}
+                                </p>
+                            </div>
+                            <label class="inline-flex items-center cursor-pointer gap-3">
+                                <input type="hidden" name="course_student_count_visible" value="0">
+                                <input type="checkbox" name="course_student_count_visible" value="1" class="sr-only peer"
+                                       {{ old('course_student_count_visible', $settings['course_student_count_visible'] ?? true) ? 'checked' : '' }}>
+                                <div class="relative w-14 h-8 rounded-full transition-colors bg-slate-300 peer-checked:bg-emerald-500 after:content-[''] after:absolute after:top-1 after:start-1 after:h-6 after:w-6 after:rounded-full after:bg-white after:transition-all peer-checked:after:translate-x-6 rtl:peer-checked:after:-translate-x-6"></div>
+                                <span class="text-sm font-bold" style="color: var(--color-text);">
+                                    {{ __('Enabled') }}
+                                </span>
+                            </label>
+                        </div>
+                    </div>
                 </div>
                 <div class="glass-card-footer">
                     <button type="submit" class="btn-primary ripple-btn" :class="{ 'opacity-50': loading }" :disabled="loading">

@@ -31,15 +31,17 @@
                         {{ $course->short_description ?: $course->description }}
                     </p>
 
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <div class="grid grid-cols-2 {{ ($showCourseStudentCount ?? true) ? 'sm:grid-cols-4' : 'sm:grid-cols-3' }} gap-3">
                         <div class="rounded-xl border border-slate-200 dark:border-white/10 px-4 py-3 bg-white/70 dark:bg-white/5">
                             <div class="text-xs text-slate-500 dark:text-slate-400">{{ $isArabic ? 'العناوين' : 'Headings' }}</div>
                             <div class="text-lg font-black text-slate-900 dark:text-white">{{ (int) ($headingsCount ?? 0) }}</div>
                         </div>
+                        @if($showCourseStudentCount ?? true)
                         <div class="rounded-xl border border-slate-200 dark:border-white/10 px-4 py-3 bg-white/70 dark:bg-white/5">
                             <div class="text-xs text-slate-500 dark:text-slate-400">{{ $isArabic ? 'الطلاب' : 'Students' }}</div>
                             <div class="text-lg font-black text-slate-900 dark:text-white">{{ $course->students_count }}</div>
                         </div>
+                        @endif
                         <div class="rounded-xl border border-slate-200 dark:border-white/10 px-4 py-3 bg-white/70 dark:bg-white/5">
                             <div class="text-xs text-slate-500 dark:text-slate-400">{{ $isArabic ? 'المدة' : 'Duration' }}</div>
                             <div class="text-lg font-black text-slate-900 dark:text-white">

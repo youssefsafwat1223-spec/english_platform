@@ -12,15 +12,13 @@
 
 @php
     $isArabic = app()->getLocale() === 'ar';
-    $primaryCtaUrl = auth()->check() && auth()->user()->is_student
-        ? route('student.courses.index')
-        : route('courses.index');
+    $primaryCtaUrl = route('pricing');
     $primaryCtaLabel = $isArabic ? 'ابدأ البرنامج' : 'Start the program';
     $secondaryCtaUrl = route('home') . '#how-it-works';
     $secondaryCtaLabel = $isArabic ? 'اعرف كيف تتعلم' : 'See how you learn';
     $heroBadge = $isArabic ? 'برنامج تأسيس عملي للإنجليزية' : 'Practical English foundation program';
-    $heroTitle = $isArabic ? 'اترك الترجمة الحرفية' : 'Stop translating word by word';
-    $heroSubtitle = $isArabic ? 'وتعلّم بناء الجملة بثقة' : 'Build real sentences with confidence';
+    $heroTitle = $isArabic ? 'ابدأ تأسيس الإنجليزية من الصفر' : 'Build your English foundation from zero';
+    $heroSubtitle = $isArabic ? 'مسار واضح ونتيجة ملموسة' : 'Clear path with measurable progress';
     $heroDescription = $isArabic
         ? 'منهج تأسيسي واضح يقودك خطوة بخطوة للتحدث بثقة، مع تدريب عملي، اختبارات، وشهادة حضور.'
         : 'A clear foundation path that takes you step by step to confident English, with practice, assessment, and an attendance certificate.';
@@ -125,16 +123,16 @@
 
                 </div>
 
-                {{-- Feature 2: Structured Courses --}}
+                {{-- Feature 2: Structured Program Path --}}
                 <div class="glass-card p-8 tilt-card group" data-aos="fade-up" data-aos-delay="100">
                     <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-accent-500/20 to-accent-500/5 flex items-center justify-center mb-6 group-hover:shadow-neon-violet transition-all duration-500">
                         <svg class="w-7 h-7 text-accent-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
                         </svg>
                     </div>
-                    <h3 class="text-xl font-bold mb-3" style="color: var(--color-text);">{{ $isArabic ? 'مسارات واضحة من البداية للنهاية' : 'Structured Learning Paths' }}</h3>
+                    <h3 class="text-xl font-bold mb-3" style="color: var(--color-text);">{{ $isArabic ? 'مسار واضح من البداية للنهاية' : 'Structured Program Path' }}</h3>
                     <p class="text-sm leading-relaxed" style="color: var(--color-text-muted);">
-                        {{ $isArabic ? 'اتبع خطة مرتبة من المستوى المناسب لك بدل التعلم العشوائي والمحتوى المبعثر.' : 'Follow a clear curriculum with focused modules, progress tracking, and practical milestones.' }}
+                        {{ $isArabic ? 'اتبع خطة مرتبة بخطوات واضحة بدل التعلم العشوائي والمحتوى المبعثر.' : 'Follow one clear curriculum with focused modules, progress tracking, and practical milestones.' }}
                     </p>
 
                 </div>
@@ -211,22 +209,22 @@
         </div>
     </section>
 
-    {{-- Featured courses section --}}
+    {{-- Program section --}}
     <section id="featured-courses" class="py-24 relative overflow-hidden" style="background: var(--color-surface);">
         <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
             {{-- Section Header --}}
             <div class="text-center max-w-2xl mx-auto mb-16" data-aos="fade-up">
-            <div class="badge-primary mb-4">{{ $isArabic ? 'الأكثر طلبًا' : 'Most Popular' }}</div>
+            <div class="badge-primary mb-4">{{ $isArabic ? 'تفاصيل البرنامج' : 'Program Details' }}</div>
                 <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight mb-6" style="color: var(--color-text);">
-                    {{ $isArabic ? 'اختر' : 'Choose a' }} <span class="text-gradient">{{ $isArabic ? 'الكورس المناسب لمستواك' : 'Course That Fits Your Level' }}</span>
+                    {{ $isArabic ? 'برنامج واحد' : 'One Program' }} <span class="text-gradient">{{ $isArabic ? 'بمسار تعليمي واضح' : 'with a clear learning path' }}</span>
                 </h2>
                 <p class="text-lg" style="color: var(--color-text-muted);">
-                    {{ $isArabic ? 'ابدأ من المستوى الأنسب لك وادخل في تجربة تعليمية واضحة من أول درس لآخر اختبار.' : 'Start from the right level and move through a focused learning experience from lesson one to completion.' }}
+                    {{ $isArabic ? 'المنصة مخصصة لبرنامج واحد متكامل يبدأ بالتأسيس ثم التطبيق ثم التقييم المستمر.' : 'This platform focuses on one complete program: foundation, practice, and ongoing assessment.' }}
                 </p>
             </div>
 
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="grid grid-cols-1 max-w-2xl mx-auto gap-8">
                 @foreach($featuredCourses as $course)
                 <div class="glass-card overflow-hidden group hover:-translate-y-2 transition-transform duration-300" data-aos="fade-up" data-aos-delay="{{ $loop->index * 100 }}">
                     {{-- Course Thumbnail --}}
@@ -282,7 +280,7 @@
                                 {{ $course->price > 0 ? $course->price . ' ' . ($isArabic ? 'ر.س' : 'SAR') : __('Free') }}
                             </div>
                             <a href="{{ auth()->check() && auth()->user()->is_student ? route('student.courses.show', $course) : route('courses.show', $course) }}" class="btn-primary btn-sm rounded-lg">
-                                {{ $isArabic ? 'تفاصيل الكورس' : 'View course details' }}
+                                {{ $isArabic ? 'تفاصيل البرنامج' : 'View program details' }}
                             </a>
                         </div>
                     </div>
@@ -301,10 +299,10 @@
                 <div class="max-w-2xl">
                     <div class="badge-primary mb-4">{{ $isArabic ? 'الأسعار والتقسيط' : 'Pricing & installments' }}</div>
                     <h2 class="text-3xl sm:text-4xl font-extrabold mb-4" style="color: var(--color-text);">
-                        {{ $isArabic ? 'اعرف السعر والخطة المناسبة لك' : 'Find the right plan for your goals' }}
+                        {{ $isArabic ? 'تقسيط واضح ومباشر' : 'Clear and simple installments' }}
                     </h2>
                     <p class="text-base sm:text-lg" style="color: var(--color-text-muted);">
-                        {{ $isArabic ? 'تفاصيل واضحة للسعر وخيارات الدفع وما يشمله البرنامج، بدون مفاجآت.' : 'Clear pricing, payment options, and what the program includes, without surprises.' }}
+                        {{ $isArabic ? 'يمكنك الاشتراك في البرنامج عبر دفعة كاملة أو التقسيط حسب وسيلة الدفع المتاحة في بوابة الدفع.' : 'You can subscribe with full payment or installments, depending on the available payment method.' }}
                     </p>
                 </div>
                 <div class="flex flex-col sm:flex-row items-center gap-4">
@@ -312,7 +310,7 @@
                         {{ $isArabic ? 'اطّلع على الأسعار' : 'View pricing' }}
                     </a>
                     <a href="{{ route('home') }}#featured-courses" class="px-8 py-4 rounded-2xl border border-white/10 bg-white/5 hover:bg-white/10 transition-colors inline-flex items-center gap-2 font-black" style="color: var(--color-text);">
-                        {{ $isArabic ? 'اختر الكورس المناسب' : 'Choose a course' }}
+                        {{ $isArabic ? 'اطّلع على تفاصيل البرنامج' : 'View program details' }}
                     </a>
                 </div>
             </div>
@@ -394,10 +392,6 @@
                 <div class="glass-card p-6" data-aos="fade-up" data-aos-delay="200">
                     <h3 class="text-lg font-bold mb-2" style="color: var(--color-text);">{{ $isArabic ? 'مناسب لمن يريد تأسيسًا + ممارسة' : 'Great for foundation + practice' }}</h3>
                     <p class="text-sm" style="color: var(--color-text-muted);">{{ $isArabic ? 'تتعلّم القاعدة ثم تطبقها عمليًا باستمرار.' : 'Learn the rule, then apply it consistently.' }}</p>
-                </div>
-                <div class="glass-card p-6 border border-amber-500/30 bg-amber-500/5" data-aos="fade-up" data-aos-delay="300">
-                    <h3 class="text-lg font-bold mb-2" style="color: var(--color-text);">{{ $isArabic ? 'غير مناسب لمن يريد نتيجة بلا التزام' : 'Not for instant results without effort' }}</h3>
-                    <p class="text-sm" style="color: var(--color-text-muted);">{{ $isArabic ? 'النتيجة تحتاج ممارسة منتظمة، وليس ضغطًا ليوم واحد.' : 'Results require consistent practice, not one-day effort.' }}</p>
                 </div>
             </div>
         </div>

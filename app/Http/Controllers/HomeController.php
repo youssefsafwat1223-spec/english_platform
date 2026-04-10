@@ -17,7 +17,7 @@ class HomeController extends Controller
     {
         $featuredCourses = Course::active()
             ->orderBy('total_students', 'desc')
-            ->take(6)
+            ->take(1)
             ->get();
 
         $testimonials = Testimonial::active()->ordered()->take(6)->get();
@@ -53,7 +53,8 @@ class HomeController extends Controller
     {
         $courses = Course::active()
             ->withHeadingsCount()
-            ->orderBy('price')
+            ->orderBy('total_students', 'desc')
+            ->take(1)
             ->get();
         return view('pricing', compact('courses'));
     }

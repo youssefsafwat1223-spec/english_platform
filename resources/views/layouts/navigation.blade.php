@@ -185,9 +185,9 @@
                     @endauth
 
                     @guest
-                        <a href="{{ route('courses.index') }}"
-                           class="nav-link {{ request()->routeIs('courses.*') ? 'active' : '' }}">
-                            {{ __('Courses') }}
+                        <a href="{{ route('home') }}#featured-courses"
+                           class="nav-link {{ request()->routeIs('home') || request()->routeIs('courses.*') ? 'active' : '' }}">
+                            {{ app()->getLocale() === 'ar' ? 'البرنامج' : 'Program' }}
                         </a>
                         <a href="{{ route('pricing') }}"
                            class="nav-link {{ request()->routeIs('pricing') ? 'active' : '' }}">
@@ -430,7 +430,7 @@
             @endauth
 
             @guest
-                <a href="{{ route('courses.index') }}" class="block px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-primary-500/5" style="color: var(--color-text);">{{ __('Courses') }}</a>
+                <a href="{{ route('home') }}#featured-courses" class="block px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-primary-500/5" style="color: var(--color-text);">{{ app()->getLocale() === 'ar' ? 'البرنامج' : 'Program' }}</a>
                 <a href="{{ route('pricing') }}" class="block px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-primary-500/5" style="color: var(--color-text);">{{ __('Pricing') }}</a>
                 <a href="{{ route('about') }}" class="block px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-primary-500/5" style="color: var(--color-text);">{{ __('About') }}</a>
                 <a href="{{ route('contact') }}" class="block px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-primary-500/5" style="color: var(--color-text);">{{ __('Contact') }}</a>
