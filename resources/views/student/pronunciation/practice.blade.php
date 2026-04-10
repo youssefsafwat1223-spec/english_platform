@@ -110,6 +110,9 @@
         'improvements_title' => $isArabic ? 'ما الذي يحتاج تحسين' : 'Needs Improvement',
         'corrected_sentence_title' => $isArabic ? 'جملة مصححة' : 'Corrected Sentence',
         'coach_reply_title' => $isArabic ? 'رد المدرب' : 'Coach Reply',
+        'mute_feedback' => $isArabic ? 'كتم صوت الملاحظات' : 'Mute feedback voice',
+        'unmute_feedback' => $isArabic ? 'تشغيل صوت الملاحظات' : 'Unmute feedback voice',
+        'feedback_muted' => $isArabic ? 'صوت الملاحظات مكتوم' : 'Feedback voice is muted',
     ]);
 
     $scoreLabels = [
@@ -140,26 +143,6 @@
             badgeColor="primary"
             badgeIcon="<svg class='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M12 3a3 3 0 013 3v5a3 3 0 11-6 0V6a3 3 0 013-3zm6 8a6 6 0 01-12 0M8 21h8m-4-3v3'/></svg>"
         />
-
-        <div x-show="isEvaluating" x-cloak x-transition class="mb-6 rounded-2xl border border-primary-200/70 bg-primary-50/90 p-4 shadow-sm dark:border-primary-500/20 dark:bg-primary-500/10">
-            <div class="flex items-center gap-3">
-                <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary-500/15 text-primary-500">
-                    <div class="h-5 w-5 rounded-full border-2 border-current border-t-transparent animate-spin"></div>
-                </div>
-                <div class="min-w-0 flex-1">
-                    <p class="text-sm font-black text-slate-900 dark:text-white">
-                        {{ $isArabic ? 'الذكاء الاصطناعي يحلل النطق الآن' : 'AI is analyzing your pronunciation now' }}
-                    </p>
-                    <p class="mt-1 text-xs text-slate-600 dark:text-slate-300">
-                        {{ $isArabic ? 'انتظر ثوانٍ قليلة حتى يظهر التقييم والتصحيح.' : 'Please wait a few seconds for the score and corrections to appear.' }}
-                    </p>
-                </div>
-                <div x-show="evaluatingSentence" x-cloak class="rounded-xl bg-white/80 px-3 py-2 text-xs font-bold text-primary-600 dark:bg-slate-900/40 dark:text-primary-300">
-                    <span>{{ $isArabic ? 'العنصر' : 'Item' }}</span>
-                    <span x-text="evaluatingSentence"></span>
-                </div>
-            </div>
-        </div>
 
         <div x-show="!recognitionSupported && !mediaRecorderSupported" x-cloak class="mb-8 p-5 rounded-2xl text-center" style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.2);">
             <div class="flex justify-center mb-3">
@@ -281,9 +264,21 @@
                             </template>
                         </div>
 
-                        <div x-show="isEvaluating && activeSentence === {{ $num }}" x-cloak class="flex items-center gap-2">
-                            <div class="w-4 h-4 border-2 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
-                            <span class="text-sm text-slate-500 dark:text-slate-400">{{ $messages['evaluating'] }}...</span>
+                    </div>
+
+                    <div x-show="isEvaluating && evaluatingSentence === {{ $num }}" x-cloak x-transition class="mt-4 rounded-2xl border border-primary-200/70 bg-primary-50/90 p-4 shadow-sm dark:border-primary-500/20 dark:bg-primary-500/10">
+                        <div class="flex items-center gap-3">
+                            <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary-500/15 text-primary-500">
+                                <div class="h-5 w-5 rounded-full border-2 border-current border-t-transparent animate-spin"></div>
+                            </div>
+                            <div class="min-w-0 flex-1">
+                                <p class="text-sm font-black text-slate-900 dark:text-white">
+                                    {{ $isArabic ? 'الذكاء الاصطناعي يحلل النطق الآن' : 'AI is analyzing your pronunciation now' }}
+                                </p>
+                                <p class="mt-1 text-xs text-slate-600 dark:text-slate-300">
+                                    {{ $isArabic ? 'انتظر ثوانٍ قليلة حتى يظهر التقييم والتصحيح.' : 'Please wait a few seconds for the score and corrections to appear.' }}
+                                </p>
+                            </div>
                         </div>
                     </div>
 
@@ -353,6 +348,11 @@
                                     <button type="button" @click="speakFeedback({{ $num }})" class="inline-flex items-center gap-2 rounded-lg border border-primary-200 bg-white/80 px-3 py-2 text-xs font-bold text-primary-600 transition hover:scale-[1.02] dark:border-primary-500/20 dark:bg-slate-900/30 dark:text-primary-300">
                                         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5L6 9H2v6h4l5 4V5zm5.54 3.46a5 5 0 010 7.08m2.83-9.91a9 9 0 010 12.74"/></svg>
                                         {{ $messages['speak_feedback'] }}
+                                    </button>
+                                    <button type="button" @click="toggleFeedbackMute()" class="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white/80 px-3 py-2 text-xs font-bold text-slate-600 transition hover:scale-[1.02] dark:border-white/10 dark:bg-slate-900/30 dark:text-slate-200">
+                                        <svg x-show="!feedbackMuted" class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5L6 9H2v6h4l5 4V5zm5.54 3.46a5 5 0 010 7.08m2.83-9.91a9 9 0 010 12.74"/></svg>
+                                        <svg x-show="feedbackMuted" x-cloak class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 9l6 6m0-6l-6 6M11 5L6 9H2v6h4l5 4V5z"/></svg>
+                                        <span x-text="feedbackMuted ? messages.unmute_feedback : messages.mute_feedback"></span>
                                     </button>
                                 </div>
 
@@ -503,6 +503,7 @@ function pronunciationApp() {
         evaluatingSentence: null,
         processingToken: null,
         processingPollTimeoutId: null,
+        feedbackMuted: false,
         currentAudio: null,
         isStartingRecording: false,
         lastToggleAt: 0,
@@ -576,6 +577,14 @@ function pronunciationApp() {
             @endforeach
         },
 
+        init() {
+            try {
+                this.feedbackMuted = window.localStorage.getItem('pronunciation_feedback_muted') === '1';
+            } catch (error) {
+                this.feedbackMuted = false;
+            }
+        },
+
         scoreHeadline(score) {
             if (score >= 90) return this.messages.excellent;
             if (score >= 70) return this.messages.great;
@@ -621,6 +630,13 @@ function pronunciationApp() {
         },
 
         speakFeedback(sentenceNumber) {
+            if (this.feedbackMuted) {
+                if (window.showNotification) {
+                    window.showNotification(this.messages.feedback_muted, 'info');
+                }
+                return;
+            }
+
             const feedback = this.feedbackText(sentenceNumber);
             if (!feedback) {
                 return;
@@ -630,6 +646,22 @@ function pronunciationApp() {
 
             if (window.showNotification) {
                 window.showNotification(this.messages.feedback_spoken, 'info');
+            }
+        },
+
+        toggleFeedbackMute() {
+            this.feedbackMuted = !this.feedbackMuted;
+
+            if (this.feedbackMuted && this.isSpeaking && 'speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                this.isSpeaking = false;
+                this.speakingSentence = null;
+            }
+
+            try {
+                window.localStorage.setItem('pronunciation_feedback_muted', this.feedbackMuted ? '1' : '0');
+            } catch (error) {
+                // Ignore storage failures
             }
         },
 
