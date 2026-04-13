@@ -17,8 +17,8 @@
     $secondaryCtaUrl = route('home') . '#how-it-works';
     $secondaryCtaLabel = $isArabic ? 'اعرف كيف تتعلم' : 'See how you learn';
     $heroBadge = $isArabic ? 'برنامج تأسيس عملي للإنجليزية' : 'Practical English foundation program';
-    $heroTitle = $isArabic ? 'ابدأ تأسيس الإنجليزية من الصفر' : 'Build your English foundation from zero';
-    $heroSubtitle = $isArabic ? 'مسار واضح ونتيجة ملموسة' : 'Clear path with measurable progress';
+    $heroTitle = $isArabic ? 'تخلص من الترجمة الحرفية' : 'Stop translating word by word';
+    $heroSubtitle = $isArabic ? 'وتعلم بناء الجملة بثقة' : 'Build real sentences with confidence';
     $heroDescription = $isArabic
         ? 'منهج تأسيسي واضح يقودك خطوة بخطوة للتحدث بثقة، مع تدريب عملي، اختبارات، وشهادة حضور.'
         : 'A clear foundation path that takes you step by step to confident English, with practice, assessment, and an attendance certificate.';
@@ -237,9 +237,11 @@
                                 {{ substr($course->title, 0, 1) }}
                             </div>
                         @endif
-                        <div class="absolute top-4 right-4 rtl:left-4 rtl:right-auto bg-white/90 dark:bg-black/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold shadow-lg">
-                            {{ $course->level ? __($course->level) : ($isArabic ? 'كل المستويات' : 'All Levels') }}
-                        </div>
+                        @if($course->level)
+                            <div class="absolute top-4 right-4 rtl:left-4 rtl:right-auto bg-white/90 dark:bg-black/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold shadow-lg">
+                                {{ __($course->level) }}
+                            </div>
+                        @endif
                     </div>
                     
                     {{-- Content --}}
@@ -299,10 +301,10 @@
                 <div class="max-w-2xl">
                     <div class="badge-primary mb-4">{{ $isArabic ? 'الأسعار والتقسيط' : 'Pricing & installments' }}</div>
                     <h2 class="text-3xl sm:text-4xl font-extrabold mb-4" style="color: var(--color-text);">
-                        {{ $isArabic ? 'تقسيط واضح ومباشر' : 'Clear and simple installments' }}
+                        {{ $isArabic ? 'قسطها على دفعات' : 'Split it into installments' }}
                     </h2>
                     <p class="text-base sm:text-lg" style="color: var(--color-text-muted);">
-                        {{ $isArabic ? 'يمكنك الاشتراك في البرنامج عبر دفعة كاملة أو التقسيط حسب وسيلة الدفع المتاحة في بوابة الدفع.' : 'You can subscribe with full payment or installments, depending on the available payment method.' }}
+                        {{ $isArabic ? 'تقدر تشترك بدفعة كاملة أو تقسطها على دفعات حسب وسيلة الدفع المتاحة داخل بوابة الدفع.' : 'You can subscribe with full payment or split it into installments, depending on the available payment method in checkout.' }}
                     </p>
                 </div>
                 <div class="flex flex-col sm:flex-row items-center gap-4">
