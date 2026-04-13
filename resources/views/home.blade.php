@@ -378,7 +378,7 @@
                     {{ $isArabic ? 'مصمم للتأسيس والممارسة الفعلية' : 'Designed for foundation and real practice' }}
                 </h2>
                 <p class="text-lg" style="color: var(--color-text-muted);">
-                    {{ $isArabic ? 'نوضح لك من يناسبه البرنامج حتى تكون التوقعات واضحة من البداية.' : 'We clarify fit upfront so expectations are clear.' }}
+                    {{ $isArabic ? 'نوضح لك من يناسبه البرنامج حتى تكون التوقعات واضحة من البداية. وهو مناسب للأعمار من 7 سنوات إلى ما فوق 50 عامًا.' : 'We clarify fit upfront so expectations are clear. It is suitable for ages 7 and above 50 as well.' }}
                 </p>
             </div>
 
@@ -394,6 +394,10 @@
                 <div class="glass-card p-6" data-aos="fade-up" data-aos-delay="200">
                     <h3 class="text-lg font-bold mb-2" style="color: var(--color-text);">{{ $isArabic ? 'مناسب لمن يريد تأسيسًا + ممارسة' : 'Great for foundation + practice' }}</h3>
                     <p class="text-sm" style="color: var(--color-text-muted);">{{ $isArabic ? 'تتعلّم القاعدة ثم تطبقها عمليًا باستمرار.' : 'Learn the rule, then apply it consistently.' }}</p>
+                </div>
+                <div class="glass-card p-6" data-aos="fade-up" data-aos-delay="300">
+                    <h3 class="text-lg font-bold mb-2" style="color: var(--color-text);">{{ $isArabic ? 'مناسب لمختلف الأعمار' : 'Suitable for all age groups' }}</h3>
+                    <p class="text-sm" style="color: var(--color-text-muted);">{{ $isArabic ? 'صُمِّم البرنامج ليلائم الأعمار من 7 سنوات حتى ما فوق 50 عامًا.' : 'The program is designed for learners from age 7 to above 50.' }}</p>
                 </div>
             </div>
         </div>

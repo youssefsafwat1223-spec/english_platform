@@ -28,7 +28,7 @@
                         {{-- Online indicator / Rank Badge --}}
                         <div class="absolute -bottom-3 -right-3 bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-3 py-1.5 rounded-xl text-xs font-bold shadow-lg border-2 border-white dark:border-[#0f172a] flex items-center gap-1.5">
                             <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                            {{ __('ui.profile.level') }} {{ $stats['rank'] }}
+                            {{ app()->getLocale() === 'ar' ? 'الرتبة' : 'Rank' }} {{ $stats['rank'] }}
                         </div>
                     </div>
 
