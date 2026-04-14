@@ -30,6 +30,12 @@ class SettingsController extends Controller
         $settings = SystemSetting::getByGroup('general');
         $settings['live_sessions_enabled'] = $this->platformFeatureService->liveSessionsEnabled();
         $settings['course_student_count_visible'] = $this->platformFeatureService->courseStudentCountVisible();
+        $settings['social_facebook'] = SystemSetting::get('social_facebook', '');
+        $settings['social_instagram'] = SystemSetting::get('social_instagram', '');
+        $settings['social_twitter'] = SystemSetting::get('social_twitter', '');
+        $settings['social_youtube'] = SystemSetting::get('social_youtube', '');
+        $settings['social_tiktok'] = SystemSetting::get('social_tiktok', '');
+        $settings['social_whatsapp'] = SystemSetting::get('social_whatsapp', '');
 
         return view('admin.settings.general', compact('settings'));
     }
@@ -46,6 +52,12 @@ class SettingsController extends Controller
             'dashboard_promo_url' => 'nullable|url',
             'live_sessions_enabled' => 'sometimes|boolean',
             'course_student_count_visible' => 'sometimes|boolean',
+            'social_facebook' => 'nullable|url|max:500',
+            'social_instagram' => 'nullable|url|max:500',
+            'social_twitter' => 'nullable|url|max:500',
+            'social_youtube' => 'nullable|url|max:500',
+            'social_tiktok' => 'nullable|url|max:500',
+            'social_whatsapp' => 'nullable|url|max:500',
         ]);
 
         SystemSetting::set('site_name', $request->site_name, 'string', 'general', true);
@@ -55,6 +67,12 @@ class SettingsController extends Controller
         SystemSetting::set('dashboard_promo_title', $request->dashboard_promo_title, 'string', 'general');
         SystemSetting::set('dashboard_promo_message', $request->dashboard_promo_message, 'string', 'general');
         SystemSetting::set('dashboard_promo_url', $request->dashboard_promo_url, 'string', 'general');
+        SystemSetting::set('social_facebook', $request->social_facebook ?? '', 'string', 'general', true);
+        SystemSetting::set('social_instagram', $request->social_instagram ?? '', 'string', 'general', true);
+        SystemSetting::set('social_twitter', $request->social_twitter ?? '', 'string', 'general', true);
+        SystemSetting::set('social_youtube', $request->social_youtube ?? '', 'string', 'general', true);
+        SystemSetting::set('social_tiktok', $request->social_tiktok ?? '', 'string', 'general', true);
+        SystemSetting::set('social_whatsapp', $request->social_whatsapp ?? '', 'string', 'general', true);
         $this->platformFeatureService->set(PlatformFeatureService::LIVE_SESSIONS_KEY, $request->boolean('live_sessions_enabled'));
         $this->platformFeatureService->set(PlatformFeatureService::COURSE_STUDENT_COUNT_VISIBLE_KEY, $request->boolean('course_student_count_visible'));
 

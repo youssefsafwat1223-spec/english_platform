@@ -51,6 +51,36 @@
                         </div>
                     </div>
                     <div class="pt-4 border-t" style="border-color: var(--color-border);">
+                        <h2 class="text-lg font-extrabold mb-4" style="color: var(--color-text);">{{ __('Social Media Links') }}</h2>
+                        <p class="text-sm mb-4" style="color: var(--color-text-muted);">{{ __('Add your social media links to display them in the footer.') }}</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-bold mb-2" style="color: var(--color-text);">{{ __('Facebook URL') }}</label>
+                                <input type="url" name="social_facebook" class="input-glass" placeholder="https://facebook.com/..." value="{{ old('social_facebook', $settings['social_facebook'] ?? '') }}">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold mb-2" style="color: var(--color-text);">{{ __('Instagram URL') }}</label>
+                                <input type="url" name="social_instagram" class="input-glass" placeholder="https://instagram.com/..." value="{{ old('social_instagram', $settings['social_instagram'] ?? '') }}">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold mb-2" style="color: var(--color-text);">{{ __('X (Twitter) URL') }}</label>
+                                <input type="url" name="social_twitter" class="input-glass" placeholder="https://x.com/..." value="{{ old('social_twitter', $settings['social_twitter'] ?? '') }}">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold mb-2" style="color: var(--color-text);">{{ __('YouTube URL') }}</label>
+                                <input type="url" name="social_youtube" class="input-glass" placeholder="https://youtube.com/..." value="{{ old('social_youtube', $settings['social_youtube'] ?? '') }}">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold mb-2" style="color: var(--color-text);">{{ __('TikTok URL') }}</label>
+                                <input type="url" name="social_tiktok" class="input-glass" placeholder="https://tiktok.com/@..." value="{{ old('social_tiktok', $settings['social_tiktok'] ?? '') }}">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold mb-2" style="color: var(--color-text);">{{ __('WhatsApp URL') }}</label>
+                                <input type="url" name="social_whatsapp" class="input-glass" placeholder="https://wa.me/..." value="{{ old('social_whatsapp', $settings['social_whatsapp'] ?? '') }}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pt-4 border-t" style="border-color: var(--color-border);">
                         <h2 class="text-lg font-extrabold mb-4" style="color: var(--color-text);">{{ __('Live Sessions Visibility') }}</h2>
                         <div class="rounded-2xl border p-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between" style="border-color: var(--color-border); background: var(--color-surface);">
                             <div>
