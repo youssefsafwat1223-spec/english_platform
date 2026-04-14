@@ -105,6 +105,9 @@
         </div>
         @endif
 
+        <!-- Top Announcement Banner (above nav) -->
+        @yield('top_banner')
+
         <!-- Navigation -->
         @if(!request()->routeIs('student.onboarding*'))
             @include('layouts.navigation')

@@ -8,10 +8,9 @@
     ? 'تعلم الإنجليزية, دورات إنجليزي, نطق اللغة الإنجليزية, الذكاء الاصطناعي, كورسات إنجليزية'
     : 'learn English, English courses, pronunciation, AI learning, fluency')
 
-@section('content')
-
+@section('top_banner')
 {{-- Installment Announcement Bar --}}
-<div class="w-full bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-500 text-white text-center py-3 px-4 relative overflow-hidden z-50">
+<div class="w-full bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-500 text-white text-center py-3 px-4 relative overflow-hidden">
     <div class="absolute inset-0 bg-gradient-to-r from-emerald-400/30 via-white/10 to-emerald-400/30 animate-pulse"></div>
     <div class="relative flex items-center justify-center gap-3 flex-wrap">
         <span class="text-xl">🎉</span>
@@ -27,6 +26,9 @@
         <span class="text-xl">🎉</span>
     </div>
 </div>
+@endsection
+
+@section('content')
 
 @php
     $isArabic = app()->getLocale() === 'ar';
@@ -105,11 +107,6 @@
         </div>
     </section>
 
-    <div class="wave-divider">
-        <svg viewBox="0 0 1440 80" preserveAspectRatio="none">
-            <path fill="var(--color-surface)" d="M0,40 C360,80 720,0 1080,40 C1260,60 1380,50 1440,40 L1440,80 L0,80 Z"/>
-        </svg>
-    </div>
     <section id="features" class="py-24 relative overflow-hidden">
         {{-- Background decorations --}}
         <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
