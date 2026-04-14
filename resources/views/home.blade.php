@@ -87,6 +87,28 @@
         </div>
     </section>
 
+    {{-- Installment Banner --}}
+    <section class="relative py-6 overflow-hidden" style="background: linear-gradient(135deg, var(--color-surface) 0%, rgba(99, 102, 241, 0.08) 50%, var(--color-surface) 100%);">
+        <div class="max-w-4xl mx-auto px-6 lg:px-8">
+            <div class="glass-card overflow-hidden group" data-aos="fade-up">
+                <div class="glass-card-body py-6 px-8 flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6 text-center md:text-left">
+                    <div class="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500/20 to-emerald-500/5 shrink-0">
+                        <svg class="w-6 h-6 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
+                        </svg>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="text-lg font-extrabold" style="color: var(--color-text);">{{ $isArabic ? 'قسّطها على دفعات!' : 'Pay in installments!' }}</h3>
+                        <p class="text-sm mt-1" style="color: var(--color-text-muted);">{{ $isArabic ? 'لا تحتاج تدفع المبلغ كله مرة واحدة — قدّم طلبك وقسّط الرسوم على دفعات مريحة.' : 'No need to pay the full amount upfront — apply now and split the fee into comfortable installments.' }}</p>
+                    </div>
+                    <a href="{{ route('pricing') }}" class="btn-primary ripple-btn px-8 py-3 rounded-xl font-bold text-sm whitespace-nowrap bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white shadow-lg hover:shadow-neon-cyan transition-all hover:scale-105">
+                        {{ $isArabic ? 'اعرف أكثر' : 'Learn more' }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <div class="wave-divider">
         <svg viewBox="0 0 1440 80" preserveAspectRatio="none">
             <path fill="var(--color-surface)" d="M0,40 C360,80 720,0 1080,40 C1260,60 1380,50 1440,40 L1440,80 L0,80 Z"/>
