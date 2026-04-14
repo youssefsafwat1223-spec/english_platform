@@ -44,9 +44,14 @@
 
         <div class="max-w-7xl mx-auto px-6 lg:px-8 py-32 relative z-10 w-full flex flex-col items-center text-center mt-10">
             <div data-aos="fade-up" data-aos-duration="1000" class="relative z-20 max-w-4xl mx-auto flex flex-col items-center">
-                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur border border-white/15 text-sm font-bold text-white/90 mb-6 shadow-lg">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur border border-white/15 text-sm font-bold text-white/90 mb-3 shadow-lg">
                     <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
                     {{ $heroBadge }}
+                </div>
+
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/25 border border-emerald-400/50 text-sm font-black text-emerald-300 mb-6 shadow-lg">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse inline-block"></span>
+                    {{ $isArabic ? 'قسّطها على دفعات' : 'Pay in installments' }}
                 </div>
 
                 <h1 class="text-5xl sm:text-6xl lg:text-8xl font-black tracking-tighter leading-[1.15] mb-8 text-white drop-shadow-md">
@@ -74,14 +79,6 @@
                         </svg>
                         {{ $secondaryCtaLabel }}
                     </a>
-                </div>
-
-                {{-- Installment Badge --}}
-                <div class="flex items-center justify-center gap-2 mb-5">
-                    <span class="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-emerald-500/20 border border-emerald-400/40 backdrop-blur text-emerald-300 font-black text-sm shadow-lg">
-                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse inline-block"></span>
-                        {{ $isArabic ? '✦ قسّط على دفعات مريحة ✦' : '✦ Pay in easy installments ✦' }}
-                    </span>
                 </div>
 
                 <div class="flex flex-wrap items-center justify-center gap-3 max-w-3xl">
