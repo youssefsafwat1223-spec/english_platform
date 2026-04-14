@@ -24,7 +24,7 @@
         scrolled ? 'py-1 sm:py-0' : '',
         !showNav ? '-translate-y-24 sm:translate-y-0' : 'translate-y-0'
      ]"
-     class="fixed top-3 left-3 right-3 sm:top-4 sm:left-4 sm:right-4 lg:left-8 lg:right-8 z-50 transition-all duration-500 ease-in-out rounded-2xl bg-white/95 dark:bg-[#020617]/95 backdrop-blur-xl"
+     class="fixed top-[46px] left-3 right-3 sm:top-[50px] sm:left-4 sm:right-4 lg:left-8 lg:right-8 z-50 transition-all duration-500 ease-in-out rounded-2xl bg-white/95 dark:bg-[#020617]/95 backdrop-blur-xl"
      style="overflow: visible !important; box-shadow: none !important; border: none !important;">
     <div class="px-3 sm:px-4 md:px-6 lg:px-8 overflow-visible">
         <div class="flex justify-between h-14 sm:h-16 lg:h-20 items-center overflow-visible">

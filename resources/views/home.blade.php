@@ -10,7 +10,7 @@
 
 @section('top_banner')
 {{-- Installment Announcement Bar --}}
-<div class="w-full bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-500 text-white text-center py-3 px-4 relative overflow-hidden">
+<div class="fixed top-0 left-0 right-0 w-full bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-500 text-white text-center py-2.5 px-4 overflow-hidden z-[60]">
     <div class="absolute inset-0 bg-gradient-to-r from-emerald-400/30 via-white/10 to-emerald-400/30 animate-pulse"></div>
     <div class="relative flex items-center justify-center gap-3 flex-wrap">
         <span class="text-xl">🎉</span>
