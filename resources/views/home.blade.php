@@ -49,8 +49,9 @@
                     {{ $heroBadge }}
                 </div>
 
-                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/25 border border-emerald-400/50 text-sm font-black text-emerald-300 mb-6 shadow-lg">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse inline-block"></span>
+                <div class="relative inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/25 border border-emerald-400/50 text-sm font-black text-emerald-300 mb-6 shadow-lg overflow-hidden animate-pulse">
+                    <span class="absolute inset-0 rounded-full bg-gradient-to-r from-transparent via-emerald-300/30 to-transparent -translate-x-full animate-[shimmer_2s_infinite]"></span>
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping inline-block"></span>
                     {{ $isArabic ? 'قسّطها على دفعات' : 'Pay in installments' }}
                 </div>
 
