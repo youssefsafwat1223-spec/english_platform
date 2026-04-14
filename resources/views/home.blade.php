@@ -49,10 +49,22 @@
                     {{ $heroBadge }}
                 </div>
 
-                <div class="relative inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/25 border border-emerald-400/50 text-sm font-black text-emerald-300 mb-6 shadow-lg overflow-hidden animate-pulse">
-                    <span class="absolute inset-0 rounded-full bg-gradient-to-r from-transparent via-emerald-300/30 to-transparent -translate-x-full animate-[shimmer_2s_infinite]"></span>
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping inline-block"></span>
-                    {{ $isArabic ? 'قسّطها على دفعات' : 'Pay in installments' }}
+                <div class="flex items-center justify-center gap-3 mb-6">
+                    {{-- Left arrow --}}
+                    <span class="text-emerald-400 text-2xl animate-bounce" style="animation-delay: 0.1s;">&#9658;</span>
+                    <span class="text-emerald-300 text-xl animate-bounce" style="animation-delay: 0.2s;">&#9658;</span>
+
+                    {{-- Badge --}}
+                    <div class="relative inline-flex items-center gap-2 px-5 py-2 rounded-full font-black text-sm text-white overflow-hidden"
+                         style="background: linear-gradient(135deg, #10b981, #059669); box-shadow: 0 0 18px 4px rgba(16,185,129,0.55), 0 0 40px 8px rgba(16,185,129,0.25);">
+                        <span class="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent animate-[shimmer_1.6s_infinite]"></span>
+                        <span class="w-2 h-2 rounded-full bg-white animate-ping inline-block"></span>
+                        {{ $isArabic ? 'قسّطها على دفعات' : 'Pay in installments' }}
+                    </div>
+
+                    {{-- Right arrow --}}
+                    <span class="text-emerald-300 text-xl animate-bounce" style="animation-delay: 0.2s;">&#9668;</span>
+                    <span class="text-emerald-400 text-2xl animate-bounce" style="animation-delay: 0.1s;">&#9668;</span>
                 </div>
 
                 <h1 class="text-5xl sm:text-6xl lg:text-8xl font-black tracking-tighter leading-[1.15] mb-8 text-white drop-shadow-md">
