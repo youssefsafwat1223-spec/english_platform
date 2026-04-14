@@ -8,26 +8,6 @@
     ? 'تعلم الإنجليزية, دورات إنجليزي, نطق اللغة الإنجليزية, الذكاء الاصطناعي, كورسات إنجليزية'
     : 'learn English, English courses, pronunciation, AI learning, fluency')
 
-@section('top_banner')
-{{-- Installment Announcement Bar --}}
-<div class="fixed top-0 left-0 right-0 w-full bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-500 text-white text-center py-2.5 px-4 overflow-hidden z-[60]">
-    <div class="absolute inset-0 bg-gradient-to-r from-emerald-400/30 via-white/10 to-emerald-400/30 animate-pulse"></div>
-    <div class="relative flex items-center justify-center gap-3 flex-wrap">
-        <span class="text-xl">🎉</span>
-        <p class="font-black text-base sm:text-lg tracking-wide">
-            {{ app()->getLocale() === 'ar'
-                ? 'قسّط اشتراكك على دفعات مريحة — ابدأ رحلتك دلوقتي!'
-                : 'Pay in easy installments — Start your journey today!' }}
-        </p>
-        <a href="{{ route('pricing') }}"
-           class="inline-flex items-center gap-1 bg-white text-emerald-700 font-black text-sm px-4 py-1.5 rounded-full hover:bg-emerald-50 transition-all hover:scale-105 shadow-md whitespace-nowrap">
-            {{ app()->getLocale() === 'ar' ? 'اعرف التفاصيل ←' : 'See details →' }}
-        </a>
-        <span class="text-xl">🎉</span>
-    </div>
-</div>
-@endsection
-
 @section('content')
 
 @php
@@ -94,6 +74,14 @@
                         </svg>
                         {{ $secondaryCtaLabel }}
                     </a>
+                </div>
+
+                {{-- Installment Badge --}}
+                <div class="flex items-center justify-center gap-2 mb-5">
+                    <span class="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-emerald-500/20 border border-emerald-400/40 backdrop-blur text-emerald-300 font-black text-sm shadow-lg">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse inline-block"></span>
+                        {{ $isArabic ? '✦ قسّط على دفعات مريحة ✦' : '✦ Pay in easy installments ✦' }}
+                    </span>
                 </div>
 
                 <div class="flex flex-wrap items-center justify-center gap-3 max-w-3xl">
