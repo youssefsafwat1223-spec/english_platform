@@ -40,6 +40,22 @@
                         @error('price')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                     </div>
                     <div>
+                        <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('Payment Type') }}</label>
+                        <div class="flex gap-4">
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="radio" name="payment_type" value="full" class="accent-primary-500"
+                                    {{ old('payment_type', $course->payment_type ?? 'full') === 'full' ? 'checked' : '' }}>
+                                <span class="text-sm" style="color: var(--color-text);">دفعة واحدة</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="radio" name="payment_type" value="installment" class="accent-primary-500"
+                                    {{ old('payment_type', $course->payment_type ?? 'full') === 'installment' ? 'checked' : '' }}>
+                                <span class="text-sm" style="color: var(--color-text);">3 أقساط شهرية</span>
+                            </label>
+                        </div>
+                        @error('payment_type')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                    </div>
+                    <div>
                         <label for="thumbnail" class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('Update Thumbnail') }}</label>
                         <input type="file" id="thumbnail" name="thumbnail" accept="image/*" class="input-glass @error('thumbnail') border-red-500 @enderror">
                         @error('thumbnail')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror

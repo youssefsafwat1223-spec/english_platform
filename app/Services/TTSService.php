@@ -48,7 +48,32 @@ class TTSService
     }
 
     /**
-     * Generate speech from text
+     * Generate Arabic listening audio using SSML (Arabic فصحى with embedded English)
+     * Uses ar-XA-Neural2-B voice; English words inside <lang xml:lang="en-US"> tags
+     * are pronounced with an English accent automatically.
+     */
+    public function generateListeningAudio(string $scriptAr, string $storagePath = null): array
+    {
+        $ssml = '<speak>' . $scriptAr . '</speak>';
+
+        $settings = [
+            'ssml'        => true,
+            'language'    => 'ar-XA',
+            'voice_name'  => 'ar-XA-Neural2-B',
+            'gender'      => 'male',
+            'speed'       => 0.9,
+            'storage_dir' => 'listening-audio',
+        ];
+
+        if ($storagePath) {
+            $settings['storage_path'] = $storagePath;
+        }
+
+        return $this->generateSpeech($ssml, $settings);
+    }
+
+    /**
+     * Generate speech from text or SSML
      */
     public function generateSpeech($text, $settings = [])
     {
@@ -61,14 +86,20 @@ class TTSService
             }
 
             // Default settings
-            $voiceGender = $settings['gender'] ?? 'male';
+            $voiceGender  = $settings['gender'] ?? 'male';
             $languageCode = $settings['language'] ?? 'en-US';
-            $voiceName = $settings['voice_name'] ?? 'en-US-Neural2-D';
-            $speed = $settings['speed'] ?? 1.0;
+            $voiceName    = $settings['voice_name'] ?? 'en-US-Neural2-D';
+            $speed        = $settings['speed'] ?? 1.0;
+            $isSsml       = $settings['ssml'] ?? false;
+            $storageDir   = $settings['storage_dir'] ?? 'quiz-audio/tts-generated';
 
             // Create synthesis input
             $synthesisInput = new SynthesisInput();
-            $synthesisInput->setText($text);
+            if ($isSsml) {
+                $synthesisInput->setSsml($text);
+            } else {
+                $synthesisInput->setText($text);
+            }
 
             // Configure voice
             $voice = new VoiceSelectionParams();
@@ -98,7 +129,9 @@ class TTSService
 
             // Save to storage
             $filename = 'tts-' . uniqid() . '.mp3';
-            $path = "quiz-audio/tts-generated/{$filename}";
+            $path = isset($settings['storage_path'])
+                ? $settings['storage_path']
+                : "{$storageDir}/{$filename}";
 
             Storage::disk('public')->put($path, $audioContent);
 

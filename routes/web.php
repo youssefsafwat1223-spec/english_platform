@@ -49,6 +49,7 @@ use App\Http\Controllers\Student\BattleController;
 use App\Http\Controllers\Student\OnboardingController;
 use App\Http\Controllers\Student\TestimonialController as StudentTestimonialController;
 use App\Http\Controllers\Student\WritingController as StudentWritingController;
+use App\Http\Controllers\Student\ListeningController as StudentListeningController;
 
 /*
 |--------------------------------------------------------------------------
@@ -414,6 +415,9 @@ Route::prefix('student')->name('student.')->middleware(['auth', 'student', 'acti
     Route::post('/courses/{course}/payment', [StudentCourseController::class, 'processPayment'])
         ->middleware('throttle:course-payment')
         ->name('courses.payment');
+    Route::post('/courses/{course}/installment', [StudentCourseController::class, 'payInstallment'])
+        ->middleware('throttle:course-payment')
+        ->name('courses.installment');
     Route::get('/courses/{course}/certificate', [StudentCourseController::class, 'certificateInfo'])
         ->name('courses.certificate.info')
         ->middleware('enrolled');
@@ -497,6 +501,13 @@ Route::prefix('student')->name('student.')->middleware(['auth', 'student', 'acti
     Route::post('/writing/{writingExercise}/submit', [StudentWritingController::class, 'submit'])
         ->middleware('throttle:60,1')
         ->name('writing.submit');
+
+    // Listening
+    Route::get('/listening/{listeningExercise}', [StudentListeningController::class, 'show'])
+        ->name('listening.show');
+    Route::post('/listening/{listeningExercise}/submit', [StudentListeningController::class, 'submit'])
+        ->middleware('throttle:60,1')
+        ->name('listening.submit');
 
     // Certificates
     Route::get('/certificates', [StudentCertificateController::class, 'index'])->name('certificates.index');

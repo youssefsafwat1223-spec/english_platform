@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\PaymentInvoiceMail;
+use App\Mail\NewEnrollmentAlert;
 use App\Models\PromoCode;
 
 class Payment extends Model
@@ -17,6 +18,8 @@ class Payment extends Model
         'user_id',
         'course_id',
         'promo_code_id',
+        'installment_plan_id',
+        'installment_number',
         'transaction_id',
         'amount',
         'currency',
@@ -67,6 +70,11 @@ class Payment extends Model
     public function enrollment()
     {
         return $this->hasOne(Enrollment::class);
+    }
+
+    public function installmentPlan()
+    {
+        return $this->belongsTo(InstallmentPlan::class);
     }
 
     // ==================== SCOPES ====================
@@ -177,13 +185,15 @@ class Payment extends Model
         }
 
         $this->update([
-            'payment_status' => 'completed',
-            'paid_at' => now(),
+            'payment_status'     => 'completed',
+            'paid_at'            => now(),
             'gateway_payment_id' => $gatewayPaymentId ?? $this->gateway_payment_id,
-            'gateway_response' => $gatewayResponse ?: $this->gateway_response,
+            'gateway_response'   => $gatewayResponse ?: $this->gateway_response,
         ]);
 
-        // Create enrollment
+        // Regular (full) payment — create enrollment immediately
+        // Note: installment payments are created directly in the webhook handler
+        // (InstallmentService::handleSubscriptionInvoicePaid) and never go through here.
         $this->createEnrollment();
 
         // Send invoice email to student
@@ -249,6 +259,7 @@ class Payment extends Model
         $totalLessons = (int) $this->course->lessons()
             ->whereNotNull('title')
             ->whereRaw("TRIM(title) <> ''")
+            ->reorder()
             ->selectRaw("COUNT(DISTINCT LOWER(TRIM(title))) as aggregate")
             ->value('aggregate');
 
@@ -273,6 +284,13 @@ class Payment extends Model
             'started_at' => now(),
             'expires_at' => $expiresAt,
         ]);
+
+        // Notify admin of new enrollment
+        try {
+            Mail::to('baraashhri@gmail.com')->send(new NewEnrollmentAlert($enrollment));
+        } catch (\Throwable $e) {
+            \Log::error('NewEnrollmentAlert failed: ' . $e->getMessage());
+        }
 
         // Increment course student count
         $this->course->incrementStudents();

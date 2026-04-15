@@ -63,12 +63,21 @@
                         </h3>
                     </div>
 
-                    <div class="mx-8 mt-6 rounded-xl border border-primary-200 bg-primary-50 px-4 py-3 text-sm text-primary-700 dark:border-primary-500/20 dark:bg-primary-500/10 dark:text-primary-200">
-                        <p class="font-bold">{{ $isArabic ? 'يتوفر التقسيط عند ظهور خيار التقسيط داخل بوابة الدفع.' : 'Installments are available when the installment option appears in the payment gateway.' }}</p>
-                        <p class="mt-1 text-xs opacity-90">{{ $isArabic ? 'إذا كانت وسيلة الدفع تدعم التقسيط، ستراه مباشرة أثناء إتمام الدفع.' : 'If your payment method supports installments, you will see it directly during checkout.' }}</p>
-                    </div>
                     
                     <div class="p-8 space-y-6">
+
+                        @if($course->is_installment)
+                        <div class="rounded-xl border border-amber-200 bg-amber-50 dark:border-amber-500/20 dark:bg-amber-500/10 px-4 py-3 text-sm text-amber-800 dark:text-amber-300">
+                            <p class="font-bold">💡 {{ $isArabic ? 'هذا الكورس يدعم الدفع بالتقسيط' : 'This course supports installment payments' }}</p>
+                            <p class="mt-1 text-xs opacity-90">
+                                {{ $isArabic ? 'أنت الآن في صفحة الدفع الكامل. للدفع على 3 أقساط شهرية بـ ' . number_format($course->installment_amount, 0) . ' ر.س كل قسط،' : 'You are on the full payment page. To pay in 3 monthly installments of ' . number_format($course->installment_amount, 0) . ' SAR each,' }}
+                                <a href="{{ route('student.courses.show', $course) }}#payment-options" class="font-black underline">
+                                    {{ $isArabic ? 'اضغط هنا' : 'click here' }}
+                                </a>.
+                            </p>
+                        </div>
+                        @endif
+
                         <form action="{{ route('student.courses.payment', $course) }}" method="POST" id="paymentForm" x-data="{ loading: false }" x-init="window.addEventListener('pageshow', () => { loading = false })" @submit="loading = true">
                             @csrf
                             
@@ -230,9 +239,6 @@
                                             <p class="text-xs text-slate-500 mt-1 font-medium">{{ __('ui.checkout.price_note') }}</p>
                                         </div>
                                     </div>
-                                    <p class="mt-3 text-xs font-semibold text-primary-600 dark:text-primary-300">
-                                        {{ $isArabic ? 'ملاحظة: خيار التقسيط يعتمد على وسيلة الدفع المتاحة وقت الإتمام.' : 'Note: Installment availability depends on the payment method available at checkout.' }}
-                                    </p>
                                 </div>
                             </div>
                         </div>

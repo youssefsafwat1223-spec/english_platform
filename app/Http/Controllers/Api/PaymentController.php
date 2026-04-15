@@ -34,7 +34,9 @@ class PaymentController extends Controller
 
         Log::info('StreamPay payment callback received', [
             'payment_id' => $payment->id,
-            'request' => $request->all(),
+            'payment_id_param' => $request->string('payment_id')->toString() ?: null,
+            'invoice_id' => $request->string('invoice_id')->toString() ?: null,
+            'payment_link_id' => $request->string('payment_link_id')->toString() ?: null,
         ]);
 
         $result = $this->paymentService->handleCallback(

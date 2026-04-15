@@ -56,6 +56,7 @@ class LessonController extends Controller
         $this->syncLessonQuiz($request, $course, $lesson);
         $this->syncPronunciationExercise($request, $lesson);
         $this->syncWritingExercise($request, $lesson);
+        $this->syncListeningExercise($request, $lesson);
 
         // Handle attachments
         if ($request->hasFile('attachments')) {
@@ -100,7 +101,7 @@ class LessonController extends Controller
 
     public function edit(Course $course, Lesson $lesson)
     {
-        $lesson->load('attachments');
+        $lesson->load('attachments', 'listeningExercise');
         $availableQuizzes = $course->quizzes()
             ->where('quiz_type', 'lesson')
             ->where(function ($query) use ($lesson) {
@@ -120,6 +121,7 @@ class LessonController extends Controller
 
         $pronunciationExercise = $lesson->pronunciationExercise;
         $writingExercise = $lesson->writingExercise;
+        $listeningExercise = $lesson->listeningExercise;
 
         $levels = $course->levels()->ordered()->get();
 
@@ -141,6 +143,7 @@ class LessonController extends Controller
             'selectedQuestionIds',
             'pronunciationExercise',
             'writingExercise',
+            'listeningExercise',
             'levels',
             'previousLesson',
             'nextLesson'
@@ -161,6 +164,7 @@ class LessonController extends Controller
         $this->syncLessonQuiz($request, $course, $lesson);
         $this->syncPronunciationExercise($request, $lesson);
         $this->syncWritingExercise($request, $lesson);
+        $this->syncListeningExercise($request, $lesson);
 
         // Delete selected attachments
         if ($request->has('delete_attachments')) {
@@ -450,6 +454,39 @@ class LessonController extends Controller
             if ($exercise->{$column}) {
                 Storage::disk('public')->delete($exercise->{$column});
             }
+        }
+    }
+
+    private function syncListeningExercise(mixed $request, Lesson $lesson): void
+    {
+        if (!$request->boolean('has_listening_exercise')) {
+            $lesson->listeningExercise()?->delete();
+            return;
+        }
+
+        $questionsJson = $request->input('listening_questions_json');
+        $questions     = [];
+
+        if ($questionsJson) {
+            $decoded = json_decode($questionsJson, true);
+            if (is_array($decoded)) {
+                $questions = $decoded;
+            }
+        }
+
+        $exerciseData = [
+            'lesson_id'       => $lesson->id,
+            'course_level_id' => null,
+            'title'           => $request->input('listening_title', $lesson->title),
+            'script_ar'       => $request->input('listening_script_ar', ''),
+            'questions_json'  => $questions,
+            'passing_score'   => (int) $request->input('listening_passing_score', 70),
+        ];
+
+        if ($lesson->listeningExercise) {
+            $lesson->listeningExercise->update($exerciseData);
+        } else {
+            \App\Models\ListeningExercise::create($exerciseData);
         }
     }
 }

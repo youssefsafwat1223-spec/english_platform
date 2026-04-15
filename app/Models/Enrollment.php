@@ -26,19 +26,21 @@ class Enrollment extends Model
         'certificate_issued_at',
         'certificate_id',
         'last_accessed_at',
+        'access_suspended_at',
     ];
 
     protected function casts(): array
     {
         return [
-            'price_paid' => 'decimal:2',
-            'discount_amount' => 'decimal:2',
-            'progress_percentage' => 'decimal:2',
-            'started_at' => 'datetime',
-            'completed_at' => 'datetime',
-            'expires_at' => 'datetime',
-            'certificate_issued_at' => 'datetime',
-            'last_accessed_at' => 'datetime',
+            'price_paid'           => 'decimal:2',
+            'discount_amount'      => 'decimal:2',
+            'progress_percentage'  => 'decimal:2',
+            'started_at'           => 'datetime',
+            'completed_at'         => 'datetime',
+            'expires_at'           => 'datetime',
+            'certificate_issued_at'=> 'datetime',
+            'last_accessed_at'     => 'datetime',
+            'access_suspended_at'  => 'datetime',
         ];
     }
 
@@ -74,6 +76,11 @@ class Enrollment extends Model
         return $this->hasOne(Certificate::class);
     }
 
+    public function installmentPlan()
+    {
+        return $this->hasOne(InstallmentPlan::class);
+    }
+
     // ==================== SCOPES ====================
 
     public function scopeActive($query)
@@ -88,12 +95,19 @@ class Enrollment extends Model
 
     // ==================== ACCESSORS ====================
 
-    /**
-     * Check if enrollment is completed
-     */
-    public function getIsCompletedAttribute()
+    public function getIsCompletedAttribute(): bool
     {
         return !is_null($this->completed_at);
+    }
+
+    public function getIsSuspendedAttribute(): bool
+    {
+        return !is_null($this->access_suspended_at);
+    }
+
+    public function getIsAccessibleAttribute(): bool
+    {
+        return is_null($this->access_suspended_at);
     }
 
     /**

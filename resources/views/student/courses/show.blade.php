@@ -55,6 +55,11 @@
                         {{ $isArabic ? 'متابعة التعلم' : 'Continue learning' }}
                         <svg class="w-4 h-4 {{ $isArabic ? 'rotate-180' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                     </a>
+                @elseif($course->is_installment)
+                    {{-- Installment course: scroll to payment options in sidebar --}}
+                    <a href="#payment-options" class="btn-primary ripple-btn px-6 py-3 rounded-xl shadow-lg shadow-primary-500/25 font-bold">
+                        {{ $isArabic ? 'اشترك الآن' : 'Enroll now' }}
+                    </a>
                 @else
                     <a href="{{ route('student.courses.enroll', $course) }}" class="btn-primary ripple-btn px-6 py-3 rounded-xl shadow-lg shadow-primary-500/25 font-bold">
                         {{ $isArabic ? 'اشترك الآن' : 'Enroll now' }}
@@ -124,6 +129,7 @@
             </div>
 
             <div class="space-y-6">
+                <div id="payment-options" class="scroll-mt-24">
                 <x-student.card padding="p-6 md:p-8">
                     <div class="text-xs font-bold text-slate-500 dark:text-slate-400 mb-2">{{ $isArabic ? 'السعر' : 'Price' }}</div>
                     @if($course->price == 0)
@@ -133,11 +139,11 @@
                     @endif
 
                     @if($isEnrolled ?? false)
-                            <div class="mt-4 space-y-2 text-sm text-slate-600 dark:text-slate-300">
-                                <div class="flex justify-between">
-                                    <span>{{ $isArabic ? 'العناوين المكتملة' : 'Completed headings' }}</span>
-                                    <span class="font-bold text-slate-900 dark:text-white">{{ $completedHeadingCount }}/{{ $headingCount }}</span>
-                                </div>
+                        <div class="mt-4 space-y-2 text-sm text-slate-600 dark:text-slate-300">
+                            <div class="flex justify-between">
+                                <span>{{ $isArabic ? 'العناوين المكتملة' : 'Completed headings' }}</span>
+                                <span class="font-bold text-slate-900 dark:text-white">{{ $completedHeadingCount }}/{{ $headingCount }}</span>
+                            </div>
                             <div class="flex justify-between">
                                 <span>{{ $isArabic ? 'تاريخ البدء' : 'Started at' }}</span>
                                 <span class="font-bold text-slate-900 dark:text-white">{{ $enrollment->started_at ? $enrollment->started_at->format('M d, Y') : '-' }}</span>
@@ -148,9 +154,71 @@
                                     <span class="font-bold text-slate-900 dark:text-white">{{ $remainingDays }} {{ $isArabic ? 'يوم' : 'days' }}</span>
                                 </div>
                             @endif
+
+                            {{-- Installment plan status --}}
+                            @if(isset($enrollment) && $enrollment->installmentPlan)
+                                @php $plan = $enrollment->installmentPlan; @endphp
+                                <div class="mt-3 pt-3 border-t border-slate-200 dark:border-white/10">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="font-bold">الأقساط</span>
+                                        <span class="text-xs px-2 py-0.5 rounded-full font-bold
+                                            {{ $plan->is_completed ? 'bg-emerald-100 text-emerald-700' : ($plan->is_suspended ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700') }}">
+                                            {{ $plan->is_completed ? 'مكتمل' : ($plan->is_suspended ? 'موقوف' : 'جاري') }}
+                                        </span>
+                                    </div>
+                                    <div class="flex gap-1">
+                                        @for($i = 1; $i <= $plan->installments_count; $i++)
+                                            <div class="flex-1 h-2 rounded-full {{ $i <= $plan->installments_paid ? 'bg-emerald-500' : 'bg-slate-200 dark:bg-white/10' }}"></div>
+                                        @endfor
+                                    </div>
+                                    <div class="text-xs text-slate-500 mt-1">{{ $plan->installments_paid }} من {{ $plan->installments_count }} أقساط مدفوعة</div>
+                                    @if(!$plan->is_completed && $plan->next_due_at)
+                                        <div class="text-xs text-slate-500 mt-1">موعد القسط القادم: {{ $plan->next_due_at->format('Y/m/d') }}</div>
+                                    @endif
+                                </div>
+                            @endif
+                        </div>
+
+                        {{-- Suspended access warning --}}
+                        @if(isset($enrollment) && $enrollment->is_suspended)
+                            <div class="mt-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-sm text-red-700 dark:text-red-300">
+                                🔒 وصولك موقوف بسبب تأخر سداد قسط. تواصل معنا لإعادة التفعيل.
+                            </div>
+                        @endif
+                    @elseif($course->is_installment)
+                        {{-- Installment purchase option --}}
+                        <div class="mt-4 space-y-3">
+                            <div class="text-xs text-slate-500 dark:text-slate-400 font-medium">خيارات الدفع</div>
+
+                            {{-- Full payment --}}
+                            <a href="{{ route('student.courses.enroll', $course) }}"
+                               class="flex items-center justify-between w-full p-3 rounded-xl border-2 border-primary-500 bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 hover:bg-primary-100 transition">
+                                <div>
+                                    <div class="font-bold text-sm">دفع كامل</div>
+                                    <div class="text-xs opacity-75">دفعة واحدة</div>
+                                </div>
+                                <div class="font-black text-lg">{{ number_format($course->price, 0) }} ريال</div>
+                            </a>
+
+                            {{-- Installment payment --}}
+                            <form action="{{ route('student.courses.installment', $course) }}" method="POST">
+                                @csrf
+                                <button type="submit"
+                                        class="flex items-center justify-between w-full p-3 rounded-xl border-2 border-amber-400 bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300 hover:bg-amber-100 transition">
+                                    <div>
+                                        <div class="font-bold text-sm">دفع بالتقسيط</div>
+                                        <div class="text-xs opacity-75">3 أقساط شهرية</div>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="font-black text-lg">{{ number_format($course->installment_amount, 0) }} ريال</div>
+                                        <div class="text-xs opacity-75">/ قسط</div>
+                                    </div>
+                                </button>
+                            </form>
                         </div>
                     @endif
                 </x-student.card>
+                </div>{{-- #payment-options --}}
 
                 <x-student.card padding="p-6 md:p-8">
                     <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4">{{ $isArabic ? 'مميزات الكورس' : 'Course highlights' }}</h3>

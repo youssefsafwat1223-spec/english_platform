@@ -12,6 +12,7 @@ class PronunciationExercise extends Model
 
     protected $fillable = [
         'lesson_id',
+        'course_level_id',
         'sentence_1',
         'sentence_2',
         'sentence_3',
@@ -47,6 +48,11 @@ class PronunciationExercise extends Model
     public function lesson()
     {
         return $this->belongsTo(Lesson::class);
+    }
+
+    public function courseLevel()
+    {
+        return $this->belongsTo(CourseLevel::class);
     }
 
     public function attempts()

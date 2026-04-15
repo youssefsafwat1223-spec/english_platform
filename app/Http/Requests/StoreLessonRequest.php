@@ -18,12 +18,14 @@ class StoreLessonRequest extends FormRequest
         $hasQuiz = $this->boolean('has_quiz');
         $hasPronunciation = $this->boolean('has_pronunciation_exercise');
         $hasWriting = $this->boolean('has_writing_exercise');
+        $hasListening = $this->boolean('has_listening_exercise');
 
         $this->merge([
             'is_free' => $this->boolean('is_free'),
             'has_quiz' => $hasQuiz,
             'has_pronunciation_exercise' => $hasPronunciation,
             'has_writing_exercise' => $hasWriting,
+            'has_listening_exercise' => $hasListening,
         ]);
 
         if (!$hasQuiz) {
@@ -56,6 +58,15 @@ class StoreLessonRequest extends FormRequest
                 'writing_model_answer' => null,
             ]);
         }
+
+        if (!$hasListening) {
+            $this->merge([
+                'listening_title' => null,
+                'listening_script_ar' => null,
+                'listening_questions_json' => null,
+                'listening_passing_score' => null,
+            ]);
+        }
     }
 
     /**
@@ -86,6 +97,7 @@ class StoreLessonRequest extends FormRequest
             'has_quiz' => 'boolean',
             'has_pronunciation_exercise' => 'boolean',
             'has_writing_exercise' => 'boolean',
+            'has_listening_exercise' => 'boolean',
             'attachments.*' => 'nullable|file|max:102400|mimes:pdf,doc,docx,ppt,pptx,xls,xlsx,zip,rar,jpg,jpeg,png,gif,mp3,wav,mp4,webm', // 100MB, safe types only
             'quiz_mode' => 'nullable|required_if:has_quiz,1|in:existing,questions',
             'quiz_id' => 'nullable|required_if:quiz_mode,existing|exists:quizzes,id',
@@ -116,6 +128,10 @@ class StoreLessonRequest extends FormRequest
             'writing_max_words' => 'nullable|integer|min:1|max:5000|gte:writing_min_words',
             'writing_passing_score' => 'nullable|integer|min:0|max:100',
             'writing_model_answer' => 'nullable|string',
+            'listening_title' => 'nullable|string|max:255',
+            'listening_script_ar' => 'nullable|string',
+            'listening_questions_json' => 'nullable|string',
+            'listening_passing_score' => 'nullable|integer|min:0|max:100',
         ];
     }
 

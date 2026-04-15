@@ -82,6 +82,10 @@
                             <input type="checkbox" id="has_writing_exercise" name="has_writing_exercise" value="1" {{ old('has_writing_exercise', $lesson->has_writing_exercise) ? 'checked' : '' }} class="w-4 h-4 text-primary-500 rounded" style="border-color: var(--color-border);">
                             <label class="ml-2 text-sm" style="color: var(--color-text);">{{ __('Has writing exercise') }}</label>
                         </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" id="has_listening_exercise" name="has_listening_exercise" value="1" {{ old('has_listening_exercise', $lesson->has_listening_exercise) ? 'checked' : '' }} class="w-4 h-4 text-primary-500 rounded" style="border-color: var(--color-border);">
+                            <label class="ml-2 text-sm" style="color: var(--color-text);">🎧 {{ __('يتضمن اختبار استماع') }}</label>
+                        </div>
                     </div>
 
                     @php
@@ -373,6 +377,45 @@
                         </div>
                     </div>
 
+                    {{-- ─── Listening Exercise Section ─── --}}
+                    <div id="listeningOptions" class="hidden">
+                        <div class="rounded-xl p-4 space-y-4 border border-accent-200 dark:border-accent-500/20" style="background: var(--color-surface-hover);">
+                            <h4 class="font-extrabold text-sm flex items-center gap-2" style="color: var(--color-text);">
+                                🎧 {{ __('إعداد اختبار الاستماع') }}
+                            </h4>
+                            <div>
+                                <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('عنوان الاختبار') }}</label>
+                                <input type="text" name="listening_title" class="input-glass"
+                                    value="{{ old('listening_title', $listeningExercise?->title ?? $lesson->title) }}">
+                                @error('listening_title')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">
+                                    {{ __('النص العربي للـ TTS (الصوت)') }}
+                                    <span class="text-xs font-normal ms-2" style="color: var(--color-text-muted);">استخدم <code>&lt;lang xml:lang="en-US"&gt;word&lt;/lang&gt;</code> للكلمات الإنجليزية</span>
+                                </label>
+                                <textarea name="listening_script_ar" rows="6" class="input-glass font-mono text-sm"
+                                    placeholder="في هذا الدرس سنتعلم... &lt;lang xml:lang=&quot;en-US&quot;&gt;Hello&lt;/lang&gt; ...">{{ old('listening_script_ar', $listeningExercise?->script_ar) }}</textarea>
+                                @error('listening_script_ar')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                            </div>
+                            @if($listeningExercise?->audio_url)
+                            <div>
+                                <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('الصوت الحالي') }}</label>
+                                <audio controls class="w-full h-9" src="{{ $listeningExercise->audio_url }}"></audio>
+                            </div>
+                            @endif
+                            <div>
+                                <label class="block text-sm font-semibold mb-3" style="color: var(--color-text);">{{ __('الأسئلة') }}</label>
+                                <x-listening-question-builder
+                                    :questionsJson="old('listening_questions_json', $listeningExercise ? json_encode($listeningExercise->questions_json, JSON_UNESCAPED_UNICODE) : '[]')"
+                                    inputName="listening_questions_json"
+                                    :passingScore="old('listening_passing_score', $listeningExercise?->passing_score ?? 70)"
+                                    scoreInputName="listening_passing_score"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
                     {{-- ─── Attachments Section ─── --}}
                     <div id="writingOptions" class="hidden">
                         <div class="rounded-xl p-4 space-y-4" style="background: var(--color-surface-hover);">
@@ -473,9 +516,11 @@
         const hasQuiz = document.getElementById('has_quiz');
         const hasPronunciation = document.getElementById('has_pronunciation_exercise');
         const hasWriting = document.getElementById('has_writing_exercise');
+        const hasListening = document.getElementById('has_listening_exercise');
         const quizOptions = document.getElementById('quizOptions');
         const pronunciationOptions = document.getElementById('pronunciationOptions');
         const writingOptions = document.getElementById('writingOptions');
+        const listeningOptions = document.getElementById('listeningOptions');
         const quizModeInputs = document.querySelectorAll('input[name="quiz_mode"]');
         const existingQuizBlock = document.getElementById('existingQuizBlock');
         const questionQuizBlock = document.getElementById('questionQuizBlock');
@@ -492,13 +537,18 @@
         const toggleWritingOptions = () => {
             writingOptions.classList.toggle('hidden', !hasWriting.checked);
         };
+        const toggleListeningOptions = () => {
+            listeningOptions.classList.toggle('hidden', !hasListening.checked);
+        };
         hasQuiz.addEventListener('change', toggleQuizOptions);
         hasPronunciation.addEventListener('change', togglePronunciationOptions);
         hasWriting.addEventListener('change', toggleWritingOptions);
+        hasListening.addEventListener('change', toggleListeningOptions);
         quizModeInputs.forEach(input => input.addEventListener('change', toggleQuizOptions));
         toggleQuizOptions();
         togglePronunciationOptions();
         toggleWritingOptions();
+        toggleListeningOptions();
     });
 
     function inlineQuestionCreator() {

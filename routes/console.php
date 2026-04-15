@@ -79,3 +79,8 @@ Schedule::command('battle:cleanup-stale-rooms')
 Schedule::command('live-sessions:send-notifications')
     ->everyThirtyMinutes()
     ->name('live-session-reminders');
+
+// Process installment reminders and suspend overdue plans every morning
+Schedule::command('installments:process')
+    ->dailyAt('09:00')
+    ->name('process-installments-due');

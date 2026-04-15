@@ -49,6 +49,8 @@
             'lessons.quiz',
             'lessons.pronunciationExercise',
             'lessons.writingExercise',
+            'lessons.listeningExercise',
+            'listeningExercise',
         ])
         ->get();
 
@@ -199,6 +201,79 @@
                                                 </span>
                                             </a>
                                         @endforeach
+
+                                        {{-- Section-level tests (Writing / Speaking / Listening) --}}
+                                        @php
+                                            $hasLevelWriting   = $level->has_writing_exercise;
+                                            $hasLevelSpeaking  = $level->has_speaking_exercise;
+                                            $hasLevelListening = $level->has_listening_exercise && $level->listeningExercise;
+                                            $showSectionTests  = $hasLevelWriting || $hasLevelSpeaking || $hasLevelListening;
+                                        @endphp
+
+                                        @if($showSectionTests)
+                                            {{-- Advisory notice --}}
+                                            <div class="px-5 py-3 bg-amber-50 dark:bg-amber-900/10 border-t border-amber-200 dark:border-amber-700/30 flex items-center gap-2 text-xs text-amber-700 dark:text-amber-400 font-medium">
+                                                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                                </svg>
+                                                {{ $isArabic ? 'يُنصح بإتمام جميع دروس هذا العنوان قبل البدء بالاختبارات' : 'We recommend completing all lessons before attempting these tests' }}
+                                            </div>
+
+                                            {{-- Writing Test --}}
+                                            @if($hasLevelWriting)
+                                                <a href="#" class="flex items-center justify-between gap-3 px-5 py-4 hover:bg-white/80 dark:hover:bg-slate-900 transition-colors border-t border-slate-200/60 dark:border-white/10">
+                                                    <div class="flex items-center gap-3">
+                                                        <span class="w-9 h-9 rounded-xl flex items-center justify-center text-sm font-black border bg-sky-50 text-sky-600 border-sky-200 dark:bg-sky-500/10 dark:text-sky-400 dark:border-sky-500/20">✏️</span>
+                                                        <div>
+                                                            <div class="font-bold text-sm text-slate-900 dark:text-white">
+                                                                {{ $isArabic ? 'اختبار الكتابة' : 'Writing Test' }}
+                                                            </div>
+                                                            <div class="mt-0.5 flex items-center gap-1 text-xs font-bold">
+                                                                <span class="px-2 py-0.5 rounded-full bg-sky-50 text-sky-600 dark:bg-sky-500/10 dark:text-sky-400">{{ $isArabic ? 'كتابة' : 'Writing' }}</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <span class="text-xs font-black text-slate-500 dark:text-slate-400">{{ $isArabic ? 'ابدأ الاختبار' : 'Start Test' }}</span>
+                                                </a>
+                                            @endif
+
+                                            {{-- Speaking Test --}}
+                                            @if($hasLevelSpeaking)
+                                                <a href="#" class="flex items-center justify-between gap-3 px-5 py-4 hover:bg-white/80 dark:hover:bg-slate-900 transition-colors border-t border-slate-200/60 dark:border-white/10">
+                                                    <div class="flex items-center gap-3">
+                                                        <span class="w-9 h-9 rounded-xl flex items-center justify-center text-sm font-black border bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20">🎙️</span>
+                                                        <div>
+                                                            <div class="font-bold text-sm text-slate-900 dark:text-white">
+                                                                {{ $isArabic ? 'اختبار النطق' : 'Speaking Test' }}
+                                                            </div>
+                                                            <div class="mt-0.5 flex items-center gap-1 text-xs font-bold">
+                                                                <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400">{{ $isArabic ? 'نطق' : 'Speaking' }}</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <span class="text-xs font-black text-slate-500 dark:text-slate-400">{{ $isArabic ? 'ابدأ الاختبار' : 'Start Test' }}</span>
+                                                </a>
+                                            @endif
+
+                                            {{-- Listening Test --}}
+                                            @if($hasLevelListening)
+                                                <a href="{{ route('listening.show', $level->listeningExercise) }}" class="flex items-center justify-between gap-3 px-5 py-4 hover:bg-white/80 dark:hover:bg-slate-900 transition-colors border-t border-slate-200/60 dark:border-white/10">
+                                                    <div class="flex items-center gap-3">
+                                                        <span class="w-9 h-9 rounded-xl flex items-center justify-center text-sm font-black border bg-accent-50 text-accent-600 border-accent-200 dark:bg-accent-500/10 dark:text-accent-400 dark:border-accent-500/20">🎧</span>
+                                                        <div>
+                                                            <div class="font-bold text-sm text-slate-900 dark:text-white">
+                                                                {{ $isArabic ? 'اختبار الاستماع' : 'Listening Test' }}
+                                                            </div>
+                                                            <div class="mt-0.5 flex items-center gap-1 text-xs font-bold">
+                                                                <span class="px-2 py-0.5 rounded-full bg-accent-50 text-accent-600 dark:bg-accent-500/10 dark:text-accent-400">{{ $isArabic ? 'استماع' : 'Listening' }}</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <span class="text-xs font-black text-slate-500 dark:text-slate-400">{{ $isArabic ? 'ابدأ الاختبار' : 'Start Test' }}</span>
+                                                </a>
+                                            @endif
+                                        @endif
+
                                     </div>
                                 </div>
                             </div>

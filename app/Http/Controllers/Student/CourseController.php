@@ -7,25 +7,30 @@ use App\Models\Course;
 use App\Models\Payment;
 use App\Models\PromoCode;
 use App\Services\CertificateService;
+use App\Services\InstallmentService;
 use App\Services\PaymentService;
 use App\Services\ReferralService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CourseController extends Controller
 {
     private $paymentService;
     private $referralService;
     private $certificateService;
+    private $installmentService;
 
     public function __construct(
         PaymentService $paymentService,
         ReferralService $referralService,
-        CertificateService $certificateService
+        CertificateService $certificateService,
+        InstallmentService $installmentService
     )
     {
         $this->paymentService = $paymentService;
         $this->referralService = $referralService;
         $this->certificateService = $certificateService;
+        $this->installmentService = $installmentService;
     }
 
     public function index(Request $request)
@@ -102,7 +107,7 @@ class CourseController extends Controller
 
         if ($isEnrolled) {
             $enrollment = $user->getEnrollment($course->id);
-            $enrollment->load(['lessonProgress', 'quizAttempts']);
+            $enrollment->load(['lessonProgress', 'quizAttempts', 'installmentPlan']);
 
             $completedLessonIds = $enrollment->lessonProgress
                 ->where('is_completed', true)
@@ -245,24 +250,25 @@ class CourseController extends Controller
 
         // If free (100% discount), enroll directly without payment gateway
         if ($finalAmount <= 0) {
-            $payment = Payment::create([
-                'user_id' => $user->id,
-                'course_id' => $course->id,
-                'promo_code_id' => $promoCode?->id,
-                'transaction_id' => 'FREE-' . strtoupper(\Illuminate\Support\Str::random(16)),
-                'amount' => $course->price,
-                'currency' => 'SAR',
-                'discount_amount' => $discountAmount,
-                'discount_type' => $discountData['discount_type'],
-                'discount_code' => $discountCode,
-                'final_amount' => 0,
-                'payment_status' => 'completed',
-                'paid_at' => now(),
-            ]);
+            DB::transaction(function () use ($user, $course, $promoCode, $discountAmount, $discountData, $discountCode) {
+                $payment = Payment::create([
+                    'user_id' => $user->id,
+                    'course_id' => $course->id,
+                    'promo_code_id' => $promoCode?->id,
+                    'transaction_id' => 'FREE-' . strtoupper(\Illuminate\Support\Str::random(16)),
+                    'amount' => $course->price,
+                    'currency' => 'SAR',
+                    'discount_amount' => $discountAmount,
+                    'discount_type' => $discountData['discount_type'],
+                    'discount_code' => $discountCode,
+                    'final_amount' => 0,
+                    'payment_status' => 'completed',
+                    'paid_at' => now(),
+                ]);
 
-            // Create enrollment
-            $payment->createEnrollment();
-            $this->paymentService->applySuccessfulPaymentEffects($payment);
+                $payment->createEnrollment();
+                $this->paymentService->applySuccessfulPaymentEffects($payment);
+            });
 
             return redirect()->route('student.courses.learn', $course)
                 ->with('success', __('تم تسجيلك في الكورس مجاناً! 🎉'));
@@ -288,6 +294,25 @@ class CourseController extends Controller
             ->withErrors(['payment' => $result['message']]);
     }
 
+    public function payInstallment(Course $course)
+    {
+        $user = auth()->user();
+
+        if ($user->isEnrolledIn($course->id) && !$user->getEnrollment($course->id)?->is_suspended) {
+            return redirect()->route('student.courses.learn', $course);
+        }
+
+        $result = $this->installmentService->initiateInstallmentPlan($user, $course);
+
+        if ($result['success']) {
+            return redirect()->away($result['redirect_url']);
+        }
+
+        return back()
+            ->with('error', $result['message'])
+            ->withErrors(['payment' => $result['message']]);
+    }
+
     public function learn(Course $course)
     {
         $user = auth()->user();
@@ -298,6 +323,12 @@ class CourseController extends Controller
         }
 
         $enrollment = $user->getEnrollment($course->id);
+
+        // Block access if enrollment is suspended (missed installment)
+        if ($enrollment->is_suspended) {
+            return redirect()->route('student.courses.show', $course)
+                ->with('error', __('تم إيقاف وصولك مؤقتاً بسبب عدم سداد القسط. يرجى الدفع لاستعادة الوصول.'));
+        }
         $enrollment->load(['course.lessons', 'lessonProgress']);
         
         // Update last accessed

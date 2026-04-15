@@ -41,6 +41,7 @@ class Lesson extends Model
         'has_quiz',
         'has_pronunciation_exercise',
         'has_writing_exercise',
+        'has_listening_exercise',
         'vdocipher_video_id',
     ];
 
@@ -51,6 +52,7 @@ class Lesson extends Model
             'has_quiz' => 'boolean',
             'has_pronunciation_exercise' => 'boolean',
             'has_writing_exercise' => 'boolean',
+            'has_listening_exercise' => 'boolean',
         ];
     }
 
@@ -132,6 +134,14 @@ class Lesson extends Model
     public function writingExercise()
     {
         return $this->hasOne(WritingExercise::class);
+    }
+
+    /**
+     * Listening exercise for this lesson
+     */
+    public function listeningExercise()
+    {
+        return $this->hasOne(ListeningExercise::class);
     }
 
     /**

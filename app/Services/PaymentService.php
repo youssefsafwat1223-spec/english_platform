@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Course;
+use App\Models\InstallmentPlan;
 use App\Models\Payment;
 use App\Models\PromoCode;
 use App\Models\Referral;
@@ -43,22 +44,22 @@ class PaymentService
         $payment = null;
 
         try {
-            $amount = (float) $course->price;
+            $amount         = (float) $course->price;
             $discountAmount = (float) ($discountData['discount_amount'] ?? 0);
-            $finalAmount = max(1, (float) ($discountData['final_amount'] ?? ($amount - $discountAmount)));
+            $finalAmount    = max(1, (float) ($discountData['final_amount'] ?? ($amount - $discountAmount)));
 
             $payment = Payment::create([
-                'user_id' => $user->id,
-                'course_id' => $course->id,
-                'promo_code_id' => $promoCode?->id,
-                'transaction_id' => 'TXN-' . strtoupper(Str::random(16)),
-                'amount' => $amount,
-                'currency' => 'SAR',
+                'user_id'         => $user->id,
+                'course_id'       => $course->id,
+                'promo_code_id'   => $promoCode?->id,
+                'transaction_id'  => 'TXN-' . strtoupper(Str::random(16)),
+                'amount'          => $amount,
+                'currency'        => 'SAR',
                 'discount_amount' => $discountAmount,
-                'discount_type' => $discountData['discount_type'] ?? null,
-                'discount_code' => $discountCode ?? $promoCode?->code,
-                'final_amount' => $finalAmount,
-                'payment_status' => 'pending',
+                'discount_type'   => $discountData['discount_type'] ?? null,
+                'discount_code'   => $discountCode ?? $promoCode?->code,
+                'final_amount'    => $finalAmount,
+                'payment_status'  => 'pending',
             ]);
 
             $productResponse = $this->streamPayRequest('post', '/products', [
@@ -402,6 +403,164 @@ class PaymentService
         ];
     }
 
+    /**
+     * Create a StreamPay subscription for a 3-installment course plan.
+     * Returns the first invoice URL to redirect the student to.
+     */
+    public function createSubscription(User $user, Course $course, InstallmentPlan $plan): array
+    {
+        try {
+            // Consumer is REQUIRED for subscriptions
+            $consumerId = $this->resolveStreamPayConsumerId($user);
+
+            if (!$consumerId) {
+                return [
+                    'success' => false,
+                    'message' => 'Could not set up your payment profile. Please contact support.',
+                ];
+            }
+
+            // Create a product priced at one installment amount
+            $productResponse = $this->streamPayRequest('post', '/products', [
+                'name'        => "Installment — {$course->title}",
+                'description' => "Monthly installment payment for {$user->name}",
+                'type'        => 'ONE_OFF',
+                'active'      => true,
+                'price'       => (float) $plan->installment_amount,
+                'currency'    => 'SAR',
+            ]);
+
+            if (!$productResponse->successful()) {
+                $message = $this->extractGatewayErrorMessage($productResponse, 'Could not create installment product.');
+                Log::error('StreamPay subscription product creation failed', [
+                    'plan_id'  => $plan->id,
+                    'status'   => $productResponse->status(),
+                    'response' => $productResponse->json(),
+                ]);
+                return ['success' => false, 'message' => $message];
+            }
+
+            $productId = $productResponse->json('id');
+
+            // Create subscription: 3 monthly billing cycles
+            $subscriptionResponse = $this->streamPayRequest('post', '/subscriptions', [
+                'organization_consumer_id' => $consumerId,
+                'items'                    => [['product_id' => $productId, 'quantity' => 1]],
+                'period_start'             => now()->toIso8601String(),
+                'until_cycle_number'       => 3,
+                'recurring_interval'       => 'MONTH',
+                'recurring_interval_count' => 1,
+                'notify_consumer'          => true,
+                'currency'                 => 'SAR',
+                'description'             => "3 installments for {$course->title}",
+            ]);
+
+            if (!$subscriptionResponse->successful()) {
+                $message = $this->extractGatewayErrorMessage($subscriptionResponse, 'Could not create installment plan.');
+                Log::error('StreamPay subscription creation failed', [
+                    'plan_id'  => $plan->id,
+                    'status'   => $subscriptionResponse->status(),
+                    'response' => $subscriptionResponse->json(),
+                ]);
+                return ['success' => false, 'message' => $message];
+            }
+
+            $subscriptionData   = $subscriptionResponse->json();
+            $subscriptionId     = $subscriptionData['id'];
+            $latestInvoiceId    = $subscriptionData['latest_invoice_id'] ?? null;
+
+            // Persist the subscription + product IDs so webhooks can resolve this plan
+            $plan->update([
+                'streampay_subscription_id' => $subscriptionId,
+                'streampay_product_id'      => $productId,
+            ]);
+
+            Log::info('StreamPay subscription created', [
+                'plan_id'         => $plan->id,
+                'subscription_id' => $subscriptionId,
+            ]);
+
+            // Fetch first invoice to get the payment URL
+            $invoiceUrl = null;
+            if ($latestInvoiceId) {
+                $invoiceResponse = $this->streamPayRequest('get', "/invoices/{$latestInvoiceId}");
+                if ($invoiceResponse->successful()) {
+                    $invoiceUrl = $invoiceResponse->json('url');
+                }
+            }
+
+            if (!$invoiceUrl) {
+                Log::error('StreamPay subscription created but no invoice URL available', [
+                    'plan_id'           => $plan->id,
+                    'subscription_id'   => $subscriptionId,
+                    'latest_invoice_id' => $latestInvoiceId,
+                ]);
+                return [
+                    'success' => false,
+                    'message' => 'Installment plan created but payment link is unavailable. Please contact support.',
+                ];
+            }
+
+            return [
+                'success'         => true,
+                'redirect_url'    => $invoiceUrl,
+                'subscription_id' => $subscriptionId,
+            ];
+        } catch (ConnectionException $e) {
+            $message = $this->paymentGatewayConnectionMessage($e);
+            Log::error('StreamPay subscription connection failed', [
+                'plan_id' => $plan->id,
+                'error'   => $e->getMessage(),
+            ]);
+            return ['success' => false, 'message' => $message];
+        } catch (\Throwable $e) {
+            Log::error('StreamPay subscription exception', [
+                'plan_id' => $plan->id,
+                'error'   => $e->getMessage(),
+            ]);
+            return ['success' => false, 'message' => 'An unexpected error occurred. Please try again.'];
+        }
+    }
+
+    /**
+     * Freeze a StreamPay subscription (suspends invoice generation).
+     */
+    public function freezeSubscription(string $subscriptionId, int $days = 30): bool
+    {
+        try {
+            $response = $this->streamPayRequest('post', "/subscriptions/{$subscriptionId}/freeze", [
+                'freeze_start' => now()->toIso8601String(),
+                'freeze_end'   => now()->addDays($days)->toIso8601String(),
+            ]);
+            return $response->successful();
+        } catch (\Throwable $e) {
+            Log::error('StreamPay subscription freeze failed', [
+                'subscription_id' => $subscriptionId,
+                'error'           => $e->getMessage(),
+            ]);
+            return false;
+        }
+    }
+
+    /**
+     * Cancel a StreamPay subscription.
+     */
+    public function cancelSubscription(string $subscriptionId): bool
+    {
+        try {
+            $response = $this->streamPayRequest('post', "/subscriptions/{$subscriptionId}/cancel", [
+                'cancel_ongoing_invoices' => false,
+            ]);
+            return $response->successful();
+        } catch (\Throwable $e) {
+            Log::error('StreamPay subscription cancel failed', [
+                'subscription_id' => $subscriptionId,
+                'error'           => $e->getMessage(),
+            ]);
+            return false;
+        }
+    }
+
     public function finalizeSuccessfulPayment(Payment $payment, ?string $gatewayPaymentId = null, ?array $gatewayResponse = null): Payment
     {
         return DB::transaction(function () use ($payment, $gatewayPaymentId, $gatewayResponse) {
@@ -421,11 +580,18 @@ class PaymentService
     {
         return DB::transaction(function () use ($payment, $gatewayResponse) {
             $payment = Payment::query()
-                ->with(['course', 'enrollment'])
+                ->with(['course', 'enrollment', 'promoCode'])
                 ->lockForUpdate()
                 ->findOrFail($payment->id);
 
-            return $payment->refund($gatewayResponse);
+            $refunded = $payment->refund($gatewayResponse);
+
+            // Reverse promo code usage so it can be reused after a refund
+            if ($payment->discount_type === 'promo' && $payment->promoCode && $payment->promoCode->used_count > 0) {
+                $payment->promoCode->decrement('used_count');
+            }
+
+            return $refunded;
         });
     }
 

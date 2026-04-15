@@ -232,7 +232,7 @@ class PaymentServiceTest extends TestCase
 
     public function test_checkout_page_displays_payment_error_inline(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['onboarding_completed' => true]);
         $course = Course::factory()->create([
             'slug' => 'english-basics',
         ]);

@@ -19,12 +19,18 @@ class CourseLevel extends Model
         'thumbnail',
         'order_index',
         'is_active',
+        'has_listening_exercise',
+        'has_writing_exercise',
+        'has_speaking_exercise',
     ];
 
     protected function casts(): array
     {
         return [
-            'is_active' => 'boolean',
+            'is_active'              => 'boolean',
+            'has_listening_exercise' => 'boolean',
+            'has_writing_exercise'   => 'boolean',
+            'has_speaking_exercise'  => 'boolean',
         ];
     }
 
@@ -49,6 +55,21 @@ class CourseLevel extends Model
     public function lessons()
     {
         return $this->hasMany(Lesson::class)->orderBy('order_index');
+    }
+
+    public function listeningExercise()
+    {
+        return $this->hasOne(ListeningExercise::class);
+    }
+
+    public function writingExercise()
+    {
+        return $this->hasOne(WritingExercise::class);
+    }
+
+    public function speakingExercise()
+    {
+        return $this->hasOne(PronunciationExercise::class);
     }
 
     // ==================== SCOPES ====================
