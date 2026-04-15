@@ -18,8 +18,6 @@ class Payment extends Model
         'user_id',
         'course_id',
         'promo_code_id',
-        'installment_plan_id',
-        'installment_number',
         'transaction_id',
         'amount',
         'currency',

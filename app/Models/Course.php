@@ -33,7 +33,6 @@ class Course extends Model
         'short_description',
         'description',
         'price',
-        'payment_type',
         'thumbnail',
         'intro_video_url',
         'estimated_duration_weeks',
@@ -52,16 +51,6 @@ class Course extends Model
             'average_rating' => 'decimal:2',
             'is_active'      => 'boolean',
         ];
-    }
-
-    public function getInstallmentAmountAttribute(): float
-    {
-        return round((float) $this->price / 3, 2);
-    }
-
-    public function getIsInstallmentAttribute(): bool
-    {
-        return $this->payment_type === 'installment';
     }
 
     /**

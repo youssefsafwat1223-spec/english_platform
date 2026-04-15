@@ -76,11 +76,6 @@ class Enrollment extends Model
         return $this->hasOne(Certificate::class);
     }
 
-    public function installmentPlan()
-    {
-        return $this->hasOne(InstallmentPlan::class);
-    }
-
     // ==================== SCOPES ====================
 
     public function scopeActive($query)
@@ -143,6 +138,7 @@ class Enrollment extends Model
         $totalLessons = (int) $this->course->lessons()
             ->whereNotNull('title')
             ->whereRaw("TRIM(title) <> ''")
+            ->reorder()
             ->selectRaw("COUNT(DISTINCT LOWER(TRIM(title))) as aggregate")
             ->value('aggregate');
 
@@ -152,6 +148,7 @@ class Enrollment extends Model
             ->where('lessons.course_id', $this->course_id)
             ->whereNotNull('lessons.title')
             ->whereRaw("TRIM(lessons.title) <> ''")
+            ->reorder()
             ->selectRaw("COUNT(DISTINCT LOWER(TRIM(lessons.title))) as aggregate")
             ->value('aggregate');
 

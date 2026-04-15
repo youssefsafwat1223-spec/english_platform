@@ -258,6 +258,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin', 'active', '
         ->name('students.enrollments');
     Route::get('/students/{student}/progress/{enrollment}', [AdminStudentController::class, 'progress'])
         ->name('students.progress');
+    Route::post('/students/{student}/enrollments/{enrollment}/toggle-access', [AdminStudentController::class, 'toggleEnrollmentAccess'])
+        ->name('students.enrollments.toggle-access');
 
     Route::get('/device-requests', [AdminDeviceAccessRequestController::class, 'index'])
         ->name('device-requests.index');
@@ -415,9 +417,6 @@ Route::prefix('student')->name('student.')->middleware(['auth', 'student', 'acti
     Route::post('/courses/{course}/payment', [StudentCourseController::class, 'processPayment'])
         ->middleware('throttle:course-payment')
         ->name('courses.payment');
-    Route::post('/courses/{course}/installment', [StudentCourseController::class, 'payInstallment'])
-        ->middleware('throttle:course-payment')
-        ->name('courses.installment');
     Route::get('/courses/{course}/certificate', [StudentCourseController::class, 'certificateInfo'])
         ->name('courses.certificate.info')
         ->middleware('enrolled');

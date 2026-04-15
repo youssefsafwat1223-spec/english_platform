@@ -7,7 +7,6 @@ use App\Models\Course;
 use App\Models\Payment;
 use App\Models\PromoCode;
 use App\Services\CertificateService;
-use App\Services\InstallmentService;
 use App\Services\PaymentService;
 use App\Services\ReferralService;
 use Illuminate\Http\Request;
@@ -18,19 +17,16 @@ class CourseController extends Controller
     private $paymentService;
     private $referralService;
     private $certificateService;
-    private $installmentService;
 
     public function __construct(
         PaymentService $paymentService,
         ReferralService $referralService,
-        CertificateService $certificateService,
-        InstallmentService $installmentService
+        CertificateService $certificateService
     )
     {
         $this->paymentService = $paymentService;
         $this->referralService = $referralService;
         $this->certificateService = $certificateService;
-        $this->installmentService = $installmentService;
     }
 
     public function index(Request $request)
@@ -107,7 +103,7 @@ class CourseController extends Controller
 
         if ($isEnrolled) {
             $enrollment = $user->getEnrollment($course->id);
-            $enrollment->load(['lessonProgress', 'quizAttempts', 'installmentPlan']);
+            $enrollment->load(['lessonProgress', 'quizAttempts']);
 
             $completedLessonIds = $enrollment->lessonProgress
                 ->where('is_completed', true)
@@ -294,25 +290,6 @@ class CourseController extends Controller
             ->withErrors(['payment' => $result['message']]);
     }
 
-    public function payInstallment(Course $course)
-    {
-        $user = auth()->user();
-
-        if ($user->isEnrolledIn($course->id) && !$user->getEnrollment($course->id)?->is_suspended) {
-            return redirect()->route('student.courses.learn', $course);
-        }
-
-        $result = $this->installmentService->initiateInstallmentPlan($user, $course);
-
-        if ($result['success']) {
-            return redirect()->away($result['redirect_url']);
-        }
-
-        return back()
-            ->with('error', $result['message'])
-            ->withErrors(['payment' => $result['message']]);
-    }
-
     public function learn(Course $course)
     {
         $user = auth()->user();
@@ -324,10 +301,10 @@ class CourseController extends Controller
 
         $enrollment = $user->getEnrollment($course->id);
 
-        // Block access if enrollment is suspended (missed installment)
+        // Block access if enrollment is suspended by admin
         if ($enrollment->is_suspended) {
             return redirect()->route('student.courses.show', $course)
-                ->with('error', __('تم إيقاف وصولك مؤقتاً بسبب عدم سداد القسط. يرجى الدفع لاستعادة الوصول.'));
+                ->with('error', __('تم إيقاف وصولك لهذا الكورس. يرجى التواصل مع الدعم.'));
         }
         $enrollment->load(['course.lessons', 'lessonProgress']);
         

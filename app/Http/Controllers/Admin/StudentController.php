@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Enrollment;
 use App\Models\User;
 use App\Services\TelegramService;
 use Illuminate\Http\Request;
@@ -133,6 +134,23 @@ class StudentController extends Controller
             ->paginate(20);
 
         return view('admin.students.enrollments', compact('student', 'enrollments'));
+    }
+
+    public function toggleEnrollmentAccess(User $student, Enrollment $enrollment)
+    {
+        if ($enrollment->user_id !== $student->id) {
+            abort(404);
+        }
+
+        if ($enrollment->is_suspended) {
+            $enrollment->update(['access_suspended_at' => null]);
+            $message = "تم فتح وصول {$student->name} إلى كورس {$enrollment->course->title}";
+        } else {
+            $enrollment->update(['access_suspended_at' => now()]);
+            $message = "تم قفل وصول {$student->name} إلى كورس {$enrollment->course->title}";
+        }
+
+        return back()->with('success', $message);
     }
 
     public function progress(User $student, $enrollmentId)

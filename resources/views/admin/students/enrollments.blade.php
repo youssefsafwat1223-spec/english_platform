@@ -21,8 +21,15 @@
                             <h3 class="text-xl font-extrabold" style="color: var(--color-text);">{{ $enrollment->course->title }}</h3>
                             <p class="text-xs" style="color: var(--color-text-muted);">Enrolled {{ $enrollment->created_at->format('M d, Y') }}</p>
                         </div>
-                        @if($enrollment->is_completed)<span class="badge-success">{{ __('Completed') }}</span>
-                        @else<span class="inline-flex items-center px-2 py-0.5 rounded-lg bg-primary-500/10 text-primary-500 text-xs font-bold">{{ __('In Progress') }}</span>@endif
+                        <div class="flex items-center gap-2">
+                            @if($enrollment->is_suspended)
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-lg bg-red-500/10 text-red-500 text-xs font-bold">🔒 {{ __('Suspended') }}</span>
+                            @elseif($enrollment->is_completed)
+                                <span class="badge-success">{{ __('Completed') }}</span>
+                            @else
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-lg bg-primary-500/10 text-primary-500 text-xs font-bold">{{ __('In Progress') }}</span>
+                            @endif
+                        </div>
                     </div>
                     <div class="mb-4">
                         <div class="flex justify-between text-sm mb-2"><span style="color: var(--color-text-muted);">{{ __('Progress') }}</span><span class="font-bold" style="color: var(--color-text);">{{ round($enrollment->progress_percentage) }}%</span></div>
@@ -33,7 +40,21 @@
                         <div><div class="font-bold text-emerald-500">{{ $passedQuizzes }}</div><div class="text-xs" style="color: var(--color-text-muted);">{{ __('Quizzes') }}</div></div>
                         <div><div class="font-bold text-amber-500">{{ $timeSpent ? gmdate('H:i', $timeSpent) : '0:00' }}</div><div class="text-xs" style="color: var(--color-text-muted);">{{ __('Time') }}</div></div>
                     </div>
-                    <div class="mt-4"><a href="{{ route('admin.students.progress', [$student, $enrollment]) }}" class="btn-secondary w-full text-center block">{{ __('View Detailed Progress') }}</a></div>
+                    <div class="mt-4 flex gap-2">
+                        <a href="{{ route('admin.students.progress', [$student, $enrollment]) }}" class="btn-secondary flex-1 text-center block">{{ __('View Detailed Progress') }}</a>
+                        <form method="POST" action="{{ route('admin.students.enrollments.toggle-access', [$student, $enrollment]) }}" class="flex-shrink-0">
+                            @csrf
+                            @if($enrollment->is_suspended)
+                                <button type="submit" class="px-3 py-2 rounded-lg bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/20 text-xs font-bold transition-colors" onclick="return confirm('فتح وصول الطالب لهذا الكورس؟')">
+                                    🔓 فتح
+                                </button>
+                            @else
+                                <button type="submit" class="px-3 py-2 rounded-lg bg-red-500/10 text-red-600 hover:bg-red-500/20 text-xs font-bold transition-colors" onclick="return confirm('قفل وصول الطالب لهذا الكورس؟')">
+                                    🔒 قفل
+                                </button>
+                            @endif
+                        </form>
+                    </div>
                 </div>
             </div>
             @empty
