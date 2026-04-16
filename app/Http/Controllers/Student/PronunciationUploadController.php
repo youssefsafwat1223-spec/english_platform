@@ -23,10 +23,12 @@ class PronunciationUploadController extends Controller
         ]);
 
         $user = auth()->user();
-        $exercise = PronunciationExercise::query()->with('lesson')->findOrFail((int) $request->exercise_id);
-        $lesson = $exercise->lesson;
+        $exercise = PronunciationExercise::query()->with(['lesson', 'courseLevel'])->findOrFail((int) $request->exercise_id);
 
-        if (!$user->isEnrolledIn($lesson->course_id)) {
+        $courseId = $exercise->lesson?->course_id
+                 ?? $exercise->courseLevel?->course_id;
+
+        if (!$courseId || !$user->isEnrolledIn($courseId)) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
