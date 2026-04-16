@@ -41,9 +41,11 @@
                 audioUrl: '{{ $exercise->audio_url ?? '' }}',
                 csrfToken: '{{ csrf_token() }}'
              })"
+             x-init="initTTS()"
              x-cloak>
 
-            {{-- Audio Player Card --}}
+            @if($exercise->audio_url)
+            {{-- Global Audio Player Card (only if audio file exists) --}}
             <div class="card p-6 mb-6">
                 <div class="flex items-center gap-3 mb-4">
                     <div class="w-10 h-10 rounded-full bg-accent-100 dark:bg-accent-900/30 flex items-center justify-center">
@@ -61,66 +63,100 @@
                     </div>
                 </div>
 
-                @if($exercise->audio_url)
-                    {{-- Custom Audio Player --}}
-                    <div class="bg-slate-100 dark:bg-slate-800 rounded-2xl p-4">
-                        <audio x-ref="audioEl"
-                               src="{{ $exercise->audio_url }}"
-                               @timeupdate="currentTime = $event.target.currentTime"
-                               @loadedmetadata="duration = $event.target.duration"
-                               @ended="isPlaying = false"
-                               class="hidden">
-                        </audio>
+                <div class="bg-slate-100 dark:bg-slate-800 rounded-2xl p-4">
+                    <audio x-ref="audioEl"
+                           src="{{ $exercise->audio_url }}"
+                           @timeupdate="currentTime = $event.target.currentTime"
+                           @loadedmetadata="duration = $event.target.duration"
+                           @ended="isPlaying = false"
+                           class="hidden">
+                    </audio>
 
-                        <div class="flex items-center gap-4">
-                            {{-- Play/Pause --}}
-                            <button @click="togglePlay()"
-                                    class="w-12 h-12 rounded-full bg-accent-500 hover:bg-accent-600 text-white flex items-center justify-center transition-all hover:scale-105 shadow-md flex-shrink-0">
-                                <svg x-show="!isPlaying" class="w-5 h-5 ms-0.5" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M8 5v14l11-7z"/>
-                                </svg>
-                                <svg x-show="isPlaying" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
-                                </svg>
-                            </button>
+                    <div class="flex items-center gap-4">
+                        <button @click="togglePlay()"
+                                class="w-12 h-12 rounded-full bg-accent-500 hover:bg-accent-600 text-white flex items-center justify-center transition-all hover:scale-105 shadow-md flex-shrink-0">
+                            <svg x-show="!isPlaying" class="w-5 h-5 ms-0.5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M8 5v14l11-7z"/>
+                            </svg>
+                            <svg x-show="isPlaying" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+                            </svg>
+                        </button>
 
-                            {{-- Progress bar --}}
-                            <div class="flex-1">
-                                <input type="range" min="0" :max="duration || 100" :value="currentTime"
-                                       @input="seekTo($event.target.value)"
-                                       class="w-full h-2 rounded-full accent-accent-500 cursor-pointer">
-                                <div class="flex justify-between text-xs mt-1" style="color:var(--color-text-muted)">
-                                    <span x-text="formatTime(currentTime)">0:00</span>
-                                    <span x-text="formatTime(duration)">0:00</span>
-                                </div>
-                            </div>
-
-                            {{-- Listen count --}}
-                            <div class="text-sm font-bold px-3 py-1 rounded-full bg-white dark:bg-slate-700 shadow-sm flex-shrink-0" style="color:var(--color-text-muted)">
-                                <svg class="w-4 h-4 inline me-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                </svg>
-                                <span x-text="listenCount"></span>
+                        <div class="flex-1">
+                            <input type="range" min="0" :max="duration || 100" :value="currentTime"
+                                   @input="seekTo($event.target.value)"
+                                   class="w-full h-2 rounded-full accent-accent-500 cursor-pointer">
+                            <div class="flex justify-between text-xs mt-1" style="color:var(--color-text-muted)">
+                                <span x-text="formatTime(currentTime)">0:00</span>
+                                <span x-text="formatTime(duration)">0:00</span>
                             </div>
                         </div>
+
+                        <div class="text-sm font-bold px-3 py-1 rounded-full bg-white dark:bg-slate-700 shadow-sm flex-shrink-0" style="color:var(--color-text-muted)">
+                            <svg class="w-4 h-4 inline me-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            </svg>
+                            <span x-text="listenCount"></span>
+                        </div>
                     </div>
-                @else
-                    <div class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 rounded-xl p-4 text-amber-700 dark:text-amber-300 text-sm font-medium">
-                        {{ $isArabic ? 'الصوت قيد التجهيز، يرجى المحاولة لاحقاً.' : 'Audio is being prepared, please try again later.' }}
-                    </div>
-                @endif
+                </div>
             </div>
+            @else
+            {{-- Instructions Card (no global audio — each question has its own TTS) --}}
+            <div class="card p-6 mb-6">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-accent-100 dark:bg-accent-900/30 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-accent-600 dark:text-accent-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072M12 18.364A8 8 0 1112 5.636"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-lg" style="color:var(--color-text)">
+                            {{ $isArabic ? 'تدريب الاستماع' : 'Listening Practice' }}
+                        </h3>
+                        <p class="text-sm" style="color:var(--color-text-muted)">
+                            {{ $isArabic ? 'اضغط على زر 🔊 بجانب كل سؤال للاستماع، ثم أجب' : 'Press the 🔊 button next to each question to listen, then answer' }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            @endif
 
             {{-- Questions --}}
             <div x-show="!submitted" class="card p-6 space-y-6">
-                <h3 class="font-bold text-lg" style="color:var(--color-text)">
-                    {{ $isArabic ? 'أجب على الأسئلة' : 'Answer the questions' }}
-                </h3>
+                <div class="flex items-center justify-between">
+                    <h3 class="font-bold text-lg" style="color:var(--color-text)">
+                        {{ $isArabic ? 'أجب على الأسئلة' : 'Answer the questions' }}
+                    </h3>
+                    {{-- Mute/Unmute toggle --}}
+                    <button type="button" @click="toggleMute()"
+                            class="inline-flex items-center gap-2 rounded-full border border-slate-200 dark:border-white/10 px-3 py-2 text-xs font-black bg-slate-50 dark:bg-slate-800/60 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700/70 transition-colors">
+                        <svg x-show="!audioMuted" class="w-4 h-4 text-accent-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5L6 9H2v6h4l5 4V5zM15.54 8.46a5 5 0 010 7.07M19.07 4.93a10 10 0 010 14.14"/>
+                        </svg>
+                        <svg x-show="audioMuted" x-cloak class="w-4 h-4 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 9l6 6M15 9l-6 6M11 5L6 9H2v6h4l5 4V5z"/>
+                        </svg>
+                        <span x-text="audioMuted ? '{{ $isArabic ? 'تشغيل الصوت' : 'Unmute' }}' : '{{ $isArabic ? 'كتم الصوت' : 'Mute' }}'"></span>
+                    </button>
+                </div>
 
                 <template x-for="(q, i) in questions" :key="i">
                     <div class="border border-slate-200 dark:border-slate-700 rounded-xl p-5 space-y-3">
-                        {{-- Question text --}}
-                        <p class="font-semibold" style="color:var(--color-text)" x-text="(i+1) + '. ' + (q.question || q.prompt)"></p>
+                        {{-- Question text + Listen button --}}
+                        <div class="flex items-start gap-3">
+                            <button type="button" @click="speakText(q.question || q.prompt, i)"
+                                    class="shrink-0 w-10 h-10 rounded-full flex items-center justify-center transition-all shadow-sm"
+                                    :class="speakingIndex === i
+                                        ? 'bg-accent-500 text-white scale-110 animate-pulse'
+                                        : 'bg-accent-100 dark:bg-accent-900/30 text-accent-600 dark:text-accent-400 hover:bg-accent-200 dark:hover:bg-accent-800/40 hover:scale-105'">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M6.5 5.5A1.5 1.5 0 0 1 9 6.7v6.6a1.5 1.5 0 0 1-2.5 1.2L3 11.4a1.5 1.5 0 0 1 0-2.8l3.5-3.1Zm6.22-.72a.75.75 0 0 1 1.06 0 7.25 7.25 0 0 1 0 10.25.75.75 0 1 1-1.06-1.06 5.75 5.75 0 0 0 0-8.13.75.75 0 0 1 0-1.06Zm-2.12 2.12a.75.75 0 0 1 1.06 0 4.25 4.25 0 0 1 0 6.01.75.75 0 1 1-1.06-1.06 2.75 2.75 0 0 0 0-3.89.75.75 0 0 1 0-1.06Z"/>
+                                </svg>
+                            </button>
+                            <p class="font-semibold pt-2" style="color:var(--color-text)" x-text="(i+1) + '. ' + (q.question || q.prompt)"></p>
+                        </div>
 
                         {{-- MCQ --}}
                         <template x-if="q.type === 'mcq'">
@@ -286,6 +322,10 @@ function listeningPractice(config) {
         duration:    0,
         listenCount: 0,
 
+        // TTS state
+        audioMuted:    false,
+        speakingIndex: null,
+
         // quiz state
         answers:      {},
         loading:      false,
@@ -296,11 +336,55 @@ function listeningPractice(config) {
         passed:       false,
         results:      [],
 
+        initTTS() {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.getVoices();
+                window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+            }
+        },
+
         get allAnswered() {
             return Object.keys(this.answers).length === this.questions.length
                 && Object.values(this.answers).every(v => v !== null && v !== undefined && v !== '');
         },
 
+        // ─── TTS (same as quiz system) ───
+        detectLang(text) {
+            return /[\u0600-\u06FF]/.test(text) ? 'ar-SA' : 'en-US';
+        },
+
+        speakText(text, index) {
+            if (!('speechSynthesis' in window) || this.audioMuted) return;
+            if (!text || !text.trim()) return;
+
+            window.speechSynthesis.cancel();
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = this.detectLang(text);
+            utterance.rate = 0.9;
+
+            const voices = window.speechSynthesis.getVoices();
+            const preferred = voices.find(v =>
+                v.lang.toLowerCase().startsWith(utterance.lang.toLowerCase().slice(0, 2))
+            );
+            if (preferred) utterance.voice = preferred;
+
+            this.speakingIndex = index;
+            utterance.onend = () => { this.speakingIndex = null; };
+            utterance.onerror = () => { this.speakingIndex = null; };
+
+            window.speechSynthesis.speak(utterance);
+        },
+
+        toggleMute() {
+            this.audioMuted = !this.audioMuted;
+            if (this.audioMuted && 'speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                this.speakingIndex = null;
+            }
+        },
+
+        // ─── Global audio player (when audio_url exists) ───
         togglePlay() {
             const el = this.$refs.audioEl;
             if (!el) return;
@@ -328,6 +412,7 @@ function listeningPractice(config) {
             return m + ':' + s;
         },
 
+        // ─── Submit / Reset ───
         async submitAnswers() {
             if (!this.allAnswered || this.loading) return;
             this.loading = true;
@@ -364,6 +449,8 @@ function listeningPractice(config) {
             if (el) { el.pause(); el.currentTime = 0; }
             this.isPlaying   = false;
             this.currentTime = 0;
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            this.speakingIndex = null;
         },
     };
 }
