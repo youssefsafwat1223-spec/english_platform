@@ -28,14 +28,16 @@ class PronunciationController extends Controller
     public function show(PronunciationExercise $exercise)
     {
         $user = auth()->user();
-        $lesson = $exercise->lesson;
 
-        // Check enrollment
-        if (!$user->isEnrolledIn($lesson->course_id)) {
+        // Resolve course_id from lesson or courseLevel
+        $courseId = $exercise->lesson?->course_id
+                 ?? $exercise->courseLevel?->course_id;
+
+        if (!$courseId || !$user->isEnrolledIn($courseId)) {
             abort(403);
         }
 
-        $exercise->load('lesson.course');
+        $exercise->load(['lesson.course', 'courseLevel.course']);
 
         // Get user's previous attempts
         $attempts = $exercise->attempts()

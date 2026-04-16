@@ -17,13 +17,16 @@ class WritingController extends Controller
     public function show(WritingExercise $writingExercise)
     {
         $user = auth()->user();
-        $lesson = $writingExercise->lesson;
 
-        if (!$user->isEnrolledIn($lesson->course_id)) {
+        // Resolve course_id from lesson or courseLevel
+        $courseId = $writingExercise->lesson?->course_id
+                 ?? $writingExercise->courseLevel?->course_id;
+
+        if (!$courseId || !$user->isEnrolledIn($courseId)) {
             abort(403);
         }
 
-        $writingExercise->load('lesson.course');
+        $writingExercise->load(['lesson.course', 'courseLevel.course']);
 
         $attempts = $writingExercise->submissions()
             ->where('user_id', $user->id)
