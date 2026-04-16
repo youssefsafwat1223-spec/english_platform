@@ -21,14 +21,22 @@
             badgeIcon='<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072M12 18.364A8 8 0 1112 5.636"/></svg>'
         >
             <x-slot name="actions">
-                @if($context && method_exists($context, 'course'))
-                <a href="{{ route('student.lessons.show', [$context->course, $context]) }}"
-                   class="btn-ghost btn-sm flex items-center gap-2">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $isArabic ? 'M9 5l7 7-7 7' : 'M15 19l-7-7 7-7' }}"/>
-                    </svg>
-                    {{ $isArabic ? 'العودة للدرس' : 'Back to lesson' }}
-                </a>
+                @if($context instanceof \App\Models\Lesson)
+                    <a href="{{ route('student.lessons.show', [$context->course, $context]) }}"
+                       class="btn-ghost btn-sm flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $isArabic ? 'M9 5l7 7-7 7' : 'M15 19l-7-7 7-7' }}"/>
+                        </svg>
+                        {{ $isArabic ? 'العودة للدرس' : 'Back to lesson' }}
+                    </a>
+                @elseif($context instanceof \App\Models\CourseLevel)
+                    <a href="{{ route('student.courses.learn', $context->course) }}"
+                       class="btn-ghost btn-sm flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $isArabic ? 'M9 5l7 7-7 7' : 'M15 19l-7-7 7-7' }}"/>
+                        </svg>
+                        {{ $isArabic ? 'العودة للمنهج' : 'Back to course' }}
+                    </a>
                 @endif
             </x-slot>
         </x-student.page-header>
