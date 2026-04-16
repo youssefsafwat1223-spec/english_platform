@@ -16,6 +16,7 @@ class PronunciationExercise extends Model
         'sentence_1',
         'sentence_2',
         'sentence_3',
+        'sentences_json',
         'reference_audio_1',
         'reference_audio_2',
         'reference_audio_3',
@@ -32,6 +33,7 @@ class PronunciationExercise extends Model
         return [
             'allow_retake'    => 'boolean',
             'vocabulary_json' => 'array',
+            'sentences_json'  => 'array',
         ];
     }
 
@@ -63,7 +65,7 @@ class PronunciationExercise extends Model
     // ==================== ACCESSORS ====================
 
     /**
-     * Get all sentences as array
+     * Get all sentences as array (fixed fields + JSON overflow)
      */
     public function getSentencesAttribute()
     {
@@ -79,6 +81,16 @@ class PronunciationExercise extends Model
 
         if ($this->sentence_3) {
             $sentences[3] = $this->sentence_3;
+        }
+
+        // Append extra sentences from sentences_json
+        if (is_array($this->sentences_json)) {
+            $nextKey = empty($sentences) ? 1 : max(array_keys($sentences)) + 1;
+            foreach ($this->sentences_json as $s) {
+                if (is_string($s) && trim($s) !== '') {
+                    $sentences[$nextKey++] = trim($s);
+                }
+            }
         }
 
         return $sentences;
