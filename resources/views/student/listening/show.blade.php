@@ -120,7 +120,7 @@
                 <template x-for="(q, i) in questions" :key="i">
                     <div class="border border-slate-200 dark:border-slate-700 rounded-xl p-5 space-y-3">
                         {{-- Question text --}}
-                        <p class="font-semibold" style="color:var(--color-text)" x-text="(i+1) + '. ' + q.question"></p>
+                        <p class="font-semibold" style="color:var(--color-text)" x-text="(i+1) + '. ' + (q.question || q.prompt)"></p>
 
                         {{-- MCQ --}}
                         <template x-if="q.type === 'mcq'">
@@ -232,7 +232,7 @@
                                 </div>
                                 <div class="flex-1 text-sm">
                                     <p class="font-bold mb-1" style="color:var(--color-text)"
-                                       x-text="(i+1) + '. ' + questions[i].question"></p>
+                                       x-text="(i+1) + '. ' + (questions[i].question || questions[i].prompt)"></p>
                                     <template x-if="!r.correct">
                                         <div>
                                             <template x-if="questions[i].type === 'dictation'">
