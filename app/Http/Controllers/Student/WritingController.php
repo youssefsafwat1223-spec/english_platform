@@ -44,9 +44,11 @@ class WritingController extends Controller
         ]);
 
         $user = auth()->user();
-        $lesson = $writingExercise->lesson;
 
-        if (!$user->isEnrolledIn($lesson->course_id)) {
+        $courseId = $writingExercise->lesson?->course_id
+                 ?? $writingExercise->courseLevel?->course_id;
+
+        if (!$courseId || !$user->isEnrolledIn($courseId)) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
@@ -56,7 +58,7 @@ class WritingController extends Controller
         $submission = WritingSubmission::create([
             'writing_exercise_id' => $writingExercise->id,
             'user_id' => $user->id,
-            'lesson_id' => $lesson->id,
+            'lesson_id' => $writingExercise->lesson_id,
             'answer_text' => $answerText,
             'word_count' => $evaluation['word_count'],
             'status' => 'evaluated',

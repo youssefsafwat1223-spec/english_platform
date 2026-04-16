@@ -60,10 +60,9 @@ class PronunciationController extends Controller
         ]);
 
         $user = auth()->user();
-        $lesson = $exercise->lesson;
+        $courseId = $exercise->lesson?->course_id ?? $exercise->courseLevel?->course_id;
 
-        // Check enrollment
-        if (!$user->isEnrolledIn($lesson->course_id)) {
+        if (!$courseId || !$user->isEnrolledIn($courseId)) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
@@ -84,7 +83,7 @@ class PronunciationController extends Controller
         $analysis = $this->saveAttemptFromComparison(
             $user->id,
             $exercise->id,
-            $lesson->id,
+            $exercise->lesson_id,
             $sentenceNumber,
             $transcript,
             $expectedText,
@@ -122,9 +121,9 @@ class PronunciationController extends Controller
         ]);
 
         $user = auth()->user();
-        $lesson = $exercise->lesson;
+        $courseId = $exercise->lesson?->course_id ?? $exercise->courseLevel?->course_id;
 
-        if (!$user->isEnrolledIn($lesson->course_id)) {
+        if (!$courseId || !$user->isEnrolledIn($courseId)) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
@@ -182,9 +181,9 @@ class PronunciationController extends Controller
         ]);
 
         $user = auth()->user();
-        $lesson = $exercise->lesson;
+        $courseId = $exercise->lesson?->course_id ?? $exercise->courseLevel?->course_id;
 
-        if (!$user->isEnrolledIn($lesson->course_id)) {
+        if (!$courseId || !$user->isEnrolledIn($courseId)) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
@@ -226,9 +225,9 @@ class PronunciationController extends Controller
         ]);
 
         $user = auth()->user();
-        $lesson = $exercise->lesson;
+        $courseId = $exercise->lesson?->course_id ?? $exercise->courseLevel?->course_id;
 
-        if (!$user->isEnrolledIn($lesson->course_id)) {
+        if (!$courseId || !$user->isEnrolledIn($courseId)) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
@@ -258,7 +257,7 @@ class PronunciationController extends Controller
         $analysis = $this->saveAttemptFromComparison(
             $user->id,
             $exercise->id,
-            $lesson->id,
+            $exercise->lesson_id,
             $sentenceNumber,
             $transcript,
             $expectedText,
@@ -303,10 +302,10 @@ class PronunciationController extends Controller
         ]);
 
         $user = auth()->user();
-        $exercise = PronunciationExercise::query()->with('lesson')->findOrFail((int) $request->exercise_id);
-        $lesson = $exercise->lesson;
+        $exercise = PronunciationExercise::query()->with(['lesson', 'courseLevel'])->findOrFail((int) $request->exercise_id);
+        $courseId = $exercise->lesson?->course_id ?? $exercise->courseLevel?->course_id;
 
-        if (!$user->isEnrolledIn($lesson->course_id)) {
+        if (!$courseId || !$user->isEnrolledIn($courseId)) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
@@ -345,7 +344,7 @@ class PronunciationController extends Controller
         $analysis = $this->saveAttemptFromComparison(
             $user->id,
             $exercise->id,
-            $lesson->id,
+            $exercise->lesson_id,
             $sentenceNumber,
             $transcript,
             $expectedText,
@@ -492,7 +491,7 @@ class PronunciationController extends Controller
     private function saveAttemptFromComparison(
         int $userId,
         int $exerciseId,
-        int $lessonId,
+        ?int $lessonId,
         int $sentenceNumber,
         string $transcript,
         string $expectedText,
