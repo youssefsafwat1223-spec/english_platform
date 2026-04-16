@@ -90,31 +90,6 @@
                                 @endforeach
                             </select>
                             @error('prerequisite_course_id')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
-                        </div>
-                    </div>
-
-                    <div class="p-4 rounded-xl mb-4 border" style="background: var(--color-surface-mixed); border-color: var(--color-border); margin-top: 1.5rem;">
-                        <h3 class="text-lg font-bold mb-3" style="color: var(--color-text);">{{ __('Exam & Prerequisite Settings') }}</h3>
-                        
-                        <div class="flex items-center mb-4">
-                            <input type="checkbox" id="is_exam" name="is_exam" value="1" {{ old('is_exam', $course->is_exam) ? 'checked' : '' }} class="w-4 h-4 text-secondary-500 focus:ring-secondary-500 rounded" style="border-color: var(--color-border);">
-                            <label for="is_exam" class="ml-2 font-semibold" style="color: var(--color-text);">{{ __('This content is an Exam / Test (Changes Student UI)') }}</label>
-                        </div>
-                        
-                        <div>
-                            <label for="prerequisite_course_id" class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('Prerequisite Course/Exam (Locks this course until prerequisite is passed)') }}</label>
-                            <select id="prerequisite_course_id" name="prerequisite_course_id" class="input-glass @error('prerequisite_course_id') border-red-500 @enderror">
-                                <option value="">{{ __('None (Open access)') }}</option>
-                                @foreach($allCourses as $c)
-                                    <option value="{{ $c->id }}" {{ old('prerequisite_course_id', $course->prerequisite_course_id) == $c->id ? 'selected' : '' }}>
-                                        {{ $c->title }} {!! $c->is_exam ? '<span class="text-xs text-secondary-500">(Exam)</span>' : '' !!}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('prerequisite_course_id')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
-                        </div>
-                    </div>
-
                     <div class="flex items-center">
                         <input type="checkbox" id="is_active" name="is_active" value="1" {{ old('is_active', $course->is_active) ? 'checked' : '' }} class="w-4 h-4 text-primary-500 focus:ring-primary-500 rounded" style="border-color: var(--color-border);">
                         <label for="is_active" class="ml-2 text-sm" style="color: var(--color-text);">{{ __('Course is active') }}</label>
