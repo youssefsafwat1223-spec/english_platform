@@ -221,7 +221,7 @@
 
                                             {{-- Writing Test --}}
                                             @if($hasLevelWriting)
-                                                <a href="#" class="flex items-center justify-between gap-3 px-5 py-4 hover:bg-white/80 dark:hover:bg-slate-900 transition-colors border-t border-slate-200/60 dark:border-white/10">
+                                                <a href="{{ $level->writingExercise ? route('student.writing.show', $level->writingExercise) : '#' }}" class="flex items-center justify-between gap-3 px-5 py-4 hover:bg-white/80 dark:hover:bg-slate-900 transition-colors border-t border-slate-200/60 dark:border-white/10">
                                                     <div class="flex items-center gap-3">
                                                         <span class="w-9 h-9 rounded-xl flex items-center justify-center text-sm font-black border bg-sky-50 text-sky-600 border-sky-200 dark:bg-sky-500/10 dark:text-sky-400 dark:border-sky-500/20">✏️</span>
                                                         <div>
@@ -239,7 +239,7 @@
 
                                             {{-- Speaking Test --}}
                                             @if($hasLevelSpeaking)
-                                                <a href="#" class="flex items-center justify-between gap-3 px-5 py-4 hover:bg-white/80 dark:hover:bg-slate-900 transition-colors border-t border-slate-200/60 dark:border-white/10">
+                                                <a href="{{ $level->speakingExercise ? route('student.pronunciation.show', $level->speakingExercise) : '#' }}" class="flex items-center justify-between gap-3 px-5 py-4 hover:bg-white/80 dark:hover:bg-slate-900 transition-colors border-t border-slate-200/60 dark:border-white/10">
                                                     <div class="flex items-center gap-3">
                                                         <span class="w-9 h-9 rounded-xl flex items-center justify-center text-sm font-black border bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20">🎙️</span>
                                                         <div>
