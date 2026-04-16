@@ -16,11 +16,38 @@ class WritingEvaluationService
     {
         $normalizedAnswer = trim(preg_replace('/\s+/', ' ', $answer) ?? '');
         $wordCount = $this->countWords($normalizedAnswer);
-        $rawGrammarIssues = $this->languageToolService->check($normalizedAnswer, 'en-US');
+
+        $taskType = $this->detectTaskType($exercise, $normalizedAnswer);
+        $isPatternExercise = $taskType === 'pattern_mapping';
+        $isShortAnswer = $this->isShortAnswerType($taskType);
+        $isTranslation = in_array($taskType, ['translation_ar_en', 'translation_en_ar'], true);
+
+        // Fast path for very short objective answers: compare directly to model_answer.
+        if (in_array($taskType, ['single_word', 'fill_blank', 'word_transform', 'identification'], true)
+            && trim((string) $exercise->model_answer) !== ''
+        ) {
+            $directEval = $this->evaluateAgainstModelAnswer($exercise, $normalizedAnswer, $locale);
+            if ($directEval !== null) {
+                return array_merge($directEval, [
+                    'word_count' => $wordCount,
+                    'grammar_issues' => [],
+                    'passed' => ((int) $directEval['overall_score']) >= (int) $exercise->passing_score,
+                    'required_vocabulary_usage' => 0,
+                    'used_vocabulary_count' => 0,
+                    'vocabulary_target_met' => true,
+                    'missing_vocabulary_words' => [],
+                ]);
+            }
+        }
+
+        $skipLanguageTool = $isPatternExercise || $isShortAnswer || $isTranslation;
+        $rawGrammarIssues = $skipLanguageTool
+            ? []
+            : $this->languageToolService->check($normalizedAnswer, 'en-US');
         $grammarIssues = $this->formatGrammarIssuesForUi($rawGrammarIssues, $normalizedAnswer, $locale);
 
         $baseScores = $this->buildBaseScores($exercise, $normalizedAnswer, $wordCount, $rawGrammarIssues, $locale);
-        $aiFeedback = $this->localAiWritingCoachService->evaluate($exercise, $normalizedAnswer, $wordCount, $locale);
+        $aiFeedback = $this->localAiWritingCoachService->evaluate($exercise, $normalizedAnswer, $wordCount, $locale, $taskType);
         $aiFeedback = $this->normalizeAiFeedbackLocale($aiFeedback, $locale);
 
         $overallScore = $aiFeedback['overall_score'] ?? $baseScores['overall_score'];
@@ -74,7 +101,7 @@ class WritingEvaluationService
             );
         }
 
-        $belowMinWords = $wordCount < (int) $exercise->min_words;
+        $belowMinWords = !$isShortAnswer && !$isTranslation && $wordCount < (int) $exercise->min_words;
         if ($belowMinWords) {
             $taskScore = min($taskScore, 55);
             $overallScore = min($overallScore, max(45, ((int) $exercise->passing_score) - 8));
@@ -236,6 +263,207 @@ class WritingEvaluationService
             : 'Use a wider range of linking words and vocabulary in your next draft.';
 
         return array_slice($items, 0, 3);
+    }
+
+    private function isPatternMappingAnswer(string $answer): bool
+    {
+        $arrowCount = preg_match_all('/(?:→|->|=>|—\s*>|‑>|⇒)/u', $answer);
+
+        if ($arrowCount < 3) {
+            return false;
+        }
+
+        $wordCount = $this->countWords($answer);
+        if ($wordCount === 0) {
+            return false;
+        }
+
+        return ($arrowCount / max(1, $wordCount)) >= 0.1;
+    }
+
+    private function detectTaskType(WritingExercise $exercise, string $answer): string
+    {
+        if ($this->isPatternMappingAnswer($answer)) {
+            return 'pattern_mapping';
+        }
+
+        $title = mb_strtolower((string) $exercise->title, 'UTF-8');
+        $prompt = (string) $exercise->prompt;
+        $instructions = mb_strtolower((string) $exercise->instructions, 'UTF-8');
+        $combined = $title . ' ' . mb_strtolower($prompt, 'UTF-8') . ' ' . $instructions;
+
+        $model = trim((string) $exercise->model_answer);
+        $modelWordCount = $model === '' ? 0 : $this->countWords($model);
+        $maxWords = (int) $exercise->max_words;
+        $minWords = (int) $exercise->min_words;
+
+        $promptHasArabic = preg_match('/\p{Arabic}/u', $prompt) === 1;
+        $modelHasArabic = preg_match('/\p{Arabic}/u', $model) === 1;
+        $asksTranslate = str_contains($combined, 'translate') || str_contains($combined, 'ترجم');
+
+        if ($asksTranslate) {
+            if ($modelHasArabic && !$promptHasArabic) {
+                return 'translation_en_ar';
+            }
+            if ($promptHasArabic && !$modelHasArabic) {
+                return 'translation_ar_en';
+            }
+            if ($promptHasArabic) {
+                return 'translation_ar_en';
+            }
+            return 'translation_en_ar';
+        }
+
+        if (preg_match('/_{2,}|\.{4,}|\x{2026}{2,}/u', $prompt) === 1) {
+            return 'fill_blank';
+        }
+
+        $transformKeywords = [
+            'plural', 'singular', 'prefix', 'suffix', 'past tense', 'present tense',
+            'conjugate', 'comparative', 'superlative', 'opposite', 'antonym', 'synonym',
+            'جمع', 'مفرد', 'بادئة', 'لاحقة', 'ماضي', 'مضارع', 'ضد', 'مرادف',
+        ];
+        foreach ($transformKeywords as $kw) {
+            if (str_contains($combined, $kw)) {
+                return 'word_transform';
+            }
+        }
+
+        $identificationKeywords = [
+            'what type', 'which type', 'identify', 'name the', 'what kind',
+            'ما نوع', 'حدد', 'اختر',
+        ];
+        foreach ($identificationKeywords as $kw) {
+            if (str_contains($combined, $kw)) {
+                return 'identification';
+            }
+        }
+
+        if ($modelWordCount > 0 && $modelWordCount <= 2 && ($maxWords === 0 || $maxWords <= 3)) {
+            return 'single_word';
+        }
+        if ($maxWords > 0 && $maxWords <= 3 && $minWords <= 2) {
+            return 'single_word';
+        }
+
+        if ($maxWords > 0 && $maxWords <= 15) {
+            return 'short_sentence';
+        }
+
+        return 'free_writing';
+    }
+
+    private function isShortAnswerType(string $taskType): bool
+    {
+        return in_array($taskType, [
+            'single_word',
+            'fill_blank',
+            'word_transform',
+            'identification',
+            'pattern_mapping',
+        ], true);
+    }
+
+    private function evaluateAgainstModelAnswer(WritingExercise $exercise, string $answer, string $locale): ?array
+    {
+        $model = trim((string) $exercise->model_answer);
+        if ($model === '') {
+            return null;
+        }
+
+        $normalize = function (string $text): string {
+            $text = mb_strtolower(trim($text), 'UTF-8');
+            $text = preg_replace('/[\p{P}\p{S}]+/u', ' ', $text) ?? '';
+            $text = preg_replace('/\s+/u', ' ', $text) ?? '';
+            return trim($text);
+        };
+
+        $cleanAnswer = $normalize($answer);
+        $cleanModel = $normalize($model);
+
+        if ($cleanAnswer === '') {
+            return null;
+        }
+
+        $candidates = preg_split('/\s*[|\/،,]\s*/u', $cleanModel) ?: [$cleanModel];
+        $candidates = array_values(array_filter(array_map('trim', $candidates)));
+        if (empty($candidates)) {
+            $candidates = [$cleanModel];
+        }
+
+        $exactMatch = false;
+        $closest = null;
+        $closestDistance = PHP_INT_MAX;
+
+        foreach ($candidates as $candidate) {
+            if ($candidate === $cleanAnswer) {
+                $exactMatch = true;
+                break;
+            }
+
+            if (mb_strlen($candidate, 'UTF-8') <= 60 && mb_strlen($cleanAnswer, 'UTF-8') <= 60) {
+                $distance = levenshtein($candidate, $cleanAnswer);
+                if ($distance < $closestDistance) {
+                    $closestDistance = $distance;
+                    $closest = $candidate;
+                }
+            }
+        }
+
+        $isArabic = $this->isArabicLocale($locale);
+
+        if ($exactMatch) {
+            return [
+                'overall_score' => 100,
+                'grammar_score' => 100,
+                'vocabulary_score' => 100,
+                'coherence_score' => 100,
+                'task_score' => 100,
+                'summary' => $isArabic ? 'إجابتك صحيحة تمامًا، أحسنت!' : 'Your answer is correct. Well done!',
+                'strengths' => [$isArabic ? 'اخترت الإجابة الصحيحة.' : 'You gave the correct answer.'],
+                'improvements' => [],
+                'rewrite_suggestion' => $model,
+            ];
+        }
+
+        $closeMatch = $closest !== null && $closestDistance > 0 && $closestDistance <= 2
+            && mb_strlen($closest, 'UTF-8') >= 3;
+
+        if ($closeMatch) {
+            return [
+                'overall_score' => 75,
+                'grammar_score' => 70,
+                'vocabulary_score' => 80,
+                'coherence_score' => 85,
+                'task_score' => 75,
+                'summary' => $isArabic
+                    ? 'إجابتك قريبة جدًا من الصحيحة، لكن يوجد خطأ إملائي بسيط.'
+                    : 'Your answer is very close, but there is a small spelling issue.',
+                'strengths' => [
+                    $isArabic ? 'اخترت الكلمة الصحيحة تقريبًا.' : 'You picked the right word almost perfectly.',
+                ],
+                'improvements' => [
+                    $isArabic ? "الإملاء الصحيح: {$closest}" : "Correct spelling: {$closest}",
+                ],
+                'rewrite_suggestion' => $closest,
+            ];
+        }
+
+        return [
+            'overall_score' => 30,
+            'grammar_score' => 40,
+            'vocabulary_score' => 35,
+            'coherence_score' => 50,
+            'task_score' => 20,
+            'summary' => $isArabic
+                ? 'إجابتك لا تطابق الإجابة المطلوبة. راجع الدرس وحاول مرة أخرى.'
+                : 'Your answer does not match the expected response. Review the lesson and try again.',
+            'strengths' => [],
+            'improvements' => [
+                $isArabic ? "الإجابة المتوقعة: {$model}" : "Expected answer: {$model}",
+            ],
+            'rewrite_suggestion' => $model,
+        ];
     }
 
     private function countWords(string $text): int
