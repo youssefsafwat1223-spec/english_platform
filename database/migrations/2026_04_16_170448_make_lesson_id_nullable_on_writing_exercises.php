@@ -18,6 +18,14 @@ return new class extends Migration
         Schema::table('pronunciation_exercises', function (Blueprint $table) {
             $table->unsignedBigInteger('lesson_id')->nullable()->change();
         });
+
+        Schema::table('writing_submissions', function (Blueprint $table) {
+            $table->unsignedBigInteger('lesson_id')->nullable()->change();
+        });
+
+        Schema::table('pronunciation_attempts', function (Blueprint $table) {
+            $table->unsignedBigInteger('lesson_id')->nullable()->change();
+        });
     }
 
     public function down(): void
@@ -27,6 +35,14 @@ return new class extends Migration
         });
 
         Schema::table('pronunciation_exercises', function (Blueprint $table) {
+            $table->unsignedBigInteger('lesson_id')->nullable(false)->change();
+        });
+
+        Schema::table('writing_submissions', function (Blueprint $table) {
+            $table->unsignedBigInteger('lesson_id')->nullable(false)->change();
+        });
+
+        Schema::table('pronunciation_attempts', function (Blueprint $table) {
             $table->unsignedBigInteger('lesson_id')->nullable(false)->change();
         });
     }

@@ -30,8 +30,7 @@ class PronunciationUploadAnalysisService
         string $locale = 'en',
         string $provider = 'media_upload'
     ): array {
-        $exercise = PronunciationExercise::query()->with('lesson')->findOrFail($exerciseId);
-        $lesson = $exercise->lesson;
+        $exercise = PronunciationExercise::query()->with(['lesson', 'courseLevel'])->findOrFail($exerciseId);
         $expectedText = trim((string) ($expectedText ?: $this->getExpectedSentence($exercise, $sentenceNumber)));
 
         if ($expectedText === '') {
@@ -82,7 +81,7 @@ class PronunciationUploadAnalysisService
         $analysis = $this->saveAttemptFromComparison(
             $userId,
             $exerciseId,
-            $lesson->id,
+            $exercise->lesson_id,
             $sentenceNumber,
             $transcript,
             $expectedText,
@@ -270,7 +269,7 @@ class PronunciationUploadAnalysisService
     private function saveAttemptFromComparison(
         int $userId,
         int $exerciseId,
-        int $lessonId,
+        ?int $lessonId,
         int $sentenceNumber,
         string $transcript,
         string $expectedText,

@@ -376,7 +376,7 @@ class PronunciationController extends Controller
     public function myAttempts()
     {
         $attempts = auth()->user()->pronunciationAttempts()
-            ->with(['pronunciationExercise.lesson.course'])
+            ->with(['pronunciationExercise.lesson.course', 'pronunciationExercise.courseLevel.course'])
             ->orderBy('created_at', 'desc')
             ->paginate(20);
 
