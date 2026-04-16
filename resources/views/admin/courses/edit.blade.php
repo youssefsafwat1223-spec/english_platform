@@ -75,6 +75,7 @@
                         <h3 class="text-lg font-bold mb-3" style="color: var(--color-text);">{{ __('Exam & Prerequisite Settings') }}</h3>
                         
                         <div class="flex items-center mb-4">
+                            <input type="hidden" name="is_exam" value="0">
                             <input type="checkbox" id="is_exam" name="is_exam" value="1" {{ old('is_exam', $course->is_exam) ? 'checked' : '' }} class="w-4 h-4 text-secondary-500 focus:ring-secondary-500 rounded" style="border-color: var(--color-border);">
                             <label for="is_exam" class="ml-2 font-semibold" style="color: var(--color-text);">{{ __('This content is an Exam / Test (Changes Student UI)') }}</label>
                         </div>
@@ -91,6 +92,7 @@
                             </select>
                             @error('prerequisite_course_id')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                     <div class="flex items-center">
+                        <input type="hidden" name="is_active" value="0">
                         <input type="checkbox" id="is_active" name="is_active" value="1" {{ old('is_active', $course->is_active) ? 'checked' : '' }} class="w-4 h-4 text-primary-500 focus:ring-primary-500 rounded" style="border-color: var(--color-border);">
                         <label for="is_active" class="ml-2 text-sm" style="color: var(--color-text);">{{ __('Course is active') }}</label>
                     </div>
