@@ -271,31 +271,50 @@
                         </div>
 
                         <div class="grid grid-cols-2 gap-2 text-xs font-semibold mb-5" style="color: var(--color-text-muted);">
-                            <div class="flex items-center gap-1.5">
-                                <span class="w-1.5 h-1.5 rounded-full bg-primary-500"></span>
-                                {{ $isArabic ? 'منهج تأسيسي' : 'Foundation curriculum' }}
-                            </div>
-                            <div class="flex items-center gap-1.5">
-                                <span class="w-1.5 h-1.5 rounded-full bg-accent-500"></span>
-                                {{ $isArabic ? 'تدريب ذكاء اصطناعي' : 'AI practice' }}
-                            </div>
-                            <div class="flex items-center gap-1.5">
-                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                                {{ $isArabic ? 'اختبارات قصيرة' : 'Short quizzes' }}
-                            </div>
-                            <div class="flex items-center gap-1.5">
-                                <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
-                                {{ $isArabic ? 'شهادة حضور' : 'Attendance certificate' }}
-                            </div>
+                            @if($course->is_exam)
+                                <div class="flex items-center gap-1.5">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-primary-500"></span>
+                                    {{ $isArabic ? 'تقييم شامل للمستوى' : 'Comprehensive assessment' }}
+                                </div>
+                                <div class="flex items-center gap-1.5">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-accent-500"></span>
+                                    {{ $isArabic ? 'يحدد مسارك التعليمي' : 'Defines learning path' }}
+                                </div>
+                                <div class="flex items-center gap-1.5">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                    {{ $isArabic ? 'تدريب ذكاء اصطناعي' : 'AI training' }}
+                                </div>
+                                <div class="flex items-center gap-1.5">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                                    {{ $isArabic ? 'مجاني وسريع' : 'Free and fast' }}
+                                </div>
+                            @else
+                                <div class="flex items-center gap-1.5">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-primary-500"></span>
+                                    {{ $isArabic ? 'منهج تأسيسي' : 'Foundation curriculum' }}
+                                </div>
+                                <div class="flex items-center gap-1.5">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-accent-500"></span>
+                                    {{ $isArabic ? 'تدريب ذكاء اصطناعي' : 'AI practice' }}
+                                </div>
+                                <div class="flex items-center gap-1.5">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                    {{ $isArabic ? 'اختبارات قصيرة' : 'Short quizzes' }}
+                                </div>
+                                <div class="flex items-center gap-1.5">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                                    {{ $isArabic ? 'شهادة حضور' : 'Attendance certificate' }}
+                                </div>
+                            @endif
                         </div>
 
                         {{-- Footer --}}
                         <div class="flex items-center justify-between pt-4 border-t border-slate-200 dark:border-white/10">
                             <div class="text-lg font-bold text-primary-500">
-                                {{ $course->price > 0 ? $course->price . ' ' . ($isArabic ? 'ر.س' : 'SAR') : __('Free') }}
+                                {{ $course->price > 0 ? $course->price . ' ' . ($isArabic ? 'ر.س' : 'SAR') : __('مجاني') }}
                             </div>
                             <a href="{{ auth()->check() && auth()->user()->is_student ? route('student.courses.show', $course) : route('courses.show', $course) }}" class="btn-primary btn-sm rounded-lg">
-                                {{ $isArabic ? 'تفاصيل البرنامج' : 'View program details' }}
+                                {{ $course->is_exam ? ($isArabic ? 'ابدأ الاختبار' : 'Start Exam') : ($isArabic ? 'تفاصيل البرنامج' : 'View program details') }}
                             </a>
                         </div>
                     </div>
