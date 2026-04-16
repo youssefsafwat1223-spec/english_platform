@@ -257,19 +257,26 @@
 
                                             {{-- Listening Test --}}
                                             @if($hasLevelListening)
+                                                @php
+                                                    $listeningAttempt = $level->listeningExercise->latestAttemptByUser(auth()->id());
+                                                    $listeningPassed = $listeningAttempt && $listeningAttempt->passed;
+                                                @endphp
                                                 <a href="{{ route('student.listening.show', $level->listeningExercise) }}" class="flex items-center justify-between gap-3 px-5 py-4 hover:bg-white/80 dark:hover:bg-slate-900 transition-colors border-t border-slate-200/60 dark:border-white/10">
                                                     <div class="flex items-center gap-3">
-                                                        <span class="w-9 h-9 rounded-xl flex items-center justify-center text-sm font-black border bg-accent-50 text-accent-600 border-accent-200 dark:bg-accent-500/10 dark:text-accent-400 dark:border-accent-500/20">🎧</span>
+                                                        <span class="w-9 h-9 rounded-xl flex items-center justify-center text-sm font-black border {{ $listeningPassed ? 'bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20' : 'bg-accent-50 text-accent-600 border-accent-200 dark:bg-accent-500/10 dark:text-accent-400 dark:border-accent-500/20' }}">{{ $listeningPassed ? '✓' : '🎧' }}</span>
                                                         <div>
                                                             <div class="font-bold text-sm text-slate-900 dark:text-white">
                                                                 {{ $isArabic ? 'اختبار الاستماع' : 'Listening Test' }}
                                                             </div>
                                                             <div class="mt-0.5 flex items-center gap-1 text-xs font-bold">
                                                                 <span class="px-2 py-0.5 rounded-full bg-accent-50 text-accent-600 dark:bg-accent-500/10 dark:text-accent-400">{{ $isArabic ? 'استماع' : 'Listening' }}</span>
+                                                                @if($listeningPassed)
+                                                                    <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400">{{ $listeningAttempt->score }}%</span>
+                                                                @endif
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <span class="text-xs font-black text-slate-500 dark:text-slate-400">{{ $isArabic ? 'ابدأ الاختبار' : 'Start Test' }}</span>
+                                                    <span class="text-xs font-black {{ $listeningPassed ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-500 dark:text-slate-400' }}">{{ $listeningPassed ? ($isArabic ? 'اجتزت ✓' : 'Passed ✓') : ($isArabic ? 'ابدأ الاختبار' : 'Start Test') }}</span>
                                                 </a>
                                             @endif
                                         @endif
