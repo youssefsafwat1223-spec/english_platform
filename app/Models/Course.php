@@ -42,6 +42,8 @@ class Course extends Model
         'average_rating',
         'total_reviews',
         'created_by',
+        'is_exam',
+        'prerequisite_course_id',
     ];
 
     protected function casts(): array
@@ -50,6 +52,7 @@ class Course extends Model
             'price'          => 'decimal:2',
             'average_rating' => 'decimal:2',
             'is_active'      => 'boolean',
+            'is_exam'        => 'boolean',
         ];
     }
 
@@ -68,6 +71,14 @@ class Course extends Model
     }
 
     // ==================== RELATIONSHIPS ====================
+
+    /**
+     * Prerequisite Course/Exam
+     */
+    public function prerequisite()
+    {
+        return $this->belongsTo(Course::class, 'prerequisite_course_id');
+    }
 
     /**
      * Lessons in this course

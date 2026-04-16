@@ -30,6 +30,8 @@ class StoreCourseRequest extends FormRequest
             'intro_video_url' => 'nullable|url',
             'estimated_duration_weeks' => 'nullable|integer|min:1',
             'is_active' => 'boolean',
+            'is_exam' => 'boolean',
+            'prerequisite_course_id' => 'nullable|exists:courses,id',
         ];
     }
 

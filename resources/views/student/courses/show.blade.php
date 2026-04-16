@@ -34,6 +34,15 @@
         $diffSeconds = now()->diffInSeconds($expiresAt, false);
         $remainingDays = (int) max(0, ceil($diffSeconds / 86400));
     }
+
+    $prerequisite = $course->prerequisite ?? null;
+    $isPrerequisiteMet = true;
+    if ($prerequisite && auth()->check()) {
+        $prereqEnrollment = auth()->user()->enrollments()->where('course_id', $prerequisite->id)->first();
+        if (!$prereqEnrollment || is_null($prereqEnrollment->completed_at)) {
+            $isPrerequisiteMet = false;
+        }
+    }
 @endphp
 
 <div class="py-12 relative min-h-screen z-10">
@@ -50,7 +59,12 @@
                     <svg class="w-4 h-4 {{ $isArabic ? 'rotate-180' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                     {{ $isArabic ? 'العودة للكورسات' : 'Back to courses' }}
                 </a>
-                @if($isEnrolled ?? false)
+                @if(!$isPrerequisiteMet)
+                    <button disabled class="btn-secondary px-6 py-3 rounded-xl border border-red-500/30 text-red-500 opacity-80 cursor-not-allowed font-bold flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                        {{ $isArabic ? 'مطلوب إتمام (' . $prerequisite->title . ') أولاً' : 'Must complete (' . $prerequisite->title . ') first' }}
+                    </button>
+                @elseif($isEnrolled ?? false)
                     <a href="{{ route('student.courses.learn', $course) }}" class="btn-primary ripple-btn px-6 py-3 rounded-xl shadow-lg shadow-primary-500/25 font-bold flex items-center gap-2">
                         {{ $isArabic ? 'متابعة التعلم' : 'Continue learning' }}
                         <svg class="w-4 h-4 {{ $isArabic ? 'rotate-180' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
@@ -62,7 +76,7 @@
                     </a>
                 @else
                     <a href="{{ route('student.courses.enroll', $course) }}" class="btn-primary ripple-btn px-6 py-3 rounded-xl shadow-lg shadow-primary-500/25 font-bold">
-                        {{ $isArabic ? 'اشترك الآن' : 'Enroll now' }}
+                        {{ $isArabic ? ($course->is_exam ? 'ابدأ الاختبار' : 'اشترك الآن') : ($course->is_exam ? 'Start Exam' : 'Enroll now') }}
                     </a>
                 @endif
             </x-slot>
@@ -117,7 +131,7 @@
                 </x-student.card>
 
                 <x-student.card padding="p-6 md:p-8">
-                    <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-4">{{ $isArabic ? 'وصف الكورس' : 'Course description' }}</h2>
+                    <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-4">{{ $course->is_exam ? ($isArabic ? 'وصف الاختبار' : 'Exam description') : ($isArabic ? 'وصف الكورس' : 'Course description') }}</h2>
                     <div class="prose dark:prose-invert max-w-none text-slate-600 dark:text-slate-300">
                         @if($course->description)
                             {!! nl2br(e($course->description)) !!}
@@ -221,13 +235,22 @@
                 </div>{{-- #payment-options --}}
 
                 <x-student.card padding="p-6 md:p-8">
-                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4">{{ $isArabic ? 'مميزات الكورس' : 'Course highlights' }}</h3>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4">{{ $course->is_exam ? ($isArabic ? 'تفاصيل الاختبار' : 'Exam highlights') : ($isArabic ? 'مميزات الكورس' : 'Course highlights') }}</h3>
+                    @if($course->is_exam)
+                    <ul class="space-y-3 text-sm text-slate-600 dark:text-slate-300">
+                        <li class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>{{ $isArabic ? 'تقييم شامل ومباشر لمهاراتك' : 'Comprehensive skills assessment' }}</li>
+                        <li class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>{{ $isArabic ? 'منهج تأسيسي وتدريب ذكي' : 'Structured curriculum & AI training' }}</li>
+                        <li class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>{{ $isArabic ? 'يحدد مستواك ومسارك التعليمي' : 'Determines your level & learning path' }}</li>
+                        <li class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>{{ $isArabic ? 'يدعم الجوال والكمبيوتر' : 'Mobile and desktop friendly' }}</li>
+                    </ul>
+                    @else
                     <ul class="space-y-3 text-sm text-slate-600 dark:text-slate-300">
                         <li class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>{{ $headingCount }} {{ $isArabic ? 'عنوان رئيسي' : 'main headings' }}</li>
                         <li class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>{{ $isArabic ? 'وصول خلال مدة الاشتراك' : 'Access during subscription period' }}</li>
                         <li class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>{{ $isArabic ? 'شهادة حضور' : 'Attendance certificate' }}</li>
                         <li class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>{{ $isArabic ? 'يدعم الجوال والكمبيوتر' : 'Mobile and desktop friendly' }}</li>
                     </ul>
+                    @endif
                 </x-student.card>
             </div>
         </div>

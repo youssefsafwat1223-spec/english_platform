@@ -43,6 +43,8 @@
                             @php $details = [
                                 ['label' => 'Price', 'value' => number_format($course->price, 2) . ' ' . __('ر.س')],
                                 ['label' => 'Status', 'badge' => true],
+                                ['label' => 'Type / النوع', 'value' => $course->is_exam ? __('اختبار فقط / Exam Only') : __('كورس عام / General Course')],
+                                ['label' => 'Prerequisite', 'value' => $course->prerequisite ? $course->prerequisite->title : __('بلا شروط مسبقة')],
                                 ['label' => 'Suggested Pace', 'value' => $course->estimated_duration_weeks ? $course->estimated_duration_weeks . ' weeks (display only)' : 'Not set'],
                                 ['label' => 'Created By', 'value' => $course->creator?->name ?? 'System'],
                                 ['label' => 'Created At', 'value' => $course->created_at->format('M d, Y')],

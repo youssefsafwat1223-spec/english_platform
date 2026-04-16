@@ -177,6 +177,15 @@ class CourseController extends Controller
                 ->with('info', 'You are already enrolled in this course.');
         }
 
+        // Check prerequisite
+        if ($course->prerequisite_course_id) {
+            $prereqEnrollment = $user->enrollments()->where('course_id', $course->prerequisite_course_id)->first();
+            if (!$prereqEnrollment || is_null($prereqEnrollment->completed_at)) {
+                return redirect()->route('student.courses.show', $course)
+                    ->with('error', __('يجب الانتهاء من الاختبار/الكورس المشترط أولاً قبل الاشتراك.'));
+            }
+        }
+
         $promoCode = null;
         if ($request->filled('promo_code')) {
             $promoCode = PromoCode::where('code', strtoupper($request->promo_code))->first();
@@ -200,6 +209,15 @@ class CourseController extends Controller
         if ($user->isEnrolledIn($course->id)) {
             return redirect()->route('student.courses.learn', $course)
                 ->with('info', 'You are already enrolled in this course.');
+        }
+
+        // Check prerequisite
+        if ($course->prerequisite_course_id) {
+            $prereqEnrollment = $user->enrollments()->where('course_id', $course->prerequisite_course_id)->first();
+            if (!$prereqEnrollment || is_null($prereqEnrollment->completed_at)) {
+                return redirect()->route('student.courses.show', $course)
+                    ->with('error', __('يجب الانتهاء من الاختبار/الكورس المشترط أولاً قبل الاشتراك.'));
+            }
         }
 
         $validated = $request->validate([

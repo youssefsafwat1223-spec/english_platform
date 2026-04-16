@@ -22,7 +22,8 @@ class CourseController extends Controller
 
     public function create()
     {
-        return view('admin.courses.create');
+        $allCourses = Course::select('id', 'title', 'is_exam')->get();
+        return view('admin.courses.create', compact('allCourses'));
     }
 
     public function store(StoreCourseRequest $request)
@@ -65,7 +66,8 @@ class CourseController extends Controller
 
     public function edit(Course $course)
     {
-        return view('admin.courses.edit', compact('course'));
+        $allCourses = Course::where('id', '!=', $course->id)->select('id', 'title', 'is_exam')->get();
+        return view('admin.courses.edit', compact('course', 'allCourses'));
     }
 
     public function update(UpdateCourseRequest $request, Course $course)
