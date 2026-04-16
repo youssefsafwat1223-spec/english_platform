@@ -51,6 +51,8 @@
             'lessons.writingExercise',
             'lessons.listeningExercise',
             'listeningExercise',
+            'writingExercise',
+            'speakingExercise',
         ])
         ->get();
 
@@ -59,6 +61,73 @@
         ->orderBy('order_index')
         ->with(['quiz', 'pronunciationExercise', 'writingExercise'])
         ->get();
+
+    $userId = auth()->id();
+
+    $writingExerciseIds = collect();
+    $pronunciationExerciseIds = collect();
+    foreach ($levels as $lvl) {
+        if ($lvl->writingExercise) {
+            $writingExerciseIds->push($lvl->writingExercise->id);
+        }
+        if ($lvl->speakingExercise) {
+            $pronunciationExerciseIds->push($lvl->speakingExercise->id);
+        }
+        foreach ($lvl->lessons as $l) {
+            if ($l->writingExercise) {
+                $writingExerciseIds->push($l->writingExercise->id);
+            }
+            if ($l->pronunciationExercise) {
+                $pronunciationExerciseIds->push($l->pronunciationExercise->id);
+            }
+        }
+    }
+    foreach ($orphanLessons as $l) {
+        if ($l->writingExercise) {
+            $writingExerciseIds->push($l->writingExercise->id);
+        }
+        if ($l->pronunciationExercise) {
+            $pronunciationExerciseIds->push($l->pronunciationExercise->id);
+        }
+    }
+
+    $passingWritingIds = collect();
+    if ($userId && $writingExerciseIds->isNotEmpty()) {
+        $passingWritingIds = \App\Models\WritingSubmission::query()
+            ->where('user_id', $userId)
+            ->whereIn('writing_exercise_id', $writingExerciseIds->unique()->values())
+            ->get(['writing_exercise_id', 'overall_score'])
+            ->filter(function ($row) use ($writingExerciseIds) {
+                $exercise = \App\Models\WritingExercise::find($row->writing_exercise_id);
+                return $exercise && (int) $row->overall_score >= (int) $exercise->passing_score;
+            })
+            ->pluck('writing_exercise_id')
+            ->unique()
+            ->values();
+    }
+
+    $pronunciationAttemptMap = collect();
+    if ($userId && $pronunciationExerciseIds->isNotEmpty()) {
+        $pronunciationAttemptMap = \App\Models\PronunciationAttempt::query()
+            ->where('user_id', $userId)
+            ->whereIn('pronunciation_exercise_id', $pronunciationExerciseIds->unique()->values())
+            ->get(['pronunciation_exercise_id', 'sentence_number'])
+            ->groupBy('pronunciation_exercise_id')
+            ->map(fn ($rows) => $rows->pluck('sentence_number')->map(fn ($n) => (int) $n)->unique()->values());
+    }
+
+    $writingDone = fn ($exercise) => $exercise && $passingWritingIds->contains($exercise->id);
+    $speakingDone = function ($exercise) use ($pronunciationAttemptMap) {
+        if (!$exercise) {
+            return false;
+        }
+        $required = array_map('intval', array_keys($exercise->sentences ?? []));
+        if (empty($required)) {
+            return false;
+        }
+        $done = $pronunciationAttemptMap->get($exercise->id, collect())->all();
+        return empty(array_diff($required, $done));
+    };
 @endphp
 
 <div class="min-h-screen bg-slate-50 dark:bg-[#020617]">
@@ -179,13 +248,15 @@
                                                                 </span>
                                                             @endif
                                                             @if($hasWritingFeature)
-                                                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-sky-50 text-sky-600 dark:bg-sky-500/10 dark:text-sky-400">
-                                                                    {{ $isArabic ? 'كتابة' : 'Writing' }}
+                                                                @php $lessonWritingDone = $writingDone($lesson->writingExercise); @endphp
+                                                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full {{ $lessonWritingDone ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400' : 'bg-sky-50 text-sky-600 dark:bg-sky-500/10 dark:text-sky-400' }}">
+                                                                    {{ $lessonWritingDone ? '✓ ' : '' }}{{ $isArabic ? 'كتابة' : 'Writing' }}
                                                                 </span>
                                                             @endif
                                                             @if($hasPronunciationFeature)
+                                                                @php $lessonSpeakingDone = $speakingDone($lesson->pronunciationExercise); @endphp
                                                                 <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400">
-                                                                    {{ $isArabic ? 'نطق' : 'Speaking' }}
+                                                                    {{ $lessonSpeakingDone ? '✓ ' : '' }}{{ $isArabic ? 'نطق' : 'Speaking' }}
                                                                 </span>
                                                             @endif
                                                             @if($isCurrent)
@@ -221,37 +292,45 @@
 
                                             {{-- Writing Test --}}
                                             @if($hasLevelWriting)
+                                                @php $levelWritingDone = $writingDone($level->writingExercise); @endphp
                                                 <a href="{{ $level->writingExercise ? route('student.writing.show', $level->writingExercise) : '#' }}" class="flex items-center justify-between gap-3 px-5 py-4 hover:bg-white/80 dark:hover:bg-slate-900 transition-colors border-t border-slate-200/60 dark:border-white/10">
                                                     <div class="flex items-center gap-3">
-                                                        <span class="w-9 h-9 rounded-xl flex items-center justify-center text-sm font-black border bg-sky-50 text-sky-600 border-sky-200 dark:bg-sky-500/10 dark:text-sky-400 dark:border-sky-500/20">✏️</span>
+                                                        <span class="w-9 h-9 rounded-xl flex items-center justify-center text-sm font-black border {{ $levelWritingDone ? 'bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20' : 'bg-sky-50 text-sky-600 border-sky-200 dark:bg-sky-500/10 dark:text-sky-400 dark:border-sky-500/20' }}">{{ $levelWritingDone ? '✓' : '✏️' }}</span>
                                                         <div>
                                                             <div class="font-bold text-sm text-slate-900 dark:text-white">
                                                                 {{ $isArabic ? 'اختبار الكتابة' : 'Writing Test' }}
                                                             </div>
                                                             <div class="mt-0.5 flex items-center gap-1 text-xs font-bold">
                                                                 <span class="px-2 py-0.5 rounded-full bg-sky-50 text-sky-600 dark:bg-sky-500/10 dark:text-sky-400">{{ $isArabic ? 'كتابة' : 'Writing' }}</span>
+                                                                @if($levelWritingDone)
+                                                                    <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400">{{ $isArabic ? 'مكتمل' : 'Completed' }}</span>
+                                                                @endif
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <span class="text-xs font-black text-slate-500 dark:text-slate-400">{{ $isArabic ? 'ابدأ الاختبار' : 'Start Test' }}</span>
+                                                    <span class="text-xs font-black {{ $levelWritingDone ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-500 dark:text-slate-400' }}">{{ $levelWritingDone ? ($isArabic ? 'مكتمل ✓' : 'Completed ✓') : ($isArabic ? 'ابدأ الاختبار' : 'Start Test') }}</span>
                                                 </a>
                                             @endif
 
                                             {{-- Speaking Test --}}
                                             @if($hasLevelSpeaking)
+                                                @php $levelSpeakingDone = $speakingDone($level->speakingExercise); @endphp
                                                 <a href="{{ $level->speakingExercise ? route('student.pronunciation.show', $level->speakingExercise) : '#' }}" class="flex items-center justify-between gap-3 px-5 py-4 hover:bg-white/80 dark:hover:bg-slate-900 transition-colors border-t border-slate-200/60 dark:border-white/10">
                                                     <div class="flex items-center gap-3">
-                                                        <span class="w-9 h-9 rounded-xl flex items-center justify-center text-sm font-black border bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20">🎙️</span>
+                                                        <span class="w-9 h-9 rounded-xl flex items-center justify-center text-sm font-black border {{ $levelSpeakingDone ? 'bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20' : 'bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20' }}">{{ $levelSpeakingDone ? '✓' : '🎙️' }}</span>
                                                         <div>
                                                             <div class="font-bold text-sm text-slate-900 dark:text-white">
                                                                 {{ $isArabic ? 'اختبار النطق' : 'Speaking Test' }}
                                                             </div>
                                                             <div class="mt-0.5 flex items-center gap-1 text-xs font-bold">
                                                                 <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400">{{ $isArabic ? 'نطق' : 'Speaking' }}</span>
+                                                                @if($levelSpeakingDone)
+                                                                    <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400">{{ $isArabic ? 'مكتمل' : 'Completed' }}</span>
+                                                                @endif
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <span class="text-xs font-black text-slate-500 dark:text-slate-400">{{ $isArabic ? 'ابدأ الاختبار' : 'Start Test' }}</span>
+                                                    <span class="text-xs font-black {{ $levelSpeakingDone ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-500 dark:text-slate-400' }}">{{ $levelSpeakingDone ? ($isArabic ? 'مكتمل ✓' : 'Completed ✓') : ($isArabic ? 'ابدأ الاختبار' : 'Start Test') }}</span>
                                                 </a>
                                             @endif
 
@@ -373,13 +452,15 @@
                                                                 </span>
                                                             @endif
                                                             @if($hasWritingFeature)
-                                                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-sky-50 text-sky-600 dark:bg-sky-500/10 dark:text-sky-400">
-                                                                    {{ $isArabic ? 'كتابة' : 'Writing' }}
+                                                                @php $lessonWritingDone = $writingDone($lesson->writingExercise); @endphp
+                                                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full {{ $lessonWritingDone ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400' : 'bg-sky-50 text-sky-600 dark:bg-sky-500/10 dark:text-sky-400' }}">
+                                                                    {{ $lessonWritingDone ? '✓ ' : '' }}{{ $isArabic ? 'كتابة' : 'Writing' }}
                                                                 </span>
                                                             @endif
                                                             @if($hasPronunciationFeature)
+                                                                @php $lessonSpeakingDone = $speakingDone($lesson->pronunciationExercise); @endphp
                                                                 <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400">
-                                                                    {{ $isArabic ? 'نطق' : 'Speaking' }}
+                                                                    {{ $lessonSpeakingDone ? '✓ ' : '' }}{{ $isArabic ? 'نطق' : 'Speaking' }}
                                                                 </span>
                                                             @endif
                                                         </div>
