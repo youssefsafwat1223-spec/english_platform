@@ -15,25 +15,27 @@
         {{-- Header --}}
         <x-student.page-header
             title="{{ $exercise->title ?: ($isArabic ? 'تدريب الاستماع' : 'Listening Practice') }}"
-            subtitle="{{ $lesson->title }}"
+            subtitle="{{ $context->title ?? '' }}"
             badge="{{ $isArabic ? 'استماع' : 'Listening' }}"
             badgeColor="accent"
             badgeIcon='<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072M12 18.364A8 8 0 1112 5.636"/></svg>'
         >
             <x-slot name="actions">
-                <a href="{{ route('student.lessons.show', [$lesson->course, $lesson]) }}"
+                @if($context && method_exists($context, 'course'))
+                <a href="{{ route('student.lessons.show', [$context->course, $context]) }}"
                    class="btn-ghost btn-sm flex items-center gap-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $isArabic ? 'M9 5l7 7-7 7' : 'M15 19l-7-7 7-7' }}"/>
                     </svg>
                     {{ $isArabic ? 'العودة للدرس' : 'Back to lesson' }}
                 </a>
+                @endif
             </x-slot>
         </x-student.page-header>
 
         {{-- Main Alpine component --}}
         <div x-data="listeningPractice({
-                submitUrl: '{{ route('listening.submit', $exercise) }}',
+                submitUrl: '{{ route('student.listening.submit', $exercise) }}',
                 questions: {{ json_encode($questions) }},
                 passingScore: {{ $exercise->passing_score }},
                 audioUrl: '{{ $exercise->audio_url ?? '' }}',
