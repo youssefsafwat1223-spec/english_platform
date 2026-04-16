@@ -22,7 +22,7 @@ class ListeningSeederPart2 extends Seeder
                 ['type' => 'dictation', 'prompt' => '"He ___ (auxiliary) finished." — write the verb', 'correct_answer' => 'has', 'accept_variants' => []],
                 ['type' => 'dictation', 'prompt' => '"They ___ (action) to the park." — write the verb', 'correct_answer' => 'walked', 'accept_variants' => []],
             ],
-            'Gerund' => [
+            'فعل الكينونة' => [
                 ['type' => 'mcq', 'prompt' => '"___ is my favourite hobby." — hear: Swimming', 'options' => ['Swim', 'Swam', 'Swimming', 'To swim'], 'correct_index' => 2],
                 ['type' => 'mcq', 'prompt' => '"She enjoys ___." — hear: reading', 'options' => ['read', 'reads', 'to read', 'reading'], 'correct_index' => 3],
                 ['type' => 'mcq', 'prompt' => '"___ too much is unhealthy." — hear: Eating', 'options' => ['Eat', 'Eating', 'Eaten', 'To eat'], 'correct_index' => 1],
@@ -82,7 +82,7 @@ class ListeningSeederPart2 extends Seeder
                 ['type' => 'dictation', 'prompt' => '"IM + possible = ___" — write complete word', 'correct_answer' => 'impossible', 'accept_variants' => []],
                 ['type' => 'dictation', 'prompt' => '"kind + NESS = ___" — write complete word', 'correct_answer' => 'kindness', 'accept_variants' => []],
             ],
-            'Possession' => [
+            'الملكية' => [
                 ['type' => 'mcq', 'prompt' => '"This is ___ book." — hear: Sara\'s', 'options' => ['Saras', 'Sara\'s', 'Sara', 'Saras\''], 'correct_index' => 1],
                 ['type' => 'mcq', 'prompt' => '"The ___ car is red." — hear: children\'s', 'options' => ['childrens', 'children', 'children\'s', 'childrens\''], 'correct_index' => 2],
                 ['type' => 'mcq', 'prompt' => '"This is ___ pen." — hear: my', 'options' => ['me', 'mine', 'my', 'I'], 'correct_index' => 2],
@@ -102,7 +102,7 @@ class ListeningSeederPart2 extends Seeder
                 ['type' => 'dictation', 'prompt' => '"She walked ___ the bridge." — write preposition', 'correct_answer' => 'across', 'accept_variants' => []],
                 ['type' => 'dictation', 'prompt' => '"He ran ___ the street." — write preposition', 'correct_answer' => 'along', 'accept_variants' => []],
             ],
-            'This / That' => [
+            'الأسماء الإشارية' => [
                 ['type' => 'mcq', 'prompt' => '"___ is my pen." — close singular', 'options' => ['Those', 'These', 'That', 'This'], 'correct_index' => 3],
                 ['type' => 'mcq', 'prompt' => '"___ are my books." — far plural', 'options' => ['This', 'That', 'Those', 'These'], 'correct_index' => 2],
                 ['type' => 'mcq', 'prompt' => '"___ students over there..." — far plural', 'options' => ['This', 'These', 'That', 'Those'], 'correct_index' => 3],
