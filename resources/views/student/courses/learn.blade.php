@@ -257,7 +257,7 @@
 
                                             {{-- Listening Test --}}
                                             @if($hasLevelListening)
-                                                <a href="{{ route('listening.show', $level->listeningExercise) }}" class="flex items-center justify-between gap-3 px-5 py-4 hover:bg-white/80 dark:hover:bg-slate-900 transition-colors border-t border-slate-200/60 dark:border-white/10">
+                                                <a href="{{ route('student.listening.show', $level->listeningExercise) }}" class="flex items-center justify-between gap-3 px-5 py-4 hover:bg-white/80 dark:hover:bg-slate-900 transition-colors border-t border-slate-200/60 dark:border-white/10">
                                                     <div class="flex items-center gap-3">
                                                         <span class="w-9 h-9 rounded-xl flex items-center justify-center text-sm font-black border bg-accent-50 text-accent-600 border-accent-200 dark:bg-accent-500/10 dark:text-accent-400 dark:border-accent-500/20">🎧</span>
                                                         <div>
