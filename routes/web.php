@@ -260,6 +260,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin', 'active', '
         ->name('students.progress');
     Route::post('/students/{student}/enrollments/{enrollment}/toggle-access', [AdminStudentController::class, 'toggleEnrollmentAccess'])
         ->name('students.enrollments.toggle-access');
+    Route::post('/students/{student}/grant-access', [AdminStudentController::class, 'grantAccess'])
+        ->name('students.grant-access');
 
     Route::get('/device-requests', [AdminDeviceAccessRequestController::class, 'index'])
         ->name('device-requests.index');

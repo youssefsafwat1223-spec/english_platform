@@ -75,6 +75,35 @@
                         <a href="{{ route('admin.students.index') }}" class="btn-secondary w-full text-center block">{{ __('← Back') }}</a>
                     </div>
                 </div>
+
+                @php
+                    $enrolledCourseIds = $student->enrollments()->pluck('course_id');
+                    $availableCourses  = \App\Models\Course::active()
+                        ->whereNotIn('id', $enrolledCourseIds)
+                        ->orderBy('title')
+                        ->get();
+                @endphp
+                <div class="glass-card overflow-hidden" data-aos="fade-left" data-aos-delay="50">
+                    <div class="glass-card-header"><h3 class="font-bold" style="color: var(--color-text);">🎁 منح وصول مجاني</h3></div>
+                    <div class="glass-card-body">
+                        @if($availableCourses->isEmpty())
+                            <p class="text-sm text-center" style="color: var(--color-text-muted);">الطالب مسجل في جميع الكورسات</p>
+                        @else
+                            <form action="{{ route('admin.students.grant-access', $student) }}" method="POST" class="space-y-3">
+                                @csrf
+                                <select name="course_id" class="input-glass w-full" required>
+                                    <option value="">اختر الكورس...</option>
+                                    @foreach($availableCourses as $course)
+                                        <option value="{{ $course->id }}">{{ $course->title }}</option>
+                                    @endforeach
+                                </select>
+                                <button type="submit" class="btn-primary ripple-btn w-full" onclick="return confirm('فتح الكورس للطالب مجاناً؟')">
+                                    فتح الكورس
+                                </button>
+                            </form>
+                        @endif
+                    </div>
+                </div>
                 @if($student->is_telegram_linked)
                 <div class="glass-card overflow-hidden" data-aos="fade-left" data-aos-delay="100">
                     <div class="glass-card-header"><h3 class="font-bold" style="color: var(--color-text);">{{ __('Send Telegram Message') }}</h3></div>

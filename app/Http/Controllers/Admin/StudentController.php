@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Course;
 use App\Models\Enrollment;
 use App\Models\User;
 use App\Services\TelegramService;
@@ -134,6 +135,42 @@ class StudentController extends Controller
             ->paginate(20);
 
         return view('admin.students.enrollments', compact('student', 'enrollments'));
+    }
+
+    public function grantAccess(Request $request, User $student)
+    {
+        $request->validate([
+            'course_id' => 'required|exists:courses,id',
+        ]);
+
+        $course = Course::findOrFail($request->course_id);
+
+        if ($student->isEnrolledIn($course->id)) {
+            return back()->with('error', "الطالب {$student->name} مسجل بالفعل في كورس {$course->title}");
+        }
+
+        $totalLessons = (int) $course->lessons()
+            ->whereNotNull('title')
+            ->whereRaw("TRIM(title) <> ''")
+            ->reorder()
+            ->selectRaw("COUNT(DISTINCT LOWER(TRIM(title))) as aggregate")
+            ->value('aggregate');
+
+        if ($totalLessons <= 0) {
+            $totalLessons = (int) $course->lessons()->count();
+        }
+
+        Enrollment::create([
+            'user_id'      => $student->id,
+            'course_id'    => $course->id,
+            'price_paid'   => 0,
+            'total_lessons'=> $totalLessons,
+            'started_at'   => now(),
+        ]);
+
+        $course->incrementStudents();
+
+        return back()->with('success', "تم فتح كورس \"{$course->title}\" للطالب {$student->name} بنجاح ✓");
     }
 
     public function toggleEnrollmentAccess(User $student, Enrollment $enrollment)
