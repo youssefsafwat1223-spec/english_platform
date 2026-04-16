@@ -222,14 +222,17 @@
                         </p>
                     </div>
 
-                    @if(isset($exercise->reference_audio_urls[$num]))
-                        <div class="flex justify-center mb-4">
-                            <button type="button" x-on:click='playReferenceOrTts({{ $num }})' class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all hover:scale-105 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5L6 9H2v6h4l5 4V5zm5.54 3.46a5 5 0 010 7.08m2.83-9.91a9 9 0 010 12.74"/></svg>
-                                {{ $messages['listen_example'] }}
-                            </button>
-                        </div>
-                    @endif
+                    <div class="flex justify-center mb-4">
+                        <button type="button" x-on:click='playReferenceOrTts({{ $num }})'
+                                :disabled="isSpeaking && speakingSentence === {{ $num }}"
+                                class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all hover:scale-105 bg-primary-500/10 border border-primary-500/30 text-primary-600 dark:text-primary-400 disabled:opacity-60"
+                                :class="isSpeaking && speakingSentence === {{ $num }} ? 'animate-pulse' : ''">
+                            <svg x-show="!(isSpeaking && speakingSentence === {{ $num }})" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5L6 9H2v6h4l5 4V5zm5.54 3.46a5 5 0 010 7.08m2.83-9.91a9 9 0 010 12.74"/></svg>
+                            <svg x-show="isSpeaking && speakingSentence === {{ $num }}" x-cloak class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072M9 12H4l5-4v8l-5-4"/></svg>
+                            <span x-show="!(isSpeaking && speakingSentence === {{ $num }})">{{ $isArabic ? 'استمع للنطق الصحيح' : 'Listen to correct pronunciation' }}</span>
+                            <span x-show="isSpeaking && speakingSentence === {{ $num }}" x-cloak>{{ $isArabic ? 'جارٍ التشغيل...' : 'Playing...' }}</span>
+                        </button>
+                    </div>
                 </div>
 
                 <div class="px-6 pb-6">
