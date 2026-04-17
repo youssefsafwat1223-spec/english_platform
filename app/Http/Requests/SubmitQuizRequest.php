@@ -24,7 +24,7 @@ class SubmitQuizRequest extends FormRequest
         return [
             'answers' => 'required|array',
             'answers.*.question_id' => 'required|exists:questions,id',
-            'answers.*.user_answer' => 'required|string',
+            'answers.*.user_answer' => 'nullable|string',
             'answers.*.time_taken' => 'nullable|integer',
             'answers.*.audio_played' => 'nullable|boolean',
             'answers.*.audio_replay_count' => 'nullable|integer',
@@ -41,7 +41,6 @@ class SubmitQuizRequest extends FormRequest
     {
         return [
             'answers.required' => 'Please answer at least one question',
-            'answers.*.user_answer.required' => 'Please provide an answer for each question',
             'answers.*.user_answer.in' => 'Answer must be A, B, C, or D',
             'started_at.required' => 'Quiz start time is required',
             'completed_at.after' => 'Completion time must be after start time',

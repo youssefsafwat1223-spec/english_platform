@@ -109,7 +109,8 @@ class QuizController extends Controller
         // Save answers and calculate score
         foreach ($answers as $answer) {
             $question = \App\Models\Question::find($answer['question_id']);
-            $isCorrect = $question->isCorrect($answer['user_answer']);
+            $userAnswer = $answer['user_answer'] ?? '';
+            $isCorrect = $question->isCorrect($userAnswer);
 
             if ($isCorrect) {
                 $correctAnswers++;
@@ -117,7 +118,7 @@ class QuizController extends Controller
 
             $attempt->answers()->create([
                 'question_id' => $answer['question_id'],
-                'user_answer' => $answer['user_answer'],
+                'user_answer' => $userAnswer,
                 'is_correct' => $isCorrect,
                 'time_taken' => $answer['time_taken'] ?? null,
                 'audio_played' => $answer['audio_played'] ?? false,
