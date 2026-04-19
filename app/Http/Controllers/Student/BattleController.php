@@ -36,6 +36,8 @@ class BattleController extends Controller
         })
             ->withCount('questions')
             ->where('is_active', true)
+            ->where('title', 'not like', '%اختبار%')
+            ->where('title', 'not like', '%test%')
             ->get()
             ->filter(fn (Course $course) => $course->questions_count >= $minQuestions)
             ->values();
