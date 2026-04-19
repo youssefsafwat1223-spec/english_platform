@@ -772,6 +772,11 @@
     </div>
 </div>
 
+{{-- 3-Minute Pop-up Question Feature (Only if lesson has video) --}}
+@if($lesson->video_url || $lesson->video_embed_url || $lesson->isVdoCipherVideo())
+    <x-student.popup-question />
+@endif
+
 @push('scripts')
 <script>
 const lessonUiText = {

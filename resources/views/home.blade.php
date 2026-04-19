@@ -272,21 +272,9 @@
 
                         <div class="grid grid-cols-2 gap-2 text-xs font-semibold mb-5" style="color: var(--color-text-muted);">
                             @if($course->is_exam)
-                                <div class="flex items-center gap-1.5">
+                                <div class="flex items-center justify-center gap-1.5 col-span-2 text-center py-2">
                                     <span class="w-1.5 h-1.5 rounded-full bg-primary-500"></span>
-                                    {{ $isArabic ? 'تقييم شامل للمستوى' : 'Comprehensive assessment' }}
-                                </div>
-                                <div class="flex items-center gap-1.5">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-accent-500"></span>
-                                    {{ $isArabic ? 'يحدد مسارك التعليمي' : 'Defines learning path' }}
-                                </div>
-                                <div class="flex items-center gap-1.5">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                                    {{ $isArabic ? 'تدريب ذكاء اصطناعي' : 'AI training' }}
-                                </div>
-                                <div class="flex items-center gap-1.5">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
-                                    {{ $isArabic ? 'مجاني وسريع' : 'Free and fast' }}
+                                    {{ $isArabic ? 'اختبار يحدد معرفتك' : 'A test to determine your knowledge' }}
                                 </div>
                             @else
                                 <div class="flex items-center gap-1.5">

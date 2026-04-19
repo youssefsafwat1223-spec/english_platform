@@ -18,6 +18,8 @@ class WritingExercise extends Model
         'min_words',
         'max_words',
         'passing_score',
+        'evaluation_type',
+        'questions_json',
         'model_answer',
         'rubric_json',
     ];
@@ -26,6 +28,7 @@ class WritingExercise extends Model
     {
         return [
             'rubric_json' => 'array',
+            'questions_json' => 'array',
         ];
     }
 

@@ -82,6 +82,8 @@
             'initialText' => old('answer_text', ''),
             'lessonVocabularyWords' => $lessonVocabulary->pluck('word')->values()->all(),
             'requiredVocabularyUsage' => $requiredVocabularyUsage,
+            'evaluationType' => $writingExercise->evaluation_type ?? 'ai',
+            'exactMatchQuestions' => is_string($writingExercise->questions_json) ? json_decode($writingExercise->questions_json, true) : ($writingExercise->questions_json ?? []),
         ]))">
             <div class="xl:col-span-2 space-y-6">
                 <x-student.card padding="p-0" class="overflow-hidden border border-slate-200/50 dark:border-white/10">
@@ -172,13 +174,55 @@
                         </div>
                     </div>
                     <div class="p-6 space-y-4">
-                        <textarea
-                            x-model="answerText"
-                            rows="14"
-                            class="input-glass min-h-[320px]"
-                            placeholder="{{ $isArabic ? 'اكتب إجابتك هنا...' : 'Write your answer here...' }}"
-                        ></textarea>
-                        <div class="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+                        @if(($writingExercise->evaluation_type ?? 'ai') === 'exact_match')
+                            <div class="space-y-6" x-show="!result">
+                                <template x-for="(q, index) in exactMatchQuestions" :key="index">
+                                    <div x-show="currentQuestion === index" x-transition:enter="transition ease-out duration-300 transform" x-transition:enter-start="opacity-0 translate-x-4" x-transition:enter-end="opacity-100 translate-x-0" class="p-6 rounded-2xl border border-slate-200 dark:border-white/10 bg-white/50 dark:bg-slate-900/40">
+                                        <div class="text-xs uppercase tracking-wider text-slate-500 font-bold mb-3">{{ $isArabic ? 'السؤال' : 'Question' }} <span x-text="index + 1"></span> / <span x-text="exactMatchQuestions.length"></span></div>
+                                        <div class="text-2xl font-black text-slate-900 dark:text-white mb-6" x-text="q.question"></div>
+                                        <input type="text" x-model="answers[index]" @keydown.enter.prevent="nextQuestion()" class="input-glass w-full text-lg py-4 px-5 font-bold" placeholder="{{ $isArabic ? 'اكتب إجابتك هنا...' : 'Type your answer here...' }}" :id="'answer-input-' + index">
+                                        <div class="mt-6 flex justify-end">
+                                            <button type="button" @click="nextQuestion()" class="btn-primary" x-show="index < exactMatchQuestions.length - 1">{{ $isArabic ? 'التالي' : 'Next' }}</button>
+                                            <button type="button" @click="submitExactMatch()" class="btn-primary" x-show="index === exactMatchQuestions.length - 1">
+                                                <span x-show="!submitting">{{ $isArabic ? 'إنهاء وإرسال' : 'Finish & Submit' }}</span>
+                                                <span x-show="submitting">{{ $isArabic ? 'جاري...' : 'Submitting...' }}</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        @else
+                            <textarea
+                                x-model="answerText"
+                                rows="14"
+                                class="input-glass min-h-[320px]"
+                                placeholder="{{ $isArabic ? 'اكتب إجابتك هنا...' : 'Write your answer here...' }}"
+                            ></textarea>
+                            <div class="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between mt-4">
+                                <p class="text-sm text-slate-500 dark:text-slate-400">
+                                    @if($isArabic)
+                                        استهدف {{ $writingExercise->min_words }} إلى {{ $writingExercise->max_words }} كلمة، وخلي إجابتك مرتبطة بالمطلوب.
+                                        @if($requiredVocabularyUsage > 0 && $lessonVocabulary->isNotEmpty())
+                                            استخدم على الأقل {{ $requiredVocabularyUsage }} كلمات من قائمة مفردات الدرس.
+                                        @endif
+                                    @else
+                                        Aim for {{ $writingExercise->min_words }}-{{ $writingExercise->max_words }} words and keep your answer focused on the prompt.
+                                        @if($requiredVocabularyUsage > 0 && $lessonVocabulary->isNotEmpty())
+                                            Use at least {{ $requiredVocabularyUsage }} words from the lesson vocabulary list.
+                                        @endif
+                                    @endif
+                                </p>
+                                <div class="flex gap-3">
+                                    <button type="button" class="btn-ghost" @click="resetDraft()" x-bind:disabled="submitting">{{ $isArabic ? 'مسح المسودة' : 'Clear Draft' }}</button>
+                                    <button type="button" class="btn-primary ripple-btn min-w-[170px]" @click="submit()" x-bind:disabled="submitting">
+                                        <span x-show="!submitting">{{ $isArabic ? 'إرسال الكتابة' : 'Submit Writing' }}</span>
+                                        <span x-show="submitting" x-cloak>{{ $isArabic ? 'جارٍ تحليل الكتابة...' : 'Analyzing your writing...' }}</span>
+                                    </button>
+                                </div>
+                            </div>
+                        @endif
+                        <p x-show="errorMessage" x-text="errorMessage" x-cloak class="text-sm font-semibold text-red-500 mt-2"></p>
+                    </div>
                             <p class="text-sm text-slate-500 dark:text-slate-400">
                                 @if($isArabic)
                                     استهدف {{ $writingExercise->min_words }} إلى {{ $writingExercise->max_words }} كلمة، وخلي إجابتك مرتبطة بالمطلوب.
@@ -252,7 +296,34 @@
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div x-show="result && result.exact_match_results" x-cloak class="rounded-2xl border border-slate-200/70 dark:border-white/10 p-5 bg-slate-50/80 dark:bg-white/[0.02]">
+                            <h3 class="font-extrabold text-slate-900 dark:text-white mb-4">{{ $isArabic ? 'تفاصيل الإجابات' : 'Answer Details' }}</h3>
+                            <div class="space-y-3">
+                                <template x-for="(res, idx) in (result ? result.exact_match_results : [])" :key="idx">
+                                    <div class="flex items-start gap-4 p-4 rounded-xl" :class="res.is_correct ? 'bg-emerald-50 dark:bg-emerald-900/10 border border-emerald-100 dark:border-emerald-800/30' : 'bg-rose-50 dark:bg-rose-900/10 border border-rose-100 dark:border-rose-800/30'">
+                                        <div class="w-8 h-8 rounded-full flex items-center justify-center shrink-0" :class="res.is_correct ? 'bg-emerald-500 text-white' : 'bg-rose-500 text-white'">
+                                            <svg x-show="res.is_correct" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                                            <svg x-show="!res.is_correct" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"/></svg>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="font-bold text-slate-900 dark:text-white mb-2" x-text="res.question"></div>
+                                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                                <div>
+                                                    <div class="text-[10px] font-black uppercase tracking-wider text-slate-500 mb-0.5">{{ $isArabic ? 'إجابتك' : 'Your Answer' }}</div>
+                                                    <div class="text-sm font-semibold" :class="res.is_correct ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400'" x-text="res.user_answer || '-'"></div>
+                                                </div>
+                                                <div x-show="!res.is_correct">
+                                                    <div class="text-[10px] font-black uppercase tracking-wider text-slate-500 mb-0.5">{{ $isArabic ? 'الإجابة الصحيحة' : 'Correct Answer' }}</div>
+                                                    <div class="text-sm font-semibold text-emerald-700 dark:text-emerald-400" x-text="res.expected"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6" x-show="result && result.strengths && !result.exact_match_results">
                             <div class="rounded-2xl border border-slate-200/70 dark:border-white/10 p-5 bg-slate-50/80 dark:bg-white/[0.02]">
                                 <h3 class="font-extrabold text-slate-900 dark:text-white mb-3">{{ $isArabic ? 'نقاط القوة' : 'Strengths' }}</h3>
                                 <ul class="space-y-2 text-sm text-slate-600 dark:text-slate-400">
@@ -339,16 +410,48 @@ function writingPractice(config) {
         result: null,
         minWords: config.minWords,
         maxWords: config.maxWords,
+        evaluationType: config.evaluationType,
+        exactMatchQuestions: config.exactMatchQuestions,
+        currentQuestion: 0,
+        answers: [],
         lessonVocabularyWords: (config.lessonVocabularyWords || [])
             .map((word) => String(word || '').trim().toLowerCase())
             .filter(Boolean),
         requiredVocabularyUsage: Number(config.requiredVocabularyUsage || 0),
-        metrics: [
+        metrics: config.evaluationType === 'exact_match' ? [] : [
             { key: 'grammar_score', label: @js($isArabic ? 'القواعد' : 'Grammar') },
             { key: 'vocabulary_score', label: @js($isArabic ? 'المفردات' : 'Vocabulary') },
             { key: 'coherence_score', label: @js($isArabic ? 'الترابط' : 'Coherence') },
             { key: 'task_score', label: @js($isArabic ? 'تحقيق المطلوب' : 'Task') },
         ],
+        init() {
+            if (this.evaluationType === 'exact_match') {
+                this.answers = new Array(this.exactMatchQuestions.length).fill('');
+                this.$nextTick(() => { document.getElementById('answer-input-0')?.focus(); });
+            }
+        },
+        nextQuestion() {
+            if (this.currentQuestion < this.exactMatchQuestions.length - 1) {
+                this.currentQuestion++;
+                this.$nextTick(() => { document.getElementById('answer-input-' + this.currentQuestion)?.focus(); });
+            } else {
+                this.submitExactMatch();
+            }
+        },
+        async submitExactMatch() {
+            this.submitting = true;
+            this.errorMessage = '';
+            try {
+                const response = await fetch(config.submitUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': config.csrf },
+                    body: JSON.stringify({ answers: this.answers }),
+                });
+                const data = await response.json();
+                if (!response.ok) { this.errorMessage = data.message || data.error || @js($isArabic ? 'خطأ' : 'Error'); return; }
+                this.result = data;
+            } catch (error) { this.errorMessage = @js($isArabic ? 'خطأ اتصال' : 'Connection error'); } finally { this.submitting = false; }
+        },
         get wordCount() {
             return (this.answerText || '').trim()
                 ? (this.answerText || '').trim().split(/\s+/).filter(Boolean).length

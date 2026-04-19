@@ -3,8 +3,8 @@
 @php
     $isArabic = app()->getLocale() === 'ar';
     $questionCount = count($quiz->questions ?? []);
-    $audioEnabled = (bool) $quiz->enable_audio;
-    $audioAutoPlay = $audioEnabled && (bool) $quiz->audio_auto_play;
+    $audioEnabled = false; // Disabled by request: (bool) $quiz->enable_audio;
+    $audioAutoPlay = false;
     $questionSpeechTexts = $quiz->questions->map(fn ($question) => $question->getTTSText())->values();
 @endphp
 

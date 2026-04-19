@@ -472,6 +472,12 @@ Route::prefix('student')->name('student.')->middleware(['auth', 'student', 'acti
     Route::get('/quizzes/attempts/{attempt}', [StudentQuizController::class, 'result'])->name('quizzes.result');
     Route::get('/my-quizzes', [StudentQuizController::class, 'myAttempts'])->name('quizzes.my-attempts');
 
+    // Pop-up Questions
+    Route::get('/popup-question/random', [\App\Http\Controllers\Student\PopUpQuestionController::class, 'getRandom'])
+        ->name('popup-question.random');
+    Route::post('/popup-question/{question}/check', [\App\Http\Controllers\Student\PopUpQuestionController::class, 'checkAnswer'])
+        ->name('popup-question.check');
+
     // Pronunciation
     Route::get('/pronunciation/{exercise}', [PronunciationController::class, 'show'])
         ->name('pronunciation.show');

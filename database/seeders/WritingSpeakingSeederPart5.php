@@ -165,11 +165,52 @@ class WritingSpeakingSeederPart5 extends Seeder
         foreach ($data as $searchKey => $exercises) {
             $level = CourseLevel::where('course_id', $courseId)->where('title', 'LIKE', "%{$searchKey}%")->first();
             if (!$level) { $this->command->warn("⚠ Not found: {$searchKey}"); continue; }
-            WritingExercise::updateOrCreate(['course_level_id' => $level->id], [
-                'title' => $level->title . ' — Writing', 'prompt' => $exercises['writing']['prompt'],
-                'instructions' => $exercises['writing']['instructions'], 'model_answer' => $exercises['writing']['model_answer'],
-                'min_words' => $exercises['writing']['min_words'], 'max_words' => $exercises['writing']['max_words'], 'passing_score' => 60,
-            ]);
+            $writingData = $exercises['writing'];
+            
+            // Parse for exact match short answers
+            $questionsJson = null;
+            $evalType = 'ai';
+            
+            if (str_contains($writingData['prompt'] ?? '', "\n1. ")) {
+                $evalType = 'exact_match';
+                $questionsJson = [];
+                $promptLines = explode("\n", $writingData['prompt']);
+                $answerLines = explode("\n", $writingData['model_answer'] ?? '');
+                
+                // Extract questions
+                foreach ($promptLines as $line) {
+                    if (preg_match('/^\d+\.\s+(.*)$/', trim($line), $matches)) {
+                        $questionsJson[] = ['question' => $matches[1], 'answer' => ''];
+                    }
+                }
+                
+                // Extract answers
+                $aIndex = 0;
+                foreach ($answerLines as $line) {
+                    if (preg_match('/^\d+\.\s+(.*)$/', trim($line), $matches)) {
+                        if (isset($questionsJson[$aIndex])) {
+                            $questionsJson[$aIndex]['answer'] = $matches[1];
+                        }
+                        $aIndex++;
+                    }
+                }
+            }
+
+            // Writing
+            WritingExercise::updateOrCreate(
+                ['course_level_id' => $level->id],
+                [
+                    'title' => $level->title . ' — Writing',
+                    'prompt' => $writingData['prompt'] ?? '',
+                    'instructions' => $writingData['instructions'] ?? '',
+                    'model_answer' => $writingData['model_answer'] ?? '',
+                    'min_words' => $writingData['min_words'] ?? 0,
+                    'max_words' => $writingData['max_words'] ?? 0,
+                    'passing_score' => 60,
+                    'evaluation_type' => $evalType,
+                    'questions_json' => $questionsJson,
+                ]
+            );
             PronunciationExercise::updateOrCreate(['course_level_id' => $level->id], [
                 'sentence_1' => $exercises['speaking']['sentence_1'], 'sentence_2' => $exercises['speaking']['sentence_2'],
                 'sentence_3' => $exercises['speaking']['sentence_3'], 'sentences_json' => $exercises['speaking']['sentences_json'] ?? null,
