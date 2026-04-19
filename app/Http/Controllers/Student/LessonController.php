@@ -81,7 +81,6 @@ class LessonController extends Controller
             $writingExerciseCompleted = WritingSubmission::query()
                 ->where('writing_exercise_id', $lesson->writingExercise->id)
                 ->where('user_id', $user->id)
-                ->where('overall_score', '>=', $lesson->writingExercise->passing_score)
                 ->exists();
         }
 

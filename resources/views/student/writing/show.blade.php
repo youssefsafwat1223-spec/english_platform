@@ -364,7 +364,16 @@
                                         {{ $attempt->overall_score }}%
                                     </span>
                                 </div>
-                                <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-4">{{ $attempt->answer_text }}</p>
+                                <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-4">
+                                    @php
+                                        $decodedAnswer = json_decode($attempt->answer_text, true);
+                                    @endphp
+                                    @if(is_array($decodedAnswer))
+                                        {{ implode(' | ', array_filter($decodedAnswer, fn($ans) => trim((string)$ans) !== '')) }}
+                                    @else
+                                        {{ $attempt->answer_text }}
+                                    @endif
+                                </p>
                             </div>
                         @empty
                             <p class="text-sm text-slate-500 dark:text-slate-400">{{ $isArabic ? 'لا توجد محاولات كتابة حتى الآن. أرسل أول إجابة لترى التقييم هنا.' : 'No writing attempts yet. Submit your first answer to see feedback here.' }}</p>
