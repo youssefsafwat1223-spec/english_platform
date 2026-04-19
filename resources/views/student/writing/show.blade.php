@@ -154,7 +154,7 @@
                     </x-student.card>
                 @endif
 
-                <x-student.card padding="p-0" class="overflow-hidden border border-slate-200/50 dark:border-white/10">
+                <x-student.card padding="p-0" class="overflow-hidden border border-slate-200/50 dark:border-white/10" x-show="!result">
                     <div class="px-6 py-5 border-b border-slate-200/50 dark:border-white/5 bg-slate-50/50 dark:bg-slate-900/20 flex items-center justify-between gap-4">
                         <h2 class="text-xl font-extrabold text-slate-900 dark:text-white">{{ $isArabic ? 'كتابتك' : 'Your Writing' }}</h2>
                         <div class="flex items-center gap-2">
@@ -175,7 +175,7 @@
                     </div>
                     <div class="p-6 space-y-4">
                         @if(($writingExercise->evaluation_type ?? 'ai') === 'exact_match')
-                            <div class="space-y-6" x-show="!result">
+                            <div class="space-y-6">
                                 <template x-for="(q, index) in exactMatchQuestions" :key="index">
                                     <div x-show="currentQuestion === index" x-transition:enter="transition ease-out duration-300 transform" x-transition:enter-start="opacity-0 translate-x-4" x-transition:enter-end="opacity-100 translate-x-0" class="p-6 rounded-2xl border border-slate-200 dark:border-white/10 bg-white/50 dark:bg-slate-900/40">
                                         <div class="text-xs uppercase tracking-wider text-slate-500 font-bold mb-3">{{ $isArabic ? 'السؤال' : 'Question' }} <span x-text="index + 1"></span> / <span x-text="exactMatchQuestions.length"></span></div>
@@ -223,36 +223,13 @@
                         @endif
                         <p x-show="errorMessage" x-text="errorMessage" x-cloak class="text-sm font-semibold text-red-500 mt-2"></p>
                     </div>
-                            <p class="text-sm text-slate-500 dark:text-slate-400">
-                                @if($isArabic)
-                                    استهدف {{ $writingExercise->min_words }} إلى {{ $writingExercise->max_words }} كلمة، وخلي إجابتك مرتبطة بالمطلوب.
-                                    @if($requiredVocabularyUsage > 0 && $lessonVocabulary->isNotEmpty())
-                                        استخدم على الأقل {{ $requiredVocabularyUsage }} كلمات من قائمة مفردات الدرس.
-                                    @endif
-                                @else
-                                    Aim for {{ $writingExercise->min_words }}-{{ $writingExercise->max_words }} words and keep your answer focused on the prompt.
-                                    @if($requiredVocabularyUsage > 0 && $lessonVocabulary->isNotEmpty())
-                                        Use at least {{ $requiredVocabularyUsage }} words from the lesson vocabulary list.
-                                    @endif
-                                @endif
-                            </p>
-                            <div class="flex gap-3">
-                                <button type="button" class="btn-ghost" @click="resetDraft()" x-bind:disabled="submitting">{{ $isArabic ? 'مسح المسودة' : 'Clear Draft' }}</button>
-                                <button type="button" class="btn-primary ripple-btn min-w-[170px]" @click="submit()" x-bind:disabled="submitting">
-                                    <span x-show="!submitting">{{ $isArabic ? 'إرسال الكتابة' : 'Submit Writing' }}</span>
-                                    <span x-show="submitting" x-cloak>{{ $isArabic ? 'جارٍ تحليل الكتابة...' : 'Analyzing your writing...' }}</span>
-                                </button>
-                            </div>
-                        </div>
-                        <p x-show="errorMessage" x-text="errorMessage" x-cloak class="text-sm font-semibold text-red-500"></p>
-                    </div>
                 </x-student.card>
 
-                <x-student.card x-show="result" x-cloak padding="p-0" class="overflow-hidden border border-slate-200/50 dark:border-white/10">
+                <x-student.card id="result-card" x-show="result" x-cloak padding="p-0" class="overflow-hidden border border-slate-200/50 dark:border-white/10">
                     <div class="px-6 py-5 border-b border-slate-200/50 dark:border-white/5 bg-slate-50/50 dark:bg-slate-900/20 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                         <div>
-                            <h2 class="text-xl font-extrabold text-slate-900 dark:text-white">{{ $isArabic ? 'ملاحظات الذكاء الاصطناعي على الكتابة' : 'AI Writing Feedback' }}</h2>
-                            <p class="text-sm text-slate-500 dark:text-slate-400" x-text="result ? result.summary : ''"></p>
+                            <h2 class="text-xl font-extrabold text-slate-900 dark:text-white" x-text="(result && result.exact_match_results) ? '{{ $isArabic ? 'نتائج الإجابات' : 'Answers Results' }}' : '{{ $isArabic ? 'ملاحظات الذكاء الاصطناعي على الكتابة' : 'AI Writing Feedback' }}'"></h2>
+                            <p class="text-sm text-slate-500 dark:text-slate-400" x-show="result && result.summary" x-text="result ? result.summary : ''"></p>
                         </div>
                         <div class="flex items-center gap-3">
                             <div class="rounded-2xl px-4 py-3 bg-primary-500/10 text-primary-600 dark:text-primary-400">
@@ -445,11 +422,18 @@ function writingPractice(config) {
                 const response = await fetch(config.submitUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': config.csrf },
-                    body: JSON.stringify({ answers: this.answers }),
+                    body: JSON.stringify({ answers: Array.isArray(this.answers) ? Array.from(this.answers) : this.answers }),
                 });
                 const data = await response.json();
                 if (!response.ok) { this.errorMessage = data.message || data.error || @js($isArabic ? 'خطأ' : 'Error'); return; }
                 this.result = data;
+                
+                setTimeout(() => {
+                    const resultCard = document.getElementById('result-card');
+                    if (resultCard) {
+                        resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }, 150);
             } catch (error) { this.errorMessage = @js($isArabic ? 'خطأ اتصال' : 'Connection error'); } finally { this.submitting = false; }
         },
         get wordCount() {
