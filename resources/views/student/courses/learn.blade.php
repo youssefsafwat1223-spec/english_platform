@@ -96,11 +96,6 @@
         $passingWritingIds = \App\Models\WritingSubmission::query()
             ->where('user_id', $userId)
             ->whereIn('writing_exercise_id', $writingExerciseIds->unique()->values())
-            ->get(['writing_exercise_id', 'overall_score'])
-            ->filter(function ($row) use ($writingExerciseIds) {
-                $exercise = \App\Models\WritingExercise::find($row->writing_exercise_id);
-                return $exercise && (int) $row->overall_score >= (int) $exercise->passing_score;
-            })
             ->pluck('writing_exercise_id')
             ->unique()
             ->values();

@@ -188,6 +188,19 @@
                 this.isLoading = true;
                 this.showModal = true;
 
+                // Force exit full screen if active so the modal is visible
+                if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement) {
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen().catch(() => {});
+                    } else if (document.webkitExitFullscreen) {
+                        document.webkitExitFullscreen();
+                    } else if (document.mozCancelFullScreen) {
+                        document.mozCancelFullScreen();
+                    } else if (document.msExitFullscreen) {
+                        document.msExitFullscreen();
+                    }
+                }
+
                 // Play popup audio
                 const audio = document.getElementById('popup-audio');
                 if (audio) {
