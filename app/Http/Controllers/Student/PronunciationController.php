@@ -56,7 +56,7 @@ class PronunciationController extends Controller
     {
         $request->validate([
             'transcript' => 'required|string',
-            'sentence_number' => 'required|integer|min:1|max:3',
+            'sentence_number' => 'required|integer|min:1',
         ]);
 
         $user = auth()->user();
@@ -117,7 +117,7 @@ class PronunciationController extends Controller
     public function startStream(Request $request, PronunciationExercise $exercise)
     {
         $request->validate([
-            'sentence_number' => 'required|integer|min:1|max:3',
+            'sentence_number' => 'required|integer|min:1',
         ]);
 
         $user = auth()->user();
@@ -176,7 +176,7 @@ class PronunciationController extends Controller
     public function compareStream(Request $request, PronunciationExercise $exercise)
     {
         $request->validate([
-            'sentence_number' => 'required|integer|min:1|max:3',
+            'sentence_number' => 'required|integer|min:1',
             'transcript' => 'nullable|string|max:5000',
         ]);
 
@@ -217,7 +217,7 @@ class PronunciationController extends Controller
     {
         $request->validate([
             'session_id' => 'nullable|string|max:100',
-            'sentence_number' => 'required|integer|min:1|max:3',
+            'sentence_number' => 'required|integer|min:1',
             'transcript' => 'required|string|max:5000',
             'duration_seconds' => 'nullable|integer|min:0|max:120',
             'latency_ms' => 'nullable|integer|min:0|max:60000',
@@ -294,7 +294,7 @@ class PronunciationController extends Controller
         // Legacy endpoint — redirect to evaluate
         $request->validate([
             'exercise_id' => 'required|integer|exists:pronunciation_exercises,id',
-            'sentence_number' => 'required|integer|min:1|max:3',
+            'sentence_number' => 'required|integer|min:1',
             'audio' => 'required|file|max:30720',
             'duration_seconds' => 'nullable|integer|min:0|max:300',
             'client_transcript' => 'nullable|string|max:5000',

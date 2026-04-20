@@ -15,7 +15,7 @@ class PronunciationUploadController extends Controller
     {
         $request->validate([
             'exercise_id' => 'required|integer|exists:pronunciation_exercises,id',
-            'sentence_number' => 'required|integer|min:1|max:3',
+            'sentence_number' => 'required|integer|min:1',
             'audio' => 'required|file|max:30720',
             'duration_seconds' => 'nullable|integer|min:0|max:300',
             'client_transcript' => 'nullable|string|max:5000',
