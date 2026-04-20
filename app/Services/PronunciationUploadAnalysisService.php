@@ -119,7 +119,7 @@ class PronunciationUploadAnalysisService
 
     private function getExpectedSentence(PronunciationExercise $exercise, int $sentenceNumber): ?string
     {
-        $expectedText = $exercise->{"sentence_{$sentenceNumber}"} ?? null;
+        $expectedText = $exercise->sentences[$sentenceNumber] ?? null;
         return $expectedText ? trim((string) $expectedText) : null;
     }
 

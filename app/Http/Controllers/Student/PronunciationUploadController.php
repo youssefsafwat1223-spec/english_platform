@@ -33,7 +33,7 @@ class PronunciationUploadController extends Controller
         }
 
         $sentenceNumber = (int) $request->sentence_number;
-        $expectedText = $exercise->{"sentence_{$sentenceNumber}"} ?? null;
+        $expectedText = $exercise->sentences[$sentenceNumber] ?? null;
 
         if (!filled($expectedText)) {
             return response()->json(['error' => 'Invalid sentence number'], 400);
