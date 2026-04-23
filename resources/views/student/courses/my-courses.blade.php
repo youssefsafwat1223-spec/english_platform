@@ -58,27 +58,31 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @forelse($enrollments as $enrollment)
                 @php
+                    $course = $enrollment->course;
+                @endphp
+                @continue(!$course)
+                @php
                     $lastAccessed = $enrollment->last_accessed_at ? $enrollment->last_accessed_at->diffForHumans() : __('Not yet');
                     $expiresAt = $enrollment->expires_at;
                     $daysLeftRaw = $expiresAt ? (now()->diffInSeconds($expiresAt, false) / 86400) : null;
                     $daysLeft = $daysLeftRaw !== null ? (int) ($daysLeftRaw >= 0 ? ceil($daysLeftRaw) : floor($daysLeftRaw)) : null;
                 @endphp
                 <x-student.card padding="p-0" class="group overflow-hidden cursor-pointer hover:-translate-y-1 hover:shadow-xl transition-all duration-300" data-aos="fade-up" data-aos-delay="{{ $loop->index * 100 }}">
-                    <a href="{{ route('student.courses.learn', $enrollment->course) }}" class="block">
-                        @if($enrollment->course->thumbnail)
+                    <a href="{{ route('student.courses.learn', $course) }}" class="block">
+                        @if($course->thumbnail)
                             <div class="relative overflow-hidden">
-                                <img src="{{ Storage::url($enrollment->course->thumbnail) }}" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500" alt="{{ $enrollment->course->title }}">
+                                <img src="{{ Storage::url($course->thumbnail) }}" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500" alt="{{ $course->title }}">
                                 <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                             </div>
                         @else
                             <div class="w-full h-48 bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center relative overflow-hidden">
                                 <div class="absolute inset-0 bg-dot-pattern opacity-20"></div>
-                                <span class="text-white text-lg font-bold relative z-10">{{ Str::limit($enrollment->course->title, 20) }}</span>
+                                <span class="text-white text-lg font-bold relative z-10">{{ Str::limit($course->title, 20) }}</span>
                             </div>
                         @endif
                         <div class="p-6">
-                            <h3 class="text-lg font-bold mb-2 group-hover:text-primary-500 transition-colors text-slate-900 dark:text-white">{{ $enrollment->course->title }}</h3>
-                            <p class="text-sm mb-4 line-clamp-2 text-slate-600 dark:text-slate-400">{{ Str::limit($enrollment->course->short_description ?: $enrollment->course->description, 100) }}</p>
+                            <h3 class="text-lg font-bold mb-2 group-hover:text-primary-500 transition-colors text-slate-900 dark:text-white">{{ $course->title }}</h3>
+                            <p class="text-sm mb-4 line-clamp-2 text-slate-600 dark:text-slate-400">{{ Str::limit($course->short_description ?: $course->description, 100) }}</p>
 
                             <div class="mb-4">
                                 <div class="flex justify-between text-sm mb-2">
@@ -106,9 +110,9 @@
                         <div class="flex justify-between items-center pt-4 border-t border-slate-200 dark:border-white/10">
                             @if($enrollment->is_completed)
                                 <span class="badge-success badge text-emerald-600 bg-emerald-100 px-2 py-1 rounded text-xs font-bold">✓ {{ __('Completed') }}</span>
-                                <a href="{{ route('student.courses.certificate.info', $enrollment->course) }}" class="btn-primary btn-sm">🎓 {{ __('Certificate') }}</a>
+                                <a href="{{ route('student.courses.certificate.info', $course) }}" class="btn-primary btn-sm">🎓 {{ __('Certificate') }}</a>
                             @else
-                                <a href="{{ route('student.courses.learn', $enrollment->course) }}" class="btn-primary btn-sm ripple-btn shadow-md shadow-primary-500/20 font-bold px-4">{{ __('Continue Learning') }}</a>
+                                <a href="{{ route('student.courses.learn', $course) }}" class="btn-primary btn-sm ripple-btn shadow-md shadow-primary-500/20 font-bold px-4">{{ __('Continue Learning') }}</a>
                             @endif
                         </div>
                     </div>

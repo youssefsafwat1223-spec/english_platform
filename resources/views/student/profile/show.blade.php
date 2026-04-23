@@ -182,13 +182,16 @@
                     </div>
                     
                     <div class="space-y-3">
-                        @forelse($user->enrollments()->with('course')->latest()->take(3)->get() as $enrollment)
+                        @forelse($user->enrollments()->whereHas('course')->with('course')->latest()->take(3)->get() as $enrollment)
+                            @php
+                                $course = $enrollment->course;
+                            @endphp
                             <div class="p-4 rounded-[1.5rem] bg-white dark:bg-white/5 border border-slate-200 dark:border-white/5 hover:border-primary-500/30 transition-colors flex items-center gap-4 group">
                                 <div class="w-12 h-12 rounded-xl bg-slate-100 dark:bg-black/20 flex flex-col items-center justify-center shrink-0 border border-slate-200 dark:border-white/5 group-hover:bg-primary-500/10 transition-colors">
                                     <span class="text-xs font-bold text-primary-500">{{ round($enrollment->progress_percentage) }}%</span>
                                 </div>
                                 <div class="flex-1 min-w-0">
-                                    <h4 class="font-bold text-slate-900 dark:text-white truncate group-hover:text-primary-500 transition-colors">{{ $enrollment->course->title }}</h4>
+                                    <h4 class="font-bold text-slate-900 dark:text-white truncate group-hover:text-primary-500 transition-colors">{{ $course->title }}</h4>
                                     <div class="w-full h-1.5 bg-slate-100 dark:bg-black/40 rounded-full mt-2 overflow-hidden">
                                         <div class="h-full rounded-full {{ $enrollment->is_completed ? 'bg-accent-500' : 'bg-gradient-to-r from-primary-500 to-accent-500' }}" style="width: {{ $enrollment->progress_percentage }}%"></div>
                                     </div>

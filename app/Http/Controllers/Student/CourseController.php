@@ -142,6 +142,7 @@ class CourseController extends Controller
         $user = auth()->user();
 
         $query = $user->enrollments()
+            ->whereHas('course')
             ->with(['course', 'lessonProgress']);
 
         if ($request->filled('q')) {

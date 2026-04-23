@@ -184,6 +184,9 @@
         @if(isset($pendingPayments) && $pendingPayments->count() > 0)
             <div class="space-y-4 mb-2" data-aos="fade-up" data-aos-delay="150">
                 @foreach($pendingPayments as $payment)
+                    @php
+                        $paymentCourse = $payment->course;
+                    @endphp
                     <div class="backdrop-blur-xl shadow-lg ring-1 ring-black/5 dark:ring-white/10 bg-amber-50/80 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 p-5 flex flex-col sm:flex-row items-center justify-between gap-4 rounded-2xl relative overflow-hidden">
                         <div class="absolute inset-0 bg-gradient-to-r from-amber-500/10 to-transparent pointer-events-none"></div>
                         <div class="flex items-center gap-4 relative z-10 w-full sm:w-auto">
@@ -195,18 +198,20 @@
                             <div class="flex-1">
                                 <h4 class="font-bold text-slate-900 dark:text-white text-lg">{{ __('Pending Payment') }}</h4>
                                 <p class="text-sm text-slate-600 dark:text-amber-200/80 font-medium">
-                                    {{ __('You have an incomplete checkout for') }} <span class="font-bold text-slate-800 dark:text-white">"{{ $payment->course->title }}"</span>.
+                                    {{ __('You have an incomplete checkout for') }} <span class="font-bold text-slate-800 dark:text-white">"{{ $paymentCourse?->title ?? __('Deleted course') }}"</span>.
                                 </p>
                             </div>
                         </div>
-                        <div class="relative z-10 w-full sm:w-auto flex-shrink-0 mt-4 sm:mt-0">
-                            <a href="{{ route('student.courses.enroll', $payment->course) }}" class="btn-primary w-full sm:w-auto px-6 py-2.5 bg-amber-500 hover:bg-amber-600 text-white border-0 shadow-lg shadow-amber-500/30 font-bold whitespace-nowrap inline-flex items-center justify-center gap-2">
-                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10.5 12 5l9 5.5M4.5 9.75V18a1.5 1.5 0 0 0 1.5 1.5h12A1.5 1.5 0 0 0 19.5 18V9.75M9 13.5h6" />
-                                </svg>
-                                {{ __('Complete Purchase') }}
-                            </a>
-                        </div>
+                        @if($paymentCourse)
+                            <div class="relative z-10 w-full sm:w-auto flex-shrink-0 mt-4 sm:mt-0">
+                                <a href="{{ route('student.courses.enroll', $paymentCourse) }}" class="btn-primary w-full sm:w-auto px-6 py-2.5 bg-amber-500 hover:bg-amber-600 text-white border-0 shadow-lg shadow-amber-500/30 font-bold whitespace-nowrap inline-flex items-center justify-center gap-2">
+                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10.5 12 5l9 5.5M4.5 9.75V18a1.5 1.5 0 0 0 1.5 1.5h12A1.5 1.5 0 0 0 19.5 18V9.75M9 13.5h6" />
+                                    </svg>
+                                    {{ __('Complete Purchase') }}
+                                </a>
+                            </div>
+                        @endif
                     </div>
                 @endforeach
             </div>
@@ -276,7 +281,11 @@
                     <div class="space-y-5">
                         @forelse($activeEnrollments->take(3) as $enrollment)
                             @php
-                                $courseLessons = $enrollment->course->lessons ?? collect();
+                                $course = $enrollment->course;
+                            @endphp
+                            @continue(!$course)
+                            @php
+                                $courseLessons = $course->lessons ?? collect();
                                 $totalLessonTitles = $courseLessons
                                     ->pluck('title')
                                     ->map(fn ($title) => trim((string) $title))
@@ -308,10 +317,10 @@
                                     ? (int) round(min(100, max(0, ($completedLessonTitles / $totalLessonTitles) * 100)))
                                     : 0;
                                 $expiresAt = $enrollment->expires_at;
-                                if (!$expiresAt && (int) ($enrollment->course->estimated_duration_weeks ?? 0) > 0) {
+                                if (!$expiresAt && (int) ($course->estimated_duration_weeks ?? 0) > 0) {
                                     $baseDate = $enrollment->started_at ?? $enrollment->created_at;
                                     if ($baseDate) {
-                                        $expiresAt = $baseDate->copy()->addWeeks((int) $enrollment->course->estimated_duration_weeks);
+                                        $expiresAt = $baseDate->copy()->addWeeks((int) $course->estimated_duration_weeks);
                                     }
                                 }
                                 $daysLeftRaw = $expiresAt ? (now()->diffInSeconds($expiresAt, false) / 86400) : null;
@@ -321,16 +330,16 @@
                                 
                                 {{-- Icon 3D --}}
                                 <div class="shrink-0 w-20 h-20 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-700 dark:to-slate-800 flex items-center justify-center text-3xl shadow-lg border border-white/50 dark:border-white/10 overflow-hidden group-hover:rotate-6 transition-transform">
-                                    @if($enrollment->course->thumbnail)
-                                        <img src="{{ Storage::url($enrollment->course->thumbnail) }}" alt="{{ $enrollment->course->title }}" class="w-full h-full object-cover">
+                                    @if($course->thumbnail)
+                                        <img src="{{ Storage::url($course->thumbnail) }}" alt="{{ $course->title }}" class="w-full h-full object-cover">
                                     @else
-                                        {{ \Illuminate\Support\Str::substr($enrollment->course->title, 0, 1) }}
+                                        {{ \Illuminate\Support\Str::substr($course->title, 0, 1) }}
                                     @endif
                                 </div>
-                                
+
                                 <div class="flex-1 w-full text-center sm:text-left">
                                     <h4 class="font-bold text-xl text-slate-900 dark:text-white mb-2 group-hover:text-primary-500 transition-colors">
-                                        {{ $enrollment->course->title }}
+                                        {{ $course->title }}
                                     </h4>
                                     
                                     <div class="flex flex-wrap items-center justify-center sm:justify-start gap-3 text-sm font-medium text-slate-500 dark:text-slate-400 mb-4">
@@ -384,9 +393,9 @@
                                         </div>
                                     @endif
                                 </div>
-                                
+
                                 <div class="shrink-0 w-full sm:w-auto">
-                                    <a href="{{ route('student.courses.learn', $enrollment->course) }}" class="flex sm:inline-flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-3 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-black font-bold shadow-lg shadow-slate-900/20 dark:shadow-white/20 hover:bg-primary-600 dark:hover:bg-primary-500 dark:hover:text-white transition-all transform group-hover:scale-105">
+                                    <a href="{{ route('student.courses.learn', $course) }}" class="flex sm:inline-flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-3 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-black font-bold shadow-lg shadow-slate-900/20 dark:shadow-white/20 hover:bg-primary-600 dark:hover:bg-primary-500 dark:hover:text-white transition-all transform group-hover:scale-105">
                                         {{ __('Play') }}
                                         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 000-2.538L6.3 2.84z"/></svg>
                                     </a>

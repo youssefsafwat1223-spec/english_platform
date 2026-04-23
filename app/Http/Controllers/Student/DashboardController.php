@@ -35,6 +35,7 @@ class DashboardController extends Controller
         // Get active enrollments
         $activeEnrollments = $user->enrollments()
             ->active()
+            ->whereHas('course')
             ->with([
                 'course.lessons:id,course_id,title',
                 'lessonProgress',
@@ -53,12 +54,16 @@ class DashboardController extends Controller
             ->selectRaw('MAX(id)')
             ->where('user_id', $user->id)
             ->pending()
+            ->whereNotNull('course_id')
+            ->whereHas('course')
             ->where('created_at', '>=', $pendingCutoff)
             ->groupBy('course_id');
 
         $pendingPayments = Payment::query()
             ->where('user_id', $user->id)
             ->pending()
+            ->whereNotNull('course_id')
+            ->whereHas('course')
             ->where('created_at', '>=', $pendingCutoff)
             ->whereIn('id', $latestPendingPaymentIds)
             ->with('course')
@@ -106,6 +111,7 @@ class DashboardController extends Controller
     {
         $activeEnrollment = $user->enrollments()
             ->active()
+            ->whereHas('course')
             ->orderBy('last_accessed_at', 'desc')
             ->first();
 
