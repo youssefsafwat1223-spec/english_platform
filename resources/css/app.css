@@ -227,9 +227,11 @@
         background: rgba(2, 6, 23, 0.85);
     }
 
-    .glass-card:hover {
-        box-shadow: 0 16px 48px var(--glass-shadow);
-        @apply -translate-y-1;
+    @media (hover: hover) {
+        .glass-card:hover {
+            box-shadow: 0 16px 48px var(--glass-shadow);
+            @apply -translate-y-1;
+        }
     }
 
     .glass-card-header {

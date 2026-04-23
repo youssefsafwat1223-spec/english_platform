@@ -1,6 +1,6 @@
 <div x-data="popupQuestionManager()" x-init="initTimer()" x-cloak>
     {{-- Audio file for popup notification --}}
-    <audio id="popup-audio" src="{{ asset('sounds/popup.mp3') }}" preload="auto"></audio>
+    <audio id="popup-audio" src="{{ asset('sounds/popup.mp3') }}" preload="none"></audio>
 
     {{-- Modal Overlay --}}
     <div x-show="showModal"

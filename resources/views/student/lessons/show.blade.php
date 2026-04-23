@@ -962,7 +962,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-if ('speechSynthesis' in window) {
+if ('speechSynthesis' in window && !/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
     window.speechSynthesis.getVoices();
     window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
 }
