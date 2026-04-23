@@ -39,7 +39,8 @@
     $isPrerequisiteMet = true;
     if ($prerequisite && auth()->check()) {
         $prereqEnrollment = auth()->user()->enrollments()->where('course_id', $prerequisite->id)->first();
-        if (!$prereqEnrollment || is_null($prereqEnrollment->completed_at)) {
+        // Accept the prerequisite as met if the student has ever enrolled — even if they didn't finish.
+        if (!$prereqEnrollment) {
             $isPrerequisiteMet = false;
         }
     }

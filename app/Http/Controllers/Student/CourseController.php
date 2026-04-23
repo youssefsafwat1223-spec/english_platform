@@ -177,10 +177,10 @@ class CourseController extends Controller
                 ->with('info', 'You are already enrolled in this course.');
         }
 
-        // Check prerequisite
+        // Check prerequisite — just having enrolled in the prerequisite is enough (even if not finished).
         if ($course->prerequisite_course_id) {
             $prereqEnrollment = $user->enrollments()->where('course_id', $course->prerequisite_course_id)->first();
-            if (!$prereqEnrollment || is_null($prereqEnrollment->completed_at)) {
+            if (!$prereqEnrollment) {
                 return redirect()->route('student.courses.show', $course)
                     ->with('error', __('يجب الانتهاء من الاختبار/الكورس المشترط أولاً قبل الاشتراك.'));
             }
@@ -211,10 +211,10 @@ class CourseController extends Controller
                 ->with('info', 'You are already enrolled in this course.');
         }
 
-        // Check prerequisite
+        // Check prerequisite — just having enrolled in the prerequisite is enough (even if not finished).
         if ($course->prerequisite_course_id) {
             $prereqEnrollment = $user->enrollments()->where('course_id', $course->prerequisite_course_id)->first();
-            if (!$prereqEnrollment || is_null($prereqEnrollment->completed_at)) {
+            if (!$prereqEnrollment) {
                 return redirect()->route('student.courses.show', $course)
                     ->with('error', __('يجب الانتهاء من الاختبار/الكورس المشترط أولاً قبل الاشتراك.'));
             }
