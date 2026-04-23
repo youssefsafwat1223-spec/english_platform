@@ -910,31 +910,13 @@ function notesManager(initialNote) {
 document.addEventListener('DOMContentLoaded', function() {
     const video = document.getElementById('lessonVideo');
     if (video) {
-        // Blob Video Protection
         const originalSrc = video.getAttribute('data-src');
         const loader = document.getElementById('videoLoaderOverlay');
-        
+
         if (originalSrc) {
-            fetch(originalSrc)
-                .then(response => response.blob())
-                .then(blob => {
-                    const blobUrl = URL.createObjectURL(blob);
-                    video.src = blobUrl;
-                    
-                    // Revoke the original URL and blob URL right after it starts to make extraction extremely narrow-windowed
-                    video.addEventListener('loadeddata', () => {
-                        URL.revokeObjectURL(blobUrl);
-                        video.removeAttribute('data-src');
-                    });
-                    
-                    if(loader) loader.style.display = 'none';
-                })
-                .catch(err => {
-                    console.error('Error loading video securely:', err);
-                    // Fallback to direct src if fetch fails (e.g. CORS)
-                    video.src = originalSrc;
-                    if(loader) loader.style.display = 'none';
-                });
+            video.src = originalSrc;
+            video.removeAttribute('data-src');
+            if (loader) loader.style.display = 'none';
         }
     
         // Disable Right Click & Keyboard shortcuts on video
