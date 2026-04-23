@@ -160,6 +160,19 @@
         <!-- AOS Init -->
         <script>
             document.addEventListener('DOMContentLoaded', function() {
+                var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+                var prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+                if (isIOS || prefersReduced) {
+                    AOS.init({ disable: true });
+                    document.querySelectorAll('[data-aos]').forEach(function (el) {
+                        el.removeAttribute('data-aos');
+                        el.removeAttribute('data-aos-delay');
+                        el.removeAttribute('data-aos-duration');
+                    });
+                    return;
+                }
+
                 AOS.init({
                     duration: 800,
                     easing: 'ease-out-quart',

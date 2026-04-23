@@ -721,7 +721,7 @@
 
             {{-- Right sidebar (notes) --}}
             <div class="xl:col-span-1">
-                <div class="glass-card sticky top-28 overflow-hidden rounded-[2rem] border-t-4 border-t-accent-500 flex flex-col h-[calc(100vh-8rem)]" x-data="notesManager({ id: @js($currentNote?->id), text: @js($currentNote?->note_text ?? '') })" data-aos="fade-left">
+                <div class="glass-card xl:sticky xl:top-28 overflow-hidden rounded-[2rem] border-t-4 border-t-accent-500 flex flex-col xl:h-[calc(100dvh-8rem)]" x-data="notesManager({ id: @js($currentNote?->id), text: @js($currentNote?->note_text ?? '') })">
                     <div class="px-6 py-5 border-b border-slate-200/50 dark:border-white/5 bg-slate-50/50 dark:bg-slate-900/20 flex items-center justify-between shrink-0">
                         <div class="flex items-center gap-2">
                             <span class="text-accent-500">
@@ -745,7 +745,7 @@
                     
                     <div class="p-6 flex-1 flex flex-col min-h-0">
                         <div class="relative flex-1 flex flex-col mb-4">
-                            <textarea x-model="noteText" @input="autoSave()" class="w-full flex-1 bg-yellow-50/50 dark:bg-yellow-900/10 border border-yellow-200/50 dark:border-yellow-900/30 rounded-2xl py-4 px-5 text-slate-800 dark:text-slate-200 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all resize-none shadow-inner text-sm leading-relaxed" placeholder="{{ __('اكتب ملاحظاتك هنا... (بيتحفظ تلقائي)') }}" style="background-image: repeating-linear-gradient(transparent, transparent 31px, rgba(0,0,0,0.05) 31px, rgba(0,0,0,0.05) 32px); line-height: 32px; attachment: local;"></textarea>
+                            <textarea x-model="noteText" @input="autoSave()" rows="10" class="w-full flex-1 min-h-[240px] bg-yellow-50/50 dark:bg-yellow-900/10 border border-yellow-200/50 dark:border-yellow-900/30 rounded-2xl py-4 px-5 text-slate-800 dark:text-slate-200 focus:ring-2 focus:ring-accent-500 focus:border-accent-500 transition-all resize-none shadow-inner text-sm leading-relaxed" placeholder="{{ __('اكتب ملاحظاتك هنا... (بيتحفظ تلقائي)') }}"></textarea>
                         </div>
 
                         @if($noteHistory->count() > 0)
