@@ -90,18 +90,18 @@
 
         <!-- Premium Ambient Background -->
         @if(!request()->routeIs('student.onboarding*'))
-        <div class="fixed inset-0 z-0 pointer-events-none overflow-hidden bg-slate-50 dark:bg-[#020617] transition-colors duration-500">
-            {{-- Glowing Modern Orbs --}}
-            <div class="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-gradient-to-br from-primary-400/30 to-blue-300/30 dark:from-primary-600/20 dark:to-blue-600/20 blur-[100px] sm:blur-[150px] mix-blend-multiply dark:mix-blend-screen opacity-80"></div>
-            <div class="absolute top-[10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-gradient-to-bl from-accent-400/20 to-purple-300/20 dark:from-accent-600/10 dark:to-purple-900/10 blur-[100px] sm:blur-[140px] mix-blend-multiply dark:mix-blend-screen opacity-70"></div>
-            <div class="absolute bottom-[-10%] left-[20%] w-[60%] h-[60%] rounded-full bg-gradient-to-tr from-sky-300/30 to-indigo-300/30 dark:from-sky-800/10 dark:to-indigo-900/10 blur-[100px] sm:blur-[150px] mix-blend-multiply dark:mix-blend-screen opacity-70"></div>
+        <div class="fixed inset-0 z-0 pointer-events-none overflow-hidden bg-slate-50 dark:bg-[#020617]">
+            {{-- Glowing Modern Orbs (desktop only — too expensive for mobile GPU, crashes iOS Safari) --}}
+            <div class="hidden lg:block absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-gradient-to-br from-primary-400/30 to-blue-300/30 dark:from-primary-600/20 dark:to-blue-600/20 blur-[150px] opacity-80"></div>
+            <div class="hidden lg:block absolute top-[10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-gradient-to-bl from-accent-400/20 to-purple-300/20 dark:from-accent-600/10 dark:to-purple-900/10 blur-[140px] opacity-70"></div>
+            <div class="hidden lg:block absolute bottom-[-10%] left-[20%] w-[60%] h-[60%] rounded-full bg-gradient-to-tr from-sky-300/30 to-indigo-300/30 dark:from-sky-800/10 dark:to-indigo-900/10 blur-[150px] opacity-70"></div>
 
-            {{-- Dotted Pattern Overlay --}}
-            <div class="absolute inset-0 dark:hidden" style="background-image: radial-gradient(rgba(0,0,0,0.06) 1.5px, transparent 1.5px); background-size: 28px 28px;"></div>
-            <div class="absolute inset-0 hidden dark:block" style="background-image: radial-gradient(rgba(255,255,255,0.04) 1.5px, transparent 1.5px); background-size: 28px 28px;"></div>
+            {{-- Dotted Pattern Overlay (desktop only) --}}
+            <div class="hidden lg:block lg:dark:hidden absolute inset-0" style="background-image: radial-gradient(rgba(0,0,0,0.06) 1.5px, transparent 1.5px); background-size: 28px 28px;"></div>
+            <div class="hidden lg:dark:block absolute inset-0" style="background-image: radial-gradient(rgba(255,255,255,0.04) 1.5px, transparent 1.5px); background-size: 28px 28px;"></div>
 
-            {{-- Soft Vignette Mask to blend edges nicely --}}
-            <div class="absolute inset-0 bg-gradient-to-b from-transparent via-slate-50/20 to-slate-50/80 dark:via-[#020617]/20 dark:to-[#020617]/90"></div>
+            {{-- Soft Vignette Mask (desktop only) --}}
+            <div class="hidden lg:block absolute inset-0 bg-gradient-to-b from-transparent via-slate-50/20 to-slate-50/80 dark:via-[#020617]/20 dark:to-[#020617]/90"></div>
         </div>
         @endif
 
