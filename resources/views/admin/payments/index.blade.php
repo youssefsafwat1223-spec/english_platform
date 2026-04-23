@@ -51,8 +51,8 @@
                     <tbody>
                         @forelse($payments as $payment)
                         <tr>
-                            <td class="font-bold" style="color: var(--color-text);">{{ $payment->user->name }}</td>
-                            <td>{{ $payment->course->title }}</td>
+                            <td class="font-bold" style="color: var(--color-text);">{{ $payment->user?->name ?? __('— Deleted user —') }}</td>
+                            <td>{{ $payment->course?->title ?? __('— Deleted course —') }}</td>
                             <td class="font-bold">{{ $payment->currency }} {{ number_format($payment->final_amount, 2) }}</td>
                             <td>
                                 @if($payment->payment_status == 'completed')<span class="badge-success">{{ __('Completed') }}</span>

@@ -12,9 +12,9 @@
             <div class="glass-card-header"><h3 class="font-bold" style="color: var(--color-text);">{{ __('Payment Information') }}</h3></div>
             <div class="glass-card-body">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div><div class="text-xs" style="color: var(--color-text-muted);">{{ __('Student') }}</div><div class="font-bold" style="color: var(--color-text);">{{ $payment->user->name }}</div></div>
-                    <div><div class="text-xs" style="color: var(--color-text-muted);">{{ __('Email') }}</div><div class="font-bold" style="color: var(--color-text);">{{ $payment->user->email }}</div></div>
-                    <div><div class="text-xs" style="color: var(--color-text-muted);">{{ __('Course') }}</div><div class="font-bold" style="color: var(--color-text);">{{ $payment->course->title }}</div></div>
+                    <div><div class="text-xs" style="color: var(--color-text-muted);">{{ __('Student') }}</div><div class="font-bold" style="color: var(--color-text);">{{ $payment->user?->name ?? __('— Deleted user —') }}</div></div>
+                    <div><div class="text-xs" style="color: var(--color-text-muted);">{{ __('Email') }}</div><div class="font-bold" style="color: var(--color-text);">{{ $payment->user?->email ?? '-' }}</div></div>
+                    <div><div class="text-xs" style="color: var(--color-text-muted);">{{ __('Course') }}</div><div class="font-bold" style="color: var(--color-text);">{{ $payment->course?->title ?? __('— Deleted course —') }}</div></div>
                     <div><div class="text-xs" style="color: var(--color-text-muted);">{{ __('Currency') }}</div><div class="font-bold" style="color: var(--color-text);">{{ $payment->currency }}</div></div>
                     <div><div class="text-xs" style="color: var(--color-text-muted);">{{ __('Original Amount') }}</div><div class="font-bold" style="color: var(--color-text);">{{ $payment->currency }} {{ number_format($payment->amount, 2) }}</div></div>
                     <div><div class="text-xs" style="color: var(--color-text-muted);">{{ __('Discount') }}</div><div class="font-bold text-emerald-500">-{{ $payment->currency }} {{ number_format($payment->discount_amount, 2) }}</div></div>

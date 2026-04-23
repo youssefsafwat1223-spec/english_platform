@@ -82,8 +82,8 @@
                             @forelse($payments as $payment)
                             <tr class="hover:bg-white/5 transition-colors">
                                 <td class="p-4 text-sm" style="color: var(--color-text);">{{ $payment->created_at->format('M d, Y H:i') }}</td>
-                                <td class="p-4 text-sm font-bold" style="color: var(--color-text);">{{ $payment->user->name ?? 'Unknown' }}</td>
-                                <td class="p-4 text-sm" style="color: var(--color-text);">{{ $payment->course->title ?? '-' }}</td>
+                                <td class="p-4 text-sm font-bold" style="color: var(--color-text);">{{ $payment->user?->name ?? 'Unknown' }}</td>
+                                <td class="p-4 text-sm" style="color: var(--color-text);">{{ $payment->course?->title ?? '-' }}</td>
                                 <td class="p-4 text-sm font-mono font-bold" style="color: var(--color-text);">{{ number_format($payment->final_amount, 2) }} {{ __('ر.س') }}</td>
                                 <td class="p-4">
                                     <span class="px-2 py-1 rounded-full text-xs font-bold 
