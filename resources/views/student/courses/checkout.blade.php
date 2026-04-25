@@ -123,11 +123,11 @@
                                 <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">{{ $isArabic ? 'طريقة التواصل للدفع' : 'Payment contact method' }}</label>
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm font-bold">
                                     <label class="flex items-center gap-2 rounded-xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-black/20 px-4 py-3 cursor-pointer hover:border-primary-400 transition-colors">
-                                        <input type="radio" name="contact_information_type" value="EMAIL" class="text-primary-500 focus:ring-primary-500" checked>
+                                        <input type="radio" name="contact_information_type" value="EMAIL" class="text-primary-500 focus:ring-primary-500">
                                         <span>{{ $isArabic ? 'الإيميل' : 'Email' }}</span>
                                     </label>
                                     <label class="flex items-center gap-2 rounded-xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-black/20 px-4 py-3 cursor-pointer hover:border-primary-400 transition-colors">
-                                        <input type="radio" name="contact_information_type" value="PHONE" class="text-primary-500 focus:ring-primary-500">
+                                        <input type="radio" name="contact_information_type" value="PHONE" class="text-primary-500 focus:ring-primary-500" checked>
                                         <span>{{ $isArabic ? 'رقم الهاتف' : 'Phone number' }}</span>
                                     </label>
                                 </div>
