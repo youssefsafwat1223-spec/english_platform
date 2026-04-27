@@ -198,6 +198,8 @@ class CertificateService
             return $path;
         }
 
+        return $this->generatePdfWithMpdfCanvas($data);
+
         // mPDF is preferred for Arabic shaping and RTL support.
         $tempDir = storage_path('app/mpdf-tmp');
         if (!is_dir($tempDir)) {
@@ -234,6 +236,129 @@ class CertificateService
         Storage::put($path, $pdfBytes);
 
         return $path;
+    }
+
+    private function generatePdfWithMpdfCanvas(array $data): string
+    {
+        $tempDir = storage_path('app/mpdf-tmp');
+        if (!is_dir($tempDir)) {
+            @mkdir($tempDir, 0775, true);
+        }
+
+        $mpdf = new \Mpdf\Mpdf([
+            'mode' => 'utf-8',
+            'format' => 'A4-L',
+            'margin_left' => 0,
+            'margin_right' => 0,
+            'margin_top' => 0,
+            'margin_bottom' => 0,
+            'tempDir' => $tempDir,
+            'autoScriptToLang' => true,
+            'autoLangToFont' => true,
+            'default_font' => 'dejavusans',
+        ]);
+
+        $mpdf->SetAutoPageBreak(false, 0);
+        $mpdf->AddPage('L');
+
+        $hasArabic = preg_match('/\p{Arabic}/u', $data['user_name'] . ' ' . $data['course_title']) === 1;
+        $rtl = $hasArabic || app()->getLocale() === 'ar';
+
+        if ($rtl) {
+            $mpdf->SetDirectionality('rtl');
+        }
+
+        $appName = config('app.name', 'Simple English');
+
+        $mpdf->SetFillColor(251, 253, 255);
+        $mpdf->Rect(0, 0, 297, 210, 'F');
+        $mpdf->SetFillColor(0, 123, 181);
+        $mpdf->Rect(0, 0, 297, 12, 'F');
+        $mpdf->SetFillColor(245, 158, 11);
+        $mpdf->Rect(0, 12, 297, 2.5, 'F');
+
+        $mpdf->SetDrawColor(0, 123, 181);
+        $mpdf->SetLineWidth(0.7);
+        $mpdf->Rect(12, 20, 273, 170, 'D');
+        $mpdf->SetDrawColor(203, 213, 225);
+        $mpdf->SetLineWidth(0.3);
+        $mpdf->Rect(17, 25, 263, 160, 'D');
+
+        if (!empty($data['certificate_logo']) && file_exists($data['certificate_logo'])) {
+            $mpdf->Image($data['certificate_logo'], 136, 29, 25, 0);
+            $brandTop = 56;
+        } else {
+            $brandTop = 35;
+        }
+
+        $this->writeFixed($mpdf, $this->div($this->escape($appName), 'color:#007bb5;font-size:13pt;font-weight:bold;letter-spacing:3px;text-transform:uppercase;'), 30, $brandTop, 237, 10);
+
+        $mpdf->SetDrawColor(245, 158, 11);
+        $mpdf->SetLineWidth(0.7);
+        $mpdf->Line(125, $brandTop + 13, 172, $brandTop + 13);
+
+        $titleTop = $brandTop + 21;
+        $this->writeFixed($mpdf, $this->div($rtl ? '&#1588;&#1607;&#1575;&#1583;&#1577; &#1581;&#1590;&#1608;&#1585;' : 'CERTIFICATE', 'color:#0f172a;font-size:38pt;font-weight:bold;letter-spacing:2px;'), 30, $titleTop, 237, 18);
+        $this->writeFixed($mpdf, $this->div($rtl ? '&#1573;&#1578;&#1605;&#1575;&#1605; &#1575;&#1604;&#1576;&#1585;&#1606;&#1575;&#1605;&#1580; &#1575;&#1604;&#1578;&#1583;&#1585;&#1610;&#1576;&#1610;' : 'OF ATTENDANCE', 'color:#f59e0b;font-size:13pt;font-weight:bold;letter-spacing:2px;'), 30, $titleTop + 20, 237, 9);
+        $this->writeFixed($mpdf, $this->div($rtl ? '&#1578;&#1605;&#1606;&#1581; &#1607;&#1584;&#1607; &#1575;&#1604;&#1588;&#1607;&#1575;&#1583;&#1577; &#1573;&#1604;&#1609;' : 'THIS CERTIFICATE IS AWARDED TO', 'color:#64748b;font-size:10pt;font-weight:bold;letter-spacing:1px;'), 30, $titleTop + 35, 237, 8);
+
+        $nameFont = mb_strlen($data['user_name'], 'UTF-8') > 30 ? 24 : 31;
+        $this->writeFixed($mpdf, '<div style="font-family:dejavusans;text-align:center;color:#0f172a;font-size:' . $nameFont . 'pt;font-weight:bold;border-bottom:2px solid #007bb5;padding-bottom:7px;">' . $this->escape($data['user_name']) . '</div>', 55, $titleTop + 45, 187, 22);
+        $this->writeFixed($mpdf, $this->div($rtl ? '&#1608;&#1584;&#1604;&#1603; &#1576;&#1593;&#1583; &#1573;&#1578;&#1605;&#1575;&#1605;&#1607; &#1576;&#1606;&#1580;&#1575;&#1581;' : 'For successfully completing', 'color:#475569;font-size:11pt;'), 40, $titleTop + 72, 217, 8);
+
+        $courseFont = mb_strlen($data['course_title'], 'UTF-8') > 50 ? 14 : 18;
+        $this->writeFixed($mpdf, $this->div($this->escape($data['course_title']), 'color:#007bb5;font-size:' . $courseFont . 'pt;font-weight:bold;line-height:1.35;'), 38, $titleTop + 82, 221, 18);
+
+        $scoreLabel = $rtl ? '&#1575;&#1604;&#1583;&#1585;&#1580;&#1577; &#1575;&#1604;&#1606;&#1607;&#1575;&#1574;&#1610;&#1577;' : 'Final Score';
+        $this->writeFixed($mpdf, '<div style="font-family:dejavusans;text-align:center;"><span style="background:#f59e0b;color:#ffffff;font-size:12pt;font-weight:bold;padding:9px 40px;">' . $scoreLabel . ': ' . (int) $data['final_score'] . '%</span></div>', 30, $titleTop + 106, 237, 12);
+
+        $footerTop = 160;
+        $this->footerBlock($mpdf, $rtl ? '&#1578;&#1575;&#1585;&#1610;&#1582; &#1575;&#1604;&#1573;&#1589;&#1583;&#1575;&#1585;' : 'Date of Issue', $data['issue_date'], 27, $footerTop);
+
+        if (!empty($data['qr_code_path']) && file_exists($data['qr_code_path'])) {
+            $mpdf->Image($data['qr_code_path'], 139.5, $footerTop - 3, 18, 18);
+        }
+
+        $this->footerBlock($mpdf, $rtl ? '&#1575;&#1604;&#1578;&#1608;&#1602;&#1610;&#1593; &#1575;&#1604;&#1605;&#1593;&#1578;&#1605;&#1583;' : 'Authorized Signature', $data['signatory_name'], 200, $footerTop, $data['signatory_title']);
+        $this->writeFixed($mpdf, $this->div(($rtl ? '&#1585;&#1602;&#1605; &#1575;&#1604;&#1588;&#1607;&#1575;&#1583;&#1577;' : 'Certificate ID') . ': ' . $data['certificate_id'], 'color:#007bb5;font-size:8pt;font-weight:bold;letter-spacing:1px;'), 30, 181, 237, 8);
+
+        $pdfBytes = $mpdf->Output('', \Mpdf\Output\Destination::STRING_RETURN);
+
+        $path = "certificates/pdfs/{$data['certificate_id']}.pdf";
+        Storage::put($path, $pdfBytes);
+
+        return $path;
+    }
+
+    private function writeFixed(\Mpdf\Mpdf $mpdf, string $html, float $x, float $y, float $w, float $h): void
+    {
+        $mpdf->WriteFixedPosHTML($html, $x, $y, $w, $h);
+    }
+
+    private function div(string $content, string $style): string
+    {
+        return '<div style="font-family:dejavusans;text-align:center;' . $style . '">' . $content . '</div>';
+    }
+
+    private function footerBlock(\Mpdf\Mpdf $mpdf, string $label, string $value, float $x, float $y, ?string $subvalue = null): void
+    {
+        $html = '<div style="font-family:dejavusans;text-align:center;">'
+            . '<div style="color:#94a3b8;font-size:7.5pt;font-weight:bold;letter-spacing:1px;text-transform:uppercase;">' . $label . '</div>'
+            . '<div style="border-top:1.2px solid #007bb5;margin:5px auto 4px auto;width:45mm;height:1px;"></div>'
+            . '<div style="color:#0f172a;font-size:10pt;font-weight:bold;">' . $this->escape($value) . '</div>';
+
+        if ($subvalue) {
+            $html .= '<div style="color:#64748b;font-size:7pt;font-weight:bold;text-transform:uppercase;margin-top:2px;">' . $this->escape($subvalue) . '</div>';
+        }
+
+        $html .= '</div>';
+
+        $this->writeFixed($mpdf, $html, $x, $y, 70, 22);
+    }
+
+    private function escape(string $value): string
+    {
+        return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     }
 
     public function regenerateCertificatePdf(Certificate $certificate): bool
