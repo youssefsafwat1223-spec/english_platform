@@ -9,7 +9,6 @@
         $useRtl = $isArabicLocale || $hasArabic;
         $appName = config('app.name', 'Simple English');
 
-        // Resolve absolute logo path so DomPDF can embed it
         $logoPath = null;
         $logoCandidates = [
             $certificate_logo ?? null,
@@ -24,102 +23,67 @@
         }
     @endphp
     <style>
-        @page { size: A4 landscape; margin: 0; }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        @page { sheet-size: A4-L; margin: 0; }
 
         body {
-            font-family: "DejaVu Sans", sans-serif;
+            font-family: dejavusans, sans-serif;
             color: #0f172a;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
+            margin: 0;
+            padding: 0;
         }
 
-        .page {
-            position: relative;
-            width: 297mm;
-            height: 210mm;
-            background: #ffffff;
-            overflow: hidden;
+        .layout {
+            width: 100%;
+            border-collapse: collapse;
         }
 
-        /* ─── Side blue bar (brand stripe) ─── */
-        .side-stripe {
-            position: absolute;
-            top: 0;
-            {{ $useRtl ? 'right' : 'left' }}: 0;
-            width: 28mm;
-            height: 210mm;
-            background: #007bb5;
+        .layout td {
+            vertical-align: top;
+            padding: 0;
         }
 
-        .side-stripe-accent {
-            position: absolute;
-            top: 0;
-            {{ $useRtl ? 'right' : 'left' }}: 28mm;
-            width: 3mm;
-            height: 210mm;
-            background: #f59e0b;
-        }
-
-        /* Vertical brand name on stripe */
-        .stripe-text {
-            position: absolute;
-            top: 50%;
-            {{ $useRtl ? 'right' : 'left' }}: 8mm;
+        /* Brand stripe column */
+        .stripe {
+            width: 30mm;
+            background-color: #007bb5;
             color: #ffffff;
-            font-size: 8pt;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .stripe-accent {
+            width: 3mm;
+            background-color: #f59e0b;
+        }
+
+        .stripe-text {
+            font-size: 9pt;
             font-weight: bold;
-            letter-spacing: 6px;
+            letter-spacing: 4px;
             text-transform: uppercase;
-            transform: rotate({{ $useRtl ? '90deg' : '-90deg' }});
-            transform-origin: {{ $useRtl ? 'right top' : 'left top' }};
-            white-space: nowrap;
+            line-height: 2;
         }
 
-        /* ─── Main content area ─── */
-        .content-frame {
-            position: absolute;
-            top: 18mm;
-            {{ $useRtl ? 'left' : 'right' }}: 18mm;
-            {{ $useRtl ? 'right' : 'left' }}: 50mm;
-            bottom: 18mm;
+        /* Main content cell */
+        .main {
+            padding: 12mm 14mm 0 14mm;
+            text-align: center;
+        }
+
+        .main-frame {
             border: 1.5px solid #007bb5;
-            background: #ffffff;
+            padding: 8mm;
         }
 
-        .content-inner {
-            position: absolute;
-            top: 4mm;
-            left: 4mm;
-            right: 4mm;
-            bottom: 4mm;
+        .main-inner {
             border: 0.5px solid #cbd5e1;
-            padding: 12mm 14mm;
-            text-align: center;
+            padding: 10mm 8mm;
         }
 
-        /* ─── Header (logo + brand) ─── */
-        .header {
-            text-align: center;
-            margin-bottom: 8mm;
-        }
-
-        .logo-box {
-            display: inline-block;
+        /* Header */
+        .logo-img {
             width: 22mm;
             height: 22mm;
-            border: 2px solid #007bb5;
-            background: #ffffff;
-            padding: 1.5mm;
-            margin-bottom: 3mm;
-        }
-
-        .logo-img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            display: block;
         }
 
         .brand-name {
@@ -128,18 +92,18 @@
             color: #007bb5;
             letter-spacing: 5px;
             text-transform: uppercase;
-            margin-top: 1mm;
+            margin-top: 2mm;
         }
 
         .brand-divider {
-            display: inline-block;
+            display: block;
             width: 35mm;
             height: 2px;
-            background: #f59e0b;
-            margin: 3mm auto 0;
+            background-color: #f59e0b;
+            margin: 3mm auto;
         }
 
-        /* ─── Title ─── */
+        /* Title */
         .title-eyebrow {
             font-size: 9pt;
             color: #94a3b8;
@@ -149,13 +113,12 @@
         }
 
         .title-main {
-            font-size: 32pt;
+            font-size: 30pt;
             font-weight: bold;
             color: #0f172a;
             letter-spacing: 5px;
             text-transform: uppercase;
-            line-height: 1;
-            margin-bottom: 1mm;
+            margin: 2mm 0 1mm 0;
         }
 
         .title-sub {
@@ -164,11 +127,11 @@
             font-weight: bold;
             letter-spacing: 6px;
             text-transform: uppercase;
-            margin-bottom: 7mm;
+            margin-bottom: 6mm;
         }
 
-        /* ─── Recipient ─── */
-        .label {
+        /* Recipient */
+        .label-small {
             font-size: 9pt;
             color: #64748b;
             text-transform: uppercase;
@@ -177,62 +140,52 @@
         }
 
         .student-name {
-            font-size: 26pt;
+            font-size: 24pt;
             font-weight: bold;
             color: #0f172a;
-            line-height: 1.15;
+            border-bottom: 2px solid #007bb5;
             padding-bottom: 2mm;
             margin: 0 14mm 5mm 14mm;
-            border-bottom: 2px solid #007bb5;
         }
 
         .achievement-line {
             font-size: 10.5pt;
             color: #475569;
-            line-height: 1.5;
+            line-height: 1.6;
+            margin-bottom: 3mm;
         }
 
         .course-title {
-            display: block;
             font-size: 13pt;
             font-weight: bold;
             color: #007bb5;
             margin-top: 2mm;
         }
 
-        /* ─── Score ─── */
-        .score-row {
-            margin-top: 6mm;
-        }
-
+        /* Score */
         .score-pill {
             display: inline-block;
             padding: 2mm 9mm;
-            background: #f59e0b;
+            background-color: #f59e0b;
             color: #ffffff;
             font-size: 11pt;
             font-weight: bold;
-            letter-spacing: 1px;
+            margin-top: 4mm;
+            margin-bottom: 6mm;
         }
 
-        /* ─── Footer ─── */
-        .footer {
-            position: absolute;
-            bottom: 5mm;
-            left: 14mm;
-            right: 14mm;
-        }
-
+        /* Footer signatures */
         .footer-table {
             width: 100%;
             border-collapse: collapse;
+            margin-top: 4mm;
         }
 
         .footer-cell {
-            width: 33.33%;
-            vertical-align: bottom;
+            width: 33%;
             text-align: center;
             padding: 0 3mm;
+            vertical-align: bottom;
         }
 
         .sign-label {
@@ -244,9 +197,9 @@
         }
 
         .sign-line {
-            width: 50mm;
-            border-top: 1.2px solid #007bb5;
-            margin: 0 auto 1.5mm auto;
+            border-bottom: 1.2px solid #007bb5;
+            margin: 0 8mm 1.5mm 8mm;
+            height: 1px;
         }
 
         .sign-name {
@@ -260,106 +213,77 @@
             color: #64748b;
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-top: 0.5mm;
-        }
-
-        .qr-wrap {
-            display: inline-block;
-            padding: 1.5mm;
-            background: #ffffff;
-            border: 1px solid #007bb5;
+            margin-top: 1mm;
         }
 
         .qr-img {
             width: 16mm;
             height: 16mm;
-            display: block;
         }
 
         .qr-caption {
-            font-size: 6pt;
+            font-size: 6.5pt;
             color: #94a3b8;
             text-transform: uppercase;
             letter-spacing: 2px;
             margin-top: 1.5mm;
         }
 
-        /* ─── Cert ID strip ─── */
-        .cert-id-strip {
-            position: absolute;
-            bottom: 3mm;
-            left: 50mm;
-            right: 18mm;
+        /* Cert ID strip */
+        .cert-id {
             text-align: center;
-            font-size: 7pt;
+            font-size: 7.5pt;
             color: #007bb5;
             letter-spacing: 2px;
+            margin-top: 4mm;
         }
-
-        /* ─── Decorative corners ─── */
-        .corner {
-            position: absolute;
-            width: 8mm;
-            height: 8mm;
-        }
-        .corner-tl { top: 0; left: 0; border-top: 2px solid #f59e0b; border-left: 2px solid #f59e0b; }
-        .corner-tr { top: 0; right: 0; border-top: 2px solid #f59e0b; border-right: 2px solid #f59e0b; }
-        .corner-bl { bottom: 0; left: 0; border-bottom: 2px solid #f59e0b; border-left: 2px solid #f59e0b; }
-        .corner-br { bottom: 0; right: 0; border-bottom: 2px solid #f59e0b; border-right: 2px solid #f59e0b; }
     </style>
 </head>
-<body @if($useRtl) dir="rtl" @endif>
-    <div class="page">
+<body>
 
-        {{-- Brand stripe down the side --}}
-        <div class="side-stripe"></div>
-        <div class="side-stripe-accent"></div>
-        <div class="stripe-text">{{ strtoupper($appName) }} &bull; {{ $useRtl ? 'شهادة معتمدة' : 'OFFICIAL CERTIFICATE' }}</div>
+@if($useRtl)
+    <table class="layout" dir="rtl"><tr>
+        <td class="stripe">
+            <div class="stripe-text">
+                {{ strtoupper($appName) }}<br>&bull;<br>{{ $useRtl ? 'شهادة معتمدة' : 'OFFICIAL' }}
+            </div>
+        </td>
+        <td class="stripe-accent">&nbsp;</td>
+        <td class="main">
+@else
+    <table class="layout"><tr>
+        <td class="main">
+@endif
 
-        {{-- Main framed content --}}
-        <div class="content-frame">
-            <div class="content-inner">
+            <div class="main-frame">
+                <div class="main-inner">
 
-                {{-- Decorative gold corners --}}
-                <div class="corner corner-tl"></div>
-                <div class="corner corner-tr"></div>
-                <div class="corner corner-bl"></div>
-                <div class="corner corner-br"></div>
-
-                {{-- Logo + Brand --}}
-                <div class="header">
+                    {{-- Header: Logo + Brand --}}
                     @if($logoPath)
-                        <div class="logo-box">
-                            <img src="{{ $logoPath }}" class="logo-img" alt="Logo">
-                        </div>
+                        <img src="{{ $logoPath }}" class="logo-img" alt="Logo"><br>
                     @endif
                     <div class="brand-name">{{ $appName }}</div>
-                    <div class="brand-divider"></div>
-                </div>
+                    <span class="brand-divider"></span>
 
-                {{-- Title --}}
-                <div class="title-eyebrow">{{ $useRtl ? 'تشهد بأن' : 'Hereby Awards' }}</div>
-                <div class="title-main">{{ $useRtl ? 'شهادة' : 'Certificate' }}</div>
-                <div class="title-sub">{{ $useRtl ? 'إنجاز ومستوى' : 'of Achievement' }}</div>
+                    {{-- Title --}}
+                    <div class="title-eyebrow">{{ $useRtl ? 'تشهد بأن' : 'Hereby Awards' }}</div>
+                    <div class="title-main">{{ $useRtl ? 'شهادة' : 'Certificate' }}</div>
+                    <div class="title-sub">{{ $useRtl ? 'إنجاز ومستوى' : 'of Achievement' }}</div>
 
-                {{-- Recipient --}}
-                <div class="label">{{ $useRtl ? 'تُمنح بفخر إلى' : 'Proudly Presented To' }}</div>
-                <div class="student-name">{{ $user_name }}</div>
+                    {{-- Recipient --}}
+                    <div class="label-small">{{ $useRtl ? 'تُمنح بفخر إلى' : 'Proudly Presented To' }}</div>
+                    <div class="student-name">{{ $user_name }}</div>
 
-                <div class="achievement-line">
-                    {{ $useRtl ? 'لإتمامه/إتمامها بنجاح كورس' : 'For successfully completing the course' }}
-                    <span class="course-title">{{ $course_title }}</span>
-                </div>
+                    <div class="achievement-line">
+                        {{ $useRtl ? 'لإتمامه/إتمامها بنجاح كورس' : 'For successfully completing the course' }}<br>
+                        <span class="course-title">{{ $course_title }}</span>
+                    </div>
 
-                <div class="score-row">
-                    <span class="score-pill">
-                        {{ $useRtl ? 'الدرجة النهائية' : 'Final Score' }}
-                        : {{ $final_score }}%
-                    </span>
-                </div>
+                    <div class="score-pill">
+                        {{ $useRtl ? 'الدرجة النهائية' : 'Final Score' }}: {{ $final_score }}%
+                    </div>
 
-                {{-- Footer with signatures --}}
-                <div class="footer">
+                    {{-- Footer signatures --}}
                     <table class="footer-table">
                         <tr>
                             <td class="footer-cell">
@@ -370,10 +294,8 @@
 
                             <td class="footer-cell">
                                 @if(!empty($qr_code_path))
-                                    <div class="qr-wrap">
-                                        <img src="{{ $qr_code_path }}" class="qr-img" alt="QR">
-                                    </div>
-                                    <div class="qr-caption">{{ $useRtl ? 'تحقق من الشهادة' : 'Verify Certificate' }}</div>
+                                    <img src="{{ $qr_code_path }}" class="qr-img" alt="QR"><br>
+                                    <div class="qr-caption">{{ $useRtl ? 'تحقق من الشهادة' : 'Verify' }}</div>
                                 @endif
                             </td>
 
@@ -385,14 +307,25 @@
                             </td>
                         </tr>
                     </table>
+
+                    <div class="cert-id">
+                        {{ $useRtl ? 'رقم الشهادة' : 'Certificate ID' }}: {{ $certificate_id }}
+                    </div>
+
                 </div>
             </div>
-        </div>
 
-        {{-- Certificate ID strip --}}
-        <div class="cert-id-strip">
-            {{ $useRtl ? 'رقم الشهادة' : 'Certificate ID' }}: {{ $certificate_id }}
-        </div>
-    </div>
+        </td>
+
+@if(!$useRtl)
+        <td class="stripe-accent">&nbsp;</td>
+        <td class="stripe">
+            <div class="stripe-text">
+                {{ strtoupper($appName) }}<br>&bull;<br>OFFICIAL
+            </div>
+        </td>
+@endif
+
+    </tr></table>
 </body>
 </html>
