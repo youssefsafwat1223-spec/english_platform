@@ -163,17 +163,38 @@ class CertificateService
             'signatory_title' => $settings['signatory_title'] ?? 'Director',
         ];
 
-        $pdf = Pdf::loadView('certificates.template', $data)
-            ->setPaper('a4', 'landscape')
-            ->setOption('isRemoteEnabled', true)
-            ->setOption('margin-top', 0)
-            ->setOption('margin-bottom', 0)
-            ->setOption('margin-left', 0)
-            ->setOption('margin-right', 0);
+        $html = view('certificates.template', $data)->render();
+
+        // Use mPDF for full Arabic shaping + RTL support (DomPDF can't render Arabic correctly).
+        $tempDir = storage_path('app/mpdf-tmp');
+        if (!is_dir($tempDir)) {
+            @mkdir($tempDir, 0775, true);
+        }
+
+        $mpdf = new \Mpdf\Mpdf([
+            'mode'          => 'utf-8',
+            'format'        => 'A4-L',
+            'margin_left'   => 0,
+            'margin_right'  => 0,
+            'margin_top'    => 0,
+            'margin_bottom' => 0,
+            'tempDir'       => $tempDir,
+            'autoScriptToLang' => true,
+            'autoLangToFont'   => true,
+            'default_font'     => 'dejavusans',
+        ]);
+
+        $hasArabic = preg_match('/\p{Arabic}/u', $user->name . ' ' . $course->title) === 1;
+        if ($hasArabic || app()->getLocale() === 'ar') {
+            $mpdf->SetDirectionality('rtl');
+        }
+
+        $mpdf->WriteHTML($html);
+
+        $pdfBytes = $mpdf->Output('', \Mpdf\Output\Destination::STRING_RETURN);
 
         $path = "certificates/pdfs/{$certificateId}.pdf";
-
-        Storage::put($path, $pdf->output());
+        Storage::put($path, $pdfBytes);
 
         return $path;
     }
