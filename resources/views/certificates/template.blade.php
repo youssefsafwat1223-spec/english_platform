@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ app()->getLocale() }}">
+<html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
 <head>
     <meta charset="utf-8">
     <title>Certificate - {{ $certificate_id }}</title>
@@ -8,20 +8,15 @@
         $hasArabicContent = preg_match('/\p{Arabic}/u', ($user_name ?? '') . ' ' . ($course_title ?? '')) === 1;
         $useRtl = $isArabicLocale || $hasArabicContent;
         $appName = config('app.name', 'Simple English');
-        $logoSource = $certificate_logo ?? null;
         $nameLength = mb_strlen((string) $user_name, 'UTF-8');
         $courseLength = mb_strlen((string) $course_title, 'UTF-8');
-        $nameFontSize = $nameLength > 34 ? 24 : ($nameLength > 24 ? 28 : 34);
-        $courseFontSize = $courseLength > 64 ? 14 : ($courseLength > 40 ? 16 : 19);
+        $nameFontSize = $nameLength > 34 ? 23 : ($nameLength > 24 ? 27 : 32);
+        $courseFontSize = $courseLength > 64 ? 13 : ($courseLength > 40 ? 15 : 18);
     @endphp
     <style>
         @page {
             size: A4 landscape;
             margin: 0;
-        }
-
-        * {
-            box-sizing: border-box;
         }
 
         body {
@@ -32,293 +27,274 @@
             background: #ffffff;
         }
 
-        .certificate {
-            position: relative;
+        .page {
             width: 297mm;
             height: 210mm;
-            overflow: hidden;
+            border-collapse: collapse;
+            table-layout: fixed;
             background: #fbfdff;
         }
 
-        .side-band {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            {{ $useRtl ? 'right' : 'left' }}: 0;
+        .band {
             width: 33mm;
             background: #007bb5;
+            color: #ffffff;
+            text-align: center;
+            vertical-align: middle;
+            font-size: 9pt;
+            font-weight: bold;
+            letter-spacing: 2px;
+            line-height: 1.8;
+            text-transform: uppercase;
         }
 
-        .side-accent {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            {{ $useRtl ? 'right: 33mm' : 'left: 33mm' }};
+        .accent {
             width: 4mm;
             background: #f59e0b;
         }
 
-        .side-text {
-            position: absolute;
-            top: 76mm;
-            {{ $useRtl ? 'right' : 'left' }}: 3mm;
-            width: 27mm;
-            color: #ffffff;
-            font-size: 9pt;
-            font-weight: 700;
-            letter-spacing: 3px;
-            line-height: 1.9;
-            text-align: center;
-            text-transform: uppercase;
+        .body-cell {
+            padding: 13mm 14mm;
+            vertical-align: middle;
         }
 
-        .outer-frame {
-            position: absolute;
-            top: 13mm;
-            bottom: 13mm;
-            {{ $useRtl ? 'right: 48mm; left: 13mm;' : 'left: 48mm; right: 13mm;' }}
+        .frame {
+            width: 100%;
+            height: 182mm;
             border: 2px solid #007bb5;
+            padding: 4mm;
         }
 
-        .inner-frame {
-            position: absolute;
-            top: 18mm;
-            bottom: 18mm;
-            {{ $useRtl ? 'right: 53mm; left: 18mm;' : 'left: 53mm; right: 18mm;' }}
+        .inner {
+            width: 100%;
+            height: 172mm;
             border: 1px solid #cbd5e1;
-        }
-
-        .content {
-            position: absolute;
-            top: 24mm;
-            bottom: 16mm;
-            {{ $useRtl ? 'right: 57mm; left: 22mm;' : 'left: 57mm; right: 22mm;' }}
+            padding: 7mm 12mm 5mm 12mm;
             text-align: center;
         }
 
         .logo {
-            height: 18mm;
-            max-width: 42mm;
-            object-fit: contain;
-            margin-bottom: 4mm;
+            width: 24mm;
+            margin-bottom: 3mm;
         }
 
         .brand {
-            font-size: 12pt;
             color: #007bb5;
-            font-weight: 700;
-            letter-spacing: 4px;
+            font-size: 11pt;
+            font-weight: bold;
+            letter-spacing: 3px;
             text-transform: uppercase;
-            margin-bottom: 5mm;
+            margin-bottom: 4mm;
         }
 
         .divider {
-            width: 44mm;
+            width: 42mm;
             border-top: 2px solid #f59e0b;
             margin: 0 auto 6mm auto;
+            height: 1px;
         }
 
         .eyebrow {
             color: #64748b;
-            font-size: 10pt;
-            font-weight: 700;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-bottom: 3mm;
-        }
-
-        .title {
-            color: #0f172a;
-            font-size: 34pt;
-            font-weight: 800;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            line-height: 1.1;
-        }
-
-        .subtitle {
-            color: #f59e0b;
-            font-size: 13pt;
-            font-weight: 800;
-            letter-spacing: 5px;
-            text-transform: uppercase;
-            margin-top: 2mm;
-            margin-bottom: 9mm;
-        }
-
-        .presented {
-            color: #64748b;
-            font-size: 10pt;
-            font-weight: 700;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-bottom: 4mm;
-        }
-
-        .student-name {
-            display: inline-block;
-            min-width: 90mm;
-            max-width: 185mm;
-            color: #0f172a;
-            font-size: {{ $nameFontSize }}pt;
-            font-weight: 800;
-            line-height: 1.18;
-            padding-bottom: 3mm;
-            border-bottom: 2px solid #007bb5;
-            word-wrap: break-word;
-        }
-
-        .achievement {
-            margin-top: 7mm;
-            color: #475569;
-            font-size: 11pt;
-            line-height: 1.6;
-        }
-
-        .course-title {
-            color: #007bb5;
-            font-size: {{ $courseFontSize }}pt;
-            font-weight: 800;
-            line-height: 1.35;
-            margin-top: 2mm;
-            word-wrap: break-word;
-        }
-
-        .score {
-            display: inline-block;
-            margin-top: 6mm;
-            padding: 3mm 13mm;
-            background: #f59e0b;
-            color: #ffffff;
-            font-size: 12pt;
-            font-weight: 800;
-        }
-
-        .footer {
-            position: absolute;
-            {{ $useRtl ? 'right: 57mm; left: 22mm;' : 'left: 57mm; right: 22mm;' }}
-            bottom: 22mm;
-        }
-
-        .footer-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .footer-cell {
-            width: 33.333%;
-            text-align: center;
-            vertical-align: bottom;
-            padding: 0 4mm;
-        }
-
-        .footer-label {
-            color: #94a3b8;
-            font-size: 7.5pt;
-            font-weight: 700;
+            font-size: 9pt;
+            font-weight: bold;
             letter-spacing: 1.5px;
             text-transform: uppercase;
             margin-bottom: 2mm;
         }
 
+        .title {
+            color: #0f172a;
+            font-size: 31pt;
+            font-weight: bold;
+            letter-spacing: 3px;
+            line-height: 1.1;
+            text-transform: uppercase;
+        }
+
+        .subtitle {
+            color: #f59e0b;
+            font-size: 12pt;
+            font-weight: bold;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-top: 2mm;
+            margin-bottom: 7mm;
+        }
+
+        .presented {
+            color: #64748b;
+            font-size: 9pt;
+            font-weight: bold;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 3mm;
+        }
+
+        .student-name {
+            display: inline-block;
+            min-width: 92mm;
+            max-width: 182mm;
+            color: #0f172a;
+            font-size: {{ $nameFontSize }}pt;
+            font-weight: bold;
+            line-height: 1.2;
+            padding-bottom: 2.5mm;
+            border-bottom: 2px solid #007bb5;
+        }
+
+        .achievement {
+            margin-top: 6mm;
+            color: #475569;
+            font-size: 11pt;
+            line-height: 1.5;
+        }
+
+        .course-title {
+            color: #007bb5;
+            font-size: {{ $courseFontSize }}pt;
+            font-weight: bold;
+            line-height: 1.35;
+            margin-top: 2mm;
+        }
+
+        .score {
+            display: inline-block;
+            margin-top: 5mm;
+            padding: 2.5mm 12mm;
+            background: #f59e0b;
+            color: #ffffff;
+            font-size: 11pt;
+            font-weight: bold;
+        }
+
+        .footer {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            margin-top: 9mm;
+        }
+
+        .footer td {
+            width: 33.333%;
+            text-align: center;
+            vertical-align: bottom;
+            padding: 0 3mm;
+        }
+
+        .footer-label {
+            color: #94a3b8;
+            font-size: 7pt;
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 1.5mm;
+        }
+
         .footer-line {
             border-top: 1.2px solid #007bb5;
+            width: 42mm;
             height: 1mm;
-            margin: 0 auto 2mm auto;
-            width: 44mm;
+            margin: 0 auto 1.5mm auto;
         }
 
         .footer-value {
             color: #0f172a;
-            font-size: 10pt;
-            font-weight: 700;
+            font-size: 9pt;
+            font-weight: bold;
             line-height: 1.35;
         }
 
         .footer-subvalue {
             color: #64748b;
             font-size: 7pt;
-            font-weight: 700;
-            letter-spacing: 1px;
+            font-weight: bold;
+            letter-spacing: 0.7px;
             text-transform: uppercase;
-            margin-top: 1mm;
+            margin-top: 0.8mm;
         }
 
         .qr {
-            width: 18mm;
-            height: 18mm;
+            width: 17mm;
         }
 
         .cert-id {
-            position: absolute;
-            bottom: 8mm;
-            {{ $useRtl ? 'right: 57mm; left: 22mm;' : 'left: 57mm; right: 22mm;' }}
             color: #007bb5;
-            font-size: 8pt;
-            font-weight: 700;
-            letter-spacing: 1.5px;
+            font-size: 7.5pt;
+            font-weight: bold;
+            letter-spacing: 1px;
             text-align: center;
+            margin-top: 4mm;
         }
     </style>
 </head>
-<body dir="{{ $useRtl ? 'rtl' : 'ltr' }}">
-    <div class="certificate">
-        <div class="side-band"></div>
-        <div class="side-accent"></div>
-        <div class="side-text">{{ $appName }}</div>
-
-        <div class="outer-frame"></div>
-        <div class="inner-frame"></div>
-
-        <div class="content">
-            @if($logoSource)
-                <img src="{{ $logoSource }}" class="logo" alt="Logo">
-            @endif
-
-            <div class="brand">{{ $appName }}</div>
-            <div class="divider"></div>
-
-            <div class="eyebrow">{{ $useRtl ? 'تمنح هذه الشهادة إلى' : 'This Certificate Is Awarded To' }}</div>
-            <div class="title">{{ $useRtl ? 'شهادة حضور' : 'Certificate' }}</div>
-            <div class="subtitle">{{ $useRtl ? 'إتمام البرنامج التدريبي' : 'Of Attendance' }}</div>
-
-            <div class="presented">{{ $useRtl ? 'بكل تقدير إلى' : 'Proudly Presented To' }}</div>
-            <div class="student-name">{{ $user_name }}</div>
-
-            <div class="achievement">
-                {{ $useRtl ? 'وذلك بعد إتمامه بنجاح' : 'For successfully completing' }}
-            </div>
-            <div class="course-title">{{ $course_title }}</div>
-
-            <div class="score">{{ $useRtl ? 'الدرجة النهائية' : 'Final Score' }}: {{ $final_score }}%</div>
-        </div>
-
-        <div class="footer">
-            <table class="footer-table">
-                <tr>
-                    <td class="footer-cell">
-                        <div class="footer-label">{{ $useRtl ? 'تاريخ الإصدار' : 'Date of Issue' }}</div>
-                        <div class="footer-line"></div>
-                        <div class="footer-value">{{ $issue_date }}</div>
-                    </td>
-                    <td class="footer-cell">
-                        @if(!empty($qr_code_path))
-                            <img src="{{ $qr_code_path }}" class="qr" alt="QR Code">
+<body>
+    <table class="page" dir="{{ $useRtl ? 'rtl' : 'ltr' }}">
+        <tr>
+            <td class="band">{{ $appName }}</td>
+            <td class="accent"></td>
+            <td class="body-cell">
+                <div class="frame">
+                    <div class="inner">
+                        @if(!empty($certificate_logo))
+                            <img src="{{ $certificate_logo }}" class="logo" alt="Logo">
                         @endif
-                    </td>
-                    <td class="footer-cell">
-                        <div class="footer-label">{{ $useRtl ? 'التوقيع المعتمد' : 'Authorized Signature' }}</div>
-                        <div class="footer-line"></div>
-                        <div class="footer-value">{{ $signatory_name }}</div>
-                        <div class="footer-subvalue">{{ $signatory_title }}</div>
-                    </td>
-                </tr>
-            </table>
-        </div>
 
-        <div class="cert-id">
-            {{ $useRtl ? 'رقم الشهادة' : 'Certificate ID' }}: {{ $certificate_id }}
-        </div>
-    </div>
+                        <div class="brand">{{ $appName }}</div>
+                        <div class="divider"></div>
+
+                        <div class="eyebrow">
+                            {!! $useRtl ? '&#1578;&#1605;&#1606;&#1581; &#1607;&#1584;&#1607; &#1575;&#1604;&#1588;&#1607;&#1575;&#1583;&#1577; &#1573;&#1604;&#1609;' : 'This Certificate Is Awarded To' !!}
+                        </div>
+                        <div class="title">
+                            {!! $useRtl ? '&#1588;&#1607;&#1575;&#1583;&#1577; &#1581;&#1590;&#1608;&#1585;' : 'Certificate' !!}
+                        </div>
+                        <div class="subtitle">
+                            {!! $useRtl ? '&#1573;&#1578;&#1605;&#1575;&#1605; &#1575;&#1604;&#1576;&#1585;&#1606;&#1575;&#1605;&#1580; &#1575;&#1604;&#1578;&#1583;&#1585;&#1610;&#1576;&#1610;' : 'Of Attendance' !!}
+                        </div>
+
+                        <div class="presented">
+                            {!! $useRtl ? '&#1576;&#1603;&#1604; &#1578;&#1602;&#1583;&#1610;&#1585; &#1573;&#1604;&#1609;' : 'Proudly Presented To' !!}
+                        </div>
+                        <div class="student-name">{{ $user_name }}</div>
+
+                        <div class="achievement">
+                            {!! $useRtl ? '&#1608;&#1584;&#1604;&#1603; &#1576;&#1593;&#1583; &#1573;&#1578;&#1605;&#1575;&#1605;&#1607; &#1576;&#1606;&#1580;&#1575;&#1581;' : 'For successfully completing' !!}
+                        </div>
+                        <div class="course-title">{{ $course_title }}</div>
+
+                        <div class="score">
+                            {!! $useRtl ? '&#1575;&#1604;&#1583;&#1585;&#1580;&#1577; &#1575;&#1604;&#1606;&#1607;&#1575;&#1574;&#1610;&#1577;' : 'Final Score' !!}: {{ $final_score }}%
+                        </div>
+
+                        <table class="footer">
+                            <tr>
+                                <td>
+                                    <div class="footer-label">{!! $useRtl ? '&#1578;&#1575;&#1585;&#1610;&#1582; &#1575;&#1604;&#1573;&#1589;&#1583;&#1575;&#1585;' : 'Date of Issue' !!}</div>
+                                    <div class="footer-line"></div>
+                                    <div class="footer-value">{{ $issue_date }}</div>
+                                </td>
+                                <td>
+                                    @if(!empty($qr_code_path))
+                                        <img src="{{ $qr_code_path }}" class="qr" alt="QR Code">
+                                    @endif
+                                </td>
+                                <td>
+                                    <div class="footer-label">{!! $useRtl ? '&#1575;&#1604;&#1578;&#1608;&#1602;&#1610;&#1593; &#1575;&#1604;&#1605;&#1593;&#1578;&#1605;&#1583;' : 'Authorized Signature' !!}</div>
+                                    <div class="footer-line"></div>
+                                    <div class="footer-value">{{ $signatory_name }}</div>
+                                    <div class="footer-subvalue">{{ $signatory_title }}</div>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <div class="cert-id">
+                            {!! $useRtl ? '&#1585;&#1602;&#1605; &#1575;&#1604;&#1588;&#1607;&#1575;&#1583;&#1577;' : 'Certificate ID' !!}: {{ $certificate_id }}
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
 </body>
 </html>
