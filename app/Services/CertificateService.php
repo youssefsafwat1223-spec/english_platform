@@ -184,6 +184,10 @@ class CertificateService
             'default_font'     => 'dejavusans',
         ]);
 
+        // Single-page certificate — disable auto page breaks so absolute-positioned
+        // content doesn't spill into extra pages.
+        $mpdf->SetAutoPageBreak(false, 0);
+
         $hasArabic = preg_match('/\p{Arabic}/u', $user->name . ' ' . $course->title) === 1;
         if ($hasArabic || app()->getLocale() === 'ar') {
             $mpdf->SetDirectionality('rtl');
