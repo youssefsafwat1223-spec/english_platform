@@ -3,367 +3,396 @@
 <head>
     <meta charset="utf-8">
     <title>Certificate - {{ $certificate_id }}</title>
-    <style>
-        @page {
-            size: 297mm 210mm landscape;
-            margin: 0;
+    @php
+        $isArabicLocale = app()->getLocale() === 'ar';
+        $hasArabic = preg_match('/\p{Arabic}/u', ($user_name ?? '') . ' ' . ($course_title ?? '')) === 1;
+        $useRtl = $isArabicLocale || $hasArabic;
+        $appName = config('app.name', 'Simple English');
+
+        // Resolve absolute logo path so DomPDF can embed it
+        $logoPath = null;
+        $logoCandidates = [
+            $certificate_logo ?? null,
+            public_path('logo.jpg'),
+            public_path('favicon.jpg'),
+        ];
+        foreach ($logoCandidates as $candidate) {
+            if ($candidate && file_exists($candidate)) {
+                $logoPath = $candidate;
+                break;
+            }
         }
+    @endphp
+    <style>
+        @page { size: A4 landscape; margin: 0; }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: "DejaVu Sans", sans-serif;
-            width: 297mm;
-            height: 210mm;
-            color: #1e293b;
+            color: #0f172a;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
         }
 
-        .certificate {
+        .page {
+            position: relative;
             width: 297mm;
             height: 210mm;
-            position: relative;
+            background: #ffffff;
             overflow: hidden;
-            background: #fffef9;
         }
 
-        /* ─── Background Texture ─── */
-        .bg-base {
+        /* ─── Side blue bar (brand stripe) ─── */
+        .side-stripe {
             position: absolute;
-            inset: 0;
-            background:
-                radial-gradient(ellipse at 15% 20%, rgba(212,175,55,0.06) 0%, transparent 50%),
-                radial-gradient(ellipse at 85% 80%, rgba(212,175,55,0.05) 0%, transparent 50%),
-                linear-gradient(180deg, #fffef9 0%, #fdfaf0 100%);
-            z-index: 0;
+            top: 0;
+            {{ $useRtl ? 'right' : 'left' }}: 0;
+            width: 28mm;
+            height: 210mm;
+            background: #007bb5;
         }
 
-        /* ─── Gold Border Frame ─── */
-        .frame-outer {
+        .side-stripe-accent {
             position: absolute;
-            top: 12mm;
-            left: 12mm;
-            right: 12mm;
-            bottom: 12mm;
-            border: 2.5px solid #c9a534;
-            z-index: 2;
-        }
-        .frame-inner {
-            position: absolute;
-            top: 15mm;
-            left: 15mm;
-            right: 15mm;
-            bottom: 15mm;
-            border: 0.8px solid rgba(201,165,52,0.35);
-            z-index: 2;
+            top: 0;
+            {{ $useRtl ? 'right' : 'left' }}: 28mm;
+            width: 3mm;
+            height: 210mm;
+            background: #f59e0b;
         }
 
-        /* ─── Corner Ornaments ─── */
-        .corner {
+        /* Vertical brand name on stripe */
+        .stripe-text {
             position: absolute;
-            width: 20mm;
-            height: 20mm;
-            z-index: 3;
+            top: 50%;
+            {{ $useRtl ? 'right' : 'left' }}: 8mm;
+            color: #ffffff;
+            font-size: 8pt;
+            font-weight: bold;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            transform: rotate({{ $useRtl ? '90deg' : '-90deg' }});
+            transform-origin: {{ $useRtl ? 'right top' : 'left top' }};
+            white-space: nowrap;
         }
-        .corner-tl { top: 10mm; left: 10mm; border-top: 4px solid #c9a534; border-left: 4px solid #c9a534; }
-        .corner-tr { top: 10mm; right: 10mm; border-top: 4px solid #c9a534; border-right: 4px solid #c9a534; }
-        .corner-bl { bottom: 10mm; left: 10mm; border-bottom: 4px solid #c9a534; border-left: 4px solid #c9a534; }
-        .corner-br { bottom: 10mm; right: 10mm; border-bottom: 4px solid #c9a534; border-right: 4px solid #c9a534; }
 
-        /* ─── Content ─── */
-        .content {
-            position: relative;
-            z-index: 10;
-            width: 100%;
-            height: 100%;
+        /* ─── Main content area ─── */
+        .content-frame {
+            position: absolute;
+            top: 18mm;
+            {{ $useRtl ? 'left' : 'right' }}: 18mm;
+            {{ $useRtl ? 'right' : 'left' }}: 50mm;
+            bottom: 18mm;
+            border: 1.5px solid #007bb5;
+            background: #ffffff;
+        }
+
+        .content-inner {
+            position: absolute;
+            top: 4mm;
+            left: 4mm;
+            right: 4mm;
+            bottom: 4mm;
+            border: 0.5px solid #cbd5e1;
+            padding: 12mm 14mm;
             text-align: center;
-            padding: 22mm 35mm 20mm 35mm;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
         }
 
-        /* ─── Logo ─── */
-        .logo-section {
+        /* ─── Header (logo + brand) ─── */
+        .header {
+            text-align: center;
+            margin-bottom: 8mm;
+        }
+
+        .logo-box {
+            display: inline-block;
+            width: 22mm;
+            height: 22mm;
+            border: 2px solid #007bb5;
+            background: #ffffff;
+            padding: 1.5mm;
             margin-bottom: 3mm;
         }
+
         .logo-img {
-            height: 14mm;
-            margin-bottom: 1mm;
-        }
-        .logo-text {
-            font-size: 10pt;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 5px;
-            color: #c9a534;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
         }
 
-        /* ─── Divider ─── */
-        .divider {
-            width: 50mm;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, #c9a534, transparent);
-            margin: 4mm auto;
+        .brand-name {
+            font-size: 14pt;
+            font-weight: bold;
+            color: #007bb5;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            margin-top: 1mm;
+        }
+
+        .brand-divider {
+            display: inline-block;
+            width: 35mm;
+            height: 2px;
+            background: #f59e0b;
+            margin: 3mm auto 0;
         }
 
         /* ─── Title ─── */
-        .cert-title {
-            font-size: 38pt;
-            font-weight: bold;
-            letter-spacing: 5px;
-            color: #1e293b;
-            text-transform: uppercase;
-            line-height: 1;
-            margin-bottom: 1mm;
-        }
-        .cert-subtitle {
-            font-size: 12pt;
-            text-transform: uppercase;
-            letter-spacing: 8px;
-            color: #c9a534;
-            font-weight: bold;
-            margin-bottom: 6mm;
-        }
-
-        /* ─── Recipient ─── */
-        .presented-to {
+        .title-eyebrow {
             font-size: 9pt;
             color: #94a3b8;
             text-transform: uppercase;
             letter-spacing: 4px;
+            margin-bottom: 2mm;
+        }
+
+        .title-main {
+            font-size: 32pt;
+            font-weight: bold;
+            color: #0f172a;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            line-height: 1;
+            margin-bottom: 1mm;
+        }
+
+        .title-sub {
+            font-size: 11pt;
+            color: #f59e0b;
+            font-weight: bold;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            margin-bottom: 7mm;
+        }
+
+        /* ─── Recipient ─── */
+        .label {
+            font-size: 9pt;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 3px;
             margin-bottom: 3mm;
         }
 
         .student-name {
-            font-size: 30pt;
+            font-size: 26pt;
             font-weight: bold;
-            color: #1e293b;
-            border-bottom: 2.5px solid #c9a534;
-            display: inline-block;
-            padding: 0 15mm 2mm 15mm;
-            margin-bottom: 4mm;
-            line-height: 1.2;
+            color: #0f172a;
+            line-height: 1.15;
+            padding-bottom: 2mm;
+            margin: 0 14mm 5mm 14mm;
+            border-bottom: 2px solid #007bb5;
         }
 
-        /* ─── Course ─── */
-        .course-info {
-            color: #64748b;
-            font-size: 10pt;
-            line-height: 1.6;
-            margin-bottom: 3mm;
+        .achievement-line {
+            font-size: 10.5pt;
+            color: #475569;
+            line-height: 1.5;
         }
+
         .course-title {
-            color: #1e293b;
-            font-weight: bold;
-            font-size: 14pt;
             display: block;
-            margin-top: 1mm;
+            font-size: 13pt;
+            font-weight: bold;
+            color: #007bb5;
+            margin-top: 2mm;
         }
 
-        /* ─── Score Badge ─── */
-        .score-badge {
+        /* ─── Score ─── */
+        .score-row {
+            margin-top: 6mm;
+        }
+
+        .score-pill {
             display: inline-block;
-            background: linear-gradient(135deg, #c9a534 0%, #b8941e 100%);
+            padding: 2mm 9mm;
+            background: #f59e0b;
             color: #ffffff;
+            font-size: 11pt;
             font-weight: bold;
-            font-size: 10pt;
-            padding: 2mm 8mm;
-            border-radius: 12px;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
         }
 
         /* ─── Footer ─── */
         .footer {
             position: absolute;
-            bottom: 22mm;
-            left: 35mm;
-            right: 35mm;
+            bottom: 5mm;
+            left: 14mm;
+            right: 14mm;
         }
 
         .footer-table {
             width: 100%;
             border-collapse: collapse;
         }
-        .footer-td {
-            vertical-align: bottom;
+
+        .footer-cell {
             width: 33.33%;
-            padding: 0 5mm;
+            vertical-align: bottom;
+            text-align: center;
+            padding: 0 3mm;
         }
-        .footer-left { text-align: center; }
-        .footer-center { text-align: center; }
-        .footer-right { text-align: center; }
 
         .sign-label {
             font-size: 7pt;
+            color: #94a3b8;
             text-transform: uppercase;
             letter-spacing: 2px;
-            color: #94a3b8;
             margin-bottom: 2mm;
         }
+
         .sign-line {
-            width: 55mm;
-            border-top: 1.5px solid #c9a534;
-            margin: 0 auto 2mm auto;
+            width: 50mm;
+            border-top: 1.2px solid #007bb5;
+            margin: 0 auto 1.5mm auto;
         }
+
         .sign-name {
+            font-size: 10pt;
             font-weight: bold;
-            font-size: 11pt;
-            color: #1e293b;
+            color: #0f172a;
         }
-        .sign-title-text {
-            font-size: 8pt;
-            color: #94a3b8;
+
+        .sign-position {
+            font-size: 7.5pt;
+            color: #64748b;
             text-transform: uppercase;
             letter-spacing: 1px;
+            margin-top: 0.5mm;
         }
 
-        /* ─── QR Code ─── */
-        .qr-container {
-            width: 18mm;
-            height: 18mm;
-            border: 1px solid rgba(201,165,52,0.3);
-            border-radius: 3mm;
+        .qr-wrap {
             display: inline-block;
             padding: 1.5mm;
-            background: #fff;
+            background: #ffffff;
+            border: 1px solid #007bb5;
         }
+
         .qr-img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-
-        /* ─── Seal ─── */
-        .seal {
-            position: absolute;
-            bottom: 38mm;
-            right: 42mm;
-            width: 26mm;
-            height: 26mm;
-            border: 2px solid rgba(201,165,52,0.35);
-            border-radius: 50%;
-            z-index: 5;
-        }
-        .seal-inner {
-            position: absolute;
-            top: 2mm;
-            left: 2mm;
-            right: 2mm;
-            bottom: 2mm;
-            border: 1px solid rgba(201,165,52,0.25);
-            border-radius: 50%;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        .seal-text {
-            font-size: 6pt;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            color: #c9a534;
-            font-weight: bold;
-        }
-        .seal-icon {
-            font-size: 14pt;
-            color: #c9a534;
+            width: 16mm;
+            height: 16mm;
             display: block;
-            line-height: 1;
         }
 
-        /* ─── Certificate ID ─── */
-        .cert-id {
+        .qr-caption {
+            font-size: 6pt;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 1.5mm;
+        }
+
+        /* ─── Cert ID strip ─── */
+        .cert-id-strip {
             position: absolute;
-            bottom: 14mm;
-            left: 0;
-            width: 100%;
+            bottom: 3mm;
+            left: 50mm;
+            right: 18mm;
             text-align: center;
             font-size: 7pt;
-            color: #cbd5e1;
-            letter-spacing: 1.5px;
-            font-family: monospace;
+            color: #007bb5;
+            letter-spacing: 2px;
         }
+
+        /* ─── Decorative corners ─── */
+        .corner {
+            position: absolute;
+            width: 8mm;
+            height: 8mm;
+        }
+        .corner-tl { top: 0; left: 0; border-top: 2px solid #f59e0b; border-left: 2px solid #f59e0b; }
+        .corner-tr { top: 0; right: 0; border-top: 2px solid #f59e0b; border-right: 2px solid #f59e0b; }
+        .corner-bl { bottom: 0; left: 0; border-bottom: 2px solid #f59e0b; border-left: 2px solid #f59e0b; }
+        .corner-br { bottom: 0; right: 0; border-bottom: 2px solid #f59e0b; border-right: 2px solid #f59e0b; }
     </style>
 </head>
-<body>
-    <div class="certificate">
-        <div class="bg-base"></div>
+<body @if($useRtl) dir="rtl" @endif>
+    <div class="page">
 
-        <!-- Border Frame -->
-        <div class="frame-outer"></div>
-        <div class="frame-inner"></div>
+        {{-- Brand stripe down the side --}}
+        <div class="side-stripe"></div>
+        <div class="side-stripe-accent"></div>
+        <div class="stripe-text">{{ strtoupper($appName) }} &bull; {{ $useRtl ? 'شهادة معتمدة' : 'OFFICIAL CERTIFICATE' }}</div>
 
-        <!-- Corner Ornaments -->
-        <div class="corner corner-tl"></div>
-        <div class="corner corner-tr"></div>
-        <div class="corner corner-bl"></div>
-        <div class="corner corner-br"></div>
+        {{-- Main framed content --}}
+        <div class="content-frame">
+            <div class="content-inner">
 
-        <div class="content">
-            <!-- Logo -->
-            <div class="logo-section">
-                @if(!empty($certificate_logo))
-                    <img src="{{ $certificate_logo }}" class="logo-img" alt="Logo"><br>
-                @endif
-                <div class="logo-text">{{ config('app.name', 'English Platform') }}</div>
-            </div>
+                {{-- Decorative gold corners --}}
+                <div class="corner corner-tl"></div>
+                <div class="corner corner-tr"></div>
+                <div class="corner corner-bl"></div>
+                <div class="corner corner-br"></div>
 
-            <div class="divider"></div>
-
-            <div class="cert-title">{{ __('Certificate') }}</div>
-            <div class="cert-subtitle">{{ __('of Achievement') }}</div>
-
-            <div class="presented-to">{{ __('This certificate is proudly presented to') }}</div>
-
-            <div class="student-name">{{ $user_name }}</div>
-
-            <div class="course-info">
-                {{ __('For the successful completion of') }}
-                <span class="course-title">{{ $course_title }}</span>
-            </div>
-
-            <div class="score-badge">&#9733; {{ __('Score') }}: {{ $final_score }}%</div>
-        </div>
-
-        <!-- Footer -->
-        <div class="footer">
-            <table class="footer-table">
-                <tr>
-                    <td class="footer-td footer-left">
-                        <div class="sign-label">{{ __('Date of Issue') }}</div>
-                        <div class="sign-line"></div>
-                        <div class="sign-name">{{ $issue_date }}</div>
-                    </td>
-
-                    <td class="footer-td footer-center">
-                        @if(!empty($qr_code_path))
-                        <div class="qr-container">
-                            <img src="{{ $qr_code_path }}" class="qr-img" alt="QR">
+                {{-- Logo + Brand --}}
+                <div class="header">
+                    @if($logoPath)
+                        <div class="logo-box">
+                            <img src="{{ $logoPath }}" class="logo-img" alt="Logo">
                         </div>
-                        @endif
-                    </td>
+                    @endif
+                    <div class="brand-name">{{ $appName }}</div>
+                    <div class="brand-divider"></div>
+                </div>
 
-                    <td class="footer-td footer-right">
-                        <div class="sign-label">{{ __('Authorized Signature') }}</div>
-                        <div class="sign-line"></div>
-                        <div class="sign-name">{{ $signatory_name }}</div>
-                        <div class="sign-title-text">{{ $signatory_title }}</div>
-                    </td>
-                </tr>
-            </table>
-        </div>
+                {{-- Title --}}
+                <div class="title-eyebrow">{{ $useRtl ? 'تشهد بأن' : 'Hereby Awards' }}</div>
+                <div class="title-main">{{ $useRtl ? 'شهادة' : 'Certificate' }}</div>
+                <div class="title-sub">{{ $useRtl ? 'إنجاز ومستوى' : 'of Achievement' }}</div>
 
-        <!-- Seal -->
-        <div class="seal">
-            <div class="seal-inner">
-                <span class="seal-icon">&#10022;</span>
-                <span class="seal-text">{{ __('Verified') }}</span>
+                {{-- Recipient --}}
+                <div class="label">{{ $useRtl ? 'تُمنح بفخر إلى' : 'Proudly Presented To' }}</div>
+                <div class="student-name">{{ $user_name }}</div>
+
+                <div class="achievement-line">
+                    {{ $useRtl ? 'لإتمامه/إتمامها بنجاح كورس' : 'For successfully completing the course' }}
+                    <span class="course-title">{{ $course_title }}</span>
+                </div>
+
+                <div class="score-row">
+                    <span class="score-pill">
+                        {{ $useRtl ? 'الدرجة النهائية' : 'Final Score' }}
+                        : {{ $final_score }}%
+                    </span>
+                </div>
+
+                {{-- Footer with signatures --}}
+                <div class="footer">
+                    <table class="footer-table">
+                        <tr>
+                            <td class="footer-cell">
+                                <div class="sign-label">{{ $useRtl ? 'تاريخ الإصدار' : 'Date of Issue' }}</div>
+                                <div class="sign-line"></div>
+                                <div class="sign-name">{{ $issue_date }}</div>
+                            </td>
+
+                            <td class="footer-cell">
+                                @if(!empty($qr_code_path))
+                                    <div class="qr-wrap">
+                                        <img src="{{ $qr_code_path }}" class="qr-img" alt="QR">
+                                    </div>
+                                    <div class="qr-caption">{{ $useRtl ? 'تحقق من الشهادة' : 'Verify Certificate' }}</div>
+                                @endif
+                            </td>
+
+                            <td class="footer-cell">
+                                <div class="sign-label">{{ $useRtl ? 'التوقيع المعتمد' : 'Authorized Signature' }}</div>
+                                <div class="sign-line"></div>
+                                <div class="sign-name">{{ $signatory_name }}</div>
+                                <div class="sign-position">{{ $signatory_title }}</div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
             </div>
         </div>
 
-        <div class="cert-id">{{ __('ID') }}: {{ $certificate_id }} &bull; {{ __('Verify at') }} {{ route('certificates.verify', $certificate_id) }}</div>
+        {{-- Certificate ID strip --}}
+        <div class="cert-id-strip">
+            {{ $useRtl ? 'رقم الشهادة' : 'Certificate ID' }}: {{ $certificate_id }}
+        </div>
     </div>
 </body>
 </html>
