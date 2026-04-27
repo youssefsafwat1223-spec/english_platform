@@ -70,8 +70,8 @@ class LessonProgress extends Model
             "Completed: {$this->lesson->title}"
         );
 
-        // Update enrollment progress
-        $this->enrollment->updateProgress();
+        // Update enrollment progress (only if user is actually enrolled — free-level access has no enrollment)
+        $this->enrollment?->updateProgress();
 
         return true;
     }

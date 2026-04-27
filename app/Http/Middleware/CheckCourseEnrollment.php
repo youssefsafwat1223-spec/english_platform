@@ -2,10 +2,11 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Course;
+use App\Models\Lesson;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-use App\Models\Course;
 
 class CheckCourseEnrollment
 {
@@ -22,11 +23,23 @@ class CheckCourseEnrollment
             : Course::query()->where('slug', $course)->orWhere('id', $course)->first();
         $courseId = $courseModel?->id ?? $course;
 
-        if (!auth()->user()->isEnrolledIn($courseId)) {
-            return redirect()->route('student.courses.show', $courseModel ?? $course)
-                ->with('error', 'You must enroll in this course first.');
+        if (auth()->user()->isEnrolledIn($courseId)) {
+            return $next($request);
         }
 
-        return $next($request);
+        // Allow access if the route targets a lesson that lives under a free level.
+        $lessonParam = $request->route('lesson');
+        if ($lessonParam) {
+            $lesson = $lessonParam instanceof Lesson
+                ? $lessonParam
+                : Lesson::query()->where('slug', $lessonParam)->orWhere('id', $lessonParam)->first();
+
+            if ($lesson?->level?->is_free) {
+                return $next($request);
+            }
+        }
+
+        return redirect()->route('student.courses.show', $courseModel ?? $course)
+            ->with('error', __('يجب عليك التسجيل في هذا الكورس أولاً.'));
     }
 }

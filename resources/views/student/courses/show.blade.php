@@ -44,6 +44,15 @@
             $isPrerequisiteMet = false;
         }
     }
+
+    // Free levels (lessons accessible without enrollment)
+    $freeLevels = $course->levels()
+        ->where('is_free', true)
+        ->where('is_active', true)
+        ->orderBy('order_index')
+        ->with(['lessons' => fn ($q) => $q->orderBy('order_index')])
+        ->get();
+    $hasFreeContent = $freeLevels->isNotEmpty();
 @endphp
 
 <div class="py-12 relative min-h-screen z-10">
@@ -82,6 +91,121 @@
                 @endif
             </x-slot>
         </x-student.page-header>
+
+        {{-- Free preview content (visible to non-enrolled students) --}}
+        @if($hasFreeContent && !($isEnrolled ?? false))
+            {{-- Top CTA: "Like the content? Subscribe!" --}}
+            <div class="rounded-2xl border-2 border-emerald-300 dark:border-emerald-500/30 bg-gradient-to-r from-emerald-50 via-emerald-100/50 to-sky-50 dark:from-emerald-500/10 dark:via-emerald-500/5 dark:to-sky-500/10 p-5 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-md">
+                <div class="flex items-center gap-3">
+                    <span class="text-3xl">🎁</span>
+                    <div>
+                        <h3 class="font-extrabold text-base sm:text-lg text-slate-900 dark:text-white">
+                            {{ $isArabic ? 'جرّب الكورس مجاناً!' : 'Try the course for free!' }}
+                        </h3>
+                        <p class="text-sm text-slate-600 dark:text-slate-300 font-medium">
+                            {{ $isArabic ? 'لو عجبك المحتوى، اشترك من هنا واحصل على الكورس كامل.' : 'If you like the content, subscribe and get full course access.' }}
+                        </p>
+                    </div>
+                </div>
+                @if($isPrerequisiteMet)
+                    @if($course->is_installment)
+                        <a href="#payment-options" class="btn-primary ripple-btn px-6 py-3 rounded-xl shadow-lg shadow-primary-500/25 font-bold whitespace-nowrap">
+                            {{ $isArabic ? 'اشترك الآن' : 'Enroll now' }}
+                        </a>
+                    @else
+                        <a href="{{ route('student.courses.enroll', $course) }}" class="btn-primary ripple-btn px-6 py-3 rounded-xl shadow-lg shadow-primary-500/25 font-bold whitespace-nowrap">
+                            {{ $isArabic ? 'اشترك الآن' : 'Enroll now' }}
+                        </a>
+                    @endif
+                @endif
+            </div>
+
+            {{-- Free levels with their lessons --}}
+            <x-student.card padding="p-0" class="overflow-hidden">
+                <div class="px-6 py-5 border-b border-slate-200/60 dark:border-white/10 bg-emerald-50/50 dark:bg-emerald-500/5 flex items-center gap-3">
+                    <span class="w-10 h-10 rounded-xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-lg shrink-0">🆓</span>
+                    <div>
+                        <h2 class="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white">
+                            {{ $isArabic ? 'محتوى مجاني للتجربة' : 'Free preview content' }}
+                        </h2>
+                        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium">
+                            {{ $isArabic ? 'ادخل أي درس من اللي تحت وجرّبه. ' : 'Click any lesson below to try it. ' }}
+                            {{ $isArabic ? count($freeLevels) . ' عنوان مجاني متاح.' : count($freeLevels) . ' free section(s) available.' }}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="divide-y divide-slate-200/60 dark:divide-white/10">
+                    @foreach($freeLevels as $freeLevel)
+                        <div class="p-5 sm:p-6">
+                            <div class="flex items-center gap-3 mb-4">
+                                <span class="w-8 h-8 rounded-lg bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-sm font-black shrink-0">
+                                    {{ $loop->iteration }}
+                                </span>
+                                <h3 class="font-extrabold text-base sm:text-lg text-slate-900 dark:text-white line-clamp-2">
+                                    {{ $freeLevel->title }}
+                                </h3>
+                            </div>
+
+                            @if($freeLevel->description)
+                                <p class="text-sm text-slate-600 dark:text-slate-400 mb-4 leading-relaxed">
+                                    {{ $freeLevel->description }}
+                                </p>
+                            @endif
+
+                            <div class="space-y-2">
+                                @forelse($freeLevel->lessons as $freeLesson)
+                                    <a href="{{ route('student.lessons.show', [$course, $freeLesson]) }}"
+                                       class="flex items-center justify-between gap-3 px-4 py-3 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-slate-900/40 hover:border-emerald-400 dark:hover:border-emerald-500/40 hover:bg-emerald-50/50 dark:hover:bg-emerald-500/5 transition-all group">
+                                        <div class="flex items-center gap-3 min-w-0">
+                                            <span class="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xs font-black shrink-0">
+                                                ▶
+                                            </span>
+                                            <div class="min-w-0">
+                                                <div class="font-bold text-sm text-slate-900 dark:text-white line-clamp-1 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+                                                    {{ $freeLesson->title }}
+                                                </div>
+                                                @if($freeLesson->video_duration)
+                                                    <div class="text-xs text-slate-500 dark:text-slate-400 font-medium">
+                                                        {{ $freeLesson->formatted_duration }}
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <span class="text-xs font-black text-emerald-600 dark:text-emerald-400 whitespace-nowrap">
+                                            {{ $isArabic ? 'افتح الدرس' : 'Open lesson' }}
+                                            <svg class="inline w-3 h-3 ml-1 {{ $isArabic ? 'rotate-180' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                                        </span>
+                                    </a>
+                                @empty
+                                    <p class="text-sm text-slate-500 dark:text-slate-400 italic">
+                                        {{ $isArabic ? 'لا توجد دروس في هذا العنوان حالياً.' : 'No lessons in this section yet.' }}
+                                    </p>
+                                @endforelse
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+
+                {{-- Bottom CTA --}}
+                <div class="px-6 py-5 border-t border-slate-200/60 dark:border-white/10 bg-slate-50/60 dark:bg-slate-900/40 flex flex-col sm:flex-row items-center justify-between gap-3">
+                    <p class="text-sm text-slate-600 dark:text-slate-300 font-bold text-center sm:text-start">
+                        {{ $isArabic ? 'عاجبك المحتوى؟ افتح باقي الكورس بالاشتراك.' : 'Liked it? Unlock the rest by enrolling.' }}
+                    </p>
+                    @if($isPrerequisiteMet)
+                        @if($course->is_installment)
+                            <a href="#payment-options" class="btn-primary ripple-btn px-5 py-2.5 rounded-xl font-bold text-sm whitespace-nowrap">
+                                {{ $isArabic ? 'اشترك الآن' : 'Enroll now' }}
+                            </a>
+                        @else
+                            <a href="{{ route('student.courses.enroll', $course) }}" class="btn-primary ripple-btn px-5 py-2.5 rounded-xl font-bold text-sm whitespace-nowrap">
+                                {{ $isArabic ? 'اشترك الآن' : 'Enroll now' }}
+                            </a>
+                        @endif
+                    @endif
+                </div>
+            </x-student.card>
+        @endif
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div class="lg:col-span-2 space-y-6">

@@ -40,7 +40,7 @@ class SendInactivityReminders extends Command
 
                 $enrolledCourses = $user->enrollments()
                     ->with('course')
-                    ->where('status', '!=', 'completed')
+                    ->whereNull('completed_at')
                     ->get();
 
                 Mail::to($user)->send(new InactivityReminder($user, $daysSinceActive, $enrolledCourses));

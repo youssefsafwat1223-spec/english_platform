@@ -18,11 +18,7 @@ class WritingController extends Controller
     {
         $user = auth()->user();
 
-        // Resolve course_id from lesson or courseLevel
-        $courseId = $writingExercise->lesson?->course_id
-                 ?? $writingExercise->courseLevel?->course_id;
-
-        if (!$courseId || !$user->isEnrolledIn($courseId)) {
+        if (!$this->canAccessExercise($user, $writingExercise)) {
             abort(403);
         }
 
@@ -40,9 +36,8 @@ class WritingController extends Controller
     public function submit(Request $request, WritingExercise $writingExercise)
     {
         $user = auth()->user();
-        $courseId = $writingExercise->lesson?->course_id ?? $writingExercise->courseLevel?->course_id;
 
-        if (!$courseId || !$user->isEnrolledIn($courseId)) {
+        if (!$this->canAccessExercise($user, $writingExercise)) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
@@ -156,5 +151,29 @@ class WritingController extends Controller
             'vocabulary_target_met' => $evaluation['vocabulary_target_met'] ?? true,
             'missing_vocabulary_words' => $evaluation['missing_vocabulary_words'] ?? [],
         ]);
+    }
+
+    /**
+     * Allow access if the user is enrolled in the course OR the exercise belongs
+     * to a level marked as free (or to a lesson under a free level).
+     */
+    private function canAccessExercise($user, WritingExercise $writingExercise): bool
+    {
+        $writingExercise->loadMissing(['lesson.level', 'courseLevel']);
+
+        $courseId = $writingExercise->lesson?->course_id
+                 ?? $writingExercise->courseLevel?->course_id;
+
+        if (!$courseId) {
+            return false;
+        }
+
+        if ($user->isEnrolledIn($courseId)) {
+            return true;
+        }
+
+        $level = $writingExercise->courseLevel ?? $writingExercise->lesson?->level;
+
+        return (bool) ($level?->is_free ?? false);
     }
 }

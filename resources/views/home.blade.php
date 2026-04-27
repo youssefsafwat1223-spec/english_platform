@@ -222,6 +222,119 @@
         </div>
     </section>
 
+    {{-- Testimonials section - Moved up and Enhanced --}}
+    @if($testimonials->count() > 0 || $canSubmitTestimonial)
+    <section id="reviews" class="py-24 relative overflow-hidden bg-slate-50/50 dark:bg-black/20">
+        {{-- Background decoration --}}
+        <div class="absolute inset-0 bg-gradient-to-tl from-accent-500/5 via-transparent to-primary-500/5 pointer-events-none"></div>
+        <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-accent-500/10 rounded-full blur-[120px] translate-y-1/2 -translate-x-1/2 pointer-events-none opacity-50"></div>
+        <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-primary-500/10 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2 pointer-events-none opacity-50"></div>
+
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+            {{-- Section Header --}}
+            <div class="flex flex-col lg:flex-row items-end justify-between gap-8 mb-16" data-aos="fade-up">
+                <div class="max-w-2xl text-start">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-black uppercase tracking-widest mb-4">
+                        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        {{ $isArabic ? 'ثقة الطلاب' : 'Student Trust' }}
+                    </div>
+                    <h2 class="text-4xl md:text-5xl font-black mb-6 leading-tight" style="color: var(--color-text);">
+                        {{ $isArabic ? 'قصص نجاح' : 'Success Stories from' }}
+                        <span class="text-gradient">{{ $isArabic ? 'طلابنا' : 'Our Students' }}</span>
+                    </h2>
+                    <p class="text-lg font-medium max-w-xl" style="color: var(--color-text-muted);">
+                        {{ $isArabic ? 'انضم لأكثر من 1000 طالب بدأوا رحلة التحدث بطلاقة وتجاوزوا عقدة اللغة معنا.' : 'Join 1,000+ students who mastered fluency and overcame language barriers with us.' }}
+                    </p>
+                </div>
+
+                @if($canSubmitTestimonial)
+                <div class="shrink-0 flex flex-col items-center lg:items-end gap-3">
+                    <a href="{{ route('student.testimonial.edit') }}" class="btn-primary ripple-btn px-6 py-3.5 rounded-2xl shadow-xl shadow-primary-500/20 inline-flex items-center gap-2 font-bold transition-all hover:scale-105 active:scale-95">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M11 5h2m-1 0v14m7-7H5"></path>
+                        </svg>
+                        {{ $studentTestimonial ? ($isArabic ? 'تحديث رأيك' : 'Update Review') : ($isArabic ? 'أضف رأيك الآن' : 'Add Your Review') }}
+                    </a>
+                </div>
+                @endif
+            </div>
+
+            {{-- Testimonials Grid - Enhanced --}}
+            @if($testimonials->count() > 0)
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+                @foreach($testimonials as $index => $testimonial)
+                <div class="group relative bg-white dark:bg-slate-900/50 rounded-[2rem] p-8 border border-slate-200/50 dark:border-white/5 shadow-sm hover:shadow-2xl hover:border-primary-500/30 transition-all duration-500 flex flex-col h-full"
+                     data-aos="fade-up" data-aos-delay="{{ $index * 100 }}">
+                    
+                    {{-- Decorative Quote --}}
+                    <div class="absolute -top-4 -right-4 w-12 h-12 rounded-2xl bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center text-white shadow-lg shadow-primary-500/30 opacity-0 group-hover:opacity-100 transition-all duration-500 scale-75 group-hover:scale-100 z-20">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/></svg>
+                    </div>
+
+                    {{-- Stars --}}
+                    <div class="flex items-center gap-1 mb-6">
+                        @for($i = 1; $i <= 5; $i++)
+                            <svg class="w-4 h-4 {{ $i <= $testimonial->rating ? 'text-amber-400' : 'text-slate-200 dark:text-slate-700' }}" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                            </svg>
+                        @endfor
+                    </div>
+
+                    {{-- Content --}}
+                    <div class="flex-1 relative">
+                        <p class="text-base leading-relaxed italic font-medium" style="color: var(--color-text);">
+                            "{{ $testimonial->content }}"
+                        </p>
+                    </div>
+
+                    {{-- Author --}}
+                    <div class="flex items-center gap-4 mt-8 pt-6 border-t border-slate-100 dark:border-white/5">
+                        <div class="relative">
+                            @if($testimonial->avatar)
+                                <img src="{{ Storage::url($testimonial->avatar) }}" class="w-14 h-14 rounded-2xl object-cover border-2 border-primary-500/20 shadow-md group-hover:scale-110 transition-transform duration-500" alt="{{ $testimonial->name }}">
+                            @else
+                                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center text-white font-black shadow-md text-xl">
+                                    {{ mb_substr($testimonial->name, 0, 1) }}
+                                </div>
+                            @endif
+                            <div class="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-500 rounded-full border-2 border-white dark:border-slate-900 flex items-center justify-center">
+                                <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                            </div>
+                        </div>
+                        <div class="min-w-0">
+                            <div class="font-black text-sm truncate" style="color: var(--color-text);">{{ $testimonial->name }}</div>
+                            @if($testimonial->role)
+                                <div class="text-[11px] font-bold uppercase tracking-wider mt-0.5" style="color: var(--color-text-muted);">{{ $testimonial->role }}</div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+            @else
+            {{-- Empty state redesign --}}
+            <div class="relative max-w-2xl mx-auto rounded-[2.5rem] p-10 text-center border border-dashed border-slate-300 dark:border-white/10" data-aos="fade-up">
+                <div class="w-20 h-20 mx-auto rounded-3xl bg-primary-500/10 text-primary-500 flex items-center justify-center mb-6">
+                    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-2xl font-black mb-4" style="color: var(--color-text);">
+                    {{ $isArabic ? 'كن أول من يشارك تجربته' : 'Share your story first' }}
+                </h3>
+                <p class="text-lg font-medium mb-8" style="color: var(--color-text-muted);">
+                    {{ $isArabic ? 'لا توجد آراء منشورة حالياً، انضم لنا وشاركنا رحلتك.' : 'No reviews published yet. Join us and share your journey.' }}
+                </p>
+                <a href="{{ route('student.testimonial.edit') }}" class="btn-primary px-8 py-4 rounded-2xl font-bold">
+                    {{ $isArabic ? 'شاركنا رأيك' : 'Share Review' }}
+                </a>
+            </div>
+            @endif
+        </div>
+    </section>
+    @endif
+
+
     {{-- Program section --}}
     <section id="featured-courses" class="py-24 relative overflow-hidden" style="background: var(--color-surface);">
         <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
@@ -492,115 +605,6 @@
     @endif
 
 
-    {{-- Testimonials section --}}
-    @if($testimonials->count() > 0 || $canSubmitTestimonial)
-    <section id="reviews" class="py-20 lg:py-28 relative overflow-hidden">
-        {{-- Background decoration --}}
-        <div class="absolute inset-0 bg-gradient-to-tl from-accent-500/5 via-transparent to-primary-500/5 pointer-events-none"></div>
-        <div class="absolute bottom-0 left-0 w-96 h-96 bg-accent-500/10 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/2 pointer-events-none"></div>
-
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            {{-- Section Header --}}
-            <div class="text-center max-w-3xl mx-auto mb-16" data-aos="fade-up">
-                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent-500/10 border border-accent-500/20 text-accent-600 dark:text-accent-400 text-sm font-bold mb-6">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
-                    {{ $isArabic ? 'تقييمات حقيقية' : 'Real Student Reviews' }}
-                </div>
-                <h2 class="text-4xl md:text-5xl font-black mb-4" style="color: var(--color-text);">
-                    {{ $isArabic ? 'ماذا قالوا' : 'What Students Say' }}
-                    <span class="text-gradient">{{ $isArabic ? 'عنا' : 'About Us' }}</span>
-                </h2>
-                <p class="text-lg font-medium" style="color: var(--color-text-muted);">
-                    {{ $isArabic ? 'اطّلع على آراء الطلاب الذين بدأوا رحلتهم معنا.' : 'See what students who started learning with us have to say.' }}
-                </p>
-                @if($canSubmitTestimonial)
-                    <div class="mt-6 flex flex-col items-center gap-3">
-                        <a href="{{ route('student.testimonial.edit') }}" class="btn-primary ripple-btn px-6 py-3 rounded-xl shadow-lg shadow-primary-500/25 inline-flex items-center gap-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5h2m-1 0v14m7-7H5"></path>
-                            </svg>
-                            {{ $studentTestimonial ? ($isArabic ? 'عدّل رأيك' : 'Edit Your Review') : ($isArabic ? 'اكتب رأيك' : 'Write Your Review') }}
-                        </a>
-                        @if($studentTestimonial && !$studentTestimonial->is_active)
-                            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 text-xs font-black">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                                {{ $isArabic ? 'رأيك الحالي قيد المراجعة' : 'Your current review is pending approval' }}
-                            </div>
-                        @endif
-                    </div>
-                @endif
-            </div>
-
-            {{-- Testimonials Grid --}}
-            @if($testimonials->count() > 0)
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-                @foreach($testimonials as $index => $testimonial)
-                <div class="glass-card p-6 lg:p-8 relative group hover:border-accent-500/30 transition-all duration-500 hover:-translate-y-1 hover:shadow-xl"
-                     data-aos="fade-up" data-aos-delay="{{ $index * 100 }}">
-                    {{-- Quote icon --}}
-                    <div class="absolute top-4 right-4 w-10 h-10 rounded-xl bg-accent-500/10 flex items-center justify-center text-accent-500 opacity-50 group-hover:opacity-100 transition-opacity">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/></svg>
-                    </div>
-
-                    {{-- Stars --}}
-                    <div class="flex items-center gap-0.5 mb-4">
-                        @for($i = 1; $i <= 5; $i++)
-                            <svg class="w-5 h-5 {{ $i <= $testimonial->rating ? 'text-yellow-400' : 'text-slate-300 dark:text-slate-600' }}" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                            </svg>
-                        @endfor
-                    </div>
-
-                    {{-- Content --}}
-                    <p class="text-sm leading-relaxed mb-6 font-medium" style="color: var(--color-text-muted);">
-                        "{{ $testimonial->content }}"
-                    </p>
-
-                    {{-- Author --}}
-                    <div class="flex items-center gap-3 pt-4 border-t border-slate-200 dark:border-white/10">
-                        @if($testimonial->avatar)
-                            <img src="{{ Storage::url($testimonial->avatar) }}" class="w-12 h-12 rounded-full object-cover border-2 border-accent-500/30 shadow-sm" alt="{{ $testimonial->name }}">
-                        @else
-                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-accent-500 to-primary-500 flex items-center justify-center text-white font-bold shadow-sm text-lg">
-                                {{ mb_substr($testimonial->name, 0, 1) }}
-                            </div>
-                        @endif
-                        <div>
-                            <div class="font-bold text-sm" style="color: var(--color-text);">{{ $testimonial->name }}</div>
-                            @if($testimonial->role)
-                                <div class="text-xs font-medium" style="color: var(--color-text-muted);">{{ $testimonial->role }}</div>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-                @endforeach
-            </div>
-            @else
-            <div class="glass-card max-w-3xl mx-auto p-8 md:p-10 text-center" data-aos="fade-up">
-                <div class="w-16 h-16 mx-auto rounded-2xl bg-primary-500/10 text-primary-500 flex items-center justify-center mb-5">
-                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
-                    </svg>
-                </div>
-                <h3 class="text-2xl font-black mb-3" style="color: var(--color-text);">
-                    {{ $isArabic ? 'ابدأ بأول رأي حقيقي هنا' : 'Be the first to share a real review here' }}
-                </h3>
-                <p class="text-base font-medium mb-6" style="color: var(--color-text-muted);">
-                    {{ $isArabic ? 'لا توجد آراء منشورة بعد، ويمكنك أن تكون أول طالب يشارك تجربته بعد المراجعة.' : 'No reviews have been published yet, but you can be the first student to share your experience after review.' }}
-                </p>
-                <a href="{{ route('student.testimonial.edit') }}" class="btn-primary ripple-btn px-6 py-3 rounded-xl shadow-lg shadow-primary-500/25 inline-flex items-center gap-2">
-                    {{ $isArabic ? 'شارك تجربتك' : 'Share Your Experience' }}
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                    </svg>
-                </a>
-            </div>
-            @endif
-        </div>
-    </section>
-    @endif
 
         {{-- FAQ --}}
     <section id="faq" class="py-20 lg:py-28 relative overflow-hidden" style="background: var(--color-surface);">

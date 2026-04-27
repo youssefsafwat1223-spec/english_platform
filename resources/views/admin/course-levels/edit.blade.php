@@ -57,6 +57,13 @@
                         <label for="is_active" class="text-sm font-semibold" style="color: var(--color-text);">{{ __('مفعّل (يظهر للطلاب)') }}</label>
                     </div>
 
+                    <div class="flex items-center gap-3">
+                        <input type="checkbox" name="is_free" id="is_free" value="1" {{ old('is_free', $level->is_free) ? 'checked' : '' }} class="w-4 h-4 text-emerald-500 rounded" style="border-color: var(--color-border);">
+                        <label for="is_free" class="text-sm font-semibold" style="color: var(--color-text);">
+                            🆓 {{ __('عنوان مجاني (متاح للجميع بدون اشتراك في الكورس)') }}
+                        </label>
+                    </div>
+
                     {{-- ─── Section Tests ─── --}}
                     <div class="border-t pt-6" style="border-color: var(--color-border);">
                         <h3 class="text-base font-extrabold mb-4" style="color: var(--color-text);">🧪 {{ __('اختبارات العنوان') }}</h3>

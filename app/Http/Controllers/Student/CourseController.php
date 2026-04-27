@@ -326,7 +326,7 @@ class CourseController extends Controller
                 ->with('error', __('تم إيقاف وصولك لهذا الكورس. يرجى التواصل مع الدعم.'));
         }
         $enrollment->load(['course.lessons', 'lessonProgress']);
-        
+
         // Update last accessed
         $enrollment->updateLastAccess();
         $enrollment->markAsStarted();

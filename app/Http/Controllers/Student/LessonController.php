@@ -28,13 +28,17 @@ class LessonController extends Controller
     {
         $user = auth()->user();
 
-        // Check enrollment
-        if (!$user->isEnrolledIn($course->id)) {
+        $isEnrolled = $user->isEnrolledIn($course->id);
+        $lesson->load('level');
+        $isFreeLevel = (bool) ($lesson->level?->is_free ?? false);
+
+        // Allow access if enrolled OR the lesson is under a free level.
+        if (!$isEnrolled && !$isFreeLevel) {
             return redirect()->route('student.courses.show', $course)
                 ->with('error', __('يجب عليك التسجيل في هذا الكورس أولاً.'));
         }
 
-        $enrollment = $user->getEnrollment($course->id);
+        $enrollment = $isEnrolled ? $user->getEnrollment($course->id) : null;
 
         // All lessons are now open — no sequential access restriction
 
@@ -47,12 +51,16 @@ class LessonController extends Controller
             'comments.user',
         ]);
 
-        // Get or create progress record
-        $progress = LessonProgress::firstOrCreate([
-            'user_id' => $user->id,
-            'lesson_id' => $lesson->id,
-            'enrollment_id' => $enrollment->id,
-        ]);
+        // Get or create progress record (enrollment_id may be null for free-level access)
+        $progress = LessonProgress::firstOrCreate(
+            [
+                'user_id'   => $user->id,
+                'lesson_id' => $lesson->id,
+            ],
+            [
+                'enrollment_id' => $enrollment?->id,
+            ]
+        );
 
         $completionQuiz = $lesson->getCompletionQuiz();
         $requiresQuizPass = $completionQuiz !== null;
@@ -139,12 +147,10 @@ class LessonController extends Controller
     public function complete(Course $course, Lesson $lesson)
     {
         $user = auth()->user();
-        $enrollment = $user->getEnrollment($course->id);
 
         $progress = LessonProgress::where([
-            'user_id' => $user->id,
+            'user_id'   => $user->id,
             'lesson_id' => $lesson->id,
-            'enrollment_id' => $enrollment->id,
         ])->first();
 
         if (!$progress) {
@@ -171,12 +177,10 @@ class LessonController extends Controller
     public function updateProgress(Course $course, Lesson $lesson)
     {
         $user = auth()->user();
-        $enrollment = $user->getEnrollment($course->id);
 
         $progress = LessonProgress::where([
-            'user_id' => $user->id,
+            'user_id'   => $user->id,
             'lesson_id' => $lesson->id,
-            'enrollment_id' => $enrollment->id,
         ])->first();
 
         if (!$progress) {

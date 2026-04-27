@@ -19,6 +19,7 @@ class CourseLevel extends Model
         'thumbnail',
         'order_index',
         'is_active',
+        'is_free',
         'has_listening_exercise',
         'has_writing_exercise',
         'has_speaking_exercise',
@@ -28,6 +29,7 @@ class CourseLevel extends Model
     {
         return [
             'is_active'              => 'boolean',
+            'is_free'                => 'boolean',
             'has_listening_exercise' => 'boolean',
             'has_writing_exercise'   => 'boolean',
             'has_speaking_exercise'  => 'boolean',

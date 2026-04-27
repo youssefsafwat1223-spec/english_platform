@@ -29,11 +29,7 @@ class PronunciationController extends Controller
     {
         $user = auth()->user();
 
-        // Resolve course_id from lesson or courseLevel
-        $courseId = $exercise->lesson?->course_id
-                 ?? $exercise->courseLevel?->course_id;
-
-        if (!$courseId || !$user->isEnrolledIn($courseId)) {
+        if (!$this->canAccessExercise($user, $exercise)) {
             abort(403);
         }
 
@@ -60,11 +56,11 @@ class PronunciationController extends Controller
         ]);
 
         $user = auth()->user();
-        $courseId = $exercise->lesson?->course_id ?? $exercise->courseLevel?->course_id;
-
-        if (!$courseId || !$user->isEnrolledIn($courseId)) {
+        if (!$this->canAccessExercise($user, $exercise)) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
+
+        $courseId = $exercise->lesson?->course_id ?? $exercise->courseLevel?->course_id;
 
         $sentenceNumber = (int) $request->sentence_number;
         $expectedText = $this->getExpectedSentence($exercise, $sentenceNumber);
@@ -121,11 +117,11 @@ class PronunciationController extends Controller
         ]);
 
         $user = auth()->user();
-        $courseId = $exercise->lesson?->course_id ?? $exercise->courseLevel?->course_id;
-
-        if (!$courseId || !$user->isEnrolledIn($courseId)) {
+        if (!$this->canAccessExercise($user, $exercise)) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
+
+        $courseId = $exercise->lesson?->course_id ?? $exercise->courseLevel?->course_id;
 
         $sentenceNumber = (int) $request->sentence_number;
         $expectedText = $this->getExpectedSentence($exercise, $sentenceNumber);
@@ -181,11 +177,11 @@ class PronunciationController extends Controller
         ]);
 
         $user = auth()->user();
-        $courseId = $exercise->lesson?->course_id ?? $exercise->courseLevel?->course_id;
-
-        if (!$courseId || !$user->isEnrolledIn($courseId)) {
+        if (!$this->canAccessExercise($user, $exercise)) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
+
+        $courseId = $exercise->lesson?->course_id ?? $exercise->courseLevel?->course_id;
 
         $sentenceNumber = (int) $request->sentence_number;
         $expectedText = $this->getExpectedSentence($exercise, $sentenceNumber);
@@ -225,11 +221,11 @@ class PronunciationController extends Controller
         ]);
 
         $user = auth()->user();
-        $courseId = $exercise->lesson?->course_id ?? $exercise->courseLevel?->course_id;
-
-        if (!$courseId || !$user->isEnrolledIn($courseId)) {
+        if (!$this->canAccessExercise($user, $exercise)) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
+
+        $courseId = $exercise->lesson?->course_id ?? $exercise->courseLevel?->course_id;
 
         $sentenceNumber = (int) $request->sentence_number;
         $expectedText = $this->getExpectedSentence($exercise, $sentenceNumber);
@@ -303,11 +299,11 @@ class PronunciationController extends Controller
 
         $user = auth()->user();
         $exercise = PronunciationExercise::query()->with(['lesson', 'courseLevel'])->findOrFail((int) $request->exercise_id);
-        $courseId = $exercise->lesson?->course_id ?? $exercise->courseLevel?->course_id;
-
-        if (!$courseId || !$user->isEnrolledIn($courseId)) {
+        if (!$this->canAccessExercise($user, $exercise)) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
+
+        $courseId = $exercise->lesson?->course_id ?? $exercise->courseLevel?->course_id;
 
         $sentenceNumber = (int) $request->sentence_number;
         $expectedText = $this->getExpectedSentence($exercise, $sentenceNumber);
@@ -544,5 +540,29 @@ class PronunciationController extends Controller
             'feedback' => (string) $attempt->feedback_text,
             'coach' => $coach,
         ];
+    }
+
+    /**
+     * Allow access if the user is enrolled in the course OR the exercise belongs
+     * to a level marked as free (or to a lesson under a free level).
+     */
+    private function canAccessExercise($user, PronunciationExercise $exercise): bool
+    {
+        $exercise->loadMissing(['lesson.level', 'courseLevel']);
+
+        $courseId = $exercise->lesson?->course_id
+                 ?? $exercise->courseLevel?->course_id;
+
+        if (!$courseId) {
+            return false;
+        }
+
+        if ($user->isEnrolledIn($courseId)) {
+            return true;
+        }
+
+        $level = $exercise->courseLevel ?? $exercise->lesson?->level;
+
+        return (bool) ($level?->is_free ?? false);
     }
 }

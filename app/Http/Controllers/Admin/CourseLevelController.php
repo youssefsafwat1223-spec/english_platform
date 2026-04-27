@@ -34,10 +34,12 @@ class CourseLevelController extends Controller
             'thumbnail'   => 'nullable|image|max:2048',
             'order_index' => 'nullable|integer|min:0',
             'is_active'   => 'nullable|boolean',
+            'is_free'     => 'nullable|boolean',
         ]);
 
         $data['slug']      = Str::slug($data['title']);
         $data['is_active'] = $request->boolean('is_active');
+        $data['is_free']   = $request->boolean('is_free');
 
         if (!isset($data['order_index'])) {
             $data['order_index'] = $course->levels()->max('order_index') + 1;
@@ -68,12 +70,14 @@ class CourseLevelController extends Controller
             'thumbnail'              => 'nullable|image|max:2048',
             'order_index'            => 'nullable|integer|min:0',
             'is_active'              => 'nullable|boolean',
+            'is_free'                => 'nullable|boolean',
             'has_writing_exercise'   => 'nullable|boolean',
             'has_speaking_exercise'  => 'nullable|boolean',
             'has_listening_exercise' => 'nullable|boolean',
         ]);
 
         $data['is_active']              = $request->boolean('is_active');
+        $data['is_free']                = $request->boolean('is_free');
         $data['has_writing_exercise']   = $request->boolean('has_writing_exercise');
         $data['has_speaking_exercise']  = $request->boolean('has_speaking_exercise');
         $data['has_listening_exercise'] = $request->boolean('has_listening_exercise');

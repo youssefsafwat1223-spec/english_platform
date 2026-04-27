@@ -347,17 +347,7 @@
                                     <p class="mt-1 text-sm text-slate-700 dark:text-slate-200" x-text="results[{{ $num }}]?.coach?.short_coach_reply || ''"></p>
                                 </div>
 
-                                <div class="mt-3 flex flex-wrap gap-2">
-                                    <button type="button" @click="speakFeedback({{ $num }})" class="inline-flex items-center gap-2 rounded-lg border border-primary-200 bg-white/80 px-3 py-2 text-xs font-bold text-primary-600 transition hover:scale-[1.02] dark:border-primary-500/20 dark:bg-slate-900/30 dark:text-primary-300">
-                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5L6 9H2v6h4l5 4V5zm5.54 3.46a5 5 0 010 7.08m2.83-9.91a9 9 0 010 12.74"/></svg>
-                                        {{ $messages['speak_feedback'] }}
-                                    </button>
-                                    <button type="button" @click="toggleFeedbackMute()" class="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white/80 px-3 py-2 text-xs font-bold text-slate-600 transition hover:scale-[1.02] dark:border-white/10 dark:bg-slate-900/30 dark:text-slate-200">
-                                        <svg x-show="!feedbackMuted" class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5L6 9H2v6h4l5 4V5zm5.54 3.46a5 5 0 010 7.08m2.83-9.91a9 9 0 010 12.74"/></svg>
-                                        <svg x-show="feedbackMuted" x-cloak class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 9l6 6m0-6l-6 6M11 5L6 9H2v6h4l5 4V5z"/></svg>
-                                        <span x-text="feedbackMuted ? messages.unmute_feedback : messages.mute_feedback"></span>
-                                    </button>
-                                </div>
+                                 {{-- Feedback voice buttons removed by user request --}}
 
                                 <div class="space-y-2 max-w-sm mx-auto md:mx-0">
                                     <template x-for="(label, key) in scoreLabels" :key="key">
@@ -1882,7 +1872,7 @@ function pronunciationApp() {
         applyResult(sentenceNumber, data) {
             this.results[sentenceNumber] = data;
             this.liveWordDiff[sentenceNumber] = Array.isArray(data.word_diff) ? data.word_diff : [];
-            window.setTimeout(() => this.speakFeedback(sentenceNumber), 150);
+            // Auto-speak feedback removed by user request
 
             if (data.score >= this.passingScore) {
                 this.failedAttempts[sentenceNumber] = 0;

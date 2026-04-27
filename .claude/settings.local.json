@@ -1,7 +1,21 @@
 {
   "permissions": {
     "allow": [
-      "Bash(php artisan:*)"
+      "Bash(php artisan:*)",
+      "Bash(grep -n 'courseLevel?->course_id\\\\|isEnrolledIn\\($courseId\\)' app/Http/Controllers/Student/PronunciationController.php)",
+      "Bash(grep -n '$courseId' app/Http/Controllers/Student/PronunciationController.php)",
+      "Bash(grep -c '$courseId' app/Http/Controllers/Student/PronunciationController.php)",
+      "Bash(php -l app/Http/Controllers/Student/LessonController.php)",
+      "Bash(php -l app/Http/Controllers/Student/CourseController.php)",
+      "Bash(php -l app/Http/Controllers/Student/PronunciationController.php)",
+      "Bash(php -l app/Http/Controllers/Student/WritingController.php)",
+      "Bash(php -l app/Http/Controllers/Admin/CourseLevelController.php)",
+      "Bash(php -r 'require '\\\\''vendor/autoload.php'\\\\''; $app = require '\\\\''bootstrap/app.php'\\\\''; $app->make\\(Illuminate\\\\Contracts\\\\Console\\\\Kernel::class\\)->bootstrap\\(\\); $compiler = app\\('\\\\''blade.compiler'\\\\''\\); $compiler->compile\\(resource_path\\('\\\\''views/student/courses/learn.blade.php'\\\\''\\)\\); $compiler->compile\\(resource_path\\('\\\\''views/admin/course-levels/edit.blade.php'\\\\''\\)\\); $compiler->compile\\(resource_path\\('\\\\''views/admin/course-levels/create.blade.php'\\\\''\\)\\); echo '\\\\''Compiled OK'\\\\'' . PHP_EOL;')",
+      "Bash(php -r 'require '\\\\''vendor/autoload.php'\\\\''; $app = require '\\\\''bootstrap/app.php'\\\\''; $app->make\\(Illuminate\\\\Contracts\\\\Console\\\\Kernel::class\\)->bootstrap\\(\\); $compiler = app\\('\\\\''blade.compiler'\\\\''\\); $compiler->compile\\(resource_path\\('\\\\''views/student/courses/show.blade.php'\\\\''\\)\\); $compiler->compile\\(resource_path\\('\\\\''views/student/courses/learn.blade.php'\\\\''\\)\\); echo '\\\\''Compiled OK'\\\\'' . PHP_EOL;')",
+      "Bash(php -l database/seeders/AdminSeeder.php)",
+      "Bash(php -l database/seeders/FreeLevelDemoSeeder.php)",
+      "Bash(php -l app/Http/Middleware/CheckCourseEnrollment.php)",
+      "Bash(php -l app/console/Commands/SendInactivityReminders.php)"
     ]
   }
 }
