@@ -17,7 +17,7 @@
                 @php
                     $fields = [
                         [__('ui.certificates.student_name'), $user->name],
-                        [__('ui.certificates.course'), $course->title],
+                        [__('ui.certificates.course'), $course?->title ?? __('Deleted course')],
                         [__('ui.certificates.final_score'), $certificate->final_score . '%'],
                         [__('ui.certificates.grade'), $certificate->grade],
                         [__('ui.certificates.issue_date'), $certificate->issued_at->format('F d, Y')],

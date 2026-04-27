@@ -41,8 +41,8 @@
                         @forelse($certificates as $certificate)
                         <tr>
                             <td><span class="font-mono text-xs font-bold text-primary-500">{{ $certificate->certificate_id }}</span></td>
-                            <td>{{ $certificate->user->name }}</td>
-                            <td>{{ $certificate->course->title }}</td>
+                            <td>{{ $certificate->user?->name ?? __('Deleted user') }}</td>
+                            <td>{{ $certificate->course?->title ?? __('Deleted course') }}</td>
                             <td>
                                 <span class="font-bold text-emerald-500">{{ $certificate->final_score }}%</span>
                                 <span class="inline-flex items-center px-2 py-0.5 rounded-lg bg-emerald-500/10 text-emerald-500 text-[10px] font-bold ml-1">{{ $certificate->grade }}</span>

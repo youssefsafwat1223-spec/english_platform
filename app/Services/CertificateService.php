@@ -9,6 +9,7 @@ use App\Models\Certificate;
 use App\Models\SystemSetting;
 use Barryvdh\DomPDF\Facade\Pdf;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -21,6 +22,20 @@ class CertificateService
     {
         $user = $enrollment->user;
         $course = $enrollment->course;
+
+        if (!$user || !$course) {
+            Log::error('Certificate generation failed: missing enrollment relation.', [
+                'enrollment_id' => $enrollment->id,
+                'user_id' => $enrollment->user_id,
+                'course_id' => $enrollment->course_id,
+            ]);
+
+            return [
+                'success' => false,
+                'message' => 'Certificate cannot be generated because the enrollment is missing its user or course.',
+            ];
+        }
+
         $settings = SystemSetting::getByGroup('certificates');
         if ($settings instanceof \Illuminate\Support\Collection) {
             $settings = $settings->toArray();
@@ -143,13 +158,7 @@ class CertificateService
      */
     private function generatePdf(User $user, Course $course, $certificateId, $finalScore, $qrCodePath, array $settings, $issueDate)
     {
-        $certificateLogo = $settings['certificate_logo'] ?? null;
-        if ($certificateLogo && !Str::startsWith($certificateLogo, ['http://', 'https://'])) {
-            $publicPath = public_path($certificateLogo);
-            if (file_exists($publicPath)) {
-                $certificateLogo = $publicPath;
-            }
-        }
+        $certificateLogo = $this->resolveCertificateLogo($settings['certificate_logo'] ?? null);
 
         $data = [
             'user_name' => $user->name,
@@ -165,7 +174,25 @@ class CertificateService
 
         $html = view('certificates.template', $data)->render();
 
-        // Use mPDF for full Arabic shaping + RTL support (DomPDF can't render Arabic correctly).
+        if (!class_exists(\Mpdf\Mpdf::class)) {
+            Log::warning('mPDF is not installed. Falling back to DomPDF for certificate generation.');
+
+            $pdfBytes = Pdf::loadHTML($html)
+                ->setPaper('a4', 'landscape')
+                ->setOptions([
+                    'defaultFont' => 'DejaVu Sans',
+                    'isRemoteEnabled' => true,
+                    'isHtml5ParserEnabled' => true,
+                ])
+                ->output();
+
+            $path = "certificates/pdfs/{$certificateId}.pdf";
+            Storage::put($path, $pdfBytes);
+
+            return $path;
+        }
+
+        // mPDF is preferred for Arabic shaping and RTL support.
         $tempDir = storage_path('app/mpdf-tmp');
         if (!is_dir($tempDir)) {
             @mkdir($tempDir, 0775, true);
@@ -201,6 +228,36 @@ class CertificateService
         Storage::put($path, $pdfBytes);
 
         return $path;
+    }
+
+    private function resolveCertificateLogo(?string $configuredLogo): ?string
+    {
+        $candidates = [
+            $configuredLogo,
+            public_path('logo.jpg'),
+            public_path('favicon.jpg'),
+        ];
+
+        foreach ($candidates as $candidate) {
+            if (!$candidate) {
+                continue;
+            }
+
+            if (Str::startsWith($candidate, ['http://', 'https://'])) {
+                return $candidate;
+            }
+
+            if (file_exists($candidate)) {
+                return $candidate;
+            }
+
+            $publicPath = public_path(ltrim($candidate, '/\\'));
+            if (file_exists($publicPath)) {
+                return $publicPath;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -283,8 +340,10 @@ class CertificateService
     {
         $certificate->markAsSharedOnLinkedIn();
 
+        $courseTitle = $certificate->course?->title ?? 'Course';
+
         $params = http_build_query([
-            'name' => "{$certificate->course->title} - Certificate of Completion",
+            'name' => "{$courseTitle} - Certificate of Completion",
             'certUrl' => $certificate->verification_url,
             'certId' => $certificate->certificate_id,
         ]);

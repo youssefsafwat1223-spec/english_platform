@@ -12,7 +12,7 @@
     <div class="student-container max-w-4xl relative z-10">
         <div class="text-center mb-8" data-aos="fade-down">
             <h1 class="text-3xl font-extrabold text-slate-900 dark:text-white"><span class="text-gradient">{{ __('Certificate') }}</span></h1>
-            <p class="mt-2 text-slate-500 dark:text-slate-400">{{ $certificate->course->title }}</p>
+            <p class="mt-2 text-slate-500 dark:text-slate-400">{{ $certificate->course?->title ?? __('Deleted course') }}</p>
         </div>
 
         <x-student.card padding="p-6 md:p-8" class="shadow-xl mb-6 space-y-5" data-aos="fade-up">
