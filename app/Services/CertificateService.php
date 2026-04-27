@@ -107,8 +107,14 @@ class CertificateService
      */
     private function calculateFinalScore(Enrollment $enrollment)
     {
+        $course = $enrollment->course;
+
+        if (!$course) {
+            return 70;
+        }
+
         // Get final exam attempt
-        $finalExam = $enrollment->course->quizzes()
+        $finalExam = $course->quizzes()
             ->where('quiz_type', 'final_exam')
             ->first();
 
@@ -228,6 +234,51 @@ class CertificateService
         Storage::put($path, $pdfBytes);
 
         return $path;
+    }
+
+    public function regenerateCertificatePdf(Certificate $certificate): bool
+    {
+        $certificate->loadMissing(['user', 'course']);
+
+        if (!$certificate->user || !$certificate->course) {
+            Log::error('Certificate PDF regeneration failed: missing certificate relation.', [
+                'certificate_id' => $certificate->id,
+                'certificate_code' => $certificate->certificate_id,
+                'user_id' => $certificate->user_id,
+                'course_id' => $certificate->course_id,
+            ]);
+
+            return false;
+        }
+
+        $settings = SystemSetting::getByGroup('certificates');
+        if ($settings instanceof \Illuminate\Support\Collection) {
+            $settings = $settings->toArray();
+        }
+
+        $enableQrCode = (bool) ($settings['enable_qr_code'] ?? true);
+        $qrCodePath = $certificate->qr_code_path;
+
+        if ($enableQrCode && !$qrCodePath) {
+            $qrCodePath = $this->generateQrCode($certificate->certificate_id);
+        }
+
+        $pdfPath = $this->generatePdf(
+            $certificate->user,
+            $certificate->course,
+            $certificate->certificate_id,
+            $certificate->final_score,
+            $qrCodePath,
+            $settings,
+            $certificate->issued_at ?? now()
+        );
+
+        $certificate->update([
+            'pdf_path' => $pdfPath,
+            'qr_code_path' => $qrCodePath,
+        ]);
+
+        return true;
     }
 
     private function resolveCertificateLogo(?string $configuredLogo): ?string
