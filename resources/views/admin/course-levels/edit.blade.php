@@ -8,6 +8,13 @@
     $speakingExercise = $level->speakingExercise ?? null;
     $listeningExercise = $level->listeningExercise ?? null;
 
+    $speakingSentencesText = old('speaking_sentences_text');
+    if ($speakingSentencesText === null && $speakingExercise) {
+        $speakingSentencesText = collect($speakingExercise->sentences)
+            ->filter(fn ($sentence) => trim((string) $sentence) !== '')
+            ->implode("\n");
+    }
+
     $speakingVocabularyLines = old('speaking_vocabulary_lines');
     if ($speakingVocabularyLines === null && $speakingExercise?->vocabulary_json) {
         $speakingVocabularyLines = collect($speakingExercise->vocabulary_json)
@@ -221,28 +228,30 @@
                     <section x-show="hasSpeaking" x-cloak class="glass-card overflow-hidden border border-emerald-200 dark:border-emerald-500/20" data-aos="fade-up">
                         <div class="glass-card-header">
                             <h2 class="font-extrabold" style="color: var(--color-text);">{{ __('Speaking Test Settings') }}</h2>
-                            <p class="text-xs mt-1" style="color: var(--color-text-muted);">{{ __('Add up to three sentences and optional reference audio files.') }}</p>
+                            <p class="text-xs mt-1" style="color: var(--color-text-muted);">{{ __('Add all speaking sentences here. Put each sentence on a separate line.') }}</p>
                         </div>
 
                         <div class="glass-card-body space-y-5">
-                            <div class="space-y-4">
-                                @foreach([1, 2, 3] as $index)
-                                    @php
-                                        $sentenceField = "sentence_{$index}";
-                                        $audioField = "reference_audio_{$index}";
-                                    @endphp
-                                    <div class="rounded-2xl p-4 border" style="border-color: var(--color-border); background: var(--color-surface-hover);">
-                                        <label for="speaking_sentence_{{ $index }}" class="block text-sm font-semibold mb-2" style="color: var(--color-text);">
-                                            {{ __('Sentence') }} {{ $index }} @if($index === 1)<span class="text-red-500">*</span>@endif
-                                        </label>
-                                        <input id="speaking_sentence_{{ $index }}"
-                                               type="text"
-                                               name="speaking_sentence_{{ $index }}"
-                                               class="input-glass"
-                                               value="{{ old("speaking_sentence_{$index}", $speakingExercise?->{$sentenceField}) }}"
-                                               placeholder="{{ $index === 1 ? 'The quick brown fox jumps over the lazy dog.' : 'Optional extra sentence.' }}">
+                            <div>
+                                <label for="speaking_sentences_text" class="block text-sm font-semibold mb-2" style="color: var(--color-text);">
+                                    {{ __('Speaking Sentences') }} <span class="text-red-500">*</span>
+                                </label>
+                                <textarea id="speaking_sentences_text"
+                                          name="speaking_sentences_text"
+                                          rows="8"
+                                          class="input-glass font-mono text-sm"
+                                          dir="ltr"
+                                          placeholder="Sentence 1&#10;Sentence 2&#10;Sentence 3&#10;Sentence 4">{{ $speakingSentencesText }}</textarea>
+                                <p class="text-xs mt-2" style="color: var(--color-text-muted);">
+                                    {{ __('The first three lines can use uploaded reference audio. Extra lines will still appear to students and use browser text-to-speech.') }}
+                                </p>
+                            </div>
 
-                                        <label for="speaking_reference_audio_{{ $index }}" class="block text-xs font-bold mt-4 mb-2" style="color: var(--color-text-muted);">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                @foreach([1, 2, 3] as $index)
+                                    @php $audioField = "reference_audio_{$index}"; @endphp
+                                    <div class="rounded-2xl p-4 border" style="border-color: var(--color-border); background: var(--color-surface-hover);">
+                                        <label for="speaking_reference_audio_{{ $index }}" class="block text-xs font-bold mb-2" style="color: var(--color-text-muted);">
                                             {{ __('Reference Audio') }} {{ $index }}
                                         </label>
                                         @if($speakingExercise?->{$audioField})

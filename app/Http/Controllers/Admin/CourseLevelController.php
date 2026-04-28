@@ -183,12 +183,15 @@ class CourseLevelController extends Controller
             return;
         }
 
+        $sentences = $this->parseSpeakingSentences($request);
+
         $exerciseData = [
             'course_level_id'     => $level->id,
             'lesson_id'           => null,
-            'sentence_1'          => $request->input('speaking_sentence_1'),
-            'sentence_2'          => $request->input('speaking_sentence_2'),
-            'sentence_3'          => $request->input('speaking_sentence_3'),
+            'sentence_1'          => $sentences[0] ?? '',
+            'sentence_2'          => $sentences[1] ?? null,
+            'sentence_3'          => $sentences[2] ?? null,
+            'sentences_json'      => array_slice($sentences, 3) ?: null,
             'passing_score'       => (int) $request->input('speaking_passing_score', 70),
             'max_duration_seconds' => (int) $request->input('speaking_max_duration', 15),
             'allow_retake'        => $request->boolean('speaking_allow_retake'),
@@ -219,6 +222,24 @@ class CourseLevelController extends Controller
                 $exercise->update([$col => $path]);
             }
         }
+    }
+
+    private function parseSpeakingSentences(Request $request): array
+    {
+        $rawSentences = $request->input('speaking_sentences_text');
+
+        if ($rawSentences === null) {
+            $rawSentences = collect([1, 2, 3])
+                ->map(fn (int $index) => $request->input("speaking_sentence_{$index}"))
+                ->filter(fn ($sentence) => trim((string) $sentence) !== '')
+                ->implode("\n");
+        }
+
+        return collect(preg_split('/\r\n|\r|\n/', (string) $rawSentences))
+            ->map(fn ($sentence) => trim((string) $sentence))
+            ->filter()
+            ->values()
+            ->all();
     }
 
     private function syncListeningExercise(Request $request, CourseLevel $level): void
