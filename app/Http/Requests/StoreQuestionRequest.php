@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Lesson;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Validator;
 
 class StoreQuestionRequest extends FormRequest
 {
@@ -53,5 +55,23 @@ class StoreQuestionRequest extends FormRequest
             'correct_answer.required' => 'Please select the correct answer',
             'correct_answer.in' => 'Correct answer must be A, B, C, or D',
         ];
+    }
+
+    public function withValidator(Validator $validator): void
+    {
+        $validator->after(function (Validator $validator) {
+            $courseId = (int) $this->input('course_id');
+            $lessonId = $this->input('lesson_id');
+
+            if (!$lessonId) {
+                return;
+            }
+
+            $lesson = Lesson::query()->select(['id', 'course_id'])->find($lessonId);
+
+            if (!$lesson || (int) $lesson->course_id !== $courseId) {
+                $validator->errors()->add('lesson_id', 'Selected lesson does not belong to the selected course.');
+            }
+        });
     }
 }

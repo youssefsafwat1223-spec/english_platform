@@ -19,8 +19,8 @@
                     <div>
                         <h2 class="text-lg font-bold text-white">بيانات الطالب</h2>
                         <div class="mt-3 rounded-2xl border border-white/10 bg-slate-900/40 p-4">
-                            <div class="font-bold text-white">{{ $deviceReplacementRequest->user->name }}</div>
-                            <div class="text-sm text-slate-400">{{ $deviceReplacementRequest->user->email }}</div>
+                            <div class="font-bold text-white">{{ $deviceReplacementRequest->user?->name ?? 'Deleted user' }}</div>
+                            <div class="text-sm text-slate-400">{{ $deviceReplacementRequest->user?->email ?? '-' }}</div>
                         </div>
                     </div>
 

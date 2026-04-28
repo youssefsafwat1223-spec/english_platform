@@ -5,20 +5,20 @@
      x-data="adminGameMonitor()" x-init="startPolling()">
     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[400px] bg-gradient-to-b from-primary-500/8 to-transparent pointer-events-none z-0"></div>
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 relative z-10">
-        {{-- Header --}}
         <div class="mb-8" data-aos="fade-down">
             <a href="{{ route('admin.games.index') }}" class="text-sm font-medium hover:underline" style="color: var(--color-text-muted);">{{ __('Back to Competitions') }}</a>
             <div class="flex items-center justify-between mt-2">
                 <div>
-                    <h1 class="text-3xl font-extrabold"><span class="text-gradient">🎮 {{ $game->title }}</span></h1>
-                    <p class="mt-1" style="color: var(--color-text-muted);">{{ $game->course->title }} | {{ $game->start_time->format('Y-m-d h:i A') }}</p>
+                    <h1 class="text-3xl font-extrabold"><span class="text-gradient">{{ $game->title }}</span></h1>
+                    <p class="mt-1" style="color: var(--color-text-muted);">{{ $game->course?->title ?? __('Deleted course') }} | {{ $game->start_time->format('Y-m-d h:i A') }}</p>
                 </div>
                 <div class="flex items-center gap-2">
                     <span class="px-3 py-1.5 rounded-lg text-sm font-bold"
                           :class="{
                               'bg-yellow-500/10 text-yellow-500': gameStatus === 'scheduled',
                               'bg-emerald-500/10 text-emerald-500 animate-pulse': gameStatus === 'active',
-                              'bg-primary-500/10 text-primary-500': gameStatus === 'completed'
+                              'bg-primary-500/10 text-primary-500': gameStatus === 'completed',
+                              'bg-red-500/10 text-red-500': gameStatus === 'cancelled'
                           }"
                           x-text="statusLabel">
                     </span>
@@ -32,7 +32,12 @@
             </div>
         @endif
 
-        {{-- Control Buttons (Forms are outside Alpine scope for simplicity, they reload page) --}}
+        @if(session('error'))
+            <div class="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 font-medium">
+                {{ session('error') }}
+            </div>
+        @endif
+
         <div class="glass-card p-6 mb-6" data-aos="fade-up">
             <h2 class="text-lg font-bold mb-4" style="color: var(--color-text);">{{ __('Control Panel') }}</h2>
             <div class="flex flex-wrap gap-3">
@@ -55,11 +60,10 @@
                         <button class="px-4 py-2 rounded-xl text-red-500 border border-red-500/30 hover:bg-red-500/10 transition font-bold text-sm">{{ __('End Game') }}</button>
                     </form>
                 @elseif($game->status === 'completed')
-                    <p class="text-sm font-bold text-primary-500">{{ __('Game is completed.') }}</p>
+                    <p class="text-sm font-bold text-primary-500">{{ __('Competition is completed.') }}</p>
                 @endif
             </div>
 
-            {{-- Live Current Question --}}
             <template x-if="gameStatus === 'active' && currentQuestion">
                 <div class="mt-4 p-4 rounded-xl border" style="border-color: var(--color-border); background: var(--color-bg-elevated);">
                     <div class="flex justify-between items-center mb-2">
@@ -67,7 +71,9 @@
                             {{ __('Current Question') }} #<span x-text="currentQuestion.index + 1"></span>
                         </span>
                         <span class="text-xs px-2 py-1 rounded-lg bg-yellow-500/10 text-yellow-500 font-bold">
-                            ⏱ <span x-text="timeRemaining"></span>{{ __('s | 🏆') }}<span x-text="currentQuestion.points"></span> {{ __('point') }}
+                            <i class="fas fa-clock"></i> <span x-text="timeRemaining"></span>{{ __('s') }}
+                            |
+                            <i class="fas fa-bullseye"></i> <span x-text="currentQuestion.points"></span> {{ __('point') }}
                         </span>
                     </div>
                     <p class="font-bold text-lg mb-3" style="color: var(--color-text);" x-text="currentQuestion.question_text"></p>
@@ -76,12 +82,11 @@
                             <div class="px-3 py-2 rounded-lg text-sm font-medium flex justify-between items-center"
                                  :class="opt === currentQuestion.correct_answer ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/30' : 'bg-white/5 text-gray-400'">
                                 <span x-text="opt"></span>
-                                <span x-show="opt === currentQuestion.correct_answer">✅</span>
+                                <span x-show="opt === currentQuestion.correct_answer"><i class="fas fa-check-circle"></i></span>
                             </div>
                         </template>
                     </div>
 
-                    {{-- Live Answers --}}
                     <div class="mt-4 pt-4 border-t border-gray-700">
                         <h4 class="text-sm font-bold mb-2" style="color: var(--color-text-muted);">{{ __('Live Answers') }}</h4>
                         <div class="flex flex-wrap gap-2">
@@ -103,7 +108,6 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {{-- Leaderboard --}}
             <div class="glass-card p-6" data-aos="fade-up" data-aos-delay="100">
                 <h2 class="text-lg font-bold mb-4" style="color: var(--color-text);">{{ __('Team Ranking') }}</h2>
                 <div class="space-y-3">
@@ -127,7 +131,6 @@
                 </div>
             </div>
 
-            {{-- Questions List --}}
             <div class="glass-card p-6 lg:col-span-2" data-aos="fade-up" data-aos-delay="200">
                 <h2 class="text-lg font-bold mb-4" style="color: var(--color-text);">{{ __('Questions') }}</h2>
                 <div class="space-y-3 max-h-[500px] overflow-y-auto pr-2">
@@ -139,9 +142,13 @@
                                 <span class="text-sm font-bold"
                                       :class="currentQuestion && currentQuestion.index === {{ $index }} ? 'text-primary-500' : 'text-gray-400'">
                                     Q{{ $index + 1 }}
-                                    <span x-show="currentQuestion && currentQuestion.index === {{ $index }}">{{ __('◀ Current') }}</span>
+                                    <span x-show="currentQuestion && currentQuestion.index === {{ $index }}">{{ __('Current') }}</span>
                                 </span>
-                                <span class="text-xs" style="color: var(--color-text-muted);">⏱ {{ $question->time_limit_seconds }}s | 🏆 {{ $question->points }}pts</span>
+                                <span class="text-xs" style="color: var(--color-text-muted);">
+                                    <i class="fas fa-clock"></i> {{ $question->time_limit_seconds }}s
+                                    |
+                                    <i class="fas fa-bullseye"></i> {{ $question->points }}pts
+                                </span>
                             </div>
                             <p class="text-sm font-medium" style="color: var(--color-text);">{{ $question->question_text }}</p>
                         </div>
@@ -154,7 +161,6 @@
 
 <script>
     @php
-        // Prepare initial Question
         $initialQuestion = null;
         if ($game->status === 'active' && $game->current_question_index >= 0) {
             $q = $game->questions->skip($game->current_question_index)->first();
@@ -164,13 +170,12 @@
             }
         }
 
-        // Prepare Leaderboard
-        $initialLeaderboard = $leaderboard->map(fn($t) => [
-            'id' => $t->id,
-            'name' => $t->name,
-            'color' => $t->color_hex,
-            'score' => $t->score,
-            'participants_count' => $t->participants->count()
+        $initialLeaderboard = $leaderboard->map(fn($team) => [
+            'id' => $team->id,
+            'name' => $team->name,
+            'color' => $team->color_hex,
+            'score' => $team->score,
+            'participants_count' => $team->participants->count(),
         ])->values();
     @endphp
 
@@ -185,16 +190,20 @@ function adminGameMonitor() {
         timerInterval: null,
 
         get statusLabel() {
-            if (this.gameStatus === 'scheduled') return __('Scheduled');
-            if (this.gameStatus === 'active') return __('Active Now');
-            return __('Completed');
+            if (this.gameStatus === 'scheduled') return '{{ __('Scheduled') }}';
+            if (this.gameStatus === 'active') return '{{ __('Active Now') }}';
+            if (this.gameStatus === 'completed') return '{{ __('Completed') }}';
+            if (this.gameStatus === 'cancelled') return '{{ __('Cancelled') }}';
+            return '{{ __('Unknown') }}';
         },
 
         startPolling() {
             this.poll();
             this.pollInterval = setInterval(() => this.poll(), 3000);
             this.timerInterval = setInterval(() => {
-                if (this.timeRemaining > 0) this.timeRemaining--;
+                if (this.timeRemaining > 0) {
+                    this.timeRemaining--;
+                }
             }, 1000);
         },
 
@@ -202,36 +211,32 @@ function adminGameMonitor() {
             try {
                 const res = await fetch('{{ route("admin.games.poll", $game) }}');
                 const data = await res.json();
-                
+
                 this.gameStatus = data.status;
-                
-                // Only update specific fields to avoid flicker
+
                 if (JSON.stringify(this.leaderboard) !== JSON.stringify(data.leaderboard)) {
                     this.leaderboard = data.leaderboard;
                 }
-                
+
                 this.answers = data.answers;
-                
+
                 if (data.current_question) {
-                    // Update current question info
                     this.currentQuestion = {
                         ...data.current_question,
                         index: data.current_question_index
                     };
-                    
-                    // Sync time
+
                     if (Math.abs(this.timeRemaining - data.time_remaining) > 2) {
                         this.timeRemaining = data.time_remaining;
                     }
                 } else {
                     this.currentQuestion = null;
                 }
-
             } catch (e) {
-                console.error(__('Poll error'), e);
+                console.error('Poll error', e);
             }
         }
-    }
+    };
 }
 </script>
 @endsection

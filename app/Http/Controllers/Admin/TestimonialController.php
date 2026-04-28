@@ -32,7 +32,7 @@ class TestimonialController extends Controller
             'sort_order' => 'nullable|integer|min:0',
         ]);
 
-        $validated['is_active'] = $request->has('is_active');
+        $validated['is_active'] = $request->boolean('is_active');
         $validated['sort_order'] = $validated['sort_order'] ?? 0;
 
         if ($request->hasFile('avatar')) {
@@ -42,7 +42,7 @@ class TestimonialController extends Controller
         Testimonial::create($validated);
 
         return redirect()->route('admin.testimonials.index')
-            ->with('success', __('تم إضافة رأي الطالب بنجاح.'));
+            ->with('success', 'Testimonial created successfully.');
     }
 
     public function edit(Testimonial $testimonial)
@@ -62,7 +62,7 @@ class TestimonialController extends Controller
             'sort_order' => 'nullable|integer|min:0',
         ]);
 
-        $validated['is_active'] = $request->has('is_active');
+        $validated['is_active'] = $request->boolean('is_active');
         $validated['sort_order'] = $validated['sort_order'] ?? 0;
 
         if ($request->hasFile('avatar')) {
@@ -76,7 +76,7 @@ class TestimonialController extends Controller
         $testimonial->update($validated);
 
         return redirect()->route('admin.testimonials.index')
-            ->with('success', __('تم تعديل رأي الطالب بنجاح.'));
+            ->with('success', 'Testimonial updated successfully.');
     }
 
     public function destroy(Testimonial $testimonial)
@@ -86,6 +86,6 @@ class TestimonialController extends Controller
         }
         $testimonial->delete();
         return redirect()->route('admin.testimonials.index')
-            ->with('success', __('تم حذف رأي الطالب بنجاح.'));
+            ->with('success', 'Testimonial deleted successfully.');
     }
 }

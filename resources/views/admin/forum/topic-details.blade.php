@@ -11,8 +11,8 @@
         <div class="glass-card overflow-hidden mb-6" data-aos="fade-up">
             <div class="glass-card-body">
                 <div class="mb-4 text-sm flex flex-wrap gap-4" style="color: var(--color-text-muted);">
-                    <span>{{ __('Category:') }}<strong style="color: var(--color-text);">{{ $topic->category->name }}</strong></span>
-                    <span>{{ __('Author:') }}<strong style="color: var(--color-text);">{{ $topic->user->name }}</strong></span>
+                    <span>{{ __('Category:') }}<strong style="color: var(--color-text);">{{ $topic->category?->name ?? __('Deleted category') }}</strong></span>
+                    <span>{{ __('Author:') }}<strong style="color: var(--color-text);">{{ $topic->user?->name ?? __('Deleted user') }}</strong></span>
                     <span>{{ $topic->created_at->diffForHumans() }}</span>
                 </div>
                 <div class="text-sm leading-relaxed" style="color: var(--color-text);">{{ $topic->content }}</div>
@@ -48,7 +48,7 @@
                 <div class="glass-card-body">
                     <p class="text-sm mb-3" style="color: var(--color-text);">{{ $reply->content }}</p>
                     <div class="flex justify-between items-center text-xs" style="color: var(--color-text-muted);">
-                        <span class="font-bold">{{ $reply->user->name }} — {{ $reply->created_at->diffForHumans() }}</span>
+                        <span class="font-bold">{{ $reply->user?->name ?? __('Deleted user') }} — {{ $reply->created_at->diffForHumans() }}</span>
                         <form action="{{ route('admin.forum.replies.delete', $reply) }}" method="POST" onsubmit="return confirm('Delete this reply?')">@csrf @method('DELETE')
                             <button type="submit" class="text-red-500 font-bold hover:underline">{{ __('Delete') }}</button>
                         </form>

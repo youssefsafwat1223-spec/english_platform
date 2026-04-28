@@ -38,6 +38,12 @@ class DeviceAccessRequestController extends Controller
     {
         $deviceReplacementRequest->load(['user', 'reviewer', 'replacementForDevice']);
 
+        if (!$deviceReplacementRequest->user) {
+            return redirect()
+                ->route('admin.device-requests.index')
+                ->with('error', 'هذا الطلب مرتبط بمستخدم محذوف.');
+        }
+
         $activeDevices = $deviceReplacementRequest->user->devices()
             ->active()
             ->latest('last_seen_at')
@@ -49,6 +55,12 @@ class DeviceAccessRequestController extends Controller
     public function approve(Request $request, DeviceReplacementRequest $deviceReplacementRequest)
     {
         $deviceReplacementRequest->load('user');
+
+        if (!$deviceReplacementRequest->user) {
+            return redirect()
+                ->route('admin.device-requests.index')
+                ->with('error', 'لا يمكن اعتماد طلب مرتبط بمستخدم محذوف.');
+        }
 
         $activeDevices = $deviceReplacementRequest->user->devices()->active()->get();
         $replacementDevice = null;
@@ -78,6 +90,14 @@ class DeviceAccessRequestController extends Controller
 
     public function reject(Request $request, DeviceReplacementRequest $deviceReplacementRequest)
     {
+        $deviceReplacementRequest->load('user');
+
+        if (!$deviceReplacementRequest->user) {
+            return redirect()
+                ->route('admin.device-requests.index')
+                ->with('error', 'لا يمكن رفض طلب مرتبط بمستخدم محذوف.');
+        }
+
         $this->deviceAccessService->rejectReplacementRequest($deviceReplacementRequest, $request->user());
 
         return redirect()

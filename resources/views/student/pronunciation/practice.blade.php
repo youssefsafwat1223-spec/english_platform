@@ -128,6 +128,13 @@
         'azure_pronunciation' => $messages['azure_pronunciation'],
     ];
     $lessonSubtitle = $localizedTitle($exercise->lesson->title ?? '') ?: $messages['subtitle'];
+    $contextCourse = $exercise->lesson?->course ?? $exercise->courseLevel?->course;
+    $courseReturnUrl = null;
+    if ($contextCourse && $exercise->lesson) {
+        $courseReturnUrl = route('student.courses.learn', $contextCourse) . '#lesson-' . $exercise->lesson->id;
+    } elseif ($contextCourse && $exercise->courseLevel) {
+        $courseReturnUrl = route('student.courses.learn', $contextCourse) . '#level-' . $exercise->courseLevel->id;
+    }
 @endphp
 
 @section('title', $pageTitle . ' - ' . config('app.name'))
@@ -142,7 +149,19 @@
             badge="{{ $messages['badge'] }}"
             badgeColor="primary"
             badgeIcon="<svg class='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M12 3a3 3 0 013 3v5a3 3 0 11-6 0V6a3 3 0 013-3zm6 8a6 6 0 01-12 0M8 21h8m-4-3v3'/></svg>"
-        />
+        >
+            <x-slot name="actions">
+                @if($courseReturnUrl)
+                    <a href="{{ $courseReturnUrl }}" class="btn-ghost btn-sm flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $isArabic ? 'M9 5l7 7-7 7' : 'M15 19l-7-7 7-7' }}"/></svg>
+                        {{ $isArabic ? 'العودة للكورس' : 'Back to course' }}
+                    </a>
+                @endif
+                <a href="{{ route('student.pronunciation.my-attempts') }}" class="btn-secondary btn-sm">
+                    {{ $messages['my_attempts'] }}
+                </a>
+            </x-slot>
+        </x-student.page-header>
 
         <div x-show="!recognitionSupported && !mediaRecorderSupported" x-cloak class="mb-8 p-5 rounded-2xl text-center" style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.2);">
             <div class="flex justify-center mb-3">
@@ -460,10 +479,10 @@
         @endforeach
 
         <div class="flex flex-wrap justify-center gap-3 mt-2" data-aos="fade-up">
-            @if(isset($exercise->lesson))
-                <a href="{{ route('student.lessons.show', [$exercise->lesson->course, $exercise->lesson]) }}" class="btn-ghost" >
+            @if($courseReturnUrl)
+                <a href="{{ $courseReturnUrl }}" class="btn-ghost" >
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-                    {{ $messages['back'] }}
+                    {{ $isArabic ? 'العودة للكورس' : 'Back to course' }}
                 </a>
             @endif
             <a href="{{ route('student.pronunciation.my-attempts') }}" class="btn-secondary">

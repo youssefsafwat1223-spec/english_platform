@@ -11,7 +11,7 @@
             </svg>
             {{ __('Back to Campaigns') }}
         </a>
-        <h1 class="text-3xl font-bold text-white">{{ __('📝 Create Email Campaign') }}</h1>
+        <h1 class="text-3xl font-bold text-white">{{ __('Create Email Campaign') }}</h1>
         <p class="text-gray-400 mt-2">{{ __('Compose and send a promotional email to your students') }}</p>
     </div>
 
@@ -29,36 +29,36 @@
         @csrf
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- Left Column: Content -->
             <div class="lg:col-span-2 space-y-8" data-aos="fade-up" data-aos-delay="100">
                 <div class="backdrop-blur-xl bg-gray-900/60 border border-white/10 rounded-2xl p-8 shadow-2xl">
                     <h5 class="text-xl font-bold text-white mb-6 flex items-center gap-2">
-                        <span>📧</span> {{ __('Email Content') }}
+                        <span><i class="fas fa-envelope-open-text"></i></span>
+                        {{ __('Email Content') }}
                     </h5>
 
                     <div class="space-y-6">
                         <div>
                             <label class="block text-sm font-semibold text-gray-300 mb-2">{{ __('Subject *') }}</label>
-                            <input type="text" name="subject" value="{{ old('subject') }}" placeholder="{{ __('e.g. 🎉 Special Offer: 50% Off All Courses!') }}" 
+                            <input type="text" name="subject" value="{{ old('subject') }}" placeholder="{{ __('e.g. Special Offer: 50% Off All Courses!') }}"
                                 class="w-full bg-gray-800/50 border border-gray-700 text-white rounded-xl px-4 py-3 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all placeholder-gray-600" required>
                         </div>
 
                         <div>
                             <label class="block text-sm font-semibold text-gray-300 mb-2">{{ __('Email Body *') }}</label>
-                            <textarea name="body" rows="12" placeholder="{{ __('Write your promotional message here...&#10;&#10;You can write about new courses, special offers, upcoming events, etc.') }}" 
+                            <textarea name="body" rows="12" placeholder="{{ __('Write your promotional message here...&#10;&#10;You can write about new courses, special offers, upcoming events, and more.') }}"
                                 class="w-full bg-gray-800/50 border border-gray-700 text-white rounded-xl px-4 py-3 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all placeholder-gray-600 font-mono text-sm leading-relaxed" required>{{ old('body') }}</textarea>
-                            <p class="text-xs text-gray-500 mt-2">{{ __('✨ Plain text. Line breaks will be preserved.') }}</p>
+                            <p class="text-xs text-gray-500 mt-2">{{ __('Plain text only. Line breaks will be preserved.') }}</p>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-white/5">
                             <div>
                                 <label class="block text-sm font-semibold text-gray-300 mb-2">{{ __('Button Text (Optional)') }}</label>
-                                <input type="text" name="cta_text" value="{{ old('cta_text') }}" placeholder="{{ __('e.g. View Courses') }}" 
+                                <input type="text" name="cta_text" value="{{ old('cta_text') }}" placeholder="{{ __('e.g. View Courses') }}"
                                     class="w-full bg-gray-800/50 border border-gray-700 text-white rounded-xl px-4 py-3 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all placeholder-gray-600">
                             </div>
                             <div>
                                 <label class="block text-sm font-semibold text-gray-300 mb-2">{{ __('Button URL (Optional)') }}</label>
-                                <input type="url" name="cta_url" value="{{ old('cta_url') }}" placeholder="{{ __('https://...') }}" 
+                                <input type="url" name="cta_url" value="{{ old('cta_url') }}" placeholder="{{ __('https://example.com') }}"
                                     class="w-full bg-gray-800/50 border border-gray-700 text-white rounded-xl px-4 py-3 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all placeholder-gray-600">
                             </div>
                         </div>
@@ -66,11 +66,11 @@
                 </div>
             </div>
 
-            <!-- Right Column: Settings -->
             <div class="space-y-8" data-aos="fade-up" data-aos-delay="200">
                 <div class="backdrop-blur-xl bg-gray-900/60 border border-white/10 rounded-2xl p-8 shadow-2xl">
                     <h5 class="text-xl font-bold text-white mb-6 flex items-center gap-2">
-                        <span>🎯</span> {{ __('Target Audience') }}
+                        <span><i class="fas fa-bullseye"></i></span>
+                        {{ __('Target Audience') }}
                     </h5>
 
                     <div class="space-y-6">
@@ -79,10 +79,10 @@
                             <div class="relative">
                                 <select name="target_audience" id="target_audience" onchange="toggleCourseSelect()"
                                     class="w-full bg-gray-800/50 border border-gray-700 text-white rounded-xl px-4 py-3 appearance-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all cursor-pointer">
-                                    <option value="all" {{ old('target_audience') === 'all' ? 'selected' : '' }}>{{ __('🌍 All Students') }}</option>
-                                    <option value="active" {{ old('target_audience') === 'active' ? 'selected' : '' }}>✅ {{ __('Active Students (last 7 days)') }}</option>
-                                    <option value="inactive" {{ old('target_audience') === 'inactive' ? 'selected' : '' }}>⏸️ {{ __('Inactive Students (7+ days)') }}</option>
-                                    <option value="course_specific" {{ old('target_audience') === 'course_specific' ? 'selected' : '' }}>{{ __('📚 Specific Course Students') }}</option>
+                                    <option value="all" {{ old('target_audience') === 'all' ? 'selected' : '' }}>{{ __('All Students') }}</option>
+                                    <option value="active" {{ old('target_audience') === 'active' ? 'selected' : '' }}>{{ __('Active Students (last 7 days)') }}</option>
+                                    <option value="inactive" {{ old('target_audience') === 'inactive' ? 'selected' : '' }}>{{ __('Inactive Students (7+ days)') }}</option>
+                                    <option value="course_specific" {{ old('target_audience') === 'course_specific' ? 'selected' : '' }}>{{ __('Specific Course Students') }}</option>
                                 </select>
                                 <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-400">
                                     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
@@ -93,7 +93,7 @@
                         <div id="course_select_wrapper" style="display: none;" class="animate-fade-in-down">
                             <label class="block text-sm font-semibold text-gray-300 mb-2">{{ __('Select Course') }}</label>
                             <div class="relative">
-                                <select name="target_course_id" 
+                                <select name="target_course_id"
                                     class="w-full bg-gray-800/50 border border-gray-700 text-white rounded-xl px-4 py-3 appearance-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all cursor-pointer">
                                     <option value="">{{ __('Choose a course...') }}</option>
                                     @foreach($courses as $course)
@@ -112,18 +112,19 @@
 
                 <div class="backdrop-blur-xl bg-gray-900/60 border border-white/10 rounded-2xl p-8 shadow-2xl">
                     <h5 class="text-xl font-bold text-white mb-6 flex items-center gap-2">
-                        <span>⚡</span> {{ __('Actions') }}
+                        <span><i class="fas fa-bolt"></i></span>
+                        {{ __('Actions') }}
                     </h5>
 
                     <div class="space-y-4">
-                        <button type="submit" name="send_now" value="0" 
+                        <button type="submit" name="send_now" value="0"
                             class="w-full px-6 py-3 bg-gray-700/50 hover:bg-gray-700 text-white font-bold rounded-xl border border-white/10 transition-all duration-300 hover:border-white/30">
-                            {{ __('💾 Save as Draft') }}
+                            {{ __('Save as Draft') }}
                         </button>
 
                         <button type="submit" name="send_now" value="1" onclick="return confirm('Are you sure you want to send this campaign immediately?')"
                             class="w-full px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold rounded-xl shadow-lg hover:shadow-purple-500/30 transform hover:-translate-y-1 transition-all duration-300">
-                            {{ __('📤 Save & Send Now') }}
+                            {{ __('Save & Send Now') }}
                         </button>
                     </div>
                 </div>
@@ -136,7 +137,7 @@
     function toggleCourseSelect() {
         const audience = document.getElementById('target_audience').value;
         const wrapper = document.getElementById('course_select_wrapper');
-        
+
         if (audience === 'course_specific') {
             wrapper.style.display = 'block';
             wrapper.classList.add('animate-fade-in');
@@ -144,8 +145,7 @@
             wrapper.style.display = 'none';
         }
     }
-    
-    // Run on load
+
     document.addEventListener('DOMContentLoaded', toggleCourseSelect);
 </script>
 @endsection

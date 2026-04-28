@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
 @section('title', __('Game Arena'))
 @section('content')
 <div class="py-12 relative overflow-hidden" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
@@ -38,7 +38,7 @@
                                 <div class="font-bold" style="color: var(--color-text);">{{ $session->title }}</div>
                                 <div class="text-xs" style="color: var(--color-text-muted);">{{ Str::limit($session->description, 40) }}</div>
                             </td>
-                            <td>{{ $session->course->title }}</td>
+                            <td>{{ $session->course?->title ?? __('Deleted course') }}</td>
                             <td>
                                 @if($session->status === 'scheduled')
                                     <span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-yellow-500/10 text-yellow-500 text-xs font-bold">{{ __('Scheduled') }}</span>
@@ -67,7 +67,7 @@
                         </tr>
                         @empty
                         <tr><td colspan="6" class="text-center py-12" style="color: var(--color-text-muted);">
-                            <p class="text-4xl mb-4">🎮</p>
+                            <p class="text-4xl mb-4"><i class="fas fa-gamepad"></i></p>
                             <p class="mb-4">{{ __('No competitions yet') }}</p>
                             <a href="{{ route('admin.games.create') }}" class="btn-primary ripple-btn">{{ __('Create First Competition') }}</a>
                         </td></tr>
@@ -80,3 +80,4 @@
     </div>
 </div>
 @endsection
+

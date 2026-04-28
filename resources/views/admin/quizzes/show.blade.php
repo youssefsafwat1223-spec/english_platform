@@ -7,7 +7,7 @@
         <div class="flex justify-between items-center mb-8" data-aos="fade-down">
             <div>
                 <h1 class="text-3xl font-extrabold"><span class="text-gradient">{{ $quiz->title }}</span></h1>
-                <p class="mt-2" style="color: var(--color-text-muted);">{{ $quiz->course->title }}</p>
+                <p class="mt-2" style="color: var(--color-text-muted);">{{ $quiz->course?->title ?? __('Deleted course') }}</p>
             </div>
             <div class="flex space-x-3">
                 <a href="{{ route('admin.quizzes.edit', $quiz) }}" class="btn-primary ripple-btn">{{ __('Edit Quiz') }}</a>

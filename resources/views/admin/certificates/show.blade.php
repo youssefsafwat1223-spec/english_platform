@@ -6,12 +6,12 @@
     <div class="max-w-4xl mx-auto sm:px-6 lg:px-8 relative z-10">
         <div class="mb-8" data-aos="fade-down">
             <h1 class="text-3xl font-extrabold"><span class="text-gradient">{{ __('Certificate Details') }}</span></h1>
-            <a href="{{ route('admin.certificates.index') }}" class="text-primary-500 font-bold text-sm hover:underline mt-2 inline-block">{{ __('← Back to Certificates') }}</a>
+            <a href="{{ route('admin.certificates.index') }}" class="text-primary-500 font-bold text-sm hover:underline mt-2 inline-block">{{ __('Back to Certificates') }}</a>
         </div>
         <div class="glass-card overflow-hidden mb-6" data-aos="fade-up">
             <div class="glass-card-body">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    @foreach([[__('Certificate ID'), $certificate->certificate_id, true], ['Student', $certificate->user?->name ?? __('Deleted user'), false], ['Course', $certificate->course?->title ?? __('Deleted course'), false], ['Final Score', $certificate->final_score.'%', false], ['Grade', $certificate->grade, false], ['Issued', $certificate->issued_at->format('M d, Y'), false], ['Downloads', $certificate->download_count, false], ['Views', $certificate->view_count, false]] as [$label, $val, $mono])
+                    @foreach([[__('Certificate ID'), $certificate->certificate_id, true], [__('Student'), $certificate->user?->name ?? __('Deleted user'), false], [__('Course'), $certificate->course?->title ?? __('Deleted course'), false], [__('Final Score'), $certificate->final_score.'%', false], [__('Grade'), $certificate->grade, false], [__('Issued'), $certificate->issued_at->format('M d, Y'), false], [__('Downloads'), $certificate->download_count, false], [__('Views'), $certificate->view_count, false]] as [$label, $val, $mono])
                     <div>
                         <div class="text-xs font-bold mb-1" style="color: var(--color-text-muted);">{{ $label }}</div>
                         <div class="font-bold text-sm {{ $mono ? 'font-mono text-primary-500' : '' }}" style="{{ !$mono ? 'color: var(--color-text);' : '' }}">{{ $val }}</div>

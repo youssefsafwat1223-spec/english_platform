@@ -52,7 +52,7 @@
                     @forelse($recentTopics as $topic)
                     <div class="py-3 {{ !$loop->last ? 'border-b' : '' }}" style="border-color: var(--color-border);">
                         <div class="font-bold text-sm" style="color: var(--color-text);">{{ $topic->title }}</div>
-                        <div class="text-xs" style="color: var(--color-text-muted);">{{ $topic->user->name }} in {{ $topic->category->name }} — {{ $topic->created_at->diffForHumans() }}</div>
+                        <div class="text-xs" style="color: var(--color-text-muted);">{{ $topic->user?->name ?? __('Deleted user') }} in {{ $topic->category?->name ?? __('Deleted category') }} — {{ $topic->created_at->diffForHumans() }}</div>
                     </div>
                     @empty
                     <p style="color: var(--color-text-muted);">{{ __('No topics found.') }}</p>

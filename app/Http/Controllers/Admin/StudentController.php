@@ -59,9 +59,7 @@ class StudentController extends Controller
 
     public function show(User $student)
     {
-        if (!$student->is_student) {
-            abort(404);
-        }
+        $this->ensureStudent($student);
 
         $student->load([
             'enrollments.course',
@@ -92,9 +90,7 @@ class StudentController extends Controller
 
     public function toggleStatus(User $student)
     {
-        if (!$student->is_student) {
-            abort(404);
-        }
+        $this->ensureStudent($student);
 
         $student->update([
             'is_active' => !$student->is_active,
@@ -107,6 +103,8 @@ class StudentController extends Controller
 
     public function sendMessage(Request $request, User $student)
     {
+        $this->ensureStudent($student);
+
         $request->validate([
             'message' => 'required|string|min:5',
         ]);
@@ -129,6 +127,8 @@ class StudentController extends Controller
 
     public function enrollments(User $student)
     {
+        $this->ensureStudent($student);
+
         $enrollments = $student->enrollments()
             ->with(['course', 'lessonProgress', 'quizAttempts'])
             ->orderBy('created_at', 'desc')
@@ -139,6 +139,8 @@ class StudentController extends Controller
 
     public function grantAccess(Request $request, User $student)
     {
+        $this->ensureStudent($student);
+
         $request->validate([
             'course_id' => 'required|exists:courses,id',
         ]);
@@ -175,16 +177,18 @@ class StudentController extends Controller
 
     public function toggleEnrollmentAccess(User $student, Enrollment $enrollment)
     {
+        $this->ensureStudent($student);
+
         if ($enrollment->user_id !== $student->id) {
             abort(404);
         }
 
         if ($enrollment->is_suspended) {
             $enrollment->update(['access_suspended_at' => null]);
-            $message = "تم فتح وصول {$student->name} إلى كورس {$enrollment->course->title}";
+            $message = "تم فتح وصول {$student->name} إلى كورس " . ($enrollment->course?->title ?? 'محذوف');
         } else {
             $enrollment->update(['access_suspended_at' => now()]);
-            $message = "تم قفل وصول {$student->name} إلى كورس {$enrollment->course->title}";
+            $message = "تم قفل وصول {$student->name} إلى كورس " . ($enrollment->course?->title ?? 'محذوف');
         }
 
         return back()->with('success', $message);
@@ -192,6 +196,8 @@ class StudentController extends Controller
 
     public function progress(User $student, $enrollmentId)
     {
+        $this->ensureStudent($student);
+
         $enrollment = $student->enrollments()
             ->with(['course.lessons', 'lessonProgress'])
             ->findOrFail($enrollmentId);
@@ -201,13 +207,18 @@ class StudentController extends Controller
 
     public function destroy(User $student)
     {
-        if (!$student->is_student) {
-            abort(404);
-        }
+        $this->ensureStudent($student);
 
         $student->delete();
 
         return redirect()->route('admin.students.index')
             ->with('success', 'Student account deleted successfully!');
+    }
+
+    private function ensureStudent(User $student): void
+    {
+        if (!$student->is_student) {
+            abort(404);
+        }
     }
 }

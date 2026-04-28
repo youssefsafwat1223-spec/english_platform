@@ -31,7 +31,7 @@ class PromoVideoController extends Controller
             'sort_order' => 'nullable|integer|min:0',
         ]);
 
-        $validated['is_active'] = $request->has('is_active');
+        $validated['is_active'] = $request->boolean('is_active');
         $validated['sort_order'] = $validated['sort_order'] ?? 0;
 
         if ($request->hasFile('thumbnail')) {
@@ -41,7 +41,7 @@ class PromoVideoController extends Controller
         PromoVideo::create($validated);
 
         return redirect()->route('admin.promo-videos.index')
-            ->with('success', __('تم إضافة الفيديو بنجاح.'));
+            ->with('success', 'Promo video created successfully.');
     }
 
     public function edit(PromoVideo $promoVideo)
@@ -60,7 +60,7 @@ class PromoVideoController extends Controller
             'sort_order' => 'nullable|integer|min:0',
         ]);
 
-        $validated['is_active'] = $request->has('is_active');
+        $validated['is_active'] = $request->boolean('is_active');
         $validated['sort_order'] = $validated['sort_order'] ?? 0;
 
         if ($request->hasFile('thumbnail')) {
@@ -73,7 +73,7 @@ class PromoVideoController extends Controller
         $promoVideo->update($validated);
 
         return redirect()->route('admin.promo-videos.index')
-            ->with('success', __('تم تعديل الفيديو بنجاح.'));
+            ->with('success', 'Promo video updated successfully.');
     }
 
     public function destroy(PromoVideo $promoVideo)
@@ -83,6 +83,6 @@ class PromoVideoController extends Controller
         }
         $promoVideo->delete();
         return redirect()->route('admin.promo-videos.index')
-            ->with('success', __('تم حذف الفيديو بنجاح.'));
+            ->with('success', 'Promo video deleted successfully.');
     }
 }

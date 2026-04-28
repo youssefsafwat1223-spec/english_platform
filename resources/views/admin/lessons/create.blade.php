@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
 @section('title', __('Create Lesson'))
 @section('content')
 <div class="py-12 relative overflow-hidden">
@@ -18,17 +18,17 @@
                         <input type="text" id="title" name="title" class="input-glass @error('title') border-red-500 @enderror" value="{{ old('title') }}" required>
                         @error('title')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                     </div>
-                    <div>
-                        <label for="course_level_id" class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('العنوان') }} <span class="text-red-500">*</span></label>
+                                        <div>
+                        <label for="course_level_id" class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('Level *') }}</label>
                         <select id="course_level_id" name="course_level_id" class="input-glass @error('course_level_id') border-red-500 @enderror" required>
-                            <option value="">{{ __('— اختار العنوان —') }}</option>
+                            <option value="">{{ __('Select a level') }}</option>
                             @foreach($levels as $level)
                                 <option value="{{ $level->id }}" {{ old('course_level_id') == $level->id ? 'selected' : '' }}>{{ $level->title }}</option>
                             @endforeach
                         </select>
                         @error('course_level_id')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                         @if($levels->isEmpty())
-                            <p class="text-xs mt-1 text-amber-500 font-bold">⚠️ {{ __('لازم تضيف عنوان للكورس الأول') }} — <a href="{{ route('admin.courses.levels.create', $course) }}" class="text-primary-500 hover:underline">{{ __('إضافة عنوان') }}</a></p>
+                            <p class="text-xs mt-1 text-amber-500 font-bold">{{ __('You need to create a level for this course first.') }} <a href="{{ route('admin.courses.levels.create', $course) }}" class="text-primary-500 hover:underline">{{ __('Add level') }}</a></p>
                         @endif
                     </div>
                     <div>
@@ -45,7 +45,7 @@
                         <label for="vdocipher_video_id" class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('VdoCipher Video ID') }}</label>
                         <input type="text" id="vdocipher_video_id" name="vdocipher_video_id" class="input-glass @error('vdocipher_video_id') border-red-500 @enderror" value="{{ old('vdocipher_video_id') }}" placeholder="{{ __('e.g. 1234abcd5678efgh') }}">
                         @error('vdocipher_video_id')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
-                        <p class="text-xs mt-1" style="color: var(--color-text-muted);">{{ __('اختياري — لو عندك فيديو على VdoCipher، حط الـ Video ID هنا. لو موجود هيتم استخدامه بدل الـ Video URL.') }}</p>
+                        <p class="text-xs mt-1" style="color: var(--color-text-muted);">{{ __('Optional: if you host the video on VdoCipher, enter the Video ID here. When present, it will be used instead of the Video URL.') }}</p>
                     </div>
                     <div>
                         <label for="text_content" class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('Text Content') }}</label>
@@ -76,7 +76,7 @@
                         </div>
                         <div class="flex items-center">
                             <input type="checkbox" id="has_pronunciation_exercise" name="has_pronunciation_exercise" value="1" {{ old('has_pronunciation_exercise') ? 'checked' : '' }} class="w-4 h-4 text-primary-500 focus:ring-primary-500 rounded" style="border-color: var(--color-border);">
-                            <label for="has_pronunciation_exercise" class="ml-2 text-sm" style="color: var(--color-text);">{{ app()->getLocale() === 'ar' ? 'يتضمن تمرين نطق' : 'Has pronunciation exercise' }}</label>
+                            <label for="has_pronunciation_exercise" class="ml-2 text-sm" style="color: var(--color-text);">{{ __('Has pronunciation exercise') }}</label>
                         </div>
                         <div class="flex items-center">
                             <input type="checkbox" id="has_writing_exercise" name="has_writing_exercise" value="1" {{ old('has_writing_exercise') ? 'checked' : '' }} class="w-4 h-4 text-primary-500 focus:ring-primary-500 rounded" style="border-color: var(--color-border);">
@@ -159,7 +159,7 @@
 
                                     {{-- Add Question Button --}}
                                     <button type="button" @click="showModal = true" class="mt-3 inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold text-white bg-primary-500 hover:bg-primary-600 transition-colors shadow-lg shadow-primary-500/30">
-                                        <i class="fas fa-plus"></i> {{ __('إضافة سؤال جديد') }}
+                                        <i class="fas fa-plus"></i> {{ __('Add New Question') }}
                                     </button>
 
                                     {{-- Modal --}}
@@ -167,33 +167,33 @@
                                         <div @click.away="showModal = false" class="glass-card w-full max-w-2xl max-h-[90vh] overflow-y-auto" data-aos="fade-up">
                                             <div class="glass-card-body space-y-4">
                                                 <div class="flex items-center justify-between">
-                                                    <h3 class="text-lg font-bold" style="color: var(--color-text);">{{ __('إضافة سؤال جديد') }}</h3>
+                                                    <h3 class="text-lg font-bold" style="color: var(--color-text);">{{ __('Add New Question') }}</h3>
                                                     <button type="button" @click="showModal = false" class="text-xl" style="color: var(--color-text-muted);">&times;</button>
                                                 </div>
 
                                                 <input type="hidden" x-model="form.course_id">
 
                                                 <div>
-                                                    <label class="block text-sm font-bold mb-1" style="color: var(--color-text);">{{ __('نص السؤال *') }}</label>
+                                                    <label class="block text-sm font-bold mb-1" style="color: var(--color-text);">{{ __('Question Text *') }}</label>
                                                 <textarea x-model="form.question_text" rows="2" class="input-glass w-full"></textarea>
                                                 </div>
 
                                                 <div class="grid grid-cols-2 gap-4">
                                                     <div>
-                                                        <label class="block text-sm font-bold mb-1" style="color: var(--color-text);">{{ __('نوع السؤال *') }}</label>
+                                                        <label class="block text-sm font-bold mb-1" style="color: var(--color-text);">{{ __('Question Type *') }}</label>
                                                         <select x-model="form.question_type" class="input-glass w-full" @change="onTypeChange()">
-                                                            <option value="multiple_choice">{{ __('اختيار من متعدد') }}</option>
-                                                            <option value="true_false">{{ __('صح / غلط') }}</option>
-                                                            <option value="fill_blank">{{ __('أكمل الفراغ') }}</option>
-                                                            <option value="drag_drop">{{ __('وصّل (سحب وإفلات)') }}</option>
+                                                            <option value="multiple_choice">{{ __('Multiple Choice') }}</option>
+                                                            <option value="true_false">{{ __('True / False') }}</option>
+                                                            <option value="fill_blank">{{ __('Fill in the blank') }}</option>
+                                                            <option value="drag_drop">{{ __('Drag and drop matching') }}</option>
                                                         </select>
                                                     </div>
                                                     <div>
-                                                        <label class="block text-sm font-bold mb-1" style="color: var(--color-text);">{{ __('الصعوبة *') }}</label>
+                                                        <label class="block text-sm font-bold mb-1" style="color: var(--color-text);">{{ __('Difficulty *') }}</label>
                                                         <select x-model="form.difficulty" class="input-glass w-full">
-                                                            <option value="easy">{{ __('سهل') }}</option>
-                                                            <option value="medium">{{ __('متوسط') }}</option>
-                                                            <option value="hard">{{ __('صعب') }}</option>
+                                                            <option value="easy">{{ __('Easy') }}</option>
+                                                            <option value="medium">{{ __('Medium') }}</option>
+                                                            <option value="hard">{{ __('Hard') }}</option>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -201,19 +201,19 @@
                                                 {{-- Options A-D: shown for multiple_choice --}}
                                                 <div class="grid grid-cols-2 gap-4" x-show="form.question_type === 'multiple_choice'">
                                                     <div>
-                                                        <label class="block text-sm font-bold mb-1" style="color: var(--color-text);">{{ __('الاختيار A *') }}</label>
+                                                        <label class="block text-sm font-bold mb-1" style="color: var(--color-text);">{{ __('Option A *') }}</label>
                                                         <input type="text" x-model="form.option_a" class="input-glass w-full">
                                                     </div>
                                                     <div>
-                                                        <label class="block text-sm font-bold mb-1" style="color: var(--color-text);">{{ __('الاختيار B *') }}</label>
+                                                        <label class="block text-sm font-bold mb-1" style="color: var(--color-text);">{{ __('Option B *') }}</label>
                                                         <input type="text" x-model="form.option_b" class="input-glass w-full">
                                                     </div>
                                                     <div>
-                                                        <label class="block text-sm font-bold mb-1" style="color: var(--color-text);">{{ __('الاختيار C') }}</label>
+                                                        <label class="block text-sm font-bold mb-1" style="color: var(--color-text);">{{ __('Option C') }}</label>
                                                         <input type="text" x-model="form.option_c" class="input-glass w-full">
                                                     </div>
                                                     <div>
-                                                        <label class="block text-sm font-bold mb-1" style="color: var(--color-text);">{{ __('الاختيار D') }}</label>
+                                                        <label class="block text-sm font-bold mb-1" style="color: var(--color-text);">{{ __('Option D') }}</label>
                                                         <input type="text" x-model="form.option_d" class="input-glass w-full">
                                                     </div>
                                                 </div>
@@ -221,39 +221,39 @@
                                                 {{-- True/False: read-only options --}}
                                                 <div x-show="form.question_type === 'true_false'" class="grid grid-cols-2 gap-4">
                                                     <div>
-                                                        <label class="block text-sm font-bold mb-1" style="color: var(--color-text);">{{ __('الاختيار A') }}</label>
+                                                        <label class="block text-sm font-bold mb-1" style="color: var(--color-text);">{{ __('Option A') }}</label>
                                                         <input type="text" x-model="form.option_a" class="input-glass w-full bg-gray-100" readonly>
                                                     </div>
                                                     <div>
-                                                        <label class="block text-sm font-bold mb-1" style="color: var(--color-text);">{{ __('الاختيار B') }}</label>
+                                                        <label class="block text-sm font-bold mb-1" style="color: var(--color-text);">{{ __('Option B') }}</label>
                                                         <input type="text" x-model="form.option_b" class="input-glass w-full bg-gray-100" readonly>
                                                     </div>
                                                 </div>
 
                                                 {{-- Fill Blank: show correct answer text input --}}
                                                 <div x-show="form.question_type === 'fill_blank'">
-                                                    <label class="block text-sm font-bold mb-1" style="color: var(--color-text);">{{ __('الإجابة الصحيحة (نص) *') }}</label>
-                                                    <input type="text" x-model="form.option_a" class="input-glass w-full" placeholder="{{ __('اكتب الإجابة الصحيحة هنا') }}">
-                                                    <p class="text-xs mt-1" style="color: var(--color-text-muted);">{{ __('اكتب الكلمة أو العبارة الصحيحة التي تملأ الفراغ') }}</p>
+                                                    <label class="block text-sm font-bold mb-1" style="color: var(--color-text);">{{ __('Correct Answer (text) *') }}</label>
+                                                    <input type="text" x-model="form.option_a" class="input-glass w-full" placeholder="{{ __('Write the correct answer here') }}">
+                                                    <p class="text-xs mt-1" style="color: var(--color-text-muted);">{{ __('Enter the exact word or phrase that fills the blank.') }}</p>
                                                 </div>
 
                                                 {{-- Drag & Drop: pairs editor --}}
                                                 <div x-show="form.question_type === 'drag_drop'" class="space-y-3">
-                                                    <label class="block text-sm font-bold mb-1" style="color: var(--color-text);">{{ __('الأزواج (وصّل العمود الأيسر بالأيمن) *') }}</label>
+                                                    <label class="block text-sm font-bold mb-1" style="color: var(--color-text);">{{ __('Matching Pairs *') }}</label>
                                                     <template x-for="(pair, index) in form.matching_pairs" :key="index">
                                                         <div class="flex items-center gap-2">
-                                                            <input type="text" x-model="pair.left" class="input-glass w-full" :placeholder="'{{ __('العنصر') }} ' + (index + 1)">
-                                                            <span class="text-lg font-bold" style="color: var(--color-text-muted);">↔</span>
-                                                            <input type="text" x-model="pair.right" class="input-glass w-full" :placeholder="'{{ __('المطابق') }} ' + (index + 1)">
+                                                            <input type="text" x-model="pair.left" class="input-glass w-full" :placeholder="'{{ __('Item') }} ' + (index + 1)">
+                                                            <span class="text-lg font-bold" style="color: var(--color-text-muted);">&harr;</span>
+                                                            <input type="text" x-model="pair.right" class="input-glass w-full" :placeholder="'{{ __('Match') }} ' + (index + 1)">
                                                             <button type="button" @click="form.matching_pairs.splice(index, 1)" class="text-red-500 hover:text-red-700 text-lg shrink-0" x-show="form.matching_pairs.length > 2">&times;</button>
                                                         </div>
                                                     </template>
-                                                    <button type="button" @click="form.matching_pairs.push({left: '', right: ''})" class="text-sm font-bold text-primary-500 hover:underline">+ {{ __('إضافة زوج جديد') }}</button>
+                                                    <button type="button" @click="form.matching_pairs.push({left: '', right: ''})" class="text-sm font-bold text-primary-500 hover:underline">+ {{ __('Add another pair') }}</button>
                                                 </div>
 
                                                 <div class="grid grid-cols-2 gap-4" x-show="form.question_type !== 'fill_blank' && form.question_type !== 'drag_drop'">
                                                     <div>
-                                                        <label class="block text-sm font-bold mb-1" style="color: var(--color-text);">{{ __('الإجابة الصحيحة *') }}</label>
+                                                        <label class="block text-sm font-bold mb-1" style="color: var(--color-text);">{{ __('Correct Answer *') }}</label>
                                                         <select x-model="form.correct_answer" class="input-glass w-full">
                                                             <option value="A">A</option>
                                                             <option value="B">B</option>
@@ -262,27 +262,27 @@
                                                         </select>
                                                     </div>
                                                     <div>
-                                                        <label class="block text-sm font-bold mb-1" style="color: var(--color-text);">{{ __('النقاط') }}</label>
+                                                        <label class="block text-sm font-bold mb-1" style="color: var(--color-text);">{{ __('Points') }}</label>
                                                         <input type="number" x-model="form.points" min="1" class="input-glass w-full" placeholder="10">
                                                     </div>
                                                 </div>
                                                 <div x-show="form.question_type === 'fill_blank' || form.question_type === 'drag_drop'">
-                                                    <label class="block text-sm font-bold mb-1" style="color: var(--color-text);">{{ __('النقاط') }}</label>
+                                                    <label class="block text-sm font-bold mb-1" style="color: var(--color-text);">{{ __('Points') }}</label>
                                                     <input type="number" x-model="form.points" min="1" class="input-glass w-full" placeholder="10">
                                                 </div>
 
                                                 <div>
-                                                    <label class="block text-sm font-bold mb-1" style="color: var(--color-text);">{{ __('الشرح (اختياري)') }}</label>
+                                                    <label class="block text-sm font-bold mb-1" style="color: var(--color-text);">{{ __('Explanation (optional)') }}</label>
                                                     <textarea x-model="form.explanation" rows="2" class="input-glass w-full"></textarea>
                                                 </div>
 
                                                 <p x-show="errorMsg" x-text="errorMsg" class="text-red-500 text-sm font-bold"></p>
 
                                                 <div class="flex justify-end gap-3 pt-2">
-                                                    <button type="button" @click="showModal = false" class="btn-secondary">{{ __('إلغاء') }}</button>
+                                                    <button type="button" @click="showModal = false" class="btn-secondary">{{ __('Cancel') }}</button>
                                                     <button type="button" @click="submitQuestion()" :disabled="saving" class="btn-primary ripple-btn">
-                                                        <span x-show="!saving">{{ __('حفظ السؤال') }}</span>
-                                                        <span x-show="saving">{{ __('جاري الحفظ...') }}</span>
+                                                        <span x-show="!saving">{{ __('Save Question') }}</span>
+                                                        <span x-show="saving">{{ __('Saving...') }}</span>
                                                     </button>
                                                 </div>
                                             </div>
@@ -295,44 +295,44 @@
 
                     <div id="pronunciationOptions" class="hidden">
                         <div class="rounded-xl p-4 space-y-4" style="background: var(--color-surface-hover);">
-                            <p class="text-xs font-medium" style="color: var(--color-text-muted);">{{ app()->getLocale() === 'ar' ? 'استخدم الحقول بهذا الترتيب: كلمة، ثم جملة، ثم قطعة قصيرة.' : 'Use these fields in this order: word, then sentence, then a short passage.' }}</p>
+                            <p class="text-xs font-medium" style="color: var(--color-text-muted);">{{ __('Use these fields in this order: word, then sentence, then a short passage.') }}</p>
                             <div>
-                                <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ app()->getLocale() === 'ar' ? 'الكلمة *' : 'Word *' }}</label>
-                                <input type="text" name="pronunciation_sentence_1" class="input-glass" value="{{ old('pronunciation_sentence_1') }}" placeholder="{{ app()->getLocale() === 'ar' ? 'مثال: cake' : 'Example: cake' }}">
+                                <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('Word *') }}</label>
+                                <input type="text" name="pronunciation_sentence_1" class="input-glass" value="{{ old('pronunciation_sentence_1') }}" placeholder="{{ __('Example: cake') }}">
                                 @error('pronunciation_sentence_1')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                             </div>
                             <div>
-                                <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ app()->getLocale() === 'ar' ? 'الجملة' : 'Sentence' }}</label>
-                                <input type="text" name="pronunciation_sentence_2" class="input-glass" value="{{ old('pronunciation_sentence_2') }}" placeholder="{{ app()->getLocale() === 'ar' ? 'مثال: The cake tastes sweet.' : 'Example: The cake tastes sweet.' }}">
+                                <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('Sentence') }}</label>
+                                <input type="text" name="pronunciation_sentence_2" class="input-glass" value="{{ old('pronunciation_sentence_2') }}" placeholder="{{ __('Example: The cake tastes sweet.') }}">
                             </div>
                             <div>
-                                <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ app()->getLocale() === 'ar' ? 'القطعة' : 'Passage' }}</label>
-                                <input type="text" name="pronunciation_sentence_3" class="input-glass" value="{{ old('pronunciation_sentence_3') }}" placeholder="{{ app()->getLocale() === 'ar' ? 'مثال: A short paragraph related to the lesson.' : 'Example: A short paragraph related to the lesson.' }}">
+                                <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('Passage') }}</label>
+                                <input type="text" name="pronunciation_sentence_3" class="input-glass" value="{{ old('pronunciation_sentence_3') }}" placeholder="{{ __('Example: A short paragraph related to the lesson.') }}">
                             </div>
                             <div>
-                                <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ app()->getLocale() === 'ar' ? 'كلمات الدرس' : 'Lesson Vocabulary' }}</label>
-                                <textarea name="pronunciation_vocabulary_lines" rows="6" class="input-glass" placeholder="{{ app()->getLocale() === 'ar' ? 'كل سطر بهذا الشكل: word | pronunciation | المعنى' : 'One item per line: word | pronunciation | Arabic meaning' }}">{{ old('pronunciation_vocabulary_lines') }}</textarea>
-                                <p class="text-xs mt-1" style="color: var(--color-text-muted);">{{ app()->getLocale() === 'ar' ? 'مثال: cake | /keik/ | كعكة' : 'Example: cake | /keik/ | كعكة' }}</p>
+                                <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('Lesson Vocabulary') }}</label>
+                                <textarea name="pronunciation_vocabulary_lines" rows="6" class="input-glass" placeholder="{{ __('One item per line: word | pronunciation | Arabic meaning') }}">{{ old('pronunciation_vocabulary_lines') }}</textarea>
+                                <p class="text-xs mt-1" style="color: var(--color-text-muted);">{{ __('Example: cake | /keik/ | كعكة') }}</p>
                             </div>
                             <div>
-                                <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ app()->getLocale() === 'ar' ? 'شرح الجملة' : 'Sentence Explanation' }}</label>
+                                <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('Sentence Explanation') }}</label>
                                 <textarea name="pronunciation_sentence_explanation" rows="3" class="input-glass">{{ old('pronunciation_sentence_explanation') }}</textarea>
                             </div>
                             <div>
-                                <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ app()->getLocale() === 'ar' ? 'شرح القطعة' : 'Passage Explanation' }}</label>
+                                <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('Passage Explanation') }}</label>
                                 <textarea name="pronunciation_passage_explanation" rows="3" class="input-glass">{{ old('pronunciation_passage_explanation') }}</textarea>
                             </div>
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div>
-                                    <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ app()->getLocale() === 'ar' ? 'صوت مرجعي للكلمة' : 'Reference Audio for Word' }}</label>
+                                    <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('Reference Audio for Word') }}</label>
                                     <input type="file" name="pronunciation_reference_audio_1" accept="audio/*" class="input-glass">
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ app()->getLocale() === 'ar' ? 'صوت مرجعي للجملة' : 'Reference Audio for Sentence' }}</label>
+                                    <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('Reference Audio for Sentence') }}</label>
                                     <input type="file" name="pronunciation_reference_audio_2" accept="audio/*" class="input-glass">
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ app()->getLocale() === 'ar' ? 'صوت مرجعي للقطعة' : 'Reference Audio for Passage' }}</label>
+                                    <label class="block text-sm font-semibold mb-2" style="color: var(--color-text);">{{ __('Reference Audio for Passage') }}</label>
                                     <input type="file" name="pronunciation_reference_audio_3" accept="audio/*" class="input-glass">
                                 </div>
                             </div>
@@ -510,7 +510,7 @@
                 this.saving = true;
                 this.errorMsg = '';
 
-                // Build payload — only send matching_pairs for drag_drop
+                // Build payload and only send matching_pairs for drag_drop
                 const payload = {...this.form};
                 if (payload.question_type !== 'drag_drop') {
                     delete payload.matching_pairs;
@@ -528,7 +528,7 @@
                     });
                     const data = await res.json();
                     if (!res.ok) {
-                        const errors = data.errors ? Object.values(data.errors).flat().join('\n') : (data.message || __('حدث خطأ'));
+                        const errors = data.errors ? Object.values(data.errors).flat().join('\n') : (data.message || __('Something went wrong.'));
                         this.errorMsg = errors;
                         this.saving = false;
                         return;
@@ -551,7 +551,7 @@
                         this.showModal = false;
                     }
                 } catch(e) {
-                    this.errorMsg = __('حدث خطأ في الاتصال بالسيرفر');
+                    this.errorMsg = __('Failed to contact the server.');
                 }
                 this.saving = false;
             }
@@ -560,3 +560,4 @@
 </script>
 @endpush
 @endsection
+

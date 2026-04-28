@@ -6,7 +6,7 @@
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 relative z-10">
         <div class="mb-8" data-aos="fade-down">
             <h1 class="text-3xl font-extrabold"><span class="text-gradient">{{ $student->name }}</span></h1>
-            <p class="mt-2" style="color: var(--color-text-muted);">{{ $enrollment->course->title }}</p>
+            <p class="mt-2" style="color: var(--color-text-muted);">{{ $enrollment->course?->title ?? __('Deleted course') }}</p>
             <a href="{{ route('admin.students.enrollments', $student) }}" class="text-primary-500 font-bold text-sm hover:underline mt-2 inline-block">{{ __('← Back to Enrollments') }}</a>
         </div>
         @php $totalTime = $enrollment->lessonProgress->sum('time_spent'); @endphp
@@ -29,7 +29,7 @@
         <div class="glass-card overflow-hidden" data-aos="fade-up">
             <div class="glass-card-header"><h3 class="font-bold" style="color: var(--color-text);">{{ __('Lesson Progress') }}</h3></div>
             <div class="glass-card-body divide-y" style="border-color: var(--color-border);">
-                @foreach($enrollment->course->lessons as $lesson)
+                @foreach(($enrollment->course?->lessons ?? collect()) as $lesson)
                 @php $progress = $enrollment->lessonProgress->where('lesson_id', $lesson->id)->first(); @endphp
                 <div class="flex items-center justify-between py-4 first:pt-0 last:pb-0">
                     <div class="flex items-center flex-1">

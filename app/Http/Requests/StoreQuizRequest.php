@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Lesson;
+use App\Models\Question;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Validator;
 
 class StoreQuizRequest extends FormRequest
 {
@@ -51,5 +54,41 @@ class StoreQuizRequest extends FormRequest
             'questions.required' => 'Please select at least one question',
             'questions.*.exists' => 'One or more selected questions do not exist',
         ];
+    }
+
+    public function withValidator(Validator $validator): void
+    {
+        $validator->after(function (Validator $validator) {
+            $courseId = (int) $this->input('course_id');
+            $lessonId = $this->input('lesson_id');
+            $questionIds = collect($this->input('questions', []))
+                ->filter()
+                ->map(fn ($id) => (int) $id)
+                ->values();
+
+            if ($lessonId) {
+                $lesson = Lesson::query()->select(['id', 'course_id'])->find($lessonId);
+
+                if (!$lesson || (int) $lesson->course_id !== $courseId) {
+                    $validator->errors()->add('lesson_id', 'Selected lesson does not belong to the selected course.');
+                }
+            }
+
+            if ($questionIds->isEmpty()) {
+                return;
+            }
+
+            $questionQuery = Question::query()->whereIn('id', $questionIds)->where('course_id', $courseId);
+
+            if ($lessonId) {
+                $questionQuery->where('lesson_id', (int) $lessonId);
+            }
+
+            $validQuestionIds = $questionQuery->pluck('id')->map(fn ($id) => (int) $id);
+
+            if ($validQuestionIds->count() !== $questionIds->count()) {
+                $validator->errors()->add('questions', 'Selected questions must belong to the selected course and lesson.');
+            }
+        });
     }
 }

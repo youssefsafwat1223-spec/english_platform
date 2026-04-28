@@ -325,11 +325,16 @@ class QuestionController extends Controller
             }
 
             // Prepare question data
+            $questionType = strtolower(trim((string) ($rowAssoc['question_type'] ?? 'multiple_choice')));
+            if ($questionType === 'fill_in_the_blank') {
+                $questionType = 'fill_blank';
+            }
+
             $questionData = [
                 'course_id' => !empty($rowAssoc['course_id']) ? $rowAssoc['course_id'] : $request->course_id,
                 'lesson_id' => !empty($rowAssoc['lesson_id']) ? $rowAssoc['lesson_id'] : $request->lesson_id,
                 'question_text' => $rowAssoc['question_text'],
-                'question_type' => strtolower($rowAssoc['question_type'] ?? 'multiple_choice'),
+                'question_type' => $questionType,
                 'difficulty' => strtolower($rowAssoc['difficulty'] ?? 'medium'),
                 'option_a' => $rowAssoc['option_a'],
                 'option_b' => $rowAssoc['option_b'],
@@ -344,12 +349,23 @@ class QuestionController extends Controller
             // Validate the row
             $validator = Validator::make($questionData, [
                 'question_text' => 'required|string',
-                'question_type' => 'required|in:multiple_choice,true_false,fill_in_the_blank',
+                'question_type' => 'required|in:multiple_choice,true_false,fill_blank',
                 'difficulty' => 'required|in:easy,medium,hard',
-                'option_a' => 'required_unless:question_type,fill_in_the_blank|string|nullable',
-                'option_b' => 'required_unless:question_type,fill_in_the_blank|string|nullable',
+                'option_a' => 'required_unless:question_type,fill_blank|string|nullable',
+                'option_b' => 'required_unless:question_type,fill_blank|string|nullable',
                 'correct_answer' => 'required|string',
             ]);
+
+            if (!empty($questionData['lesson_id'])) {
+                $lessonBelongsToCourse = Lesson::query()
+                    ->whereKey($questionData['lesson_id'])
+                    ->where('course_id', $questionData['course_id'])
+                    ->exists();
+
+                if (!$lessonBelongsToCourse) {
+                    $validator->errors()->add('lesson_id', 'Selected lesson does not belong to the selected course.');
+                }
+            }
 
             if ($validator->fails()) {
                 $errorCount++;

@@ -61,11 +61,13 @@ class LiveSessionController extends Controller
     {
         $validated = $this->validateRequest($request, $liveSession);
         $wasDraft = $liveSession->status === LiveSession::STATUS_DRAFT;
+        $previousCourseIds = $liveSession->courses()->pluck('courses.id')->map(fn ($id) => (int) $id)->sort()->values()->all();
+        $shouldRepublishNotification = $this->shouldRepublishNotification($liveSession, $validated, $previousCourseIds);
 
         $liveSession->update($validated);
         $liveSession->courses()->sync($validated['course_ids']);
 
-        if ($wasDraft && $liveSession->status !== LiveSession::STATUS_DRAFT) {
+        if (($wasDraft && $liveSession->status !== LiveSession::STATUS_DRAFT) || $shouldRepublishNotification) {
             $liveSession->forceFill(['published_notification_sent_at' => null])->save();
         }
 
@@ -152,5 +154,36 @@ class LiveSessionController extends Controller
             ->whereHas('enrollments', function ($query) use ($liveSession) {
                 $query->whereIn('course_id', $liveSession->courses()->pluck('courses.id'));
             });
+    }
+
+    private function shouldRepublishNotification(LiveSession $liveSession, array $validated, array $previousCourseIds): bool
+    {
+        if (!$liveSession->published_notification_sent_at) {
+            return false;
+        }
+
+        $newCourseIds = collect($validated['course_ids'] ?? [])
+            ->map(fn ($id) => (int) $id)
+            ->sort()
+            ->values()
+            ->all();
+
+        if ($previousCourseIds !== $newCourseIds) {
+            return true;
+        }
+
+        foreach (['title', 'starts_at', 'ends_at', 'zoom_join_url', 'status', 'notifications_enabled'] as $field) {
+            $currentValue = $liveSession->{$field};
+
+            if ($currentValue instanceof \Illuminate\Support\Carbon) {
+                $currentValue = $currentValue->toDateTimeString();
+            }
+
+            if ($currentValue != ($validated[$field] ?? null)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

@@ -201,11 +201,11 @@
                         <div class="px-5 py-3.5 flex items-center justify-between transition-colors hover:bg-white/[0.02]" style="{{ !$loop->last ? 'border-bottom: 1px solid var(--glass-border);' : '' }}">
                             <div class="flex items-center gap-3 min-w-0">
                                 <div class="w-9 h-9 rounded-xl flex items-center justify-center text-white text-sm font-bold shrink-0" style="background: linear-gradient(135deg, #8b5cf6, #06b6d4);">
-                                    {{ strtoupper(substr($enrollment->user->name, 0, 1)) }}
+                                    {{ strtoupper(substr($enrollment->user?->name ?? '?', 0, 1)) }}
                                 </div>
                                 <div class="min-w-0">
-                                    <p class="text-sm font-semibold truncate" style="color: var(--color-text);">{{ $enrollment->user->name }}</p>
-                                    <p class="text-xs truncate" style="color: var(--color-text-muted);">{{ $enrollment->course->title }}</p>
+                                    <p class="text-sm font-semibold truncate" style="color: var(--color-text);">{{ $enrollment->user?->name ?? __('Deleted user') }}</p>
+                                    <p class="text-xs truncate" style="color: var(--color-text-muted);">{{ $enrollment->course?->title ?? __('Deleted course') }}</p>
                                 </div>
                             </div>
                             <span class="text-[10px] font-medium px-2 py-1 rounded-lg shrink-0 ml-2" style="background: rgba(139, 92, 246, 0.1); color: #a78bfa;">{{ $enrollment->created_at->diffForHumans() }}</span>
@@ -232,8 +232,8 @@
                             <div class="flex items-center gap-3 min-w-0">
                                 <div class="w-9 h-9 rounded-xl flex items-center justify-center text-white text-sm font-bold shrink-0" style="background: linear-gradient(135deg, #10b981, #059669);">💰</div>
                                 <div class="min-w-0">
-                                    <p class="text-sm font-semibold truncate" style="color: var(--color-text);">{{ $payment->user->name }}</p>
-                                    <p class="text-xs truncate" style="color: var(--color-text-muted);">{{ $payment->course->title }}</p>
+                                    <p class="text-sm font-semibold truncate" style="color: var(--color-text);">{{ $payment->user?->name ?? __('Deleted user') }}</p>
+                                    <p class="text-xs truncate" style="color: var(--color-text-muted);">{{ $payment->course?->title ?? __('Deleted course') }}</p>
                                 </div>
                             </div>
                             <div class="text-right shrink-0 ml-2">

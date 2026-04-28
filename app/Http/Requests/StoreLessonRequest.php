@@ -2,7 +2,11 @@
 
 namespace App\Http\Requests;
 
+use App\Models\CourseLevel;
+use App\Models\Question;
+use App\Models\Quiz;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Validator;
 
 class StoreLessonRequest extends FormRequest
 {
@@ -146,5 +150,47 @@ class StoreLessonRequest extends FormRequest
             'title.required' => 'Lesson title is required',
             'attachments.*.max' => 'Attachment size must not exceed 100MB',
         ];
+    }
+
+    public function withValidator(Validator $validator): void
+    {
+        $validator->after(function (Validator $validator) {
+            $courseId = (int) $this->input('course_id');
+            $courseLevelId = $this->input('course_level_id');
+            $quizId = $this->input('quiz_id');
+            $questionIds = collect($this->input('question_ids', []))
+                ->filter()
+                ->map(fn ($id) => (int) $id)
+                ->values();
+
+            if ($courseLevelId) {
+                $level = CourseLevel::query()->select(['id', 'course_id'])->find($courseLevelId);
+
+                if (!$level || (int) $level->course_id !== $courseId) {
+                    $validator->errors()->add('course_level_id', 'Selected level does not belong to the selected course.');
+                }
+            }
+
+            if ($quizId) {
+                $quiz = Quiz::query()->select(['id', 'course_id', 'quiz_type'])->find($quizId);
+
+                if (!$quiz || (int) $quiz->course_id !== $courseId || $quiz->quiz_type !== 'lesson') {
+                    $validator->errors()->add('quiz_id', 'Selected quiz does not belong to the selected course.');
+                }
+            }
+
+            if ($questionIds->isEmpty()) {
+                return;
+            }
+
+            $validQuestionIds = Question::query()
+                ->whereIn('id', $questionIds)
+                ->where('course_id', $courseId)
+                ->pluck('id');
+
+            if ($validQuestionIds->count() !== $questionIds->count()) {
+                $validator->errors()->add('question_ids', 'Selected questions must belong to the selected course.');
+            }
+        });
     }
 }

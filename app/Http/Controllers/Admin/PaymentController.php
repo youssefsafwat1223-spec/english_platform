@@ -7,6 +7,7 @@ use App\Models\Payment;
 use App\Services\PaymentService;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class PaymentController extends Controller
 {
@@ -19,26 +20,12 @@ class PaymentController extends Controller
 
     public function index(Request $request)
     {
-        $query = Payment::with(['user', 'course']);
-
-        // Filter by status
-        if ($request->filled('status')) {
-            $query->where('payment_status', $request->status);
-        }
-
-        // Filter by date range
-        if ($request->filled('from_date')) {
-            $query->whereDate('created_at', '>=', $request->from_date);
-        }
-
-        if ($request->filled('to_date')) {
-            $query->whereDate('created_at', '<=', $request->to_date);
-        }
-
-        // Search by transaction ID
-        if ($request->filled('search')) {
-            $query->where('transaction_id', 'like', "%{$request->search}%");
-        }
+        $query = $this->buildPaymentsQuery($request, [
+            'status_field' => 'status',
+            'from_field' => 'from_date',
+            'to_field' => 'to_date',
+            'search_field' => 'search',
+        ]);
 
         $payments = $query->orderBy('created_at', 'desc')
             ->paginate(50);
@@ -97,7 +84,12 @@ class PaymentController extends Controller
 
     public function reports(Request $request)
     {
-        $query = Payment::query()->with(['user', 'course']);
+        $query = $this->buildPaymentsQuery($request, [
+            'status_field' => 'status',
+            'from_field' => 'start_date',
+            'to_field' => 'end_date',
+            'search_field' => null,
+        ]);
         $stats = [
             'total_revenue' => 0,
             'count' => 0,
@@ -108,20 +100,6 @@ class PaymentController extends Controller
         $payments = collect([]); // Empty by default until generated
 
         if ($hasFilters) {
-            // Filter by status
-            if ($request->filled('status')) {
-                $query->where('payment_status', $request->status);
-            }
-
-            // Filter by date range
-            if ($request->filled('start_date')) {
-                $query->whereDate('created_at', '>=', $request->start_date);
-            }
-
-            if ($request->filled('end_date')) {
-                $query->whereDate('created_at', '<=', $request->end_date);
-            }
-
             // Get statistics for the filtered result
             $stats['total_revenue'] = $query->sum('final_amount');
             $stats['count'] = $query->count();
@@ -136,7 +114,79 @@ class PaymentController extends Controller
 
     public function exportReport(Request $request)
     {
-        // Export payment report as Excel/CSV
-        // Implementation depends on requirements
+        $request->validate([
+            'start_date' => ['nullable', 'date'],
+            'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],
+            'status' => ['nullable', 'in:completed,pending,failed,refunded'],
+        ]);
+
+        $payments = $this->buildPaymentsQuery($request, [
+            'status_field' => 'status',
+            'from_field' => 'start_date',
+            'to_field' => 'end_date',
+            'search_field' => null,
+        ])->orderBy('created_at', 'desc')->get();
+
+        $filename = 'payment-report-' . now()->format('Ymd-His') . '.csv';
+
+        return response()->streamDownload(function () use ($payments) {
+            $handle = fopen('php://output', 'w');
+
+            fputcsv($handle, [
+                'Date',
+                'Transaction ID',
+                'User',
+                'Email',
+                'Course',
+                'Amount',
+                'Status',
+                'Paid At',
+            ]);
+
+            foreach ($payments as $payment) {
+                fputcsv($handle, [
+                    optional($payment->created_at)->format('Y-m-d H:i:s'),
+                    $payment->transaction_id,
+                    $payment->user?->name,
+                    $payment->user?->email,
+                    $payment->course?->title,
+                    $payment->final_amount,
+                    $payment->payment_status,
+                    optional($payment->paid_at)->format('Y-m-d H:i:s'),
+                ]);
+            }
+
+            fclose($handle);
+        }, $filename, [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+        ]);
+    }
+
+    private function buildPaymentsQuery(Request $request, array $fields)
+    {
+        $query = Payment::query()->with(['user', 'course']);
+
+        $statusField = $fields['status_field'] ?? null;
+        $fromField = $fields['from_field'] ?? null;
+        $toField = $fields['to_field'] ?? null;
+        $searchField = $fields['search_field'] ?? null;
+
+        if ($statusField && $request->filled($statusField)) {
+            $query->where('payment_status', $request->input($statusField));
+        }
+
+        if ($fromField && $request->filled($fromField)) {
+            $query->whereDate('created_at', '>=', $request->input($fromField));
+        }
+
+        if ($toField && $request->filled($toField)) {
+            $query->whereDate('created_at', '<=', $request->input($toField));
+        }
+
+        if ($searchField && $request->filled($searchField)) {
+            $query->where('transaction_id', 'like', '%' . $request->input($searchField) . '%');
+        }
+
+        return $query;
     }
 }

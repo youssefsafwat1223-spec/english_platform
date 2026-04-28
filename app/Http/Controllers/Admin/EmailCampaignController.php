@@ -67,10 +67,20 @@ class EmailCampaignController extends Controller
                 ->with('error', 'This campaign has already been sent.');
         }
 
-        $campaign->update(['status' => 'sending']);
+        if ($campaign->status === 'sending') {
+            return redirect()->route('admin.email-campaigns.index')
+                ->with('error', 'This campaign is already being sent.');
+        }
 
         $recipients = $this->getRecipients($campaign);
         $campaign->update(['recipients_count' => $recipients->count()]);
+
+        if ($recipients->isEmpty()) {
+            return redirect()->route('admin.email-campaigns.index')
+                ->with('error', 'No eligible students with valid email addresses match this campaign.');
+        }
+
+        $campaign->update(['status' => 'sending']);
 
         $sent = 0;
         $failed = 0;
@@ -85,7 +95,7 @@ class EmailCampaignController extends Controller
                     $campaign->cta_url
                 ));
                 $sent++;
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 $failed++;
                 Log::error("Campaign email failed for user {$user->id}: " . $e->getMessage());
             }
@@ -114,7 +124,10 @@ class EmailCampaignController extends Controller
 
     private function getRecipients(EmailCampaign $campaign)
     {
-        $query = User::where('role', 'student')->where('is_active', true);
+        $query = User::where('role', 'student')
+            ->where('is_active', true)
+            ->whereNotNull('email')
+            ->where('email', '!=', '');
 
         switch ($campaign->target_audience) {
             case 'active':

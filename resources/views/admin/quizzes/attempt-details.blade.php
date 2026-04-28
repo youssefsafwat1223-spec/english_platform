@@ -6,7 +6,7 @@
     <div class="max-w-4xl mx-auto sm:px-6 lg:px-8 relative z-10">
         <div class="mb-8" data-aos="fade-down">
             <h1 class="text-3xl font-extrabold"><span class="text-gradient">{{ __('Attempt Details') }}</span></h1>
-            <p class="mt-2" style="color: var(--color-text-muted);">{{ $attempt->user->name }} — {{ $quiz->title }}</p>
+            <p class="mt-2" style="color: var(--color-text-muted);">{{ $attempt->user?->name ?? __('Deleted user') }} - {{ $quiz->title }}</p>
             <a href="{{ route('admin.quizzes.attempts', $quiz) }}" class="text-primary-500 font-bold text-sm hover:underline mt-2 inline-block">{{ __('? Back to Attempts') }}</a>
         </div>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
@@ -35,15 +35,15 @@
                         @if($answer->is_correct)<span class="badge-success">{{ __('Correct') }}</span>
                         @else<span class="inline-flex items-center px-2 py-0.5 rounded-lg bg-red-500/10 text-red-500 text-xs font-bold">{{ __('Wrong') }}</span>@endif
                     </div>
-                    <p class="mb-4 text-sm" style="color: var(--color-text);">{{ $answer->question->question_text }}</p>
+                    <p class="mb-4 text-sm" style="color: var(--color-text);">{{ $answer->question?->question_text ?? __('Deleted question') }}</p>
                     <div class="space-y-2">
                         <div class="p-3 rounded-xl text-sm {{ $answer->user_answer == 'A' ? ($answer->is_correct ? 'bg-emerald-500/10 border border-emerald-500/20' : 'bg-red-500/10 border border-red-500/20') : '' }}" style="{{ $answer->user_answer != 'A' ? 'background: var(--color-surface-hover);' : '' }}">
-                            <strong>A.</strong> {{ $answer->question->option_a }}
-                            @if($answer->question->correct_answer == 'A')<span class="text-emerald-500 ml-2">?</span>@endif
+                            <strong>A.</strong> {{ $answer->question?->option_a ?? '-' }}
+                            @if($answer->question?->correct_answer == 'A')<span class="text-emerald-500 ml-2">?</span>@endif
                         </div>
                         <div class="p-3 rounded-xl text-sm {{ $answer->user_answer == 'B' ? ($answer->is_correct ? 'bg-emerald-500/10 border border-emerald-500/20' : 'bg-red-500/10 border border-red-500/20') : '' }}" style="{{ $answer->user_answer != 'B' ? 'background: var(--color-surface-hover);' : '' }}">
-                            <strong>B.</strong> {{ $answer->question->option_b }}
-                            @if($answer->question->correct_answer == 'B')<span class="text-emerald-500 ml-2">?</span>@endif
+                            <strong>B.</strong> {{ $answer->question?->option_b ?? '-' }}
+                            @if($answer->question?->correct_answer == 'B')<span class="text-emerald-500 ml-2">?</span>@endif
                         </div>
                     </div>
                 </div>

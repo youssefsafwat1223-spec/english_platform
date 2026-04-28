@@ -1,6 +1,6 @@
-{{-- ═══════════════════════════════════════════════════════════════
-     NAVIGATION — Frosted Glass Navbar with Glassmorphism
-     ═══════════════════════════════════════════════════════════════ --}}
+﻿{{-- â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ
+     NAVIGATION â€” Frosted Glass Navbar with Glassmorphism
+     â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ --}}
 <nav x-data="{ 
          open: false, 
          userOpen: false, 
@@ -29,7 +29,7 @@
     <div class="px-3 sm:px-4 md:px-6 lg:px-8 overflow-visible">
         <div class="flex justify-between h-14 sm:h-16 lg:h-20 items-center overflow-visible">
 
-            {{-- ─── Logo — Centered on Mobile ─── --}}
+            {{-- â”€â”€â”€ Logo â€” Centered on Mobile â”€â”€â”€ --}}
             <div class="flex-1 flex lg:hidden items-center justify-center overflow-visible">
                 <a href="{{ route('home') }}" class="flex items-center gap-2 group shrink-0">
                     <img src="{{ asset('images/logo.png') }}" alt="Simple English Logo" class="h-8 w-auto object-contain transition-all duration-300 group-hover:scale-110 group-hover:rotate-3">
@@ -44,7 +44,7 @@
                 </a>
             </div>
 
-            {{-- ─── Desktop Header Items ─── --}}
+            {{-- â”€â”€â”€ Desktop Header Items â”€â”€â”€ --}}
             <div class="hidden lg:flex items-center gap-2 sm:gap-3 lg:gap-4 min-w-0 flex-1">
                 <a href="{{ route('home') }}" class="flex items-center gap-2 sm:gap-3 group shrink-0">
                     <img src="{{ asset('images/logo.png') }}" alt="Simple English Logo" class="h-7 sm:h-10 w-auto object-contain transition-all duration-300 group-hover:scale-110 group-hover:rotate-3">
@@ -58,8 +58,8 @@
                     </div>
                 </a>
 
-                {{-- ─── Desktop Links ─── --}}
-                <div class="hidden lg:flex items-center gap-1 min-w-0 overflow-x-auto whitespace-nowrap pe-2 desktop-nav-scroll">
+                {{-- â”€â”€â”€ Desktop Links â”€â”€â”€ --}}
+                <div class="hidden lg:flex items-center gap-1 min-w-0 pe-2">
 
                     @auth
                         @if(auth()->user()->is_student)
@@ -71,27 +71,27 @@
                                class="nav-link {{ request()->routeIs('student.courses.my-courses') ? 'active' : '' }}">
                                 {{ __('My Courses') }}
                             </a>
+                            <a href="{{ route('student.forum.index') }}"
+                               class="nav-link {{ request()->routeIs('student.forum.*') ? 'active' : '' }}">
+                                {{ __('Forum') }}
+                            </a>
                             @if($liveSessionsEnabled)
                                 <a href="{{ route('student.live-sessions.index') }}"
                                    class="nav-link {{ request()->routeIs('student.live-sessions.*') ? 'active' : '' }}">
                                     {{ __('live_sessions.navigation') }}
                                 </a>
                             @endif
-                            <a href="{{ route('student.quizzes.my-attempts') }}"
-                               class="nav-link {{ request()->routeIs('student.quizzes.my-attempts') ? 'active' : '' }}">
-                                {{ __('All Attempts') }}
-                            </a>
                             <a href="{{ route('student.certificates.index') }}"
                                class="nav-link {{ request()->routeIs('student.certificates.*') ? 'active' : '' }}">
                                 {{ __('Certificates') }}
                             </a>
-                            <a href="{{ route('student.forum.index') }}"
-                               class="nav-link {{ request()->routeIs('student.forum.*') ? 'active' : '' }}">
-                                {{ __('Forum') }}
+                            <a href="{{ route('student.quizzes.my-attempts') }}"
+                               class="nav-link {{ request()->routeIs('student.quizzes.my-attempts') ? 'active' : '' }}">
+                                {{ __('All Attempts') }}
                             </a>
                             <a href="{{ route('student.games.index') }}"
                                class="nav-link {{ request()->routeIs('student.games.*') ? 'active' : '' }}">
-                                {{ __('Games Nav') }}
+                                {{ __('Games') }}
                             </a>
                             <a href="{{ route('student.battle.index') }}"
                                class="nav-link {{ request()->routeIs('student.battle.*') ? 'active' : '' }}">
@@ -110,18 +110,21 @@
                                class="nav-link {{ request()->routeIs('admin.courses.*') ? 'active' : '' }}">
                                 {{ __('Courses') }}
                             </a>
+                            <a href="{{ route('admin.students.index') }}"
+                               class="nav-link {{ request()->routeIs('admin.students.*') ? 'active' : '' }}">
+                                {{ __('Students') }}
+                            </a>
                             <a href="{{ route('admin.live-sessions.index') }}"
                                class="nav-link {{ request()->routeIs('admin.live-sessions.*') ? 'active' : '' }}">
                                 {{ __('live_sessions.navigation') }}
                             </a>
-                            
-                            <!-- Exams Dropdown -->
+
                             <div class="relative" x-data="{ open: false }" @click.away="open = false">
-                                <button @click="open = !open" class="nav-link flex items-center gap-1 {{ request()->routeIs('admin.questions.*') || request()->routeIs('admin.quizzes.*') ? 'active' : '' }}">
+                                <button @click="open = !open" class="nav-link flex items-center gap-1 {{ request()->routeIs('admin.questions.*') || request()->routeIs('admin.quizzes.*') || request()->routeIs('admin.games.*') || request()->routeIs('admin.settings.battle') ? 'active' : '' }}">
                                     {{ __('Exams') }}
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                                 </button>
-                                <div x-show="open" 
+                                <div x-show="open"
                                      x-transition:enter="transition ease-out duration-200"
                                      x-transition:enter-start="opacity-0 scale-95"
                                      x-transition:enter-end="opacity-100 scale-100"
@@ -136,15 +139,14 @@
                                         {{ __('Questions Nav') }}
                                     </a>
                                     <a href="{{ route('admin.games.index') }}" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 {{ request()->routeIs('admin.games.*') ? 'bg-gray-50 dark:bg-gray-700' : '' }}">
-                                        🎮 {{ __('Game Arena') }}
+                                        {{ __('Game Arena') }}
                                     </a>
                                     <a href="{{ route('admin.settings.battle') }}" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 {{ request()->routeIs('admin.settings.battle') ? 'bg-gray-50 dark:bg-gray-700' : '' }}">
-                                        ⚔️ {{ __('Battle Settings') }}
+                                        {{ __('Battle Settings') }}
                                     </a>
                                 </div>
                             </div>
 
-                            <!-- Language Switcher -->
                             <div class="flex items-center">
                                 <a href="{{ route('switch-lang', app()->getLocale() == 'ar' ? 'en' : 'ar') }}"
                                    class="flex items-center justify-center px-2.5 h-7 rounded-lg shadow-sm border border-slate-300 dark:border-slate-600 text-[11px] font-bold tracking-wide text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
@@ -153,13 +155,17 @@
                                 </a>
                             </div>
 
-                            <!-- Users Dropdown -->
+                            <a href="{{ route('admin.settings.index') }}"
+                               class="nav-link {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
+                                {{ __('Settings') }}
+                            </a>
+
                             <div class="relative" x-data="{ open: false }" @click.away="open = false">
-                                <button @click="open = !open" class="nav-link flex items-center gap-1 {{ request()->routeIs('admin.students.*') || request()->routeIs('admin.email-campaigns.*') ? 'active' : '' }}">
-                                    {{ __('Users') }}
+                                <button @click="open = !open" class="nav-link flex items-center gap-1 {{ request()->routeIs('admin.email-campaigns.*') || request()->routeIs('admin.testimonials.*') || request()->routeIs('admin.promo-videos.*') ? 'active' : '' }}">
+                                    {{ __('Content') }}
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                                 </button>
-                                <div x-show="open" 
+                                <div x-show="open"
                                      x-transition:enter="transition ease-out duration-200"
                                      x-transition:enter-start="opacity-0 scale-95"
                                      x-transition:enter-end="opacity-100 scale-100"
@@ -167,17 +173,14 @@
                                      x-transition:leave-start="opacity-100 scale-100"
                                      x-transition:leave-end="opacity-0 scale-95"
                                      class="absolute left-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
-                                    <a href="{{ route('admin.students.index') }}" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 {{ request()->routeIs('admin.students.*') ? 'bg-gray-50 dark:bg-gray-700' : '' }}">
-                                        {{ __('Students') }}
-                                    </a>
                                     <a href="{{ route('admin.email-campaigns.index') }}" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 {{ request()->routeIs('admin.email-campaigns.*') ? 'bg-gray-50 dark:bg-gray-700' : '' }}">
                                         {{ __('Email Campaigns') }}
                                     </a>
                                     <a href="{{ route('admin.testimonials.index') }}" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 {{ request()->routeIs('admin.testimonials.*') ? 'bg-gray-50 dark:bg-gray-700' : '' }}">
-                                        💬 {{ __('آراء الطلاب') }}
+                                        {{ __('Testimonials') }}
                                     </a>
                                     <a href="{{ route('admin.promo-videos.index') }}" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 {{ request()->routeIs('admin.promo-videos.*') ? 'bg-gray-50 dark:bg-gray-700' : '' }}">
-                                        🎬 {{ __('عينة الشروحات') }}
+                                        {{ __('Promo Videos') }}
                                     </a>
                                 </div>
                             </div>
@@ -187,7 +190,7 @@
                     @guest
                         <a href="{{ route('home') }}#featured-courses"
                            class="nav-link {{ request()->routeIs('home') || request()->routeIs('courses.*') ? 'active' : '' }}">
-                            {{ app()->getLocale() === 'ar' ? 'البرنامج' : 'Program' }}
+                            {{ app()->getLocale() === 'ar' ? 'ط§ظ„ط¨ط±ظ†ط§ظ…ط¬' : 'Program' }}
                         </a>
                         <a href="{{ route('pricing') }}"
                            class="nav-link {{ request()->routeIs('pricing') ? 'active' : '' }}">
@@ -205,7 +208,7 @@
                 </div>
             </div>
 
-            {{-- ─── Right Side ─── --}}
+            {{-- â”€â”€â”€ Right Side â”€â”€â”€ --}}
             <div class="flex items-center gap-1 sm:gap-2 md:gap-3 shrink-0">
 
                 {{-- Theme Toggle --}}
@@ -406,7 +409,7 @@
         </div>
     </div>
 
-    {{-- ─── Mobile Menu (Guest & Admin) ─── --}}
+    {{-- Mobile Menu (Guest & Admin) --}}
     @if(!auth()->check() || (!auth()->user()->is_student))
     <div x-show="open" x-cloak
          x-transition:enter="transition ease-out duration-300"
@@ -421,11 +424,13 @@
                 @if(auth()->user()->is_admin)
                     <a href="{{ route('admin.dashboard') }}" class="block px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-primary-500/5" style="color: var(--color-text);">{{ __('Dashboard') }}</a>
                     <a href="{{ route('admin.courses.index') }}" class="block px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-primary-500/5" style="color: var(--color-text);">{{ __('Courses') }}</a>
-                    <a href="{{ route('admin.live-sessions.index') }}" class="block px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-primary-500/5" style="color: var(--color-text);">{{ __('live_sessions.navigation') }}</a>
-                    <a href="{{ route('admin.questions.index') }}" class="block px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-primary-500/5" style="color: var(--color-text);">{{ __('Questions') }}</a>
-                    <a href="{{ route('admin.quizzes.index') }}" class="block px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-primary-500/5" style="color: var(--color-text);">{{ __('Quizzes') }}</a>
                     <a href="{{ route('admin.students.index') }}" class="block px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-primary-500/5" style="color: var(--color-text);">{{ __('Students') }}</a>
-                    <a href="{{ route('admin.email-campaigns.index') }}" class="block px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-primary-500/5" style="color: var(--color-text);">📧 {{ __('Email Campaigns') }}</a>
+                    <a href="{{ route('admin.live-sessions.index') }}" class="block px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-primary-500/5" style="color: var(--color-text);">{{ __('live_sessions.navigation') }}</a>
+                    <a href="{{ route('admin.quizzes.index') }}" class="block px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-primary-500/5" style="color: var(--color-text);">{{ __('Quizzes') }}</a>
+                    <a href="{{ route('admin.questions.index') }}" class="block px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-primary-500/5" style="color: var(--color-text);">{{ __('Questions') }}</a>
+                    <a href="{{ route('admin.games.index') }}" class="block px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-primary-500/5" style="color: var(--color-text);">{{ __('Game Arena') }}</a>
+                    <a href="{{ route('admin.email-campaigns.index') }}" class="block px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-primary-500/5" style="color: var(--color-text);">{{ __('Email Campaigns') }}</a>
+                    <a href="{{ route('admin.settings.index') }}" class="block px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-primary-500/5" style="color: var(--color-text);">{{ __('Settings') }}</a>
                 @endif
             @endauth
 
@@ -458,12 +463,10 @@
             <div class="border-t p-4" style="border-color: var(--glass-border);">
                 <div class="rounded-2xl bg-white/80 dark:bg-white/5 border border-slate-200/70 dark:border-white/10 p-3 shadow-sm">
                     <div class="space-y-2">
-                        <a href="{{ route('login') }}"
-                           class="btn-secondary btn-sm w-full text-center">
+                        <a href="{{ route('login') }}" class="btn-secondary btn-sm w-full text-center">
                             {{ __('Log In') }}
                         </a>
-                        <a href="{{ route('register') }}"
-                           class="btn-primary btn-sm w-full text-center">
+                        <a href="{{ route('register') }}" class="btn-primary btn-sm w-full text-center">
                             {{ __('Get Started') }}
                         </a>
                     </div>
@@ -472,10 +475,9 @@
         @endauth
     </div>
     @endif
-
 </nav>
 
-{{-- ─── Floating WhatsApp Support Button ─── --}}
+{{-- â”€â”€â”€ Floating WhatsApp Support Button â”€â”€â”€ --}}
 @auth
     @if(auth()->user()->is_student)
         <a href="https://wa.me/966537191862" target="_blank"
@@ -494,7 +496,7 @@
     @endif
 @endauth
 
-{{-- ─── Mobile Bottom Tab Bar & Drawer (Students Only) ─── --}}
+{{-- â”€â”€â”€ Mobile Bottom Tab Bar & Drawer (Students Only) â”€â”€â”€ --}}
 @auth
     @if(auth()->user()->is_student && !request()->routeIs('student.quizzes.start'))
         <div x-data="{ 
@@ -511,23 +513,11 @@
             },
             init() {
                 setInterval(() => this.pollUnread(), 30000); // Poll every 30s
-            }
-         }" 
-         @scroll.window.throttle.50ms="
-            const currentScroll = window.pageYOffset;
-            if (currentScroll > lastScroll && currentScroll > 100) {
-                showNav = false;
-            } else {
-                showNav = true;
-            }
-            lastScroll = currentScroll;
-         "
-         class="lg:hidden">
-        
-        {{-- ─── Student Settings Drawer (Consolidated Scope) ─── --}}
+            }}">
+        {{-- Student Settings Drawer (Consolidated Scope) --}}
         <div
-             x-show="isDrawerOpen" 
-             x-cloak 
+             x-show="isDrawerOpen"
+             x-cloak
              @click.outside="isDrawerOpen = false"
              x-transition:enter="transition ease-out duration-400"
              x-transition:enter-start="opacity-0 translate-y-12 scale-90"
@@ -536,10 +526,9 @@
              x-transition:leave-start="opacity-100 translate-y-0 scale-100"
              x-transition:leave-end="opacity-0 translate-y-12 scale-90"
              class="fixed bottom-[110px] left-6 right-6 sm:left-12 sm:right-12 bg-white/80 dark:bg-[#020617]/80 backdrop-blur-[40px] saturate-[2] overflow-y-auto overflow-x-hidden max-h-[75vh] hide-scrollbar border border-white/60 dark:border-white/10 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] dark:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.9)] rounded-[2.5rem] z-[110] ring-1 ring-black/5 dark:ring-white/10">
-            
+
             {{-- Drawer Glow Decoration --}}
             <div class="absolute -top-24 -right-24 w-48 h-48 bg-primary-500/10 blur-[60px] rounded-full pointer-events-none"></div>
-
             <div class="px-8 py-5 flex justify-between items-center sticky top-0 bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl z-20 border-b border-white/40 dark:border-white/5">
                 <h3 class="font-black text-xl bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-400 bg-clip-text text-transparent tracking-tight">{{ __('Settings') }}</h3>
                 <button @click="isDrawerOpen = false" class="w-10 h-10 rounded-2xl bg-white/50 dark:bg-white/10 shadow-sm border border-white/60 dark:border-white/10 flex items-center justify-center text-slate-500 hover:text-slate-900 dark:hover:text-white transition-all hover:rotate-90 active:scale-90">
@@ -548,9 +537,7 @@
             </div>
 
             <div class="p-6 space-y-6">
-                {{-- Quick Toggle Tiles --}}
                 <div class="grid grid-cols-3 gap-3">
-                    {{-- Theme --}}
                     <button type="button" onclick="toggleTheme()" class="flex flex-col items-center justify-center gap-2.5 py-5 rounded-[2rem] bg-white dark:bg-white/5 border border-white/60 dark:border-white/10 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 group/tile active:scale-95">
                         <div class="w-12 h-12 rounded-2xl bg-amber-500/10 dark:bg-indigo-500/10 flex items-center justify-center transition-colors group-hover/tile:scale-110">
                             <svg class="w-6 h-6 text-amber-500 dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v2m0 14v2m9-9h-2M5 12H3m15.364-6.364l-1.414 1.414M7.05 16.95l-1.414 1.414m0-11.314L7.05 7.05m9.9 9.9l1.414 1.414M12 8a4 4 0 100 8 4 4 0 000-8z"/></svg>
@@ -559,7 +546,6 @@
                         <span class="text-[11px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">{{ __('Theme') }}</span>
                     </button>
 
-                    {{-- Language --}}
                     <a href="{{ route('switch-lang', app()->getLocale() == 'ar' ? 'en' : 'ar') }}" class="flex flex-col items-center justify-center gap-2.5 py-5 rounded-[2rem] bg-white dark:bg-white/5 border border-white/60 dark:border-white/10 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 group/tile active:scale-95">
                         <div class="w-12 h-12 rounded-2xl bg-primary-500/10 flex items-center justify-center transition-colors group-hover/tile:scale-110">
                             <span class="text-xl font-black bg-gradient-to-br from-primary-600 to-primary-400 bg-clip-text text-transparent">{{ app()->getLocale() == 'ar' ? 'EN' : 'AR' }}</span>
@@ -567,7 +553,6 @@
                         <span class="text-[11px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">{{ __('Language') }}</span>
                     </a>
 
-                    {{-- WhatsApp --}}
                     <a href="https://wa.me/966537191862" target="_blank" class="flex flex-col items-center justify-center gap-2.5 py-5 rounded-[2rem] bg-white dark:bg-white/5 border border-white/60 dark:border-white/10 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 group/tile active:scale-95">
                         <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center transition-colors group-hover/tile:scale-110">
                             <svg class="w-6 h-6 text-emerald-500" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
@@ -581,7 +566,7 @@
                     <div class="grid grid-cols-1 gap-2.5">
                         <a href="{{ route('student.notifications.index') }}" class="flex items-center justify-between px-5 py-4 rounded-2xl bg-white/40 dark:bg-white/5 border border-white/40 dark:border-white/5 hover:bg-white dark:hover:bg-white/10 transition-all group/link active:scale-[0.98]">
                             <div class="flex items-center gap-4">
-                                <span class="text-xl group-hover/link:scale-110 transition-transform">🔔</span>
+                                <svg class="w-5 h-5 text-slate-500 group-hover/link:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
                                 <span class="text-[15px] font-bold text-slate-700 dark:text-slate-200">{{ __('Notifications') }}</span>
                             </div>
                             <div class="flex items-center gap-3">
@@ -595,21 +580,21 @@
 
                         @php
                             $extraLinks = [
-                                ['route' => 'student.certificates.index', 'icon' => '📜', 'label' => __('Certificates')],
-                                ['route' => 'student.profile.achievements', 'icon' => '🌟', 'label' => __('Achievements')],
-                                ['route' => 'student.quizzes.my-attempts', 'icon' => '📝', 'label' => __('All Attempts')],
-                                ['route' => 'student.games.index', 'icon' => '🎮', 'label' => __('Games')],
-                                ['route' => 'student.battle.index', 'icon' => '⚔️', 'label' => __('Battle')],
-                                ['route' => 'student.leaderboard', 'icon' => '🏆', 'label' => __('Leaderboard')],
-                                ['route' => 'student.referrals.index', 'icon' => '🎁', 'label' => __('Invite Friends')],
-                                ['route' => 'student.telegram.guide', 'icon' => '🤖', 'label' => __('Telegram Bot')],
+                                ['route' => 'student.certificates.index', 'icon' => 'certificate', 'label' => __('Certificates')],
+                                ['route' => 'student.profile.achievements', 'icon' => 'star', 'label' => __('Achievements')],
+                                ['route' => 'student.quizzes.my-attempts', 'icon' => 'clipboard', 'label' => __('All Attempts')],
+                                ['route' => 'student.games.index', 'icon' => 'game', 'label' => __('Games')],
+                                ['route' => 'student.battle.index', 'icon' => 'bolt', 'label' => __('Battle')],
+                                ['route' => 'student.leaderboard', 'icon' => 'chart', 'label' => __('Leaderboard')],
+                                ['route' => 'student.referrals.index', 'icon' => 'users', 'label' => __('Invite Friends')],
+                                ['route' => 'student.telegram.guide', 'icon' => 'message', 'label' => __('Telegram Bot')],
                             ];
                         @endphp
                         @if($liveSessionsEnabled)
                             @php
                                 array_splice($extraLinks, 3, 0, [[
                                     'route' => 'student.live-sessions.index',
-                                    'icon' => '🎥',
+                                    'icon' => 'video',
                                     'label' => __('live_sessions.navigation'),
                                 ]]);
                             @endphp
@@ -617,7 +602,37 @@
                         @foreach($extraLinks as $link)
                             <a href="{{ route($link['route']) }}" class="flex items-center justify-between px-5 py-4 rounded-2xl bg-white/40 dark:bg-white/5 border border-white/40 dark:border-white/5 hover:bg-white dark:hover:bg-white/10 transition-all group/link active:scale-[0.98]">
                                 <div class="flex items-center gap-4">
-                                    <span class="text-xl group-hover/link:scale-110 transition-transform">{{ $link['icon'] }}</span>
+                                    <span class="w-5 h-5 text-slate-500 group-hover/link:scale-110 transition-transform inline-flex items-center justify-center">
+                                        @switch($link['icon'])
+                                            @case('certificate')
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6M7 4h10a2 2 0 012 2v12a2 2 0 01-2 2H7a2 2 0 01-2-2V6a2 2 0 012-2z"/></svg>
+                                                @break
+                                            @case('star')
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.066 3.283a1 1 0 00.95.69h3.452c.969 0 1.371 1.24.588 1.81l-2.793 2.03a1 1 0 00-.364 1.118l1.067 3.283c.3.921-.755 1.688-1.54 1.118l-2.793-2.03a1 1 0 00-1.176 0l-2.793 2.03c-.784.57-1.838-.197-1.539-1.118l1.066-3.283a1 1 0 00-.364-1.118L2.98 8.71c-.783-.57-.38-1.81.588-1.81H7.02a1 1 0 00.951-.69l1.066-3.283z"/></svg>
+                                                @break
+                                            @case('clipboard')
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                                                @break
+                                            @case('game')
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.868v4.264a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                                @break
+                                            @case('bolt')
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                                                @break
+                                            @case('chart')
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20V10m5 10V4m5 16v-6"/></svg>
+                                                @break
+                                            @case('users')
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a4 4 0 00-5-3.87M9 20H4v-2a4 4 0 015-3.87m8-2.13a4 4 0 10-8 0 4 4 0 008 0zm6 0a4 4 0 10-8 0 4 4 0 008 0zM7 10a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                                                @break
+                                            @case('message')
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4-.8L3 20l1.2-3.2A7.685 7.685 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                                                @break
+                                            @case('video')
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14m-9 4h8a2 2 0 002-2V8a2 2 0 00-2-2H6a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                                                @break
+                                        @endswitch
+                                    </span>
                                     <span class="text-[15px] font-bold text-slate-700 dark:text-slate-200">{{ $link['label'] }}</span>
                                 </div>
                                 <svg class="w-4 h-4 text-slate-400 group-hover/link:translate-x-1 transition-transform ltr:block rtl:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
@@ -637,7 +652,7 @@
             </div>
         </div>
 
-        {{-- ─── Bottom Navigation ─── --}}
+        {{-- â”€â”€â”€ Bottom Navigation â”€â”€â”€ --}}
         <div class="fixed left-4 right-4 sm:left-8 sm:right-8 transition-all duration-500"
              style="bottom: calc(env(safe-area-inset-bottom, 0px) + 0.75rem); z-index: 99;"
              :class="!showNav ? 'translate-y-40' : 'translate-y-0'">

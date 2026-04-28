@@ -78,6 +78,8 @@ class LessonController extends Controller
 
     public function show(Course $course, Lesson $lesson)
     {
+        $this->ensureLessonBelongsToCourse($course, $lesson);
+
         $lesson->load(['attachments', 'audio', 'quiz', 'pronunciationExercise', 'comments']);
 
         $stats = [
@@ -101,6 +103,8 @@ class LessonController extends Controller
 
     public function edit(Course $course, Lesson $lesson)
     {
+        $this->ensureLessonBelongsToCourse($course, $lesson);
+
         $lesson->load('attachments', 'listeningExercise');
         $availableQuizzes = $course->quizzes()
             ->where('quiz_type', 'lesson')
@@ -152,6 +156,8 @@ class LessonController extends Controller
 
     public function update(StoreLessonRequest $request, Course $course, Lesson $lesson)
     {
+        $this->ensureLessonBelongsToCourse($course, $lesson);
+
         $data = $request->validated();
 
         // Update slug if title changed
@@ -195,6 +201,8 @@ class LessonController extends Controller
 
     public function destroy(Course $course, Lesson $lesson)
     {
+        $this->ensureLessonBelongsToCourse($course, $lesson);
+
         // Delete attachments
         foreach ($lesson->attachments as $attachment) {
             Storage::disk('public')->delete($attachment->file_path);
@@ -487,6 +495,13 @@ class LessonController extends Controller
             $lesson->listeningExercise->update($exerciseData);
         } else {
             \App\Models\ListeningExercise::create($exerciseData);
+        }
+    }
+
+    private function ensureLessonBelongsToCourse(Course $course, Lesson $lesson): void
+    {
+        if ((int) $lesson->course_id !== (int) $course->id) {
+            abort(404);
         }
     }
 }

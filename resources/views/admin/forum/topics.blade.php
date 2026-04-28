@@ -34,8 +34,8 @@
                                     @if($topic->is_locked)<span class="inline-flex items-center px-2 py-0.5 rounded-lg bg-red-500/10 text-red-500 text-[10px] font-bold">{{ __('Locked') }}</span>@endif
                                 </div>
                             </td>
-                            <td>{{ $topic->category->name }}</td>
-                            <td>{{ $topic->user->name }}</td>
+                            <td>{{ $topic->category?->name ?? __('Deleted category') }}</td>
+                            <td>{{ $topic->user?->name ?? __('Deleted user') }}</td>
                             <td>{{ $topic->reply_count }}</td>
                             <td>{{ $topic->created_at->diffForHumans() }}</td>
                             <td><a href="{{ route('admin.forum.topics.show', $topic) }}" class="text-primary-500 text-sm font-bold hover:underline">{{ __('View') }}</a></td>

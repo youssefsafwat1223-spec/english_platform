@@ -18,7 +18,7 @@
                 <div class="glass-card-body">
                     <div class="flex justify-between items-start mb-4">
                         <div>
-                            <h3 class="text-xl font-extrabold" style="color: var(--color-text);">{{ $enrollment->course->title }}</h3>
+                            <h3 class="text-xl font-extrabold" style="color: var(--color-text);">{{ $enrollment->course?->title ?? __('Deleted course') }}</h3>
                             <p class="text-xs" style="color: var(--color-text-muted);">Enrolled {{ $enrollment->created_at->format('M d, Y') }}</p>
                         </div>
                         <div class="flex items-center gap-2">

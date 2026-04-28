@@ -41,8 +41,8 @@
                         @forelse ($deviceRequests as $deviceRequest)
                             <tr>
                                 <td>
-                                    <div class="font-bold text-white">{{ $deviceRequest->user->name }}</div>
-                                    <div class="text-xs text-slate-400">{{ $deviceRequest->user->email }}</div>
+                                    <div class="font-bold text-white">{{ $deviceRequest->user?->name ?? 'Deleted user' }}</div>
+                                    <div class="text-xs text-slate-400">{{ $deviceRequest->user?->email ?? '-' }}</div>
                                 </td>
                                 <td>
                                     <div class="font-semibold text-slate-200">{{ $deviceRequest->device_label ?: 'جهاز غير معروف' }}</div>

@@ -3,12 +3,22 @@
 @section('content')
 <div class="py-12 relative overflow-hidden">
     <div class="max-w-4xl mx-auto sm:px-6 lg:px-8 relative z-10 space-y-6">
+        <a href="{{ route('admin.live-sessions.index') }}" class="inline-flex items-center text-sm font-medium hover:underline" style="color: var(--color-text-muted);">
+            {{ __('Back to Live Sessions') }}
+        </a>
         <div class="flex items-center justify-between gap-4">
             <div>
                 <h1 class="text-3xl font-extrabold"><span class="text-gradient">{{ $liveSession->title }}</span></h1>
-                <p class="mt-2" style="color: var(--color-text-muted);">{{ $liveSession->courses->pluck('title')->implode(', ') }}</p>
+                <p class="mt-2" style="color: var(--color-text-muted);">{{ $liveSession->courses->pluck('title')->implode(', ') ?: __('No courses linked') }}</p>
             </div>
-            <a href="{{ route('admin.live-sessions.edit', $liveSession) }}" class="btn-primary ripple-btn">{{ __('live_sessions.edit') }}</a>
+            <div class="flex items-center gap-3">
+                <a href="{{ route('admin.live-sessions.edit', $liveSession) }}" class="btn-primary ripple-btn">{{ __('live_sessions.edit') }}</a>
+                <form method="POST" action="{{ route('admin.live-sessions.destroy', $liveSession) }}" onsubmit="return confirm('{{ __('live_sessions.delete_confirm') }}')">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn-secondary text-red-500 border-red-500/30 hover:bg-red-500/10">{{ __('Delete') }}</button>
+                </form>
+            </div>
         </div>
 
         <div class="glass-card">

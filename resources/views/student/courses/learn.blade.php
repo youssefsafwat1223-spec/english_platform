@@ -157,7 +157,7 @@
                                 $isCompleted = $completionPercent === 100;
                                 $isUnlocked = true;
                             @endphp
-                            <div x-data="{ openLevel: false }" class="rounded-2xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-slate-900/40 overflow-hidden">
+                            <div id="level-{{ $level->id }}" x-data="{ openLevel: false }" class="scroll-mt-28 rounded-2xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-slate-900/40 overflow-hidden">
                                 <button type="button" @click="openLevel = !openLevel" class="w-full flex items-start sm:items-center justify-between gap-4 px-5 py-4 text-left">
                                     <div class="min-w-0">
                                         <div class="flex items-center gap-3">
@@ -224,7 +224,7 @@
                                                     || str_contains($titleForMatch, 'نطق')
                                                 );
                                             @endphp
-                                            <a href="{{ route('student.lessons.show', [$course, $lesson]) }}" class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-5 py-4 hover:bg-white/80 dark:hover:bg-slate-900 transition-colors">
+                                            <a id="lesson-{{ $lesson->id }}" href="{{ route('student.lessons.show', [$course, $lesson]) }}" class="scroll-mt-28 flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-5 py-4 hover:bg-white/80 dark:hover:bg-slate-900 transition-colors">
                                                 <div class="flex items-center gap-3 min-w-0">
                                                     <span class="w-9 h-9 rounded-xl flex items-center justify-center text-xs font-black border {{ $isLessonCompleted ? 'bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20' : 'bg-slate-100 text-slate-500 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-white/10' }}">
                                                         {{ $isLessonCompleted ? '✓' : '▶' }}
@@ -288,7 +288,7 @@
                                             {{-- Writing Test --}}
                                             @if($hasLevelWriting)
                                                 @php $levelWritingDone = $writingDone($level->writingExercise); @endphp
-                                                <a href="{{ $level->writingExercise ? route('student.writing.show', $level->writingExercise) : '#' }}" class="flex items-center justify-between gap-3 px-5 py-4 hover:bg-white/80 dark:hover:bg-slate-900 transition-colors border-t border-slate-200/60 dark:border-white/10">
+                                                <a id="level-writing-{{ $level->id }}" href="{{ $level->writingExercise ? route('student.writing.show', $level->writingExercise) : '#' }}" class="scroll-mt-28 flex items-center justify-between gap-3 px-5 py-4 hover:bg-white/80 dark:hover:bg-slate-900 transition-colors border-t border-slate-200/60 dark:border-white/10">
                                                     <div class="flex items-center gap-3">
                                                         <span class="w-9 h-9 rounded-xl flex items-center justify-center text-sm font-black border {{ $levelWritingDone ? 'bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20' : 'bg-sky-50 text-sky-600 border-sky-200 dark:bg-sky-500/10 dark:text-sky-400 dark:border-sky-500/20' }}">{{ $levelWritingDone ? '✓' : '✏️' }}</span>
                                                         <div>
@@ -310,7 +310,7 @@
                                             {{-- Speaking Test --}}
                                             @if($hasLevelSpeaking)
                                                 @php $levelSpeakingDone = $speakingDone($level->speakingExercise); @endphp
-                                                <a href="{{ $level->speakingExercise ? route('student.pronunciation.show', $level->speakingExercise) : '#' }}" class="flex items-center justify-between gap-3 px-5 py-4 hover:bg-white/80 dark:hover:bg-slate-900 transition-colors border-t border-slate-200/60 dark:border-white/10">
+                                                <a id="level-speaking-{{ $level->id }}" href="{{ $level->speakingExercise ? route('student.pronunciation.show', $level->speakingExercise) : '#' }}" class="scroll-mt-28 flex items-center justify-between gap-3 px-5 py-4 hover:bg-white/80 dark:hover:bg-slate-900 transition-colors border-t border-slate-200/60 dark:border-white/10">
                                                     <div class="flex items-center gap-3">
                                                         <span class="w-9 h-9 rounded-xl flex items-center justify-center text-sm font-black border {{ $levelSpeakingDone ? 'bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20' : 'bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20' }}">{{ $levelSpeakingDone ? '✓' : '🎙️' }}</span>
                                                         <div>
@@ -335,7 +335,7 @@
                                                     $listeningAttempt = $level->listeningExercise->latestAttemptByUser(auth()->id());
                                                     $listeningPassed = $listeningAttempt && $listeningAttempt->passed;
                                                 @endphp
-                                                <a href="{{ route('student.listening.show', $level->listeningExercise) }}" class="flex items-center justify-between gap-3 px-5 py-4 hover:bg-white/80 dark:hover:bg-slate-900 transition-colors border-t border-slate-200/60 dark:border-white/10">
+                                                <a id="level-listening-{{ $level->id }}" href="{{ route('student.listening.show', $level->listeningExercise) }}" class="scroll-mt-28 flex items-center justify-between gap-3 px-5 py-4 hover:bg-white/80 dark:hover:bg-slate-900 transition-colors border-t border-slate-200/60 dark:border-white/10">
                                                     <div class="flex items-center gap-3">
                                                         <span class="w-9 h-9 rounded-xl flex items-center justify-center text-sm font-black border {{ $listeningPassed ? 'bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20' : 'bg-accent-50 text-accent-600 border-accent-200 dark:bg-accent-500/10 dark:text-accent-400 dark:border-accent-500/20' }}">{{ $listeningPassed ? '✓' : '🎧' }}</span>
                                                         <div>
@@ -372,7 +372,7 @@
                         @endforelse
 
                         @if($orphanLessons->count() > 0)
-                            <div x-data="{ openOrphan: false }" class="rounded-2xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-slate-900/40 overflow-hidden">
+                            <div id="bonus-lessons" x-data="{ openOrphan: false }" class="scroll-mt-28 rounded-2xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-slate-900/40 overflow-hidden">
                                 <button type="button" @click="openOrphan = !openOrphan" class="w-full flex items-start sm:items-center justify-between gap-4 px-5 py-4 text-left">
                                     <div class="min-w-0">
                                         <div class="flex items-center gap-3">
@@ -428,7 +428,7 @@
                                                     || str_contains($titleForMatch, 'نطق')
                                                 );
                                             @endphp
-                                            <a href="{{ route('student.lessons.show', [$course, $lesson]) }}" class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-5 py-4 hover:bg-white/80 dark:hover:bg-slate-900 transition-colors">
+                                            <a id="lesson-{{ $lesson->id }}" href="{{ route('student.lessons.show', [$course, $lesson]) }}" class="scroll-mt-28 flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-5 py-4 hover:bg-white/80 dark:hover:bg-slate-900 transition-colors">
                                                 <div class="flex items-center gap-3 min-w-0">
                                                     <span class="w-9 h-9 rounded-xl flex items-center justify-center text-xs font-black border {{ $isLessonCompleted ? 'bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20' : 'bg-slate-100 text-slate-500 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-white/10' }}">
                                                         {{ $isLessonCompleted ? '✓' : '▶' }}

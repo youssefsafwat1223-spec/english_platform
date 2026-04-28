@@ -24,7 +24,7 @@
                     @php $reportableContent = optional($report->reportable)->content ?? optional($report->reportable)->title ?? ''; @endphp
                     <p class="text-sm mb-3" style="color: var(--color-text);">{{ Str::limit(strip_tags($reportableContent), 200) }}</p>
                     <div class="flex items-center justify-between">
-                        <span class="text-xs font-bold" style="color: var(--color-text-muted);">Reported by {{ $report->user->name }}</span>
+                        <span class="text-xs font-bold" style="color: var(--color-text-muted);">Reported by {{ $report->user?->name ?? __('Deleted user') }}</span>
                         @if($report->status == 'pending')
                         <div class="flex space-x-2">
                             <form action="{{ route('admin.forum.reports.review', $report) }}" method="POST">@csrf<button type="submit" class="btn-secondary text-xs py-1.5 px-3">{{ __('Reviewed') }}</button></form>

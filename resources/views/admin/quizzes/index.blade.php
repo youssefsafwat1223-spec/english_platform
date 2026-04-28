@@ -22,7 +22,7 @@
                                 <div class="font-bold" style="color: var(--color-text);">{{ $quiz->title }}</div>
                                 @if($quiz->lesson)<div class="text-xs" style="color: var(--color-text-muted);">Lesson: {{ $quiz->lesson->title }}</div>@endif
                             </td>
-                            <td>{{ $quiz->course->title }}</td>
+                            <td>{{ $quiz->course?->title ?? __('Deleted course') }}</td>
                             <td>
                                 @if($quiz->is_final_exam)<span class="inline-flex items-center px-2 py-0.5 rounded-lg bg-red-500/10 text-red-500 text-xs font-bold">{{ __('Final Exam') }}</span>
                                 @else<span class="inline-flex items-center px-2 py-0.5 rounded-lg bg-primary-500/10 text-primary-500 text-xs font-bold">{{ __('Lesson Quiz') }}</span>@endif

@@ -240,6 +240,31 @@ class CertificateService
 
     private function generatePdfWithMpdfCanvas(array $data): string
     {
+        $pdfBytes = $this->buildPdfWithMpdfCanvas($data);
+
+        $path = "certificates/pdfs/{$data['certificate_id']}.pdf";
+        Storage::put($path, $pdfBytes);
+
+        return $path;
+    }
+
+    public function generatePreviewPdfBytes(array $settings = []): string
+    {
+        return $this->buildPdfWithMpdfCanvas([
+            'user_name' => 'John Doe',
+            'course_title' => 'English Grammar Course',
+            'certificate_id' => 'PREVIEW-' . now()->format('Ymd'),
+            'final_score' => 85,
+            'issue_date' => now()->format('F d, Y'),
+            'qr_code_path' => null,
+            'certificate_logo' => $this->resolveCertificateLogo($settings['certificate_logo'] ?? null),
+            'signatory_name' => $settings['signatory_name'] ?? 'Platform Director',
+            'signatory_title' => $settings['signatory_title'] ?? 'Director',
+        ]);
+    }
+
+    private function buildPdfWithMpdfCanvas(array $data): string
+    {
         $tempDir = storage_path('app/mpdf-tmp');
         if (!is_dir($tempDir)) {
             @mkdir($tempDir, 0775, true);
@@ -284,7 +309,7 @@ class CertificateService
         $mpdf->SetLineWidth(0.3);
         $mpdf->Rect(17, 25, 263, 160, 'D');
 
-        if (!empty($data['certificate_logo']) && file_exists($data['certificate_logo'])) {
+        if ($this->isRenderableImageSource($data['certificate_logo'] ?? null)) {
             $mpdf->Image($data['certificate_logo'], 136, 29, 25, 0);
             $brandTop = 56;
         } else {
@@ -315,19 +340,14 @@ class CertificateService
         $footerTop = 160;
         $this->footerBlock($mpdf, $rtl ? '&#1578;&#1575;&#1585;&#1610;&#1582; &#1575;&#1604;&#1573;&#1589;&#1583;&#1575;&#1585;' : 'Date of Issue', $data['issue_date'], 27, $footerTop);
 
-        if (!empty($data['qr_code_path']) && file_exists($data['qr_code_path'])) {
+        if ($this->isRenderableImageSource($data['qr_code_path'] ?? null)) {
             $mpdf->Image($data['qr_code_path'], 139.5, $footerTop - 3, 18, 18);
         }
 
         $this->footerBlock($mpdf, $rtl ? '&#1575;&#1604;&#1578;&#1608;&#1602;&#1610;&#1593; &#1575;&#1604;&#1605;&#1593;&#1578;&#1605;&#1583;' : 'Authorized Signature', $data['signatory_name'], 200, $footerTop, $data['signatory_title']);
         $this->writeFixed($mpdf, $this->div(($rtl ? '&#1585;&#1602;&#1605; &#1575;&#1604;&#1588;&#1607;&#1575;&#1583;&#1577;' : 'Certificate ID') . ': ' . $data['certificate_id'], 'color:#007bb5;font-size:8pt;font-weight:bold;letter-spacing:1px;'), 30, 181, 237, 8);
 
-        $pdfBytes = $mpdf->Output('', \Mpdf\Output\Destination::STRING_RETURN);
-
-        $path = "certificates/pdfs/{$data['certificate_id']}.pdf";
-        Storage::put($path, $pdfBytes);
-
-        return $path;
+        return $mpdf->Output('', \Mpdf\Output\Destination::STRING_RETURN);
     }
 
     private function writeFixed(\Mpdf\Mpdf $mpdf, string $html, float $x, float $y, float $w, float $h): void
@@ -434,6 +454,19 @@ class CertificateService
         }
 
         return null;
+    }
+
+    private function isRenderableImageSource(?string $source): bool
+    {
+        if (!$source) {
+            return false;
+        }
+
+        if (Str::startsWith($source, ['http://', 'https://'])) {
+            return true;
+        }
+
+        return file_exists($source);
     }
 
     /**

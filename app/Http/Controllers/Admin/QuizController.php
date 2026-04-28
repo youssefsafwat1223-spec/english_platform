@@ -123,6 +123,10 @@ class QuizController extends Controller
 
     public function getQuestions(Course $course, Lesson $lesson = null)
     {
+        if ($lesson && (int) $lesson->course_id !== (int) $course->id) {
+            abort(404);
+        }
+
         $query = Question::where('course_id', $course->id);
 
         if ($lesson) {

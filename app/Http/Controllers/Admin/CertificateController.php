@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Certificate;
 use App\Models\Course;
 use App\Models\SystemSetting;
+use App\Services\CertificateService;
 use Illuminate\Http\Request;
 
 class CertificateController extends Controller
@@ -68,34 +69,30 @@ class CertificateController extends Controller
             'certificate_prefix' => 'nullable|string|max:20',
             'signatory_name' => 'nullable|string|max:255',
             'signatory_title' => 'nullable|string|max:255',
-            'certificate_logo' => 'nullable|url',
+            'certificate_logo' => 'nullable|string|max:2048',
             'enable_qr_code' => 'nullable|boolean',
         ]);
 
         SystemSetting::set('certificate_prefix', $request->certificate_prefix, 'string', 'certificates');
         SystemSetting::set('signatory_name', $request->signatory_name, 'string', 'certificates');
         SystemSetting::set('signatory_title', $request->signatory_title, 'string', 'certificates');
-        SystemSetting::set('certificate_logo', $request->certificate_logo, 'string', 'certificates');
+        SystemSetting::set('certificate_logo', $request->filled('certificate_logo') ? trim((string) $request->certificate_logo) : null, 'string', 'certificates');
         SystemSetting::set('enable_qr_code', $request->boolean('enable_qr_code'), 'boolean', 'certificates');
 
-        return back()->with('success', 'Certificate settings updated successfully!');
+        return back()->with('success', __('Certificate settings updated successfully!'));
     }
 
-    public function preview()
+    public function preview(CertificateService $certificateService)
     {
         $settings = SystemSetting::getByGroup('certificates');
 
-        // Preview certificate template
-        return view('certificates.template', [
-            'user_name' => 'John Doe',
-            'course_title' => 'English Grammar Course',
-            'certificate_id' => 'EGC-2026-0001',
-            'final_score' => 85,
-            'issue_date' => now()->format('F d, Y'),
-            'qr_code_path' => null,
-            'certificate_logo' => $settings['certificate_logo'] ?? null,
-            'signatory_name' => $settings['signatory_name'] ?? 'Platform Director',
-            'signatory_title' => $settings['signatory_title'] ?? 'Director',
+        $pdfBytes = $certificateService->generatePreviewPdfBytes(
+            $settings instanceof \Illuminate\Support\Collection ? $settings->toArray() : (array) $settings
+        );
+
+        return response($pdfBytes, 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="certificate-preview.pdf"',
         ]);
     }
 }

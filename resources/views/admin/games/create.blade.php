@@ -5,7 +5,6 @@
     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[400px] bg-gradient-to-b from-primary-500/8 to-transparent pointer-events-none z-0"></div>
     <div class="max-w-5xl mx-auto sm:px-6 lg:px-8 relative z-10">
 
-        {{-- Page Header --}}
         <div class="mb-10" data-aos="fade-down">
             <a href="{{ route('admin.games.index') }}" class="inline-flex items-center gap-1.5 text-sm font-medium hover:underline mb-3" style="color: var(--color-text-muted);">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
@@ -15,7 +14,6 @@
             <p class="mt-2 text-sm" style="color: var(--color-text-muted);">{{ __('Set up a live quiz competition for your students.') }}</p>
         </div>
 
-        {{-- Step Indicator --}}
         <div class="flex items-center justify-center gap-2 mb-10" data-aos="fade-up">
             <template x-for="(label, idx) in stepLabels" :key="idx">
                 <div class="flex items-center gap-2">
@@ -23,14 +21,12 @@
                             class="flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold transition-all duration-300"
                             :class="currentStep === idx + 1
                                 ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/30 scale-105'
-                                : (currentStep > idx + 1
-                                    ? 'bg-emerald-500/15 text-emerald-500'
-                                    : '')"
+                                : (currentStep > idx + 1 ? 'bg-emerald-500/15 text-emerald-500' : '')"
                             :style="currentStep !== idx + 1 && currentStep <= idx + 1 ? 'background: var(--color-surface-hover); color: var(--color-text-muted);' : ''">
                         <span class="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-extrabold"
                               :class="currentStep > idx + 1 ? 'bg-emerald-500 text-white' : (currentStep === idx + 1 ? 'bg-white/20 text-white' : '')"
                               :style="currentStep <= idx + 1 && currentStep !== idx + 1 ? 'background: var(--color-border); color: var(--color-text-muted);' : ''">
-                            <template x-if="currentStep > idx + 1"><span>✓</span></template>
+                            <template x-if="currentStep > idx + 1"><span>&#10003;</span></template>
                             <template x-if="currentStep <= idx + 1"><span x-text="idx + 1"></span></template>
                         </span>
                         <span x-text="label" class="hidden sm:inline"></span>
@@ -53,12 +49,11 @@
         <form method="POST" action="{{ route('admin.games.store') }}" @submit="submitForm($event)">
             @csrf
 
-            {{-- ========== STEP 1: Basic Info ========== --}}
             <div x-show="currentStep === 1" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
                 <div class="glass-card overflow-hidden" data-aos="fade-up">
                     <div class="glass-card-header">
                         <h2 class="text-lg font-bold flex items-center gap-2" style="color: var(--color-text);">
-                            <span class="w-8 h-8 rounded-lg bg-primary-500/15 flex items-center justify-center text-primary-500">📝</span>
+                            <span class="w-8 h-8 rounded-lg bg-primary-500/15 flex items-center justify-center text-primary-500"><i class="fas fa-trophy"></i></span>
                             {{ __('Competition Info') }}
                         </h2>
                     </div>
@@ -87,18 +82,17 @@
                     </div>
                     <div class="glass-card-footer flex justify-end">
                         <button type="button" @click="currentStep = 2" class="btn-primary ripple-btn">
-                            {{ __('Next') }} →
+                            {{ __('Next') }} &rarr;
                         </button>
                     </div>
                 </div>
             </div>
 
-            {{-- ========== STEP 2: Course & Level ========== --}}
             <div x-show="currentStep === 2" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
                 <div class="glass-card overflow-hidden" data-aos="fade-up">
                     <div class="glass-card-header">
                         <h2 class="text-lg font-bold flex items-center gap-2" style="color: var(--color-text);">
-                            <span class="w-8 h-8 rounded-lg bg-blue-500/15 flex items-center justify-center text-blue-500">📚</span>
+                            <span class="w-8 h-8 rounded-lg bg-blue-500/15 flex items-center justify-center text-blue-500"><i class="fas fa-book-open"></i></span>
                             {{ __('Choose Course & Level') }}
                         </h2>
                     </div>
@@ -124,10 +118,9 @@
                             </div>
                         </div>
 
-                        {{-- Eligible Students Counter --}}
                         <div class="flex items-center gap-4 p-5 rounded-2xl relative overflow-hidden" style="background: var(--color-bg-elevated);">
                             <div class="absolute inset-0 opacity-5 bg-gradient-to-r from-primary-500 to-accent-500"></div>
-                            <div class="relative z-10 w-14 h-14 rounded-2xl bg-primary-500/15 flex items-center justify-center text-3xl">👥</div>
+                            <div class="relative z-10 w-14 h-14 rounded-2xl bg-primary-500/15 flex items-center justify-center text-3xl"><i class="fas fa-users"></i></div>
                             <div class="relative z-10">
                                 <div class="text-xs font-medium mb-0.5" style="color: var(--color-text-muted);">{{ __('Eligible Students') }}</div>
                                 <div class="text-3xl font-extrabold text-primary-500" x-text="eligibleCount"></div>
@@ -140,18 +133,17 @@
                         </div>
                     </div>
                     <div class="glass-card-footer flex justify-between">
-                        <button type="button" @click="currentStep = 1" class="btn-secondary">← {{ __('Back') }}</button>
-                        <button type="button" @click="currentStep = 3" class="btn-primary ripple-btn">{{ __('Next') }} →</button>
+                        <button type="button" @click="currentStep = 1" class="btn-secondary">&larr; {{ __('Back') }}</button>
+                        <button type="button" @click="currentStep = 3" class="btn-primary ripple-btn">{{ __('Next') }} &rarr;</button>
                     </div>
                 </div>
             </div>
 
-            {{-- ========== STEP 3: Teams ========== --}}
             <div x-show="currentStep === 3" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
                 <div class="glass-card overflow-hidden" data-aos="fade-up">
                     <div class="glass-card-header">
                         <h2 class="text-lg font-bold flex items-center gap-2" style="color: var(--color-text);">
-                            <span class="w-8 h-8 rounded-lg bg-emerald-500/15 flex items-center justify-center text-emerald-500">⚔️</span>
+                            <span class="w-8 h-8 rounded-lg bg-emerald-500/15 flex items-center justify-center text-emerald-500"><i class="fas fa-layer-group"></i></span>
                             {{ __('Teams') }}
                         </h2>
                     </div>
@@ -161,7 +153,7 @@
                             <div class="flex items-center gap-2">
                                 <button type="button" @click="teamCount = Math.max(2, teamCount - 1); generateTeams()"
                                         class="w-8 h-8 rounded-lg flex items-center justify-center text-lg font-bold transition-colors hover:bg-primary-500/10 hover:text-primary-500"
-                                        style="background: var(--color-surface-hover); color: var(--color-text);">−</button>
+                                        style="background: var(--color-surface-hover); color: var(--color-text);">-</button>
                                 <input type="number" name="team_count" x-model.number="teamCount" @change="generateTeams()"
                                        class="input-glass w-16 text-center font-bold text-lg" min="2" max="20">
                                 <button type="button" @click="teamCount = Math.min(20, teamCount + 1); generateTeams()"
@@ -189,18 +181,17 @@
                         </div>
                     </div>
                     <div class="glass-card-footer flex justify-between">
-                        <button type="button" @click="currentStep = 2" class="btn-secondary">← {{ __('Back') }}</button>
-                        <button type="button" @click="currentStep = 4" class="btn-primary ripple-btn">{{ __('Next') }} →</button>
+                        <button type="button" @click="currentStep = 2" class="btn-secondary">&larr; {{ __('Back') }}</button>
+                        <button type="button" @click="currentStep = 4" class="btn-primary ripple-btn">{{ __('Next') }} &rarr;</button>
                     </div>
                 </div>
             </div>
 
-            {{-- ========== STEP 4: Questions ========== --}}
             <div x-show="currentStep === 4" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">
                 <div class="glass-card overflow-hidden" data-aos="fade-up">
                     <div class="glass-card-header flex items-center justify-between">
                         <h2 class="text-lg font-bold flex items-center gap-2" style="color: var(--color-text);">
-                            <span class="w-8 h-8 rounded-lg bg-amber-500/15 flex items-center justify-center text-amber-500">❓</span>
+                            <span class="w-8 h-8 rounded-lg bg-amber-500/15 flex items-center justify-center text-amber-500"><i class="fas fa-question-circle"></i></span>
                             {{ __('Questions') }}
                         </h2>
                         <span class="text-xs font-bold px-3 py-1 rounded-full bg-primary-500/10 text-primary-500"
@@ -211,8 +202,6 @@
                         <template x-for="(question, qIndex) in questions" :key="qIndex">
                             <div class="rounded-2xl relative overflow-hidden transition-all duration-200 hover:shadow-md"
                                  style="background: var(--color-bg-elevated); border: 1px solid var(--color-border);">
-
-                                {{-- Question Header --}}
                                 <div class="flex items-center justify-between p-4 pb-0">
                                     <div class="flex items-center gap-2">
                                         <span class="w-7 h-7 rounded-lg bg-primary-500 text-white flex items-center justify-center text-xs font-extrabold"
@@ -222,16 +211,12 @@
                                     <div class="flex items-center gap-3">
                                         <div class="flex items-center gap-1.5">
                                             <svg class="w-3.5 h-3.5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                            <input type="number" :name="'questions[' + qIndex + '][time_limit]'"
-                                                   x-model.number="question.time_limit"
-                                                   class="input-glass w-14 text-center text-xs font-bold" min="10" max="300">
+                                            <input type="number" :name="'questions[' + qIndex + '][time_limit]'" x-model.number="question.time_limit" class="input-glass w-14 text-center text-xs font-bold" min="10" max="300">
                                             <span class="text-xs" style="color: var(--color-text-muted);">{{ __('sec') }}</span>
                                         </div>
                                         <div class="flex items-center gap-1.5">
                                             <svg class="w-3.5 h-3.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                            <input type="number" :name="'questions[' + qIndex + '][points]'"
-                                                   x-model.number="question.points"
-                                                   class="input-glass w-16 text-center text-xs font-bold" min="10" max="1000">
+                                            <input type="number" :name="'questions[' + qIndex + '][points]'" x-model.number="question.points" class="input-glass w-16 text-center text-xs font-bold" min="10" max="1000">
                                             <span class="text-xs" style="color: var(--color-text-muted);">{{ __('pts') }}</span>
                                         </div>
                                         <button type="button" @click="removeQuestion(qIndex)" x-show="questions.length > 1"
@@ -241,13 +226,11 @@
                                     </div>
                                 </div>
 
-                                {{-- Question Text --}}
                                 <div class="px-4 pt-3">
                                     <input type="text" :name="'questions[' + qIndex + '][text]'" x-model="question.text"
                                            class="input-glass w-full font-medium" placeholder="{{ __('Write question here') }}" required>
                                 </div>
 
-                                {{-- Options --}}
                                 <div class="p-4 space-y-2">
                                     <p class="text-xs font-medium mb-2" style="color: var(--color-text-muted);">{{ __('Click radio to mark correct answer') }}</p>
                                     <template x-for="(opt, oIndex) in question.options" :key="oIndex">
@@ -288,7 +271,6 @@
                             </div>
                         </template>
 
-                        {{-- Add Question Button --}}
                         <button type="button" @click="addQuestion()"
                                 class="w-full py-4 rounded-2xl border-2 border-dashed text-sm font-bold transition-all duration-200 hover:border-primary-500 hover:text-primary-500 hover:bg-primary-500/5 flex items-center justify-center gap-2"
                                 style="border-color: var(--color-border); color: var(--color-text-muted);">
@@ -297,10 +279,10 @@
                         </button>
                     </div>
                     <div class="glass-card-footer flex justify-between">
-                        <button type="button" @click="currentStep = 3" class="btn-secondary">← {{ __('Back') }}</button>
+                        <button type="button" @click="currentStep = 3" class="btn-secondary">&larr; {{ __('Back') }}</button>
                         <button type="submit" class="btn-primary ripple-btn px-8" :disabled="submitting">
                             <span x-show="!submitting" class="flex items-center gap-2">
-                                🚀 {{ __('Create Competition') }}
+                                <i class="fas fa-flag-checkered"></i> {{ __('Create Competition') }}
                             </span>
                             <span x-show="submitting" class="flex items-center gap-2">
                                 <svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/></svg>
@@ -322,7 +304,7 @@ function gameCreator() {
     return {
         currentStep: 1,
         stepLabels: locale === 'ar'
-            ? [__('المعلومات'), __('الكورس'), __('الفرق'), __('الأسئلة')]
+            ? ['المعلومات', 'الكورس', 'الفرق', 'الأسئلة']
             : ['Info', 'Course', 'Teams', 'Questions'],
         courseId: '',
         lessonId: '',
@@ -331,8 +313,8 @@ function gameCreator() {
         submitting: false,
         teamCount: 2,
         teams: [
-            { name: locale === 'ar' ? __('الفريق الأحمر') : 'Red Team', color: '#ef4444' },
-            { name: locale === 'ar' ? __('الفريق الأزرق') : 'Blue Team', color: '#3b82f6' },
+            { name: locale === 'ar' ? 'الفريق الأحمر' : 'Red Team', color: '#ef4444' },
+            { name: locale === 'ar' ? 'الفريق الأزرق' : 'Blue Team', color: '#3b82f6' },
         ],
         questions: [
             { text: '', options: ['', '', '', ''], correct: '', time_limit: 30, points: 100 },
@@ -349,11 +331,18 @@ function gameCreator() {
         },
 
         async fetchStudents() {
-            if (!this.courseId) { this.eligibleCount = 0; return; }
+            if (!this.courseId) {
+                this.eligibleCount = 0;
+                return;
+            }
+
             this.loading = true;
             try {
                 const params = new URLSearchParams({ course_id: this.courseId });
-                if (this.lessonId) params.append('min_lesson_id', this.lessonId);
+                if (this.lessonId) {
+                    params.append('min_lesson_id', this.lessonId);
+                }
+
                 const res = await fetch(`{{ route('admin.games.eligible-students') }}?${params}`);
                 const data = await res.json();
                 this.eligibleCount = data.count;
@@ -364,10 +353,11 @@ function gameCreator() {
         },
 
         generateTeams() {
-            const colors = ['#ef4444','#3b82f6','#10b981','#f59e0b','#8b5cf6','#ec4899','#14b8a6','#f97316','#6366f1','#84cc16'];
-            const namesAr = [__('الفريق الأحمر'),__('الفريق الأزرق'),'الفريق الأخضر','الفريق الذهبي','الفريق البنفسجي','الفريق الوردي','الفريق التركواز','الفريق البرتقالي','الفريق النيلي','الفريق الليموني'];
-            const namesEn = ['Red Team','Blue Team','Green Team','Gold Team','Purple Team','Pink Team','Teal Team','Orange Team','Indigo Team','Lime Team'];
+            const colors = ['#ef4444', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316', '#6366f1', '#84cc16'];
+            const namesAr = ['الفريق الأحمر', 'الفريق الأزرق', 'الفريق الأخضر', 'الفريق الذهبي', 'الفريق البنفسجي', 'الفريق الوردي', 'الفريق التركوازي', 'الفريق البرتقالي', 'الفريق النيلي', 'الفريق الليموني'];
+            const namesEn = ['Red Team', 'Blue Team', 'Green Team', 'Gold Team', 'Purple Team', 'Pink Team', 'Teal Team', 'Orange Team', 'Indigo Team', 'Lime Team'];
             const names = locale === 'ar' ? namesAr : namesEn;
+
             this.teams = [];
             for (let i = 0; i < this.teamCount; i++) {
                 this.teams.push({
@@ -394,6 +384,7 @@ function gameCreator() {
                     return;
                 }
             }
+
             this.submitting = true;
         }
     };

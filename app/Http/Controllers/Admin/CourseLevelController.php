@@ -57,6 +57,8 @@ class CourseLevelController extends Controller
 
     public function edit(Course $course, CourseLevel $level)
     {
+        $this->ensureLevelBelongsToCourse($course, $level);
+
         $level->load('listeningExercise', 'writingExercise', 'speakingExercise');
 
         return view('admin.course-levels.edit', compact('course', 'level'));
@@ -64,6 +66,8 @@ class CourseLevelController extends Controller
 
     public function update(Request $request, Course $course, CourseLevel $level)
     {
+        $this->ensureLevelBelongsToCourse($course, $level);
+
         $data = $request->validate([
             'title'                  => 'required|string|max:255',
             'description'            => 'nullable|string',
@@ -105,6 +109,8 @@ class CourseLevelController extends Controller
 
     public function destroy(Course $course, CourseLevel $level)
     {
+        $this->ensureLevelBelongsToCourse($course, $level);
+
         if ($level->thumbnail) {
             Storage::disk('public')->delete($level->thumbnail);
         }
@@ -270,5 +276,12 @@ class CourseLevelController extends Controller
             ->all();
 
         return empty($items) ? null : $items;
+    }
+
+    private function ensureLevelBelongsToCourse(Course $course, CourseLevel $level): void
+    {
+        if ((int) $level->course_id !== (int) $course->id) {
+            abort(404);
+        }
     }
 }

@@ -33,8 +33,8 @@
                         @forelse($attempts as $attempt)
                         <tr>
                             <td>
-                                <div class="font-bold" style="color: var(--color-text);">{{ $attempt->user->name }}</div>
-                                <div class="text-xs" style="color: var(--color-text-muted);">{{ $attempt->user->email }}</div>
+                                <div class="font-bold" style="color: var(--color-text);">{{ $attempt->user?->name ?? __('Deleted user') }}</div>
+                                <div class="text-xs" style="color: var(--color-text-muted);">{{ $attempt->user?->email ?? '-' }}</div>
                             </td>
                             <td>{{ $attempt->attempt_number }}</td>
                             <td><span class="text-lg font-extrabold {{ $attempt->passed ? 'text-emerald-500' : 'text-red-500' }}">{{ $attempt->score }}%</span></td>

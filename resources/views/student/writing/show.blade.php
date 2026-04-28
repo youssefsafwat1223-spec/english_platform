@@ -51,6 +51,12 @@
         @php
             $context = $writingExercise->lesson ?? $writingExercise->courseLevel;
             $contextCourse = $context?->course;
+            $courseReturnUrl = null;
+            if ($contextCourse && $writingExercise->lesson) {
+                $courseReturnUrl = route('student.courses.learn', $contextCourse) . '#lesson-' . $writingExercise->lesson->id;
+            } elseif ($contextCourse && $writingExercise->courseLevel) {
+                $courseReturnUrl = route('student.courses.learn', $contextCourse) . '#level-' . $writingExercise->courseLevel->id;
+            }
         @endphp
         <x-student.page-header
             title="{{ $writingExercise->title ?: ($isArabic ? 'تدريب الكتابة' : 'Writing Practice') }}"
@@ -60,13 +66,8 @@
             badgeIcon='<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 20h9"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16.5 3.5a2.121 2.121 0 113 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>'
         >
             <x-slot name="actions">
-                @if($writingExercise->lesson && $contextCourse)
-                <a href="{{ route('student.lessons.show', [$contextCourse, $writingExercise->lesson]) }}" class="btn-ghost btn-sm flex items-center gap-2">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-                    {{ $isArabic ? 'العودة للدرس' : 'Back to lesson' }}
-                </a>
-                @elseif($contextCourse)
-                <a href="{{ route('student.courses.learn', $contextCourse) }}" class="btn-ghost btn-sm flex items-center gap-2">
+                @if($courseReturnUrl)
+                <a href="{{ $courseReturnUrl }}" class="btn-ghost btn-sm flex items-center gap-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                     {{ $isArabic ? 'العودة للكورس' : 'Back to course' }}
                 </a>
