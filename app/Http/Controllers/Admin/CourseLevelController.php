@@ -52,7 +52,7 @@ class CourseLevelController extends Controller
         $course->levels()->create($data);
 
         return redirect()->route('admin.courses.levels.index', $course)
-            ->with('success', __('تم إضافة المستوى بنجاح!'));
+            ->with('success', __('Level created successfully.'));
     }
 
     public function edit(Course $course, CourseLevel $level)
@@ -104,7 +104,7 @@ class CourseLevelController extends Controller
         $this->syncListeningExercise($request, $level);
 
         return redirect()->route('admin.courses.levels.index', $course)
-            ->with('success', __('تم تعديل المستوى بنجاح!'));
+            ->with('success', __('Level updated successfully.'));
     }
 
     public function destroy(Course $course, CourseLevel $level)
@@ -131,10 +131,10 @@ class CourseLevelController extends Controller
         $level->delete();
 
         return redirect()->route('admin.courses.levels.index', $course)
-            ->with('success', __('تم حذف المستوى بنجاح!'));
+            ->with('success', __('Level deleted successfully.'));
     }
 
-    // ─── private sync helpers ────────────────────────────────────────
+    // Exercise sync helpers.
 
     private function syncWritingExercise(Request $request, CourseLevel $level): void
     {
