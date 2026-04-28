@@ -190,7 +190,7 @@
                     @guest
                         <a href="{{ route('home') }}#featured-courses"
                            class="nav-link {{ request()->routeIs('home') || request()->routeIs('courses.*') ? 'active' : '' }}">
-                            {{ app()->getLocale() === 'ar' ? 'ط§ظ„ط¨ط±ظ†ط§ظ…ط¬' : 'Program' }}
+                            {{ app()->getLocale() === 'ar' ? 'البرنامج' : 'Program' }}
                         </a>
                         <a href="{{ route('pricing') }}"
                            class="nav-link {{ request()->routeIs('pricing') ? 'active' : '' }}">
