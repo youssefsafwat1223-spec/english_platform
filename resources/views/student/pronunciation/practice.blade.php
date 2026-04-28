@@ -176,6 +176,18 @@
             <p class="mt-1">{{ $isArabic ? 'على iPhone Safari يبدأ التسجيل بضغطة واحدة ويتوقف بضغطة ثانية، ثم يظهر التقييم بعد الإيقاف.' : 'On iPhone Safari, recording starts with one tap and stops with the next tap. Your score appears after you stop.' }}</p>
         </div>
 
+        <div class="mb-8 rounded-2xl border border-sky-300/50 bg-sky-50/90 p-4 text-sm text-sky-950 shadow-sm dark:border-sky-500/20 dark:bg-sky-500/10 dark:text-sky-100">
+            <p class="flex items-center gap-2 font-black">
+                <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-sky-500 text-white">i</span>
+                {{ $isArabic ? 'نصيحة للحصول على تقييم أدق' : 'Tip for a more accurate score' }}
+            </p>
+            <p class="mt-2 leading-7">
+                {{ $isArabic
+                    ? 'إذا كنت تشعر أن نطقك صحيح لكن الذكاء الاصطناعي فهمك بشكل خاطئ، اجلس في مكان هادئ، وقرّب الميكروفون قليلًا، وارفع صوتك بدرجة بسيطة بدون صراخ للحصول على أفضل تجربة.'
+                    : 'If your pronunciation feels correct but the AI hears it incorrectly, sit in a quiet place, keep the microphone close, and speak a little louder without shouting for the best experience.' }}
+            </p>
+        </div>
+
         @php
             try {
                 $vocabList = is_array($exercise->vocabulary_json) ? $exercise->vocabulary_json : [];

@@ -40,6 +40,7 @@
 
     $courseDisplayTitle = $localizedTitle($course->title);
     $lessonDisplayTitle = $localizedTitle($lesson->title);
+    $lessonReturnUrl = route('student.courses.learn', $course) . '#lesson-' . $lesson->id;
 @endphp
 <div class="py-12 relative min-h-screen z-10">
     <div class="student-container space-y-8">
@@ -51,7 +52,7 @@
             badgeIcon='<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5.586a1 1 0 0 1 .707.293l5.414 5.414a1 1 0 0 1 .293.707V19a2 2 0 0 1-2 2z"/></svg>'
         >
             <x-slot name="actions">
-                <a href="{{ route('student.courses.learn', $course) }}" class="btn-ghost btn-sm flex items-center gap-2">
+                <a href="{{ $lessonReturnUrl }}" class="btn-ghost btn-sm flex items-center gap-2">
                     <svg class="w-4 h-4 {{ $isArabic ? 'rotate-180' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                     {{ $isArabic ? 'العودة للكورس' : 'Back to course' }}
                 </a>
@@ -69,7 +70,7 @@
                 </li>
                 <li class="opacity-50">/</li>
                 <li>
-                    <a href="{{ route('student.courses.learn', $course) }}" class="hover:text-primary-500 transition-colors truncate max-w-[200px] sm:max-w-[250px] md:max-w-none inline-block align-bottom">
+                    <a href="{{ $lessonReturnUrl }}" class="hover:text-primary-500 transition-colors truncate max-w-[200px] sm:max-w-[250px] md:max-w-none inline-block align-bottom">
                         {{ $courseDisplayTitle }}
                     </a>
                 </li>
@@ -855,7 +856,7 @@ function markAsComplete(btn) {
                 @if($nextLesson)
                     window.location.href = '{{ route('student.lessons.show', [$course, $nextLesson]) }}';
                 @else
-                    window.location.href = '{{ route('student.courses.learn', $course) }}';
+                    window.location.href = @json($lessonReturnUrl);
                 @endif
             }, 1000);
         })
@@ -989,7 +990,6 @@ if ('speechSynthesis' in window && !/iPhone|iPad|iPod/i.test(navigator.userAgent
 </style>
 @endpush
 @endsection
-
 
 
 
