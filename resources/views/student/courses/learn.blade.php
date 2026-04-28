@@ -157,7 +157,7 @@
                                 $isCompleted = $completionPercent === 100;
                                 $isUnlocked = true;
                             @endphp
-                            <div id="level-{{ $level->id }}" x-data="{ openLevel: false }" class="scroll-mt-28 rounded-2xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-slate-900/40 overflow-hidden">
+                            <div id="level-{{ $level->id }}" x-data="{ openLevel: false }" x-init="const hashTarget = window.location.hash ? document.getElementById(window.location.hash.slice(1)) : null; if (hashTarget && $el.contains(hashTarget)) { openLevel = true; $nextTick(() => hashTarget.scrollIntoView({ behavior: 'smooth', block: 'center' })); }" class="scroll-mt-28 rounded-2xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-slate-900/40 overflow-hidden">
                                 <button type="button" @click="openLevel = !openLevel" class="w-full flex items-start sm:items-center justify-between gap-4 px-5 py-4 text-left">
                                     <div class="min-w-0">
                                         <div class="flex items-center gap-3">
@@ -372,7 +372,7 @@
                         @endforelse
 
                         @if($orphanLessons->count() > 0)
-                            <div id="bonus-lessons" x-data="{ openOrphan: false }" class="scroll-mt-28 rounded-2xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-slate-900/40 overflow-hidden">
+                            <div id="bonus-lessons" x-data="{ openOrphan: false }" x-init="const hashTarget = window.location.hash ? document.getElementById(window.location.hash.slice(1)) : null; if (hashTarget && $el.contains(hashTarget)) { openOrphan = true; $nextTick(() => hashTarget.scrollIntoView({ behavior: 'smooth', block: 'center' })); }" class="scroll-mt-28 rounded-2xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-slate-900/40 overflow-hidden">
                                 <button type="button" @click="openOrphan = !openOrphan" class="w-full flex items-start sm:items-center justify-between gap-4 px-5 py-4 text-left">
                                     <div class="min-w-0">
                                         <div class="flex items-center gap-3">
